@@ -1,0 +1,54 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.2.0
+Date: 5/17/2020
+  Additions:
+    - Added thrower varients of all the different inserter types. They are unlocked with their respective normal version's research.
+    - Added range indicators to the Bounce Pads
+  Changes:
+    - Changed the Player Launcher so that you don't have to hover it with the mouse in order to use it. Now you just have to stand on it and press the launch key.
+  Bugfixes:
+    - Changed how bounces are calculated so that blueprint ghosts are not longer destroyed when things land on them.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.6
+Date: 5/9/2020
+  Bugfixes:
+    - Improved compatability with other mods that happen to use my same naming convention where a projectile/target based on an item was called the projectile/targets name plus -projectile/-target. Now my projectiles/targets have the suffix -projectile/targetFromRenaiTransportation respectively. Issue pointed out by Drury who noted my mod was incompatible with Krastorio 2.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.5
+Date: 5/7/2020
+  Bugfixes:
+    - Made the same fix in 0.1.4 but applied it to on_configuration_changed too on the off chance that people had the mod installed and kept 0.1.3 while it was still bugged and updated to 0.1.4
+---------------------------------------------------------------------------------------------------
+Version: 0.1.4
+Date: 5/7/2020
+  Bugfixes:
+    - Fixed that the Player Launcher wouldn't work on existing saves because the AllPlayers table wouldn't be set up in those cases. Now fills the table with all players in the save during initialization. Problem source identified by fgcapo.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.3
+Date: 5/4/2020
+  Bugfixes:
+    - Fixed script_raised_built listener problem where I copied the code from the on_built_entity listener not realizing the related entity is reffered to as just .entity instead of .created_entity. Problem identified by darkfrei.
+    - Preemptive bug fix adding on_entity_cloned listener for built thrower inserters. Recommended by AshenSwift.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.2
+Date: 5/3/2020
+  Bugfixes:
+    - Fixed that Thrower Inserters wouldn't work when built by bots by adding on_robot_built_entity and script_raised_built events to listen for. Problem identified by therax.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.1
+Date: 4/26/2020
+  Changes:
+    - Made the Bounce Pad smaller so you can walk between them when they're next to each other.
+  Additions:
+    - The change log lmao.
+  Bugfixes:
+    - Fixed that you could get stuck on a cliff if you launched into it, because apparently it's immune to .die() Now you land at the closest free spot.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.0
+Date: 4/25/2020
+  Se~no:
+    - Demo sonnan ja dame
+    - Mou sonnan ja hora
+    - Kokoro wa shinka suru yo
+    - Motto motto
+    - *clap*

@@ -1,0 +1,9 @@
+{
+    "name": "RenaiTransportation",
+    "version": "0.2.0",
+    "title": "Renai Transportation",
+    "author": "Kiplacon",
+    "factorio_version": "0.18",
+    "dependencies": ["base >= 0.18"],
+    "description": "Se~no to belts and walking with these ridiculous ways to transport items and yourself around your factory."
+}
