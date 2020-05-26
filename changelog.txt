@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.2.2
+Date: 5/26/2020
+  Changes:
+    - Some file name case correction that I'm not sure was even needed but hey it's worth a shot.
+---------------------------------------------------------------------------------------------------
 Version: 0.2.1
 Date: 5/26/2020
   Additions:
