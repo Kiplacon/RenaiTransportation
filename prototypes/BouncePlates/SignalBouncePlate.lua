@@ -17,7 +17,7 @@ data:extend({
 	{ --------- Bounce plate entity --------------
 		type = "constant-combinator",
 		name = "SignalBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/PlateIconn.png",
+		icon = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlateIconn.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
 		minable = {mining_time = 0.2, result = "SignalBouncePlateItem"},
@@ -29,7 +29,7 @@ data:extend({
 		circuit_wire_max_distance = 9,
 		sprites = 
 			{
-				filename = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/Plate.png",
+				filename = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlate.png",
 				priority = "medium",
 				width = 66,
 				height = 76,
@@ -74,7 +74,7 @@ data:extend({
 	{ --------- The Bounce plate item -------------
 		type = "item",
 		name = "SignalBouncePlateItem",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/PlateIconn.png",
+		icon = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlateIconn.png",
 		icon_size = 64, --icon_mipmaps = 4,
 		subgroup = "RT",
 		order = "a-c",
@@ -101,7 +101,7 @@ data:extend({
 		life_time = 8,	
 		pictures =
 			{
-			  filename = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/Particle.png",
+			  filename = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalParticle.png",
 			  --width = 64,
 			  --height = 64,
 			  size = 32,
