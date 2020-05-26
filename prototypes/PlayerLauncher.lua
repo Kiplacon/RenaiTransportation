@@ -48,7 +48,7 @@ data:extend({
 		icon_size = 32,
 		icon_mipmaps = 4,
 		subgroup = "RT",
-		order = "a[items]-c[wooden-chest]",
+		order = "c",
 		place_result = "PlayerLauncher",
 		stack_size = 50
 	},
@@ -64,6 +64,23 @@ data:extend({
 				{"iron-plate", 4}
 			},
 		result = "PlayerLauncherItem"
+	},
+	
+	{ --------- bounce effect ----------
+		type = "optimized-particle",
+		name = "PlayerLauncherParticle",
+		life_time = 8,	
+		pictures =
+			{
+			  filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Particle.png",
+			  --width = 64,
+			  --height = 64,
+			  size = 32,
+			  priority = "extra-high",
+			  line_length = 4, -- frames per row
+			  frame_count = 4, -- total frames
+			  animation_speed = 0.5
+			}
 	},
 	
 	PikachuFace

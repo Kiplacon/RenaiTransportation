@@ -18,5 +18,5 @@ for _, force in pairs(game.forces) do
     recipes["StackThrowerInserterRecipie"].enabled = true
 	recipes["StackFilterThrowerInserterRecipie"].enabled = true
   end  
-
+ 
 end

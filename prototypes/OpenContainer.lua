@@ -14,7 +14,7 @@ data:extend({
 		icon_size = 64, 
 		icon_mipmaps = 4,
 		subgroup = "RT",
-		order = "a[items]-b[wooden-chest]",
+		order = "b",
 		place_result = "OpenContainer",
 		stack_size = 50
 	},
