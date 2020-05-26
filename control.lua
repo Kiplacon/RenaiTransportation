@@ -1,3 +1,4 @@
+---- Setup tables and stuff for new/existing saves ----
 script.on_init(
 function()
 	if (global.CatapultList == nil) then
@@ -28,6 +29,7 @@ function()
 	end
 end)
 
+---- Add new players to the AllPlayers table ----
 script.on_event(defines.events.on_player_created,
 function(event)
 	if (global.AllPlayers[event.player_index] == nil) then
@@ -41,7 +43,6 @@ script.on_event(defines.events.on_built_entity,
 function(event)
 	if (string.find(event.created_entity.name, "ThrowerInserter")) then
 		global.CatapultList[event.created_entity.unit_number] = event.created_entity
-		--event.created_entity.inserter_stack_size_override = 1
 	
 	elseif (event.created_entity.name == "PlayerLauncher") then
 		event.created_entity.operable = false
@@ -85,7 +86,7 @@ function(event)
 		
 	end
 end)
----- revived? ----
+---- revived(?) ----
 script.on_event(defines.events.script_raised_revive, 
 function(event)
 	if (string.find(event.entity.name, "ThrowerInserter")) then
@@ -105,21 +106,11 @@ function(event)
 	if (global.CatapultList ~= {}) then
 		for catapultID, catapult in pairs(global.CatapultList) do
 			if (catapult.valid and catapult.held_stack.valid_for_read) then
-				--catapult.inserter_stack_size_override = 1
-				
-				throw = 0
-				if (catapult.orientation == 0 and catapult.held_stack_position.y >= catapult.position.y) then
-					throw = 1
-				elseif(catapult.orientation == 0.25 and catapult.held_stack_position.x <= catapult.position.x) then
-					throw = 1
-				elseif(catapult.orientation == 0.50 and catapult.held_stack_position.y <= catapult.position.y) then
-					throw = 1		
-				elseif(catapult.orientation == 0.75 and catapult.held_stack_position.x >= catapult.position.x) then
-					throw = 1					
-				end
-
-				
-				if (throw ~= 0) then
+				if (catapult.orientation == 0    and catapult.held_stack_position.y >= catapult.position.y)
+				or (catapult.orientation == 0.25 and catapult.held_stack_position.x <= catapult.position.x)
+				or (catapult.orientation == 0.50 and catapult.held_stack_position.y <= catapult.position.y)	
+				or (catapult.orientation == 0.75 and catapult.held_stack_position.x >= catapult.position.x) 
+				then
 					for i = 1, catapult.held_stack.count do
 						catapult.surface.create_entity
 							({
@@ -130,7 +121,6 @@ function(event)
 							})
 					end
 					catapult.held_stack.clear()
-					catapult.drop_position =  {catapult.drop_position.x,catapult.drop_position.y+0.1}
 				end
 				
 			elseif (catapult.valid == false) then
@@ -145,157 +135,148 @@ end)
 
 
 
----- When a projectile lands and its target is created, what to do ----
+---- When a projectile lands and its effect_id is triggered, what to do ----
 script.on_event(defines.events.on_script_trigger_effect,
-function (event) --has .effect_id, .surface_index, and depending on how the effect was triggered: .source_position, .source_entity, .target_position, and .target_entity
-	
-	if (string.find(event.effect_id, "-LandedRT")) then
+function (event) --has .effect_id, .surface_index, and .source_position, .source_entity, .target_position, and .target_entity depending on how the effect was triggered
 
-		---- What did it land on? ----
-		ThingLandedOn = game.get_surface(event.surface_index).find_entities_filtered
-			{
-				position = event.target_position,
-				collision_mask = "object-layer"
-			}[1] -- in theory only one thing should be detected in the object layer this way
+---- If it's from this mod ----	
+if (string.find(event.effect_id, "-LandedRT")) then
 
-		if (ThingLandedOn ~= nil) then -- if it landed on something
-			if (ThingLandedOn.name == "BouncePlate" or (event.source_entity ~= nil and global.AllPlayers[event.source_entity.player.index].LastBouncedOn == "se~no")) then -- if that thing was a bounce plate
-				
-				---- what direction was it traveling? ----
-				---- I set thrown things to have a range just short of dead center to detect what direction they came from ---- 
-				if (ThingLandedOn.position.y < event.target_position.y) then
-					targetx = 0
-					targety = -9.9
-					traveling = "up"
-				elseif(ThingLandedOn.position.y > event.target_position.y) then
-					targetx = 0
-					targety = 9.9	
-					traveling = "down"
-				elseif(ThingLandedOn.position.x < event.target_position.x) then
-					targetx = -9.9
-					targety = 0
-					traveling = "left"
-				elseif(ThingLandedOn.position.x > event.target_position.x) then
-					targetx = 9.9
-					targety = 0
-					traveling = "right"
-				end			
+	---- What did it land on? ----
+	ThingLandedOn = game.get_surface(event.surface_index).find_entities_filtered
+		{
+			position = event.target_position,
+			collision_mask = "object-layer"
+		}[1] -- in theory only one thing should be detected in the object layer this way
+
+	if (ThingLandedOn ~= nil) then -- if it landed on something
+		if (string.find(ThingLandedOn.name, "BouncePlate") or (event.source_entity ~= nil and global.AllPlayers[event.source_entity.player.index].LastBouncedOn == "se~no")) then -- if that thing was a bounce plate
 			
-				---- the thrown thing is set up to only have a source entity if it came from a player character ----
-				if (event.source_entity ~= nil) then -- if it's a character
-					event.source_entity.player.teleport(ThingLandedOn.position) -- realign the character with the bounce pad to deal with any offset
-	
-					---- The 4 following properties are used in the on_nth_tick:1 script for how to animate the player bouncing
-					global.AllPlayers[event.source_entity.player.index].direction = traveling
-					global.AllPlayers[event.source_entity.player.index].StartMovementTick = event.tick
-					global.AllPlayers[event.source_entity.player.index].LastBouncedOn = ThingLandedOn.name					
-					global.AllPlayers[event.source_entity.player.index].GuideProjectile = ThingLandedOn.surface.create_entity
-						({
-						name = string.gsub(event.effect_id, "-LandedRT", "").."-projectileFromRenaiTransportation",   --------#######<<<<<<
-						position = ThingLandedOn.position, --required setting for rendering, doesn't affect spawn
-						source = event.source_entity,
-						target_position = {ThingLandedOn.position.x+targetx, ThingLandedOn.position.y+targety}
-						})
-					
-				else  -- if it doesn't have a source, it is a thrown item. Bounce forward
-					ThingLandedOn.surface.create_entity
-						({
-						name = string.gsub(event.effect_id, "-LandedRT", "").."-projectileFromRenaiTransportation",
-						position = ThingLandedOn.position, --required setting for rendering, doesn't affect spawn
-						source_position = ThingLandedOn.position,
-						target_position = {ThingLandedOn.position.x+targetx, ThingLandedOn.position.y+targety}
-						})
-				end
-				
-				---- spawns the bounce pad "animation" particle ----
-				ThingLandedOn.surface.create_particle
-					({
-					name = "boing",
-					position = ThingLandedOn.position,
-					movement = {0,0},
-					height = 0,
-					vertical_speed = 0.1,
-					frame_speed = 1
-					})
-					
-			---- If its a character (because it uses the test-LandedRT effect_id) destroy what they land on so they dont get stuck ----
-			elseif (event.effect_id == "test-LandedRT") then
-				
-				---- The only thing that doesn't .die() is a cliff ---- 
-				if (ThingLandedOn.name == "cliff") then
-					global.AllPlayers[event.source_entity.player.index].GuideProjectile = nil
-					event.source_entity.teleport(event.source_entity.surface.find_non_colliding_position("iron-chest", event.target_position, 0, 0.5))
-					--game.get_player(event.source.player.index).print("Ow")
-				end
-				
-				---- Damage the player and destroy what they landed on to prevent getting stuck ----
-				
-				game.get_player(event.source_entity.player.index).character.destructible = true
-				event.source_entity.player.character.damage(50, "neutral", "impact", ThingLandedOn)
-				ThingLandedOn.die()
-				
-			---- presumably the thrown thing is an item if not a character ----
-			---- If it landed on an open container, insert it ----
-			elseif (ThingLandedOn.name == "OpenContainer" and ThingLandedOn.get_inventory(defines.inventory.chest).can_insert({name=string.gsub(event.effect_id, "-LandedRT", "")})) then
-				ThingLandedOn.get_inventory(defines.inventory.chest).insert({name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
-					
-			---- otherwise it bounces off whatever it landed on and lands as an item on the nearest empty space within 10 tiles. destroyed if no space ----
-			else
-				--[[
-				ThingLandedOn.surface.create_entity
-					({
-						name = string.gsub(event.entity.name, "-targetFromRenaiTransportation", "").."-projectileFromRenaiTransportation",
-						position = event.entity.position, --required setting for rendering, doesn't affect spawn
-						source_position = event.entity.position,
-						target_position = {event.entity.position.x+0.2*targetx, event.entity.position.y+0.2*targety}
-					})
-				--]]	
-					
-				---[[
-				game.get_surface(event.surface_index).spill_item_stack
-					(
-						game.get_surface(event.surface_index).find_non_colliding_position("item-on-ground", ThingLandedOn.position, 10, 0.1),
-						{name=string.gsub(event.effect_id, "-LandedRT", ""), count=1}
-					)
-				--]]
-			end
-		
-		---- if the item/character lands in the water, it's gone ----
-		elseif (game.get_surface(event.surface_index).find_tiles_filtered{position = event.target_position, radius = 1, limit = 1, collision_mask = "player-layer"}[1] ~= nil) then
-			
-			---- drown the character ----
-			if (event.source_entity ~= nil) then
-				game.get_player(event.source_entity.player.index).character.destructible = true
-				game.get_player(event.source_entity.player.index).character.die()
+			---- "From" details ----
+			---- I set thrown things to have a range just short of dead center to detect what direction they came from ----
+			if (ThingLandedOn.position.y < event.target_position.y) then
+				targetx = 0
+				targety = -9.9
+				traveling = "up"
+			elseif(ThingLandedOn.position.y > event.target_position.y) then
+				targetx = 0
+				targety = 9.9	
+				traveling = "down"
+			elseif(ThingLandedOn.position.x < event.target_position.x) then
+				targetx = -9.9
+				targety = 0
+				traveling = "left"
+			elseif(ThingLandedOn.position.x > event.target_position.x) then
+				targetx = 9.9
+				targety = 0
+				traveling = "right"
 			end
 			
-			---- splash ----
-			game.get_surface(event.surface_index).create_entity
-				({                     
-					name = "water-splash",                     
-					position = event.target_position
+			---- Bounce modifiers ----
+			local primable = ""
+			local RangeBonus = 1
+			if (ThingLandedOn.name == "PrimerBouncePlate" and game.entity_prototypes[string.gsub(event.effect_id, "-LandedRT", "-projectileFromRenaiTransportationPrimed")]) then
+				primable = "Primed"			
+				RangeBonus = 4
+			elseif (ThingLandedOn.name == "SignalBouncePlate") then
+				ThingLandedOn.get_control_behavior().enabled = not ThingLandedOn.get_control_behavior().enabled				
+			end
+			
+			---- Creating the bounced thing ----
+			local cheesewheel = 
+			ThingLandedOn.surface.create_entity
+				({
+				name = string.gsub(event.effect_id, "-LandedRT", "-projectileFromRenaiTransportation")..primable,
+				position = ThingLandedOn.position, --required setting for rendering, doesn't affect spawn
+				source = event.source_entity,
+				source_position = ThingLandedOn.position,
+				target_position = {ThingLandedOn.position.x+targetx*RangeBonus, ThingLandedOn.position.y+targety*RangeBonus},
+				force = ThingLandedOn.force
+				})
+			ThingLandedOn.surface.create_particle
+				({
+				name = ThingLandedOn.name.."Particle",
+				position = ThingLandedOn.position,
+				movement = {0,0},
+				height = 0,
+				vertical_speed = 0.1,
+				frame_speed = 1
 				})
 			
-			---- dont drop an item ----
-		
-		---- if thrown thing didn't land on anything and not in water, i don't want characters to do anything upon landing ----
+			---- Handling players ---- 
+			if (event.source_entity ~= nil) then
+				event.source_entity.teleport(ThingLandedOn.position)
+				global.AllPlayers[event.source_entity.player.index].direction = traveling
+				global.AllPlayers[event.source_entity.player.index].StartMovementTick = event.tick
+				global.AllPlayers[event.source_entity.player.index].LastBouncedOn = ThingLandedOn.name	
+				global.AllPlayers[event.source_entity.player.index].GuideProjectile = cheesewheel
+			end	
+				
+		---- If its a character (because it uses the test-LandedRT effect_id) destroy what they land on so they dont get stuck ----
 		elseif (event.effect_id == "test-LandedRT") then
-			--nothing
-		
-		---- the presumably thrown item lands as an item on the ground ----
-		else --if it fell on nothing just drop it
-			game.get_surface(event.surface_index).spill_item_stack({event.target_position.x, event.target_position.y}, {name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
-
-			--[[ random item landing offset
-			local xoffset = 0.1*math.random(-1,6)
-			local yoffset = 0.1*math.random(-1,6)
-			event.entity.surface.spill_item_stack({event.entity.position.x+xoffset, event.entity.position.y+yoffset}, {name=string.gsub(event.entity.name, "-targetFromRenaiTransportation", ""), count=1})
-			event.entity.die()
-			--]]	
+			
+			---- The only thing that doesn't .die() is a cliff ---- 
+			if (ThingLandedOn.name == "cliff") then
+				global.AllPlayers[event.source_entity.player.index].GuideProjectile = nil
+				event.source_entity.teleport(event.source_entity.surface.find_non_colliding_position("iron-chest", event.target_position, 0, 0.5))
+			end
+			
+			---- Damage the player and destroy what they landed on to prevent getting stuck ----
+			game.get_player(event.source_entity.player.index).character.destructible = true
+			event.source_entity.player.character.damage(50, "neutral", "impact", ThingLandedOn)
+			ThingLandedOn.die()
+			
+		---- presumably the thrown thing is an item if not a character ----
+		---- If it landed on an open container, insert it ----
+		elseif (ThingLandedOn.name == "OpenContainer" and ThingLandedOn.get_inventory(defines.inventory.chest).can_insert({name=string.gsub(event.effect_id, "-LandedRT", "")})) then
+			ThingLandedOn.get_inventory(defines.inventory.chest).insert({name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
+				
+		---- otherwise it bounces off whatever it landed on and lands as an item on the nearest empty space within 10 tiles. destroyed if no space ----
+		else				
+			---[[
+			game.get_surface(event.surface_index).spill_item_stack
+				(
+					game.get_surface(event.surface_index).find_non_colliding_position("item-on-ground", event.target_position, 10, 0.1),
+					{name=string.gsub(event.effect_id, "-LandedRT", ""), count=1}
+				)
+			--]]
 		end
+	
+	---- if the item/character lands in the water, it's gone ----
+	elseif (game.get_surface(event.surface_index).find_tiles_filtered{position = event.target_position, radius = 1, limit = 1, collision_mask = "player-layer"}[1] ~= nil) then
+		
+		---- drown the character ----
+		if (event.source_entity ~= nil) then
+			game.get_player(event.source_entity.player.index).character.destructible = true
+			game.get_player(event.source_entity.player.index).character.die()
+		end
+		
+		---- splash ----
+		game.get_surface(event.surface_index).create_entity
+			({                     
+				name = "water-splash",                     
+				position = event.target_position
+			})
+		
+		---- dont drop an item ----
+	
+	---- if thrown thing didn't land on anything and not in water, i don't want characters to do anything upon landing ----
+	elseif (event.effect_id == "test-LandedRT") then
+		--nothing
+	
+	---- the presumably thrown item lands as an item on the ground ----
+	else --if it fell on nothing just drop it
+		game.get_surface(event.surface_index).spill_item_stack({event.target_position.x, event.target_position.y}, {name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
 
-	--	event.entity.die() -- clear the dummy target
+		--[[ random item landing offset
+		local xoffset = 0.1*math.random(-1,6)
+		local yoffset = 0.1*math.random(-1,6)
+		event.entity.surface.spill_item_stack({event.entity.position.x+xoffset, event.entity.position.y+yoffset}, {name=string.gsub(event.entity.name, "-targetFromRenaiTransportation", ""), count=1})
+		event.entity.die()
+		--]]	
 	end
+
+end
 end)
 
 
@@ -339,11 +320,10 @@ function(eventf)
 						TheirProperties.GuideProjectile.position.y+0.002*(game.tick-TheirProperties.StartMovementTick+15)^2-0.427
 					})														
 			end
-		
+
 		elseif (game.get_player(ThePlayer).character) then	
 			game.get_player(ThePlayer).character_running_speed_modifier = 0
 			game.get_player(ThePlayer).character.destructible = true
-			--script.on_nth_tick(1, nil)
 		end		
 	end
 end)
@@ -363,7 +343,7 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 	
 	if (SteppingOn ~= nil) then
 		game.get_player(event1.player_index).teleport(SteppingOn.position) -- align player to the launch pad
-		global.AllPlayers[event1.player_index].LastBouncedOn = "se~no" -- says player launched from launch pad
+		global.AllPlayers[event1.player_index].LastBouncedOn = "se~no" -- says player launched from launch pad. This prevents bouncing on launchers without chain jumping
 		
 		if (SteppingOn.orientation == 0) then
 			launchx = 0

@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.2.1
+Date: 5/26/2020
+  Additions:
+    - Primer Bounce Pad. Unlocked with Military 2
+    - Signal Bounce Pad. Unlocked with Circuit Network
+---------------------------------------------------------------------------------------------------
 Version: 0.2.0
 Date: 5/17/2020
   Additions:
