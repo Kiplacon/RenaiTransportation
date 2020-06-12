@@ -57,7 +57,7 @@ end)
 ---- built by hand ----
 script.on_event(defines.events.on_built_entity, 
 function(event)
-	if (string.find(event.created_entity.name, "RTThrower")) then
+	if (string.find(event.created_entity.name, "RTThrower-")) then
 		global.CatapultList[event.created_entity.unit_number] = event.created_entity
 	
 	elseif (event.created_entity.name == "PlayerLauncher") then
@@ -69,7 +69,7 @@ end)
 ---- built by robot ----
 script.on_event(defines.events.on_robot_built_entity, 
 function(event)
-	if (string.find(event.created_entity.name, "ThrowerInserter")) then
+	if (string.find(event.created_entity.name, "RTThrower-")) then
 		global.CatapultList[event.created_entity.unit_number] = event.created_entity
 	
 	elseif (event.created_entity.name == "PlayerLauncher") then
@@ -81,7 +81,7 @@ end)
 ---- built by script (other mods) ----
 script.on_event(defines.events.script_raised_built, 
 function(event)
-	if (string.find(event.entity.name, "ThrowerInserter")) then
+	if (string.find(event.entity.name, "RTThrower-")) then
 		global.CatapultList[event.entity.unit_number] = event.entity
 	
 	elseif (event.entity.name == "PlayerLauncher") then
@@ -93,7 +93,7 @@ end)
 ---- cloned by script ----
 script.on_event(defines.events.on_entity_cloned, 
 function(event)
-	if (string.find(event.destination.name, "ThrowerInserter")) then
+	if (string.find(event.destination.name, "RTThrower-")) then
 		global.CatapultList[event.destination.unit_number] = event.destination
 	
 	elseif (event.destination.name == "PlayerLauncher") then
@@ -105,7 +105,7 @@ end)
 ---- revived(?) ----
 script.on_event(defines.events.script_raised_revive, 
 function(event)
-	if (string.find(event.entity.name, "ThrowerInserter")) then
+	if (string.find(event.entity.name, "RTThrower-")) then
 		global.CatapultList[event.entity.unit_number] = event.entity
 	
 	elseif (event.entity.name == "PlayerLauncher") then
@@ -121,7 +121,7 @@ script.on_nth_tick(3,
 function(event)
 	if (global.CatapultList ~= {}) then
 		for catapultID, catapult in pairs(global.CatapultList) do
-			
+
 			if (catapult.valid and catapult.energy == catapult.electric_buffer_size) then
 				catapult.active = true
 			elseif (catapult.valid) then

@@ -230,7 +230,7 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
         scale = 0.25
 		}
 
-data:extend({TheItem, TheRecipe, TheThrower})
+data:extend({TheThrower, TheItem, TheRecipe})
 end
 
 for Category, ThingsTable in pairs(data.raw) do
