@@ -72,66 +72,6 @@ data:extend({
 			  frame_count = 4, -- total frames
 			  animation_speed = 0.5
 			}
-	},
-	
-	{ --------- Spread mode entity --------------
-		type = "simple-entity-with-owner",
-		name = "PrimerSpreadBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerPlateIconn.png",
-		icon_size = 64,
-		flags = {"placeable-neutral", "player-creation"},
-		minable = {mining_time = 0.2, result = "PrimerBouncePlateItem"},
-		max_health = 200,
-	    collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
-		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
-		fast_replaceable_group = "bouncers",
-		picture = 
-			{
-				filename = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerSpreadPlate.png",
-				priority = "medium",
-				width = 66,
-				height = 76,
-				shift = util.by_pixel(-0.5, -0.5),
-				scale = 0.5
-			},
-		radius_visualisation_specification =
-			{
-				sprite = 
-					{
-						filename = "__RenaiTransportation__/graphics/PrimeSpreadRange.png",
-						size = 640
-					},
-				draw_on_selection = true,
-				distance = 40
-			}
-	},
-	
-	{ --------- The Spread Bounce plate item -------------
-		type = "item",
-		name = "PrimerSpreadBouncePlateItem",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerPlateIconn.png",
-		icon_size = 64, --icon_mipmaps = 4,
-		subgroup = "RT",
-		order = "a-b",
-		place_result = "PrimerSpreadBouncePlate",
-		stack_size = 50
-	},
-	
-	{ --------- bounce effect ----------
-		type = "optimized-particle",
-		name = "PrimerSpreadBouncePlateParticle",
-		life_time = 8,	
-		pictures =
-			{
-			  filename = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerParticle.png",
-			  --width = 64,
-			  --height = 64,
-			  size = 32,
-			  priority = "extra-high",
-			  line_length = 4, -- frames per row
-			  frame_count = 4, -- total frames
-			  animation_speed = 0.5
-			}
 	}
 })
 

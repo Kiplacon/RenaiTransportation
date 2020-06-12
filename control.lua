@@ -1,5 +1,5 @@
 ---- Setup tables and stuff for new/existing saves ----
-script.on_init(
+script.on_init( -- new saves
 function()
 	if (global.CatapultList == nil) then
 		global.CatapultList = {}		
@@ -9,16 +9,32 @@ function()
 		global.AllPlayers = {}		
 	end
 	
+	if (global.OrientationUnitComponents == nil) then
+		global.OrientationUnitComponents = {}
+		global.OrientationUnitComponents[0] = {x = 0, y = -1, name = "up"}
+		global.OrientationUnitComponents[0.25] = {x = 1, y = 0, name = "right"}
+		global.OrientationUnitComponents[0.5] = {x = 0, y = 1, name = "down"}
+		global.OrientationUnitComponents[0.75] = {x = -1, y = 0, name = "left"}
+	end
+	
 	for PlayerID, PlayerLuaData in pairs(game.players) do
 		global.AllPlayers[PlayerID] = {}
 	end
 end)
 
-script.on_configuration_changed(
+script.on_configuration_changed( --game version changes, prototypes change, startup mod settings change, and any time mod versions change including adding or removing mods
 function()
 	if (global.CatapultList == nil) then
 		global.CatapultList = {}		
 	end
+	
+	if (global.OrientationUnitComponents == nil) then
+		global.OrientationUnitComponents = {}
+		global.OrientationUnitComponents[0] = {x = 0, y = -1, name = "up"}
+		global.OrientationUnitComponents[0.25] = {x = 1, y = 0, name = "right"}
+		global.OrientationUnitComponents[0.5] = {x = 0, y = 1, name = "down"}
+		global.OrientationUnitComponents[0.75] = {x = -1, y = 0, name = "left"}
+	end	
 	
 	if (global.AllPlayers == nil) then
 		global.AllPlayers = {}		
@@ -41,7 +57,7 @@ end)
 ---- built by hand ----
 script.on_event(defines.events.on_built_entity, 
 function(event)
-	if (string.find(event.created_entity.name, "ThrowerInserter")) then
+	if (string.find(event.created_entity.name, "RTThrower")) then
 		global.CatapultList[event.created_entity.unit_number] = event.created_entity
 	
 	elseif (event.created_entity.name == "PlayerLauncher") then
@@ -101,11 +117,18 @@ end)
 
 
 ---- checks if thrower inserters have something in their hands and it's in the throwing position, then creates the approppriate projectile ----
-script.on_nth_tick(2, 
+script.on_nth_tick(3, 
 function(event)
 	if (global.CatapultList ~= {}) then
 		for catapultID, catapult in pairs(global.CatapultList) do
-			if (catapult.valid and catapult.held_stack.valid_for_read) then
+			
+			if (catapult.valid and catapult.energy == catapult.electric_buffer_size) then
+				catapult.active = true
+			elseif (catapult.valid) then
+				catapult.active = false
+			end
+			
+			if (catapult.valid and catapult.active == true and catapult.held_stack.valid_for_read) then
 				if (catapult.orientation == 0    and catapult.held_stack_position.y >= catapult.position.y)
 				or (catapult.orientation == 0.25 and catapult.held_stack_position.x <= catapult.position.x)
 				or (catapult.orientation == 0.50 and catapult.held_stack_position.y <= catapult.position.y)	
@@ -124,7 +147,8 @@ function(event)
 				end
 				
 			elseif (catapult.valid == false) then
-				catapultID=nil
+				catapultID = nil
+				catapult = nil
 				
 			end
 		end
@@ -150,36 +174,45 @@ if (string.find(event.effect_id, "-LandedRT")) then
 		}[1] -- in theory only one thing should be detected in the object layer this way
 
 	if (ThingLandedOn ~= nil) then -- if it landed on something
-		if (string.find(ThingLandedOn.name, "BouncePlate") or (event.source_entity ~= nil and global.AllPlayers[event.source_entity.player.index].LastBouncedOn == "se~no")) then -- if that thing was a bounce plate
+		if (string.find(ThingLandedOn.name, "BouncePlate")) then -- if that thing was a bounce plate
 			
 			---- "From" details ----
 			---- I set thrown things to have a range just short of dead center to detect what direction they came from ----
 			if (ThingLandedOn.position.y < event.target_position.y) then
-				targetx = 0
-				targety = -9.9
+				unitx = 0
+				unity = -1
 				traveling = "up"
 			elseif(ThingLandedOn.position.y > event.target_position.y) then
-				targetx = 0
-				targety = 9.9	
+				unitx = 0
+				unity = 1
 				traveling = "down"
 			elseif(ThingLandedOn.position.x < event.target_position.x) then
-				targetx = -9.9
-				targety = 0
+				unitx = -1
+				unity = 0
 				traveling = "left"
 			elseif(ThingLandedOn.position.x > event.target_position.x) then
-				targetx = 9.9
-				targety = 0
+				unitx = 1
+				unity = 0
 				traveling = "right"
 			end
 			
 			---- Bounce modifiers ----
-			local primable = ""
-			local RangeBonus = 1
+			-- Defaults --
+			primable = ""
+			range = 9.9
+			RangeBonus = 0
+			SidewaysShift = 0
+
+			-- Modifiers --
 			if (ThingLandedOn.name == "PrimerBouncePlate" and game.entity_prototypes[string.gsub(event.effect_id, "-LandedRT", "-projectileFromRenaiTransportationPrimed")]) then
-				primable = "Primed"			
-				RangeBonus = 4
+				primable = "Primed"
+				RangeBonus = 30
+			elseif (ThingLandedOn.name == "PrimerSpreadBouncePlate" and game.entity_prototypes[string.gsub(event.effect_id, "-LandedRT", "-projectileFromRenaiTransportationPrimed")]) then
+				primable = "Primed"
+				RangeBonus = math.random(270,300)*0.1
+				SidewaysShift = math.random(-200,200)*0.1				
 			elseif (ThingLandedOn.name == "SignalBouncePlate") then
-				ThingLandedOn.get_control_behavior().enabled = not ThingLandedOn.get_control_behavior().enabled				
+				ThingLandedOn.get_control_behavior().enabled = not ThingLandedOn.get_control_behavior().enabled
 			end
 			
 			---- Creating the bounced thing ----
@@ -188,9 +221,9 @@ if (string.find(event.effect_id, "-LandedRT")) then
 				({
 				name = string.gsub(event.effect_id, "-LandedRT", "-projectileFromRenaiTransportation")..primable,
 				position = ThingLandedOn.position, --required setting for rendering, doesn't affect spawn
-				source = event.source_entity,
+				source = event.source_entity, --defaults to nil if there was no source_entity and uses source_position instead
 				source_position = ThingLandedOn.position,
-				target_position = {ThingLandedOn.position.x+targetx*RangeBonus, ThingLandedOn.position.y+targety*RangeBonus},
+				target_position = {ThingLandedOn.position.x  +unitx*(range+RangeBonus)  +unity*(SidewaysShift), ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)},
 				force = ThingLandedOn.force
 				})
 			ThingLandedOn.surface.create_particle
@@ -221,9 +254,9 @@ if (string.find(event.effect_id, "-LandedRT")) then
 				event.source_entity.teleport(event.source_entity.surface.find_non_colliding_position("iron-chest", event.target_position, 0, 0.5))
 			end
 			
-			---- Damage the player and destroy what they landed on to prevent getting stuck ----
-			game.get_player(event.source_entity.player.index).character.destructible = true
-			event.source_entity.player.character.damage(50, "neutral", "impact", ThingLandedOn)
+			---- Damage the player based on thing's size and destroy what they landed on to prevent getting stuck ----
+			game.get_player(event.source_entity.player.index).character.destructible = true	
+			event.source_entity.player.character.damage(10*(ThingLandedOn.bounding_box.right_bottom.x-ThingLandedOn.bounding_box.left_top.x)*(ThingLandedOn.bounding_box.right_bottom.y-ThingLandedOn.bounding_box.left_top.y), "neutral", "impact", ThingLandedOn)
 			ThingLandedOn.die()
 			
 		---- presumably the thrown thing is an item if not a character ----
@@ -334,6 +367,7 @@ end)
 script.on_event("EnterPipe", 
 function(event1) -- has .name = event ID number, .tick = tick number, .player_index, and .input_name = custom input name
 	
+	ThingHovering = game.get_player(event1.player_index).selected	
 	SteppingOn = game.get_player(event1.player_index).surface.find_entities_filtered
 	{
 		name = "PlayerLauncher",
@@ -342,31 +376,37 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 	}[1]
 	
 	if (SteppingOn ~= nil) then
-		game.get_player(event1.player_index).teleport(SteppingOn.position) -- align player to the launch pad
-		global.AllPlayers[event1.player_index].LastBouncedOn = "se~no" -- says player launched from launch pad. This prevents bouncing on launchers without chain jumping
+		game.get_player(event1.player_index).teleport(SteppingOn.position) -- align player on the launch pad
 		
-		if (SteppingOn.orientation == 0) then
-			launchx = 0
-			launchy = 0.04
-		elseif(SteppingOn.orientation == 0.5) then
-			launchx = 0
-			launchy = -0.04
-		elseif(SteppingOn.orientation == 0.75) then
-			launchx = 0.04
-			launchy = 0
-		elseif(SteppingOn.orientation == 0.25) then
-			launchx = -0.04
-			launchy = 0
-		end		
-		
-		game.get_player(event1.player_index).surface.create_entity
-			({
-				name = "test-projectileFromRenaiTransportation",
-				position = game.get_player(event1.player_index).position, --required setting for rendering, doesn't affect spawn
-				source = game.get_player(event1.player_index).character,
-				target_position = {game.get_player(event1.player_index).position.x+launchx, game.get_player(event1.player_index).position.y+launchy}
-			})
-
-
+		global.AllPlayers[event1.player_index].direction = global.OrientationUnitComponents[SteppingOn.orientation].name
+		global.AllPlayers[event1.player_index].StartMovementTick = event1.tick
+		global.AllPlayers[event1.player_index].GuideProjectile =
+			game.get_player(event1.player_index).surface.create_entity
+				({
+					name = "test-projectileFromRenaiTransportation",
+					position = game.get_player(event1.player_index).position, --required setting for rendering, doesn't affect spawn
+					source = game.get_player(event1.player_index).character,
+					target_position = SteppingOn.drop_position
+				})
+	end
+	
+	if (ThingHovering) then
+		if (ThingHovering.name == "PrimerBouncePlate") then
+			ThingHovering.surface.create_entity
+				({
+				name = "PrimerSpreadBouncePlate",
+				position = ThingHovering.position, --required setting for rendering, doesn't affect spawn
+				force = game.get_player(event1.player_index).force
+				})	
+			ThingHovering.destroy()
+		elseif (ThingHovering.name == "PrimerSpreadBouncePlate") then
+			ThingHovering.surface.create_entity
+				({
+				name = "PrimerBouncePlate",
+				position = ThingHovering.position, --required setting for rendering, doesn't affect spawn
+				force = game.get_player(event1.player_index).force
+				})	
+			ThingHovering.destroy()	
+		end
 	end
 end)

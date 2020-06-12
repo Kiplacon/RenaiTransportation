@@ -4,13 +4,7 @@ require("prototypes.BouncePlates.SignalBouncePlate")
 
 require("prototypes.OpenContainer")
 
-require("prototypes.throwers.BurnerThrowerInserter")
-require("prototypes.throwers.ThrowerInserter")
-require("prototypes.throwers.FastThrowerInserter")
-require("prototypes.throwers.FilterThrowerInserter")
-require("prototypes.throwers.LongHandedThrowerInserter")
-require("prototypes.throwers.StackThrowerInserter")
-require("prototypes.throwers.StackFilterThrowerInserter")
+
 
 require("prototypes.TabSortingStuff")
 

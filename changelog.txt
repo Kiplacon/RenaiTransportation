@@ -1,4 +1,19 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.2.4
+Date: 6/12/2020
+  Removed:
+    - Version 0.2.3 because I just felt like it whatcha gonna do
+    - Hard coded throwers (NOOBS)
+  Added:
+    - Procedurally generated throwers for all inserters including ones added by mods. (EPICO)\nThey are unlocked by default for now, research to come.
+    - Split Primer Bounce Pad into Precise and Spread varients. Swap by pressing "Interact"
+    - Primed land mines. Good with a spread mode Bounce Pad
+  Changed:
+    - Launch key (default F) renamed to Interact so you can use the same key to swap modes
+    - Thrower Inserter slightly slower
+    - Throwers only run when at full power to avoid the wacky arm stretching issue when they run at low power.
+    - Damage taken from landing on something now scales with the size of the thing you landed on.
+---------------------------------------------------------------------------------------------------
 Version: 0.2.2
 Date: 5/26/2020
   Changes:

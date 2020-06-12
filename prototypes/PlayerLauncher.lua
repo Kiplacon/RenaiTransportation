@@ -5,7 +5,7 @@ local PikachuFace = table.deepcopy(data.raw.inserter["inserter"])
 	PikachuFace.icon_size = 32 
 	PikachuFace.icon_mipmaps = 4
 	PikachuFace.minable = {mining_time = 0.2, result = "PlayerLauncherItem"}
-	PikachuFace.insert_position = {0, -10.2}
+	PikachuFace.insert_position = {0, -9.9}
 	PikachuFace.pickup_position = {0, -0.1}
 	PikachuFace.hand_size = 0
 	PikachuFace.collision_box = {{-0.05, -0.05}, {0.05, 0.05}} -- This size keeps it from being STOMPED when a player lands on it
