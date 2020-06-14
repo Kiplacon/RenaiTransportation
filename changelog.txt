@@ -1,8 +1,15 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.2.6
+Date: 6/12/2020
+  Fixed:
+    - Some compatability issues with the ADAPTIVE thrower generation (icon vs icons, actual vs function, etc)
+  Added:
+    - Bounce and Priming sound effects
+---------------------------------------------------------------------------------------------------
 Version: 0.2.5
 Date: 6/12/2020
   Fixed:
-    - Script detection of bots and etc.
+    - Script detection of bots and etc. that broke when changing over to procedurally generated throwers
     - Compatability with Rusty Locale
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.4
@@ -11,7 +18,7 @@ Date: 6/12/2020
     - Version 0.2.3 because I just felt like it whatcha gonna do
     - Hard coded throwers (NOOBS)
   Added:
-    - Procedurally generated throwers for all inserters including ones added by mods. (EPICO)\nThey are unlocked by default for now, research to come.
+    - Procedurally generated throwers for all inserters including ones added by mods. (EPICO) They are unlocked by default for now, research to come.
     - Split Primer Bounce Pad into Precise and Spread varients. Swap by pressing "Interact"
     - Primed land mines. Good with a spread mode Bounce Pad
   Changed:

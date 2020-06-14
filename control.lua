@@ -202,15 +202,18 @@ if (string.find(event.effect_id, "-LandedRT")) then
 			range = 9.9
 			RangeBonus = 0
 			SidewaysShift = 0
+			tunez = "bounce"
 
 			-- Modifiers --
 			if (ThingLandedOn.name == "PrimerBouncePlate" and game.entity_prototypes[string.gsub(event.effect_id, "-LandedRT", "-projectileFromRenaiTransportationPrimed")]) then
 				primable = "Primed"
 				RangeBonus = 30
+				tunez = "PrimeClick"
 			elseif (ThingLandedOn.name == "PrimerSpreadBouncePlate" and game.entity_prototypes[string.gsub(event.effect_id, "-LandedRT", "-projectileFromRenaiTransportationPrimed")]) then
 				primable = "Primed"
 				RangeBonus = math.random(270,300)*0.1
-				SidewaysShift = math.random(-200,200)*0.1				
+				SidewaysShift = math.random(-200,200)*0.1	
+				tunez = "PrimeClick"
 			elseif (ThingLandedOn.name == "SignalBouncePlate") then
 				ThingLandedOn.get_control_behavior().enabled = not ThingLandedOn.get_control_behavior().enabled
 			end
@@ -235,6 +238,12 @@ if (string.find(event.effect_id, "-LandedRT")) then
 				vertical_speed = 0.1,
 				frame_speed = 1
 				})
+			ThingLandedOn.surface.play_sound
+				{
+					path = tunez,
+					position = ThingLandedOn.position,
+					volume = 0.7
+				}
 			
 			---- Handling players ---- 
 			if (event.source_entity ~= nil) then

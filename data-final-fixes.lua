@@ -156,21 +156,24 @@ TheItem = table.deepcopy(data.raw.item[ThingData.minable.result])
 	TheItem.name = "RTThrower-"..TheItem.name.."-Item"
 	TheItem.subgroup = "throwers"
 	TheItem.place_result = "RTThrower-"..ThingData.name
-	TheItem.icons =
-		{
+	if (TheItem.icon) then
+		TheItem.icons =
 			{
-			icon = TheItem.icon,
-			icon_size = TheItem.icon_size,
-			icon_mipmaps = TheItem.icon_mipmaps
-			},
-			
-			{
-			icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",
-			icon_size = 64,
-			icon_mipmaps = 4
+				{
+				icon = TheItem.icon,
+				icon_size = TheItem.icon_size,
+				icon_mipmaps = TheItem.icon_mipmaps
+				},
+				
+				{
+				icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",
+				icon_size = 64,
+				icon_mipmaps = 4
+				}
 			}
-		}
-	
+	else
+		table.insert(TheItem.icons, {icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",	icon_size = 64, icon_mipmaps = 4})
+	end
 TheRecipe = 
 	{
 		type = "recipe",
@@ -236,15 +239,22 @@ end
 for Category, ThingsTable in pairs(data.raw) do
 	for ThingID, ThingData in pairs(ThingsTable) do
 		if (ThingData.stack_size) then
+		
 			MakeProjectile(ThingData)
+			
 			if (ThingData.type == "ammo" and ThingData.ammo_type.action and ThingData.ammo_type.action.action_delivery and ThingData.ammo_type.action.action_delivery.type == "projectile") then
 				MakePrimedProjectile(ThingData)
-			elseif (ThingData.type == "capsule" and ThingData.capsule_action.type == "throw") then
-				MakePrimedProjectile(ThingData)
-			elseif (ThingData.name == "land-mine") then
+			elseif ((Category == "capsule" and ThingData.capsule_action.type == "throw") or ThingData.name == "land-mine") then
 				MakePrimedProjectile(ThingData)
 			end
-		elseif (ThingData.type == "inserter" and ThingData.name ~= "PlayerLauncher" and not string.find(ThingData.name, "RTThrower-")) then
+			
+		-- lots of requirements to make sure not pick up any repurposed inserters from other mods --
+		elseif (ThingData.type == "inserter" 
+			and ThingData.energy_source.type ~= "void" 
+			and ThingData.draw_held_item ~= false 
+			and ThingData.selectable_in_game ~= false 
+			and ThingData.minable 
+			and not string.find(ThingData.name, "RTThrower-")) then
 			MakeThrowerVariant(ThingData)
 		end
 	end

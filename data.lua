@@ -4,7 +4,7 @@ require("prototypes.BouncePlates.SignalBouncePlate")
 
 require("prototypes.OpenContainer")
 
-
+require("prototypes.sounds")
 
 require("prototypes.TabSortingStuff")
 
