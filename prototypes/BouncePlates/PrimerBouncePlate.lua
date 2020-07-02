@@ -73,7 +73,7 @@ data:extend({
 			  animation_speed = 0.5
 			}
 	},
-	
+--------------------------- Spread mode -------------
 	{ --------- Spread mode entity --------------
 		type = "simple-entity-with-owner",
 		name = "PrimerSpreadBouncePlate",
@@ -104,36 +104,5 @@ data:extend({
 				draw_on_selection = true,
 				distance = 40
 			}
-	},
-	
-	{ --------- The Spread Bounce plate item -------------
-		type = "item",
-		name = "PrimerSpreadBouncePlateItem",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerPlateIconn.png",
-		icon_size = 64, --icon_mipmaps = 4,
-		subgroup = "RT",
-		order = "a-b",
-		place_result = "PrimerSpreadBouncePlate",
-		stack_size = 50
-	},
-	
-	{ --------- bounce effect ----------
-		type = "optimized-particle",
-		name = "PrimerSpreadBouncePlateParticle",
-		life_time = 8,	
-		pictures =
-			{
-			  filename = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerParticle.png",
-			  --width = 64,
-			  --height = 64,
-			  size = 32,
-			  priority = "extra-high",
-			  line_length = 4, -- frames per row
-			  frame_count = 4, -- total frames
-			  animation_speed = 0.5
-			}
 	}
 })
-
------- Adds the fast thrower to appropriate research -------	
-table.insert(data.raw["technology"]["military-2"].effects,{type="unlock-recipe",recipe="PrimerBouncePlateRecipie"})	

@@ -56,7 +56,7 @@ data:extend({
 	{ --------- The thrower recipie ----------
 		type = "recipe",
 		name = "PlayerLauncherRecipie",
-		enabled = true,
+		enabled = false,
 		energy_required = 0.5,
 		ingredients = 
 			{

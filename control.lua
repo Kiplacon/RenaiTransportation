@@ -64,6 +64,8 @@ function(event)
 		event.created_entity.operable = false
 		event.created_entity.active = false
 		
+	elseif (event.created_entity.name == "DirectedBouncePlate") then
+		event.created_entity.operable = false
 	end
 end)
 ---- built by robot ----
@@ -76,6 +78,9 @@ function(event)
 		event.created_entity.operable = false
 		event.created_entity.active = false
 		
+	elseif (event.created_entity.name == "DirectedBouncePlate") then
+		event.created_entity.operable = false
+		
 	end
 end)
 ---- built by script (other mods) ----
@@ -87,7 +92,9 @@ function(event)
 	elseif (event.entity.name == "PlayerLauncher") then
 		event.entity.operable = false
 		event.entity.active = false
-		
+
+	elseif (event.entity.name == "DirectedBouncePlate") then
+		event.entity.operable = false		
 	end
 end)
 ---- cloned by script ----
@@ -99,7 +106,9 @@ function(event)
 	elseif (event.destination.name == "PlayerLauncher") then
 		event.destination.operable = false
 		event.destination.active = false
-		
+
+	elseif (event.destination.name == "DirectedBouncePlate") then
+		event.destination.operable = false		
 	end
 end)
 ---- revived(?) ----
@@ -111,7 +120,9 @@ function(event)
 	elseif (event.entity.name == "PlayerLauncher") then
 		event.entity.operable = false
 		event.entity.active = false
-		
+	
+	elseif (event.entity.name == "DirectedBouncePlate") then
+		event.entity.operable = false	
 	end
 end)
 
@@ -122,9 +133,9 @@ function(event)
 	if (global.CatapultList ~= {}) then
 		for catapultID, catapult in pairs(global.CatapultList) do
 
-			if (catapult.valid and catapult.energy == catapult.electric_buffer_size) then
+			if (catapult.valid  and catapult.energy == catapult.electric_buffer_size) then
 				catapult.active = true
-			elseif (catapult.valid) then
+			elseif (catapult.valid and catapult.burner == nil) then
 				catapult.active = false
 			end
 			
@@ -176,24 +187,30 @@ if (string.find(event.effect_id, "-LandedRT")) then
 	if (ThingLandedOn ~= nil) then -- if it landed on something
 		if (string.find(ThingLandedOn.name, "BouncePlate")) then -- if that thing was a bounce plate
 			
-			---- "From" details ----
-			---- I set thrown things to have a range just short of dead center to detect what direction they came from ----
-			if (ThingLandedOn.position.y < event.target_position.y) then
-				unitx = 0
-				unity = -1
-				traveling = "up"
-			elseif(ThingLandedOn.position.y > event.target_position.y) then
-				unitx = 0
-				unity = 1
-				traveling = "down"
-			elseif(ThingLandedOn.position.x < event.target_position.x) then
-				unitx = -1
-				unity = 0
-				traveling = "left"
-			elseif(ThingLandedOn.position.x > event.target_position.x) then
-				unitx = 1
-				unity = 0
-				traveling = "right"
+			if (ThingLandedOn.name == "DirectedBouncePlate") then
+				unitx = global.OrientationUnitComponents[ThingLandedOn.orientation].x
+				unity = global.OrientationUnitComponents[ThingLandedOn.orientation].y
+				traveling = global.OrientationUnitComponents[ThingLandedOn.orientation].name
+			else
+				---- "From" details ----
+				---- I set thrown things to have a range just short of dead center to detect what direction they came from ----
+				if (ThingLandedOn.position.y < event.target_position.y) then
+					unitx = 0
+					unity = -1
+					traveling = "up"
+				elseif(ThingLandedOn.position.y > event.target_position.y) then
+					unitx = 0
+					unity = 1
+					traveling = "down"
+				elseif(ThingLandedOn.position.x < event.target_position.x) then
+					unitx = -1
+					unity = 0
+					traveling = "left"
+				elseif(ThingLandedOn.position.x > event.target_position.x) then
+					unitx = 1
+					unity = 0
+					traveling = "right"
+				end
 			end
 			
 			---- Bounce modifiers ----
@@ -203,19 +220,23 @@ if (string.find(event.effect_id, "-LandedRT")) then
 			RangeBonus = 0
 			SidewaysShift = 0
 			tunez = "bounce"
+			effect = "BouncePlateParticle"
 
 			-- Modifiers --
 			if (ThingLandedOn.name == "PrimerBouncePlate" and game.entity_prototypes[string.gsub(event.effect_id, "-LandedRT", "-projectileFromRenaiTransportationPrimed")]) then
 				primable = "Primed"
 				RangeBonus = 30
 				tunez = "PrimeClick"
+				effect = "PrimerBouncePlateParticle"
 			elseif (ThingLandedOn.name == "PrimerSpreadBouncePlate" and game.entity_prototypes[string.gsub(event.effect_id, "-LandedRT", "-projectileFromRenaiTransportationPrimed")]) then
 				primable = "Primed"
 				RangeBonus = math.random(270,300)*0.1
 				SidewaysShift = math.random(-200,200)*0.1	
 				tunez = "PrimeClick"
+				effect = "PrimerBouncePlateParticle"
 			elseif (ThingLandedOn.name == "SignalBouncePlate") then
 				ThingLandedOn.get_control_behavior().enabled = not ThingLandedOn.get_control_behavior().enabled
+				effect = "SignalBouncePlateParticle"
 			end
 			
 			---- Creating the bounced thing ----
@@ -231,7 +252,7 @@ if (string.find(event.effect_id, "-LandedRT")) then
 				})
 			ThingLandedOn.surface.create_particle
 				({
-				name = ThingLandedOn.name.."Particle",
+				name = effect,
 				position = ThingLandedOn.position,
 				movement = {0,0},
 				height = 0,
@@ -270,17 +291,29 @@ if (string.find(event.effect_id, "-LandedRT")) then
 			
 		---- presumably the thrown thing is an item if not a character ----
 		---- If it landed on an open container, insert it ----
-		elseif (ThingLandedOn.name == "OpenContainer" and ThingLandedOn.get_inventory(defines.inventory.chest).can_insert({name=string.gsub(event.effect_id, "-LandedRT", "")})) then
-			ThingLandedOn.get_inventory(defines.inventory.chest).insert({name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
-				
+		elseif (ThingLandedOn.name == "OpenContainer" and ThingLandedOn.can_insert({name=string.gsub(event.effect_id, "-LandedRT", "")})) then
+			ThingLandedOn.insert({name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
+		
+		---- If the thing it landed on has an inventory and a hatch, insert the item ----
+		elseif (ThingLandedOn.surface.find_entity('HatchRT', event.target_position) and ThingLandedOn.can_insert({name=string.gsub(event.effect_id, "-LandedRT", "")}) ) then
+			ThingLandedOn.insert({name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
+			
 		---- otherwise it bounces off whatever it landed on and lands as an item on the nearest empty space within 10 tiles. destroyed if no space ----
-		else				
-			---[[
+		else	
 			game.get_surface(event.surface_index).spill_item_stack
 				(
 					game.get_surface(event.surface_index).find_non_colliding_position("item-on-ground", event.target_position, 10, 0.1),
 					{name=string.gsub(event.effect_id, "-LandedRT", ""), count=1}
 				)
+			--[[
+			ThingLandedOn.surface.create_entity
+				({
+				name = string.gsub(event.effect_id, "-LandedRT", "-projectileFromRenaiTransportation"),
+				position = ThingLandedOn.position, --required setting for rendering, doesn't affect spawn
+				source_position = event.target_position,
+				target_position = game.get_surface(event.surface_index).find_non_colliding_position("item-on-ground", event.target_position, 10, 0.1),
+				force = ThingLandedOn.force
+				})		
 			--]]
 		end
 	
@@ -302,7 +335,7 @@ if (string.find(event.effect_id, "-LandedRT")) then
 		
 		---- dont drop an item ----
 	
-	---- if thrown thing didn't land on anything and not in water, i don't want characters to do anything upon landing ----
+	---- if thrown thing didn't land on anything and not in water, i don't want characters to do anything upon landing. it would cause an error if it got to the item drop code  ----
 	elseif (event.effect_id == "test-LandedRT") then
 		--nothing
 	
@@ -416,6 +449,28 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 				force = game.get_player(event1.player_index).force
 				})	
 			ThingHovering.destroy()	
+		elseif (string.find(ThingHovering.name, "RTThrower-") and game.get_player(event1.player_index).force.technologies["RTFocusedFlinging"].researched == true) then
+			CurrentRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
+			if ((ThingHovering.name ~= "RTThrower-long-handed-inserter" and CurrentRange >= 15) or CurrentRange >= 25) then
+				ThingHovering.drop_position = 
+					{
+						ThingHovering.drop_position.x+(CurrentRange-1)*global.OrientationUnitComponents[ThingHovering.orientation].x,
+						ThingHovering.drop_position.y+(CurrentRange-1)*global.OrientationUnitComponents[ThingHovering.orientation].y
+					}				
+			else
+				ThingHovering.drop_position = 
+					{
+						ThingHovering.drop_position.x-global.OrientationUnitComponents[ThingHovering.orientation].x,
+						ThingHovering.drop_position.y-global.OrientationUnitComponents[ThingHovering.orientation].y
+					}
+			end
+			ThingHovering.surface.create_entity
+				({
+					name = "flying-text",
+					position = ThingHovering.drop_position,
+					text = "Range: "..math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
+				})
+			
 		end
 	end
 end)

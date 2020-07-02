@@ -16,11 +16,11 @@ data:extend({
 
 	{ --------- Bounce plate entity --------------
 		type = "constant-combinator",
-		name = "SignalBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlateIconn.png",
+		name = "DirectedBouncePlate",
+		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateIconn.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
-		minable = {mining_time = 0.2, result = "SignalBouncePlateItem"},
+		minable = {mining_time = 0.2, result = "DirectedBouncePlateItem"},
 		max_health = 200,
 	    collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
@@ -28,13 +28,15 @@ data:extend({
 		item_slot_count = 18,
 		circuit_wire_max_distance = 9,
 		sprites = 
-			{
-				filename = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlate.png",
-				priority = "medium",
-				width = 66,
-				height = 76,
-				shift = util.by_pixel(-0.5, -0.5),
-				scale = 0.5
+			{ 
+			  sheet =
+				{
+					filename = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlate.png",
+					priority = "medium",
+					width = 64,
+					height = 64,
+					scale = 0.5
+				}
 			},
 		activity_led_sprites =
 			{
@@ -73,42 +75,25 @@ data:extend({
 	
 	{ --------- The Bounce plate item -------------
 		type = "item",
-		name = "SignalBouncePlateItem",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlateIconn.png",
+		name = "DirectedBouncePlateItem",
+		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateIconn.png",
 		icon_size = 64, --icon_mipmaps = 4,
 		subgroup = "RT",
-		order = "a-c",
-		place_result = "SignalBouncePlate",
+		order = "a-a",
+		place_result = "DirectedBouncePlate",
 		stack_size = 50
 	},
 	
 	{ --------- The Bounce plate recipie ----------
 		type = "recipe",
-		name = "SignalBouncePlateRecipie",
+		name = "DirectedBouncePlateRecipie",
 		enabled = false,
 		energy_required = 1,
 		ingredients = 
 			{
-				{"constant-combinator", 1},
-				{"BouncePlateItem", 1}
+				{"iron-plate", 5},
+				{"automation-science-pack", 1}
 			},
-		result = "SignalBouncePlateItem"
-	},
-	
-	{ --------- bounce effect ----------
-		type = "optimized-particle",
-		name = "SignalBouncePlateParticle",
-		life_time = 8,	
-		pictures =
-			{
-			  filename = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalParticle.png",
-			  --width = 64,
-			  --height = 64,
-			  size = 32,
-			  priority = "extra-high",
-			  line_length = 4, -- frames per row
-			  frame_count = 4, -- total frames
-			  animation_speed = 0.5
-			}
+		result = "DirectedBouncePlateItem"
 	}
-})	
+})

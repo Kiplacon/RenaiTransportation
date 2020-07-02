@@ -73,7 +73,7 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 end
 
 
-function MakePrimedProjectile(ThingData)
+function MakePrimedProjectile(ThingData)-------------------------------------------
   
 if not (ThingData.icon) then
 ThingData.icon = "__RenaiTransportation__/graphics/icon.png"
@@ -118,38 +118,26 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 		 
 	end
 	
-	TheProjectile.particle = {
-      filename = ThingData.icon,
-      line_length = 1,
-      width = ThingData.icon_size,
-      height = ThingData.icon_size,
-      frame_count = 1,
-      --shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
-      tint = {200, 0, 0},
-      priority = "high",
-      scale = 0.3,
-      --animation_speed = 1,
-      hr_version =
-      {
-        filename = ThingData.icon,
-        line_length = 1,
-        width = ThingData.icon_size,
-        height = ThingData.icon_size,
-        frame_count = 1,
-        --shift = util.mul_shift(util.by_pixel(-2, 31), data.scale),
-        tint = {200, 0, 0},
-        priority = "high",
-        scale = 0.3,
-        --animation_speed = 1,
-      }
-    }
+	TheProjectile.particle = 
+		{
+		  filename = ThingData.icon,
+		  line_length = 1,
+		  width = ThingData.icon_size,
+		  height = ThingData.icon_size,
+		  frame_count = 1,
+		  --shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
+		  tint = {200, 0, 0},
+		  priority = "high",
+		  scale = 0.3,
+		  --animation_speed = 1,
+		}
 	TheProjectile.spine_animation = nil
 	
 
 	data:extend({TheProjectile})
 end
 
-
+---------------------------------------Thrower----------------------------------------------------------------------
 function MakeThrowerVariant(ThingData)
 
 TheItem = table.deepcopy(data.raw.item[ThingData.minable.result])
@@ -174,11 +162,17 @@ TheItem = table.deepcopy(data.raw.item[ThingData.minable.result])
 	else
 		table.insert(TheItem.icons, {icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",	icon_size = 64, icon_mipmaps = 4})
 	end
+
+if (ThingData.name == "inserter" or ThingData.name == "burner-inserter") then
+	isitenabled = true
+else
+	isitenabled = false
+end
 TheRecipe = 
 	{
 		type = "recipe",
 		name = "RTThrower-"..ThingData.name.."-Recipe",
-		enabled = true,
+		enabled = isitenabled,
 		energy_required = 1,
 		ingredients = 
 			{
@@ -193,20 +187,22 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	TheThrower.minable = {mining_time = 0.1, result = TheItem.name}
 	TheThrower.localised_name ="Thrower "..ThingData.name
 	TheThrower.insert_position = {0, 14.9}
-	
-	if (TheThrower.localised_description) then
-		TheThrower.localised_description = {"test.combo", "This inserter has been re-wired to throw items 15 tiles through the air.", TheThrower.localised_description}
-	else
-		TheThrower.localised_description = "This inserter has been re-wired to throw items 15 tiles through the air."
-	end
-	
+	TheThrower.allow_custom_vectors = true
+	ItsRange = 15
+
 	if (TheThrower.name == "RTThrower-inserter") then
 	    TheThrower.extension_speed = 0.027 -- default 0.03, needs to be a but slower so we don't get LongB0is
 		TheThrower.rotation_speed = 0.020 -- default 0.014
 	elseif (TheThrower.name == "RTThrower-long-handed-inserter") then
 		TheThrower.insert_position = {0, 24.9}
+		ItsRange = 25
 	end
 	
+	if (TheThrower.localised_description) then
+		TheThrower.localised_description = {"test.combo", "This inserter has been re-wired to throw items "..ItsRange.." tiles through the air. Range can be configured with the right research.", TheThrower.localised_description}
+	else
+		TheThrower.localised_description = "This inserter has been re-wired to throw items "..ItsRange.." tiles through the air. Range can be configured with the right research."
+	end	
 	TheThrower.hand_size = 0
 	TheThrower.hand_base_picture = 
 		{
@@ -232,10 +228,12 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
         height = 164,
         scale = 0.25
 		}
-
 data:extend({TheThrower, TheItem, TheRecipe})
+if (isitenabled == false) then
+	table.insert(data.raw["technology"]["RTThrowerTime"].effects,{type="unlock-recipe",recipe=TheRecipe.name})	
 end
-
+end
+---------------------------------------------------------- loop through data.raw ---------------------------------
 for Category, ThingsTable in pairs(data.raw) do
 	for ThingID, ThingData in pairs(ThingsTable) do
 		if (ThingData.stack_size) then

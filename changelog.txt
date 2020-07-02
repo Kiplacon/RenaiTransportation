@@ -1,14 +1,26 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.1
+Date: 7/1/2020
+  Additions:
+    - New research that allows configuring the range of throwers to be between 1-15. Hover and press Interact to adjust range.
+---------------------------------------------------------------------------------------------------
+Version: 0.3.0
+Date: 6/29/2020
+  Additions:
+    - Directed Bounce Pads. I feel like these really round out the functionality.
+    - Hatches. Finally compatability for other things with inventories.
+    - Basic tech tree
+---------------------------------------------------------------------------------------------------
 Version: 0.2.6
 Date: 6/12/2020
-  Fixed:
+  Bugfixes:
     - Some compatability issues with the ADAPTIVE thrower generation (icon vs icons, actual vs function, etc)
-  Added:
+  Additions:
     - Bounce and Priming sound effects
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.5
 Date: 6/12/2020
-  Fixed:
+  Bugfixes:
     - Script detection of bots and etc. that broke when changing over to procedurally generated throwers
     - Compatability with Rusty Locale
 ---------------------------------------------------------------------------------------------------
@@ -17,11 +29,11 @@ Date: 6/12/2020
   Removed:
     - Version 0.2.3 because I just felt like it whatcha gonna do
     - Hard coded throwers (NOOBS)
-  Added:
+  Additions:
     - Procedurally generated throwers for all inserters including ones added by mods. (EPICO) They are unlocked by default for now, research to come.
     - Split Primer Bounce Pad into Precise and Spread varients. Swap by pressing "Interact"
     - Primed land mines. Good with a spread mode Bounce Pad
-  Changed:
+  Changes:
     - Launch key (default F) renamed to Interact so you can use the same key to swap modes
     - Thrower Inserter slightly slower
     - Throwers only run when at full power to avoid the wacky arm stretching issue when they run at low power.
