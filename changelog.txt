@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.2
+Date: 7/3/2020
+  Changes:
+    - Adjusted bounce effects to appear on top of the bounce pads, in the "higher-object-above" render_layer to be exact. 
+---------------------------------------------------------------------------------------------------
 Version: 0.3.1
 Date: 7/1/2020
   Additions:

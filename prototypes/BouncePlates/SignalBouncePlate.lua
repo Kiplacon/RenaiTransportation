@@ -99,6 +99,7 @@ data:extend({
 		type = "optimized-particle",
 		name = "SignalBouncePlateParticle",
 		life_time = 8,	
+		render_layer = "higher-object-above",
 		pictures =
 			{
 			  filename = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalParticle.png",

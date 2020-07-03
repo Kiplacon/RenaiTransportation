@@ -60,7 +60,8 @@ data:extend({
 	{ --------- bounce effect ----------
 		type = "optimized-particle",
 		name = "PrimerBouncePlateParticle",
-		life_time = 8,	
+		life_time = 8,
+		render_layer = "higher-object-above",		
 		pictures =
 			{
 			  filename = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerParticle.png",
