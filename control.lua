@@ -133,7 +133,7 @@ function(event)
 	if (global.CatapultList ~= {}) then
 		for catapultID, catapult in pairs(global.CatapultList) do
 
-			if (catapult.valid and catapult.burner == nil and tcatapult.energy/catapult.electric_buffer_size >= 0.9) then
+			if (catapult.valid and catapult.burner == nil and catapult.energy/catapult.electric_buffer_size >= 0.9) then
 				catapult.active = true
 			elseif (catapult.valid and catapult.burner == nil) then
 				catapult.active = false
