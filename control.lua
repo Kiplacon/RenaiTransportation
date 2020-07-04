@@ -133,10 +133,19 @@ function(event)
 	if (global.CatapultList ~= {}) then
 		for catapultID, catapult in pairs(global.CatapultList) do
 
-			if (catapult.valid  and catapult.energy == catapult.electric_buffer_size) then
+			if (catapult.valid and catapult.burner == nil and tcatapult.energy/catapult.electric_buffer_size >= 0.9) then
 				catapult.active = true
 			elseif (catapult.valid and catapult.burner == nil) then
 				catapult.active = false
+				rendering.draw_sprite
+					{
+						sprite = "utility.electricity_icon_unplugged", 
+						x_scale = 0.5,
+						y_scale = 0.5,
+						target = catapult, 
+						surface = catapult.surface,
+						time_to_live = 4
+					}
 			end
 			
 			if (catapult.valid and catapult.active == true and catapult.held_stack.valid_for_read) then

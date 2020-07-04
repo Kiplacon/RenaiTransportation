@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.3
+Date: 7/4/2020
+  Bugfixes:
+    - Fixed handling of burner inserters with the anti-long-boi-arm-stretch code that would sometimes cause a crash on the current 0.18 versions for some reason
+    - Workaround fix for the "no power" icon to appear on throwers not connected to electricity.
+---------------------------------------------------------------------------------------------------
 Version: 0.3.2
 Date: 7/3/2020
   Changes:
