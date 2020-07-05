@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.5
+Date: 7/4/2020
+  Bugfixes:
+    - Fixed compatability issues with other mods that added capsules with non-conventional functions. Namely, Tapeline and Vehicle Wagon 2 were tested. Reported by saaadel
+---------------------------------------------------------------------------------------------------
 Version: 0.3.4
 Date: 7/4/2020
   Bugfixes:

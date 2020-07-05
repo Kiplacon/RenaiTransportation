@@ -90,13 +90,13 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
     TheProjectile.particle_horizontal_speed_deviation = 0
 	TheProjectile.working_sound = nil
 	
-	if (ThingData.ammo_type and ThingData.ammo_type.category == "cannon-shell") then
+	if (ThingData.ammo_type and ThingData.ammo_type.category == "cannon-shell") then -- tank shells
 		TheProjectile.initial_action = data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].final_action
 		  
-	elseif (ThingData.capsule_action) then
+	elseif (ThingData.capsule_action) then --capsules with thrown actions: grenades, combat robots, poison, slowdown
 		TheProjectile.initial_action = data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile].action
 		  
-	elseif (ThingData.name == "land-mine") then 
+	elseif (ThingData.name == "land-mine") then  --landmines
 		TheProjectile.initial_action = 
 		  {
 			type = "direct",
@@ -113,7 +113,7 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 			}
 		  }
 		
-	else
+	else -- rockets/atomic bombs/other
 		TheProjectile.initial_action = data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].action
 		 
 	end
@@ -240,9 +240,22 @@ for Category, ThingsTable in pairs(data.raw) do
 		
 			MakeProjectile(ThingData)
 			
-			if (ThingData.type == "ammo" and ThingData.ammo_type.action and ThingData.ammo_type.action.action_delivery and ThingData.ammo_type.action.action_delivery.type == "projectile") then
+			if (ThingData.type == "ammo" 
+				and ThingData.ammo_type.action --if this ammo does something
+				and ThingData.ammo_type.action.action_delivery --in the form of
+				and ThingData.ammo_type.action.action_delivery.type == "projectile" --a projectile
+				) then
 				MakePrimedProjectile(ThingData)
-			elseif ((Category == "capsule" and ThingData.capsule_action.type == "throw") or ThingData.name == "land-mine") then
+			elseif 
+				(
+					(
+						Category == "capsule" --if its a capsule
+						and ThingData.capsule_action.type == "throw" --with a thrown action
+						and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile]--that has an associated projectile
+						and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile].action --that does something
+					) 
+					or ThingData.name == "land-mine"
+				) then
 				MakePrimedProjectile(ThingData)
 			end
 			
