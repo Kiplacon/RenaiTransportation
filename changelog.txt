@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.6
+Date: 7/17/2020
+  Bugfixes:
+    - Fixed compatability with the new capsule action code in Factorio 0.18.36
+    - Fixed primer bounce pad compatability with moded land mines
+    - Fixed migration from saves that never had the hard coded thrower varients probably
+---------------------------------------------------------------------------------------------------
 Version: 0.3.5
 Date: 7/4/2020
   Bugfixes:

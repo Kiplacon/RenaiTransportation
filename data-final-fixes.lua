@@ -94,9 +94,12 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 		TheProjectile.initial_action = data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].final_action
 		  
 	elseif (ThingData.capsule_action) then --capsules with thrown actions: grenades, combat robots, poison, slowdown
-		TheProjectile.initial_action = data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile].action
-		  
-	elseif (ThingData.name == "land-mine") then  --landmines
+		if (ThingData.capsule_action.attack_parameters.ammo_type.action[1]) then
+			TheProjectile.initial_action = data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile].action
+		elseif (ThingData.capsule_action.attack_parameters.ammo_type.action) then
+			TheProjectile.initial_action = data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile].action
+		end
+	elseif (data.raw["land-mine"][ThingData.place_result]) then  --landmines
 		TheProjectile.initial_action = 
 		  {
 			type = "direct",
@@ -107,7 +110,7 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 			  {
 				{
 				  type = "create-entity",
-				  entity_name = ThingData.name
+				  entity_name = ThingData.place_result --ThingData.name
 				}
 			  }
 			}
@@ -251,10 +254,22 @@ for Category, ThingsTable in pairs(data.raw) do
 					(
 						Category == "capsule" --if its a capsule
 						and ThingData.capsule_action.type == "throw" --with a thrown action
-						and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile]--that has an associated projectile
-						and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile].action --that does something
+						and 
+						(
+							( -- 0.18.36 capsule action notation
+							ThingData.capsule_action.attack_parameters.ammo_type.action[1]
+							and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile]--that has an associated projectile
+							and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile].action --that does something
+							)
+							or	
+							( -- old capsule action notation
+							ThingData.capsule_action.attack_parameters.ammo_type.action
+							and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile]--that has an associated projectile
+							and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile].action --that does something
+							)
+						)
 					) 
-					or ThingData.name == "land-mine"
+					or data.raw["land-mine"][ThingData.place_result]
 				) then
 				MakePrimedProjectile(ThingData)
 			end

@@ -15,6 +15,7 @@ require("prototypes.hatch")
 
 require("prototypes.technology")
 
+
 data:extend({
   {
     type = "custom-input",
