@@ -1,10 +1,5 @@
 function MakeProjectile(ThingData)
   
-if not (ThingData.icon) then
-ThingData.icon = "__RenaiTransportation__/graphics/icon.png"
-ThingData.icon_size = 32
-end
-  
 TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 	TheProjectile.name = ThingData.name.."-projectileFromRenaiTransportation"
 	TheProjectile.special_neutral_target_damage = {amount = 0, type = "acid"}
@@ -40,7 +35,40 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 		  }
 		}
 	  }
-
+	  
+if (ThingData.icons) then
+	if (ThingData.icon_size) then
+		TheProjectile.particle.size = ThingData.icon_size
+	else
+		TheProjectile.particle.size = ThingData.icons[1].icon_size
+	end
+	
+	TheProjectile.particle.layers = {}
+	for iconlayer, iconspecs in pairs(ThingData.icons) do
+		if (iconspecs.icon_size) then
+			eeee = iconspecs.icon_size
+		else
+			eeee = TheProjectile.particle.size
+		end
+		
+		if (iconspecs.tint) then
+			rrrr = iconspecs.tint
+		else
+			rrrr = nil
+		end
+	
+		table.insert(TheProjectile.particle.layers, 
+			{
+				filename = iconspecs.icon,
+				line_length = 1,
+				frame_count = 1,
+				priority = "high",
+				scale = 19.2/eeee,
+				size = eeee,
+				tint = rrrr
+			})
+	end
+else
 	TheProjectile.particle = {
       filename = ThingData.icon,
       line_length = 1,
@@ -50,35 +78,18 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
       --shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
       --tint = data.tint,
       priority = "high",
-      scale = 0.3,
+      scale = 19.2/ThingData.icon_size --0.3
       --animation_speed = 1,
-      hr_version =
-      {
-        filename = ThingData.icon,
-        line_length = 1,
-        width = ThingData.icon_size,
-        height = ThingData.icon_size,
-        frame_count = 1,
-        --shift = util.mul_shift(util.by_pixel(-2, 31), data.scale),
-        --tint = data.tint,
-        priority = "high",
-        scale = 0.3,
-        --animation_speed = 1,
-      }
     }
-	TheProjectile.spine_animation = nil
+end	
 	
+	TheProjectile.spine_animation = nil
 
 	data:extend({TheProjectile})
 end
 
 
 function MakePrimedProjectile(ThingData)-------------------------------------------
-  
-if not (ThingData.icon) then
-ThingData.icon = "__RenaiTransportation__/graphics/icon.png"
-ThingData.icon_size = 32
-end
   
 TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 	TheProjectile.name = ThingData.name.."-projectileFromRenaiTransportationPrimed"
@@ -121,21 +132,47 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 		 
 	end
 	
-	TheProjectile.particle = 
-		{
-		  filename = ThingData.icon,
-		  line_length = 1,
-		  width = ThingData.icon_size,
-		  height = ThingData.icon_size,
-		  frame_count = 1,
-		  --shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
-		  tint = {200, 0, 0},
-		  priority = "high",
-		  scale = 0.3,
-		  --animation_speed = 1,
-		}
-	TheProjectile.spine_animation = nil
+if (ThingData.icons) then
+	if (ThingData.icon_size) then
+		TheProjectile.particle.size = ThingData.icon_size
+	else
+		TheProjectile.particle.size = ThingData.icons[1].icon_size
+	end
 	
+	TheProjectile.particle.layers = {}
+	for iconlayer, iconspecs in pairs(ThingData.icons) do
+		if (iconspecs.icon_size) then
+			eeee = iconspecs.icon_size
+		else
+			eeee = TheProjectile.particle.size
+		end
+	
+		table.insert(TheProjectile.particle.layers, 
+			{
+				filename = iconspecs.icon,
+				line_length = 1,
+				frame_count = 1,
+				priority = "high",
+				scale = 19.2/eeee,
+				size = eeee,
+				tint = {200,0,0}
+			})
+	end
+else
+	TheProjectile.particle = {
+      filename = ThingData.icon,
+      line_length = 1,
+      width = ThingData.icon_size,
+      height = ThingData.icon_size,
+      frame_count = 1,
+	  tint = {200,0,0},
+      --shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
+      priority = "high",
+      scale = 19.2/ThingData.icon_size --0.3
+      --animation_speed = 1,
+    }
+end	
+	TheProjectile.spine_animation = nil
 
 	data:extend({TheProjectile})
 end

@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.7
+Date: 7/18/2020
+  Bugfixes:
+    - Fixed scaling for the particle of thrown items so that icons of different sizes graphically should all show in game at roughly the same size
+    - Remved the need for the placeholder image for items with layered icons
+---------------------------------------------------------------------------------------------------
 Version: 0.3.6
 Date: 7/17/2020
   Bugfixes:
