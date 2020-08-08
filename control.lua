@@ -550,8 +550,12 @@ function(eventf)
 					else -- AngleChange is between 0.125 and 0.375, which is a rail ~90 degrees off from original launch. doesn't make sense so destroy
 						NewTrain.die()
 						for urmum, lol in pairs(properties.GuideCar.surface.find_entities_filtered({position = properties.GuideCar.position, radius = 4, collision_mask = {"object-layer", "train-layer"}})) do
-						lol.damage(500, "neutral", "explosion")
-					end
+							if (lol.health ~= nil) then
+								lol.damage(500, "neutral", "explosion")
+							elseif (lol.name == "cliff") then
+								lol.destroy({do_cliff_correction = true})
+							end
+						end
 					end
 					
 					if (NewTrain.valid) then
@@ -628,7 +632,11 @@ function(eventf)
 					end
 					
 					for urmum, lol in pairs(boom.surface.find_entities_filtered({position = boom.position, radius = 4, collision_mask = {"object-layer", "train-layer"}})) do
-						lol.damage(500, "neutral", "explosion")
+						if (lol.health ~= nil) then
+							lol.damage(500, "neutral", "explosion")
+						elseif (lol.name == "cliff") then
+							lol.destroy({do_cliff_correction = true})
+						end
 					end
 					
 				end

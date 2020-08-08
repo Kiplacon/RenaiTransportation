@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.1
+Date: 8/8/2020
+  Bugfixes:
+    - Fixed game crash when flying trains were landing on cliffs and other things that didn't strictly have health
+---------------------------------------------------------------------------------------------------
 Version: 0.4.0
 Date: 8/7/2020
   Additions:
