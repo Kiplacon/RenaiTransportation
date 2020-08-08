@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.0
+Date: 8/7/2020
+  Additions:
+    - Train Ramps. You knew it had to be
+    - Train Bouce Pad and Train Directed Bounce Pads. Tests to create train bounce routes has proven to be very expensive
+    - Shadows for all the Bounce Pads
+  Bugfixes:
+    - Fixed ordering of final-fixes code so that projectiles for generated thrower are actually created
+---------------------------------------------------------------------------------------------------
 Version: 0.3.7
 Date: 7/18/2020
   Bugfixes:

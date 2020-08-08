@@ -274,10 +274,22 @@ if (isitenabled == false) then
 end
 end
 ---------------------------------------------------------- loop through data.raw ---------------------------------
+---- Make thrower variants first so that the projectile generating will work
+for ThingID, ThingData in pairs(data.raw.inserter) do	
+	-- lots of requirements to make sure not pick up any "function only" inserters from other mods --
+	if (ThingData.type == "inserter" 
+		and ThingData.energy_source.type ~= "void" 
+		and ThingData.draw_held_item ~= false 
+		and ThingData.selectable_in_game ~= false 
+		and ThingData.minable 
+		and not string.find(ThingData.name, "RTThrower-")) then
+		MakeThrowerVariant(ThingData)
+	end
+end
+
 for Category, ThingsTable in pairs(data.raw) do
-	for ThingID, ThingData in pairs(ThingsTable) do
+	for ThingID, ThingData in pairs(ThingsTable) do	
 		if (ThingData.stack_size) then
-		
 			MakeProjectile(ThingData)
 			
 			if (ThingData.type == "ammo" 
@@ -310,15 +322,6 @@ for Category, ThingsTable in pairs(data.raw) do
 				) then
 				MakePrimedProjectile(ThingData)
 			end
-			
-		-- lots of requirements to make sure not pick up any repurposed inserters from other mods --
-		elseif (ThingData.type == "inserter" 
-			and ThingData.energy_source.type ~= "void" 
-			and ThingData.draw_held_item ~= false 
-			and ThingData.selectable_in_game ~= false 
-			and ThingData.minable 
-			and not string.find(ThingData.name, "RTThrower-")) then
-			MakeThrowerVariant(ThingData)
 		end
 	end
 end

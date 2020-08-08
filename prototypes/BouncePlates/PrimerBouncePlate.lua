@@ -13,12 +13,25 @@ data:extend({
 		fast_replaceable_group = "bouncers",
 		picture = 
 			{
-				filename = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerPlate.png",
-				priority = "medium",
-				width = 66,
-				height = 76,
-				shift = util.by_pixel(-0.5, -0.5),
-				scale = 0.5
+			layers = 
+				{
+					{
+						filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/shadow.png",
+						priority = "medium",
+						width = 66,
+						height = 76,
+						shift = util.by_pixel(8, -0.5),
+						scale = 0.5
+					},
+					{
+						filename = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerPlate.png",
+						priority = "medium",
+						width = 66,
+						height = 76,
+						shift = util.by_pixel(-0.5, -0.5),
+						scale = 0.5
+					},
+				}
 			},
 		radius_visualisation_specification =
 			{
@@ -88,12 +101,25 @@ data:extend({
 		fast_replaceable_group = "bouncers",
 		picture = 
 			{
-				filename = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerSpreadPlate.png",
-				priority = "medium",
-				width = 66,
-				height = 76,
-				shift = util.by_pixel(-0.5, -0.5),
-				scale = 0.5
+			layers =
+				{
+					{
+						filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/shadow.png",
+						priority = "medium",
+						width = 66,
+						height = 76,
+						shift = util.by_pixel(8, -0.5),
+						scale = 0.5
+					},
+					{
+						filename = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerSpreadPlate.png",
+						priority = "medium",
+						width = 66,
+						height = 76,
+						shift = util.by_pixel(-0.5, -0.5),
+						scale = 0.5
+					}
+				}
 			},
 		radius_visualisation_specification =
 			{

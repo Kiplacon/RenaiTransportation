@@ -29,12 +29,25 @@ data:extend({
 		circuit_wire_max_distance = 9,
 		sprites = 
 			{
-				filename = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlate.png",
-				priority = "medium",
-				width = 66,
-				height = 76,
-				shift = util.by_pixel(-0.5, -0.5),
-				scale = 0.5
+			layers =
+				{
+					{
+						filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/shadow.png",
+						priority = "medium",
+						width = 66,
+						height = 76,
+						shift = util.by_pixel(8, -0.5),
+						scale = 0.5
+					},
+					{
+						filename = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlate.png",
+						priority = "medium",
+						width = 66,
+						height = 76,
+						shift = util.by_pixel(-0.5, -0.5),
+						scale = 0.5
+					}
+				}
 			},
 		activity_led_sprites =
 			{

@@ -16,15 +16,15 @@ data:extend({
 
 	{ --------- Bounce plate entity --------------
 		type = "constant-combinator",
-		name = "DirectedBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateIconn.png",
+		name = "RTTrainDirectedBouncePlate",
+		icon = "__RenaiTransportation__/graphics/BouncePlates/TrainBouncePlate/DirectedTrainPlate.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
-		minable = {mining_time = 0.2, result = "DirectedBouncePlateItem"},
-		max_health = 200,
-	    collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
-		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
-		fast_replaceable_group = "bouncers",
+		minable = {mining_time = 0.5, result = "RTTrainDirectedBouncePlateItem"},
+		max_health = 400,
+	    collision_box = {{-1.75, -1.75}, {1.75, 1.75}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+		selection_box = {{-2, -2}, {2, 2}},
+		fast_replaceable_group = "TrainBouncers",
 		item_slot_count = 18,
 		circuit_wire_max_distance = 9,
 		sprites = 
@@ -36,15 +36,15 @@ data:extend({
 					priority = "medium",
 					width = 64,
 					height = 64,
-					shift = util.by_pixel(14,-0.5),
-					scale = 0.5
+					shift = util.by_pixel(55,-2),
+					scale = 2
 				},
 				{
 					filename = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlate.png",
 					priority = "medium",
 					width = 64,
 					height = 64,
-					scale = 0.5
+					scale = 2
 				}
 			  }
 			},
@@ -75,35 +75,36 @@ data:extend({
 			{
 				sprite = 
 					{
-						filename = "__RenaiTransportation__/graphics/test.png",
+						filename = "__RenaiTransportation__/graphics/test2.png",
 						size = 640
 					},
 				draw_on_selection = true,
-				distance = 10
+				distance = 40
 			}
 	},
 	
 	{ --------- The Bounce plate item -------------
 		type = "item",
-		name = "DirectedBouncePlateItem",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateIconn.png",
+		name = "RTTrainDirectedBouncePlateItem",
+		icon = "__RenaiTransportation__/graphics/BouncePlates/TrainBouncePlate/DirectedTrainPlate.png",
 		icon_size = 64, --icon_mipmaps = 4,
 		subgroup = "RT",
-		order = "a-a",
-		place_result = "DirectedBouncePlate",
+		order = "h-a",
+		place_result = "RTTrainDirectedBouncePlate",
 		stack_size = 50
 	},
 	
 	{ --------- The Bounce plate recipie ----------
 		type = "recipe",
-		name = "DirectedBouncePlateRecipie",
+		name = "RTTrainDirectedBouncePlateRecipie",
 		enabled = false,
 		energy_required = 1,
 		ingredients = 
 			{
-				{"iron-plate", 5},
-				{"automation-science-pack", 1}
+				{"iron-plate", 50},
+				{"steel-plate", 30},
+				{"automation-science-pack", 10}
 			},
-		result = "DirectedBouncePlateItem"
+		result = "RTTrainDirectedBouncePlateItem"
 	}
 })

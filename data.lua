@@ -2,6 +2,8 @@ require("prototypes.BouncePlates.BouncePlate")
 require("prototypes.BouncePlates.PrimerBouncePlate")
 require("prototypes.BouncePlates.SignalBouncePlate")
 require("prototypes.BouncePlates.DirectedBouncePlate")
+require("prototypes.BouncePlates.TrainBouncePlate")
+require("prototypes.BouncePlates.TrainDirectedBouncePlate")
 
 require("prototypes.OpenContainer")
 
@@ -15,6 +17,9 @@ require("prototypes.hatch")
 
 require("prototypes.technology")
 
+require("prototypes.TrainGoBrrrr.TrainRamp")
+require("prototypes.TrainGoBrrrr.PropHunt")
+require("prototypes.TrainGoBrrrr.sprites.base")
 
 data:extend({
   {

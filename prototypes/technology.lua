@@ -139,5 +139,57 @@ data:extend({
 		},
 		time = 30
 	} 
+  },
+  {
+ 	type = "technology",
+	name = "RTFlyingFreight",
+	icon = "__RenaiTransportation__/graphics/tech/FlyingFreight.png",
+	icon_size = 128,
+	effects =
+	{
+		{
+			type = "unlock-recipe",
+			recipe = "RTTrainRampRecipe"
+		}	
+	},
+	prerequisites = {"railway", "concrete"},
+	unit =
+	{
+		count = 150,
+		ingredients =
+		{
+		  {"automation-science-pack", 1},
+		  {"logistic-science-pack", 1}
+		},
+		time = 30
+	} 
+  },
+  {
+ 	type = "technology",
+	name = "RTFreightPlates",
+	icon = "__RenaiTransportation__/graphics/tech/FlyingFreightPlate.png",
+	icon_size = 128,
+	effects =
+	{
+		{
+			type = "unlock-recipe",
+			recipe = "RTTrainBouncePlateRecipie"
+		},
+		{
+			type = "unlock-recipe",
+			recipe = "RTTrainDirectedBouncePlateRecipie"
+		}
+	},
+	prerequisites = {"se~no", "RTFlyingFreight"},
+	unit =
+	{
+		count = 100,
+		ingredients =
+		{
+		  {"automation-science-pack", 1},
+		  {"logistic-science-pack", 1}
+		},
+		time = 30
+	} 
   }
 })
