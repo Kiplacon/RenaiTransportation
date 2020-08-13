@@ -568,9 +568,6 @@ function(eventf)
 						NewTrain.train.manual_mode = properties.ManualMode
 						if (properties.schedule ~= nil) then
 							if (not properties.follower) then
-								game.print("current " ..  properties.schedule.current)
-								game.print("records " .. #properties.schedule.records)
-								game.print("==============")
 								if (properties.schedule.current == 1) then
 									properties.schedule.current = #(properties.schedule.records) + 1
 								end
