@@ -568,6 +568,10 @@ function(eventf)
 						NewTrain.train.manual_mode = properties.ManualMode
 						if (properties.schedule ~= nil) then
 							NewTrain.train.schedule = properties.schedule
+							NewTrain.train.schedule.current = NewTrain.train.schedule.current - 1
+							if (NewTrain.train.schedule.current == 0) then
+								NewTrain.train.schedule.current = #(NewTrain.train.schedule.records)
+							end
 						end	
 					
 						if (NewTrain.type == "locomotive") then
