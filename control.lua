@@ -567,11 +567,16 @@ function(eventf)
 
 						NewTrain.train.manual_mode = properties.ManualMode
 						if (properties.schedule ~= nil) then
-							NewTrain.train.schedule = properties.schedule
-							NewTrain.train.schedule.current = NewTrain.train.schedule.current - 1
-							if (NewTrain.train.schedule.current == 0) then
-								NewTrain.train.schedule.current = #(NewTrain.train.schedule.records)
+							if (not properties.follower) then
+								game.print("current " ..  properties.schedule.current)
+								game.print("records " .. #properties.schedule.records)
+								game.print("==============")
+								if (properties.schedule.current == 1) then
+									properties.schedule.current = #(properties.schedule.records) + 1
+								end
+								properties.schedule.current = properties.schedule.current - 1
 							end
+							NewTrain.train.schedule = properties.schedule
 						end	
 					
 						if (NewTrain.type == "locomotive") then
