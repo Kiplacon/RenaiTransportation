@@ -1,5 +1,18 @@
 data:extend({
-
+	{
+		type = "sprite",
+		name = "RTPrimerRangeOverlay",
+		filename = "__RenaiTransportation__/graphics/PrimeRange.png",
+		size = 640
+	},
+	
+	{
+		type = "sprite",
+		name = "RTPrimerSpreadRangeOverlay",
+		filename = "__RenaiTransportation__/graphics/PrimeSpreadRange.png",
+		size = 640
+	},
+	
 	{ --------- Bounce plate entity --------------
 		type = "simple-entity-with-owner",
 		name = "PrimerBouncePlate",
@@ -40,7 +53,7 @@ data:extend({
 						filename = "__RenaiTransportation__/graphics/PrimeRange.png",
 						size = 640
 					},
-				draw_on_selection = true,
+				draw_on_selection = false,
 				distance = 40
 			}
 	},
@@ -95,6 +108,7 @@ data:extend({
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
 		minable = {mining_time = 0.2, result = "PrimerBouncePlateItem"},
+		placeable_by = {item = "PrimerBouncePlateItem", count = 1},
 		max_health = 200,
 	    collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},

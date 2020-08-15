@@ -1,5 +1,12 @@
 data:extend({
 
+	{
+		type = "sprite",
+		name = "RTRangeOverlay",
+		filename = "__RenaiTransportation__/graphics/test.png",
+		size = 640
+	},
+
 	{ --------- Bounce plate entity --------------
 		type = "simple-entity-with-owner",
 		name = "BouncePlate",
@@ -37,11 +44,11 @@ data:extend({
 			{
 				sprite = 
 					{
-						filename = "__RenaiTransportation__/graphics/test.png",
+						filename = "__RenaiTransportation__/graphics/testalt.png",
 						size = 640
 					},
-				draw_on_selection = true,
-				distance = 10
+				draw_on_selection = false,
+				distance = 9.9
 			}
 	},
 	

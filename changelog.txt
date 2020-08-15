@@ -1,4 +1,19 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.2
+Date: 8/15/2020
+  Additions:
+    - Bounce Pads show their range in alt-mode instead of on hover
+  Changes:
+    - Added train ramp to the thumbnail
+    - Flying trains now shift slightly to better align with train bounce pads. This helps all carriages in a train travel, fly, and bounce together.
+    - Following trains better sync up with the lead train.
+  Bugfixes:
+    - Fixed handling of players jumping on Train bounce pads.
+    - Fixed thrower bunrner inserters not self refueling when facing down or right
+    - Fixed another crash when jumping trains land, explode, and damage surrounding entities which were somehow becoming invalid between being detected and being dealt damage
+    - Fixed Spread Primer Bounce Pad integration with blueprints/copy/paste by adding placeable_by to its prototype
+    - Added raise_built=true when recreating launched trains for better modded train compatability 
+---------------------------------------------------------------------------------------------------
 Version: 0.4.1
 Date: 8/8/2020
   Bugfixes:

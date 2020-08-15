@@ -5,6 +5,10 @@ function()
 		global.CatapultList = {}		
 	end
 	
+	if (global.BouncePadList == nil) then
+		global.BouncePadList = {}		
+	end
+
 	if (global.AllPlayers == nil) then
 		global.AllPlayers = {}		
 	end
@@ -32,6 +36,10 @@ function()
 		global.CatapultList = {}		
 	end
 	
+	if (global.BouncePadList == nil) then
+		global.BouncePadList = {}		
+	end
+	
 	if (global.OrientationUnitComponents == nil) then
 		global.OrientationUnitComponents = {}
 		global.OrientationUnitComponents[0] = {x = 0, y = -1, name = "up"}
@@ -51,6 +59,7 @@ function()
 	if (global.FlyingTrains == nil) then
 		global.FlyingTrains = {}		
 	end
+	
 end)
 
 ---- Add new players to the AllPlayers table ----
@@ -71,9 +80,79 @@ function(event)
 	elseif (event.created_entity.name == "PlayerLauncher") then
 		event.created_entity.operable = false
 		event.created_entity.active = false
-		
-	elseif (event.created_entity.name == "DirectedBouncePlate") then
-		event.created_entity.operable = false
+	
+	elseif (string.find(event.created_entity.name, "BouncePlate") and not string.find(event.created_entity.name, "Train")) then
+		global.BouncePadList[event.created_entity.unit_number] = {entity = event.created_entity}
+		if (event.created_entity.name == "DirectedBouncePlate") then
+			event.created_entity.operable = false
+			if (event.created_entity.orientation == 0) then
+				direction = "UD"
+				xflip = 1
+				yflip = 1
+			elseif (event.created_entity.orientation == 0.25) then
+				direction = "RL"
+				xflip = 1
+				yflip = 1
+			elseif (event.created_entity.orientation == 0.5) then
+				direction = "UD"
+				xflip = 1
+				yflip = -1
+			elseif (event.created_entity.orientation == 0.75) then
+				direction = "RL"
+				xflip = -1
+				yflip = 1
+			end
+			global.BouncePadList[event.created_entity.unit_number].arrow = rendering.draw_sprite
+				{
+					sprite = "RTDirectedRangeOverlay"..direction,
+					surface = event.created_entity.surface,
+					target = event.created_entity,
+					only_in_alt_mode = true,
+					x_scale = xflip,
+					y_scale = yflip,
+					tint = {r = 1, g = 1, b = 1, a = 1}
+				}			
+		elseif (event.created_entity.name == "BouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTRangeOverlay",
+					surface = event.created_entity.surface,
+					target = event.created_entity,
+					only_in_alt_mode = true,
+					tint = {r = 1, g = 0, b = 0, a = 1} --red
+				}
+		elseif (event.created_entity.name == "SignalBouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTRangeOverlay",
+					surface = event.created_entity.surface,
+					target = event.created_entity,
+					only_in_alt_mode = true,
+					tint = {r = 0, g = 1, b = 0, a = 1} --green
+				}
+		elseif (event.created_entity.name == "PrimerBouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTPrimerRangeOverlay",
+					surface = event.created_entity.surface,
+					target = event.created_entity,
+					only_in_alt_mode = true,
+					x_scale = 4,
+					y_scale = 4,
+					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0}
+				}
+		elseif (event.created_entity.name == "PrimerSpreadBouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTPrimerSpreadRangeOverlay",
+					surface = event.created_entity.surface,
+					target = event.created_entity,
+					only_in_alt_mode = true,
+					x_scale = 4,
+					y_scale = 4,
+					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0}
+				}
+		end
 	end
 end)
 ---- built by robot ----
@@ -86,12 +165,82 @@ function(event)
 		event.created_entity.operable = false
 		event.created_entity.active = false
 		
-	elseif (event.created_entity.name == "DirectedBouncePlate") then
-		event.created_entity.operable = false
+	elseif (string.find(event.created_entity.name, "BouncePlate") and not string.find(event.created_entity.name, "Train")) then
+		global.BouncePadList[event.created_entity.unit_number] = {entity = event.created_entity}
+		if (event.created_entity.name == "DirectedBouncePlate") then
+			event.created_entity.operable = false
+			if (event.created_entity.orientation == 0) then
+				direction = "UD"
+				xflip = 1
+				yflip = 1
+			elseif (event.created_entity.orientation == 0.25) then
+				direction = "RL"
+				xflip = 1
+				yflip = 1
+			elseif (event.created_entity.orientation == 0.5) then
+				direction = "UD"
+				xflip = 1
+				yflip = -1
+			elseif (event.created_entity.orientation == 0.75) then
+				direction = "RL"
+				xflip = -1
+				yflip = 1
+			end
+			global.BouncePadList[event.created_entity.unit_number].arrow = rendering.draw_sprite
+				{
+					sprite = "RTDirectedRangeOverlay"..direction,
+					surface = event.created_entity.surface,
+					target = event.created_entity,
+					only_in_alt_mode = true,
+					x_scale = xflip,
+					y_scale = yflip,
+					tint = {r = 1, g = 1, b = 1, a = 1}
+				}			
+		elseif (event.created_entity.name == "BouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTRangeOverlay",
+					surface = event.created_entity.surface,
+					target = event.created_entity,
+					only_in_alt_mode = true,
+					tint = {r = 1, g = 0, b = 0, a = 1} --red
+				}
+		elseif (event.created_entity.name == "SignalBouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTRangeOverlay",
+					surface = event.created_entity.surface,
+					target = event.created_entity,
+					only_in_alt_mode = true,
+					tint = {r = 0, g = 1, b = 0, a = 1} --green
+				}
+		elseif (event.created_entity.name == "PrimerBouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTPrimerRangeOverlay",
+					surface = event.created_entity.surface,
+					target = event.created_entity,
+					only_in_alt_mode = true,
+					x_scale = 4,
+					y_scale = 4,
+					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0}
+				}
+		elseif (event.created_entity.name == "PrimerSpreadBouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTPrimerSpreadRangeOverlay",
+					surface = event.created_entity.surface,
+					target = event.created_entity,
+					only_in_alt_mode = true,
+					x_scale = 4,
+					y_scale = 4,
+					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0}
+				}
+		end
 		
 	end
 end)
----- built by script (other mods) ----
+---- built by script ----
 script.on_event(defines.events.script_raised_built, 
 function(event)
 	if (string.find(event.entity.name, "RTThrower-")) then
@@ -101,8 +250,79 @@ function(event)
 		event.entity.operable = false
 		event.entity.active = false
 
-	elseif (event.entity.name == "DirectedBouncePlate") then
-		event.entity.operable = false		
+	elseif (string.find(event.entity.name, "BouncePlate") and not string.find(event.entity.name, "Train")) then
+		global.BouncePadList[event.entity.unit_number] = {entity = event.entity}
+		if (event.entity.name == "DirectedBouncePlate") then
+			event.entity.operable = false
+			if (event.entity.orientation == 0) then
+				direction = "UD"
+				xflip = 1
+				yflip = 1
+			elseif (event.entity.orientation == 0.25) then
+				direction = "RL"
+				xflip = 1
+				yflip = 1
+			elseif (event.entity.orientation == 0.5) then
+				direction = "UD"
+				xflip = 1
+				yflip = -1
+			elseif (event.entity.orientation == 0.75) then
+				direction = "RL"
+				xflip = -1
+				yflip = 1
+			end
+			global.BouncePadList[event.entity.unit_number].arrow = rendering.draw_sprite
+				{
+					sprite = "RTDirectedRangeOverlay"..direction,
+					surface = event.entity.surface,
+					target = event.entity,
+					only_in_alt_mode = true,
+					x_scale = xflip,
+					y_scale = yflip,
+					tint = {r = 1, g = 1, b = 1, a = 1}
+				}			
+		elseif (event.entity.name == "BouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTRangeOverlay",
+					surface = event.entity.surface,
+					target = event.entity,
+					only_in_alt_mode = true,
+					tint = {r = 1, g = 0, b = 0, a = 1} --red
+				}
+		elseif (event.entity.name == "SignalBouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTRangeOverlay",
+					surface = event.entity.surface,
+					target = event.entity,
+					only_in_alt_mode = true,
+					tint = {r = 0, g = 1, b = 0, a = 1} --green
+				}
+		elseif (event.entity.name == "PrimerBouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTPrimerRangeOverlay",
+					surface = event.entity.surface,
+					target = event.entity,
+					only_in_alt_mode = true,
+					x_scale = 4,
+					y_scale = 4,
+					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0}
+				}
+		elseif (event.entity.name == "PrimerSpreadBouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTPrimerSpreadRangeOverlay",
+					surface = event.entity.surface,
+					target = event.entity,
+					only_in_alt_mode = true,
+					x_scale = 4,
+					y_scale = 4,
+					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0}
+				}
+		end
+
 	end
 end)
 ---- cloned by script ----
@@ -115,8 +335,78 @@ function(event)
 		event.destination.operable = false
 		event.destination.active = false
 
-	elseif (event.destination.name == "DirectedBouncePlate") then
-		event.destination.operable = false		
+	elseif (string.find(event.destination.name, "BouncePlate") and not string.find(event.destination.name, "Train")) then
+		global.BouncePadList[event.destination.unit_number] = {entity = event.destination}
+		if (event.destination.name == "DirectedBouncePlate") then
+			event.destination.operable = false
+			if (event.destination.orientation == 0) then
+				direction = "UD"
+				xflip = 1
+				yflip = 1
+			elseif (event.destination.orientation == 0.25) then
+				direction = "RL"
+				xflip = 1
+				yflip = 1
+			elseif (event.destination.orientation == 0.5) then
+				direction = "UD"
+				xflip = 1
+				yflip = -1
+			elseif (event.destination.orientation == 0.75) then
+				direction = "RL"
+				xflip = -1
+				yflip = 1
+			end
+			global.BouncePadList[event.destination.unit_number].arrow = rendering.draw_sprite
+				{
+					sprite = "RTDirectedRangeOverlay"..direction,
+					surface = event.destination.surface,
+					target = event.destination,
+					only_in_alt_mode = true,
+					x_scale = xflip,
+					y_scale = yflip,
+					tint = {r = 1, g = 1, b = 1, a = 1}
+				}			
+		elseif (event.destination.name == "BouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTRangeOverlay",
+					surface = event.destination.surface,
+					target = event.destination,
+					only_in_alt_mode = true,
+					tint = {r = 1, g = 0, b = 0, a = 1} --red
+				}
+		elseif (event.destination.name == "SignalBouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTRangeOverlay",
+					surface = event.destination.surface,
+					target = event.destination,
+					only_in_alt_mode = true,
+					tint = {r = 0, g = 1, b = 0, a = 1} --green
+				}
+		elseif (event.destination.name == "PrimerBouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTPrimerRangeOverlay",
+					surface = event.destination.surface,
+					target = event.destination,
+					only_in_alt_mode = true,
+					x_scale = 4,
+					y_scale = 4,
+					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0}
+				}
+		elseif (event.destination.name == "PrimerSpreadBouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTPrimerSpreadRangeOverlay",
+					surface = event.destination.surface,
+					target = event.destination,
+					only_in_alt_mode = true,
+					x_scale = 4,
+					y_scale = 4,
+					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0}
+				}
+		end		
 	end
 end)
 ---- revived(?) ----
@@ -129,8 +419,114 @@ function(event)
 		event.entity.operable = false
 		event.entity.active = false
 	
-	elseif (event.entity.name == "DirectedBouncePlate") then
-		event.entity.operable = false	
+	elseif (string.find(event.entity.name, "BouncePlate") and not string.find(event.entity.name, "Train")) then
+		global.BouncePadList[event.entity.unit_number] = {entity = event.entity}
+		if (event.entity.name == "DirectedBouncePlate") then
+			event.entity.operable = false
+			if (event.entity.orientation == 0) then
+				direction = "UD"
+				xflip = 1
+				yflip = 1
+			elseif (event.entity.orientation == 0.25) then
+				direction = "RL"
+				xflip = 1
+				yflip = 1
+			elseif (event.entity.orientation == 0.5) then
+				direction = "UD"
+				xflip = 1
+				yflip = -1
+			elseif (event.entity.orientation == 0.75) then
+				direction = "RL"
+				xflip = -1
+				yflip = 1
+			end
+			global.BouncePadList[event.entity.unit_number].arrow = rendering.draw_sprite
+				{
+					sprite = "RTDirectedRangeOverlay"..direction,
+					surface = event.entity.surface,
+					target = event.entity,
+					only_in_alt_mode = true,
+					x_scale = xflip,
+					y_scale = yflip,
+					tint = {r = 1, g = 1, b = 1, a = 1}
+				}			
+		elseif (event.entity.name == "BouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTRangeOverlay",
+					surface = event.entity.surface,
+					target = event.entity,
+					only_in_alt_mode = true,
+					tint = {r = 1, g = 0, b = 0, a = 1} --red
+				}
+		elseif (event.entity.name == "SignalBouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTRangeOverlay",
+					surface = event.entity.surface,
+					target = event.entity,
+					only_in_alt_mode = true,
+					tint = {r = 0, g = 1, b = 0, a = 1} --green
+				}
+		elseif (event.entity.name == "PrimerBouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTPrimerRangeOverlay",
+					surface = event.entity.surface,
+					target = event.entity,
+					only_in_alt_mode = true,
+					x_scale = 4,
+					y_scale = 4,
+					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0}
+				}
+		elseif (event.entity.name == "PrimerSpreadBouncePlate") then
+			rendering.draw_sprite
+				{
+					sprite = "RTPrimerSpreadRangeOverlay",
+					surface = event.entity.surface,
+					target = event.entity,
+					only_in_alt_mode = true,
+					x_scale = 4,
+					y_scale = 4,
+					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0}
+				}
+		end
+	end
+end)
+
+
+script.on_event(defines.events.on_player_rotated_entity,
+function(event)
+	if (event.entity.name == "DirectedBouncePlate" and global.BouncePadList[event.entity.unit_number] ~= nil) then
+		rendering.destroy(global.BouncePadList[event.entity.unit_number].arrow)
+		if (event.entity.orientation == 0) then
+			direction = "UD"
+			xflip = 1
+			yflip = 1
+		elseif (event.entity.orientation == 0.25) then
+			direction = "RL"
+			xflip = 1
+			yflip = 1
+		elseif (event.entity.orientation == 0.5) then
+			direction = "UD"
+			xflip = 1
+			yflip = -1
+		elseif (event.entity.orientation == 0.75) then
+			direction = "RL"
+			xflip = -1
+			yflip = 1
+		end
+		global.BouncePadList[event.entity.unit_number].arrow = rendering.draw_sprite
+			{
+				sprite = "RTDirectedRangeOverlay"..direction,
+				surface = event.entity.surface,
+				target = event.entity,
+				--time_to_live = 240,
+				only_in_alt_mode = true,
+				x_scale = xflip,
+				y_scale = yflip,
+				tint = {r = 1, g = 1, b = 1, a = 1}
+			}
 	end
 end)
 
@@ -140,9 +536,11 @@ script.on_nth_tick(3,
 function(event)
 	if (global.CatapultList ~= {}) then
 		for catapultID, catapult in pairs(global.CatapultList) do
-
+		
+			BurnerSelfRefuelCompensation = 0.2
 			if (catapult.valid and catapult.burner == nil and catapult.energy/catapult.electric_buffer_size >= 0.9) then
 				catapult.active = true
+				BurnerSelfRefuelCompensation = 0
 			elseif (catapult.valid and catapult.burner == nil) then
 				catapult.active = false
 				rendering.draw_sprite
@@ -157,10 +555,10 @@ function(event)
 			end
 			
 			if (catapult.valid and catapult.active == true and catapult.held_stack.valid_for_read) then
-				if (catapult.orientation == 0    and catapult.held_stack_position.y >= catapult.position.y)
-				or (catapult.orientation == 0.25 and catapult.held_stack_position.x <= catapult.position.x)
-				or (catapult.orientation == 0.50 and catapult.held_stack_position.y <= catapult.position.y)	
-				or (catapult.orientation == 0.75 and catapult.held_stack_position.x >= catapult.position.x) 
+				if (catapult.orientation == 0    and catapult.held_stack_position.y >= catapult.position.y+BurnerSelfRefuelCompensation)
+				or (catapult.orientation == 0.25 and catapult.held_stack_position.x <= catapult.position.x-BurnerSelfRefuelCompensation)
+				or (catapult.orientation == 0.50 and catapult.held_stack_position.y <= catapult.position.y-BurnerSelfRefuelCompensation)	
+				or (catapult.orientation == 0.75 and catapult.held_stack_position.x >= catapult.position.x+BurnerSelfRefuelCompensation) 
 				then
 					for i = 1, catapult.held_stack.count do
 						catapult.surface.create_entity
@@ -200,7 +598,7 @@ if (string.find(event.effect_id, "-LandedRT")) then
 	if (ThingLandedOn ~= nil) then -- if it landed on something
 		if (string.find(ThingLandedOn.name, "BouncePlate")) then -- if that thing was a bounce plate
 			
-			if (ThingLandedOn.name == "DirectedBouncePlate") then
+			if (string.find(ThingLandedOn.name, "DirectedBouncePlate")) then
 				unitx = global.OrientationUnitComponents[ThingLandedOn.orientation].x
 				unity = global.OrientationUnitComponents[ThingLandedOn.orientation].y
 				traveling = global.OrientationUnitComponents[ThingLandedOn.orientation].name
@@ -410,9 +808,9 @@ function(eventf)
 
 		if (properties.follower and properties.follower.valid) then
 			if (properties.follower.train.speed>0) then
-				properties.follower.train.speed = math.abs(1.005*properties.speed)
+				properties.follower.train.speed = math.abs(properties.speed)
 			else
-				properties.follower.train.speed = -math.abs(1.005*properties.speed)
+				properties.follower.train.speed = -math.abs(properties.speed)
 			end
 		end
 
@@ -420,13 +818,15 @@ function(eventf)
 		if (game.tick == properties.LandTick) then
 			TrainLandedOn = properties.GuideCar.surface.find_entities_filtered
 				{
+					name = {"RTTrainBouncePlate", "RTTrainDirectedBouncePlate"},
 					position = properties.GuideCar.position,
-					radius = 2,
+					radius = 1.5,
 					collision_mask = "object-layer"
 				}[1] -- in theory only one thing should be detected in the object layer this way
 			if (TrainLandedOn ~= nil and TrainLandedOn.name == "RTTrainBouncePlate") then
 				properties.LaunchTick = game.tick
 				properties.LandTick = math.ceil(game.tick + 130*math.abs(properties.speed))
+				properties.GuideCar.teleport(TrainLandedOn.position)
 				TrainLandedOn.surface.create_particle
 					({
 					name = "RTTrainBouncePlateParticle",
@@ -444,6 +844,7 @@ function(eventf)
 					}
 
 			elseif (TrainLandedOn ~= nil and TrainLandedOn.name == "RTTrainDirectedBouncePlate") then
+				properties.GuideCar.teleport(TrainLandedOn.position)
 				properties.RampOrientation = TrainLandedOn.orientation+0.5
 				if (properties.GuideCar.speed > 0) then
 					properties.GuideCar.orientation = TrainLandedOn.orientation
@@ -528,7 +929,8 @@ function(eventf)
 						name = properties.name,
 						position = properties.GuideCar.position,
 						direction = properties.orientation, -- i think this does nothing
-						force = properties.GuideCar.force
+						force = properties.GuideCar.force,
+						raise_built = true
 					})
 				-- train created --	
 				if (NewTrain ~= nil) then 
@@ -549,23 +951,24 @@ function(eventf)
 						NewTrain.connect_rolling_stock(defines.rail_direction.back)
 					else -- AngleChange is between 0.125 and 0.375, which is a rail ~90 degrees off from original launch. doesn't make sense so destroy
 						NewTrain.die()
-						for urmum, lol in pairs(properties.GuideCar.surface.find_entities_filtered({position = properties.GuideCar.position, radius = 4, collision_mask = {"object-layer", "train-layer"}})) do
-							if (lol.health ~= nil) then
-								lol.damage(500, "neutral", "explosion")
-							elseif (lol.name == "cliff") then
+						for urmum, lol in pairs(properties.GuideCar.surface.find_entities_filtered({position = properties.GuideCar.position, radius = 4})) do
+							if (lol.valid and lol.is_entity_with_health == true and lol.health ~= nil) then
+								lol.damage(1000, "neutral", "explosion")
+							elseif (lol.valid and lol.name == "cliff") then
 								lol.destroy({do_cliff_correction = true})
 							end
 						end
 					end
 					
 					if (NewTrain.valid) then
+						-- this order of setting speed -> manual mode -> schedule is very important, other orders mess up a lot more
 						if (properties.RampOrientation == properties.orientation) then
 							NewTrain.train.speed = -properties.speed
 						else
 							NewTrain.train.speed = properties.speed
 						end
 
-						NewTrain.train.manual_mode = properties.ManualMode
+						NewTrain.train.manual_mode = properties.ManualMode -- Trains are default created in manual mode
 						if (properties.schedule ~= nil) then
 							NewTrain.train.schedule = properties.schedule
 						end	
@@ -631,9 +1034,9 @@ function(eventf)
 						guy.add_alert(rip,defines.alert_type.entity_destroyed)
 					end
 					
-					for urmum, lol in pairs(boom.surface.find_entities_filtered({position = boom.position, radius = 4, collision_mask = {"object-layer", "train-layer"}})) do
-						if (lol.health ~= nil) then
-							lol.damage(500, "neutral", "explosion")
+					for urmum, lol in pairs(boom.surface.find_entities_filtered({position = boom.position, radius = 4})) do
+						if (lol.valid and lol.is_entity_with_health == true and lol.health ~= nil) then
+							lol.damage(1000, "neutral", "explosion")
 						elseif (lol.name == "cliff") then
 							lol.destroy({do_cliff_correction = true})
 						end
@@ -685,7 +1088,7 @@ if (event.entity.name == "RTTrainRamp"
 		)
 	) then
 	
-	event.entity.health = 501
+	event.entity.health = 9999
 	
 	SpookyGhost = event.entity.surface.create_entity
 		({
@@ -816,11 +1219,13 @@ if (event.entity.name == "RTTrainRamp"
 			global.FlyingTrains[SpookyGhost.unit_number].schedule = global.FlyingTrains[number].schedule
 			global.FlyingTrains[SpookyGhost.unit_number].ManualMode = global.FlyingTrains[number].ManualMode
 			global.FlyingTrains[SpookyGhost.unit_number].LandTick = math.ceil(game.tick + 130*math.abs(global.FlyingTrains[number].speed))
-			global.FlyingTrains[SpookyGhost.unit_number].AirTime = global.FlyingTrains[SpookyGhost.unit_number].LandTick - global.FlyingTrains[SpookyGhost.unit_number].LaunchTick
+			global.FlyingTrains[SpookyGhost.unit_number].AirTime = global.FlyingTrains[number].AirTime
 			if (global.FlyingTrains[SpookyGhost.unit_number].speed>0) then
 				SpookyGhost.speed = 0.8*math.abs(global.FlyingTrains[number].speed)
+				global.FlyingTrains[SpookyGhost.unit_number].speed = math.abs(global.FlyingTrains[number].speed)
 			else
 				SpookyGhost.speed = -0.8*math.abs(global.FlyingTrains[number].speed)
+				global.FlyingTrains[SpookyGhost.unit_number].speed = -math.abs(global.FlyingTrains[number].speed)
 			end
 		end
 	end	
@@ -883,7 +1288,8 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 				({
 				name = "PrimerSpreadBouncePlate",
 				position = ThingHovering.position, --required setting for rendering, doesn't affect spawn
-				force = game.get_player(event1.player_index).force
+				force = game.get_player(event1.player_index).force,
+				raise_built = true
 				})	
 			ThingHovering.destroy()
 			
@@ -892,7 +1298,8 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 				({
 				name = "PrimerBouncePlate",
 				position = ThingHovering.position, --required setting for rendering, doesn't affect spawn
-				force = game.get_player(event1.player_index).force
+				force = game.get_player(event1.player_index).force,
+				raise_built = true
 				})	
 			ThingHovering.destroy()	
 			
@@ -922,3 +1329,17 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 	end
 end)
 
+-- script.on_event("RTClick",
+-- function(event)
+	-- if (game.get_player(event.player_index).selected and string.find(game.get_player(event.player_index).selected.name, "BouncePlate") and not string.find(game.get_player(event.player_index).selected.name, "Train")) then
+		-- rendering.draw_sprite
+			-- {
+				-- sprite = "RTRangeOverlay",
+				-- surface = game.get_player(event.player_index).selected.surface,
+				-- target = game.get_player(event.player_index).selected,
+				-- time_to_live = 240,
+				-- --x_scale = .99,
+				-- --y_scale = .99
+			-- }
+	-- end
+-- end)
