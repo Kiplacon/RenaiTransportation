@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.3
+Date: 8/16/2020
+  Changes:
+    - Specified that trains must hit ramps exactly straight in the ramp description.
+    - Specified thrower range can be adjusted using Interact in their descriptions.
+    - Adjusted the bounce pad range image to line up better horizontally
+---------------------------------------------------------------------------------------------------
 Version: 0.4.2
 Date: 8/15/2020
   Additions:
