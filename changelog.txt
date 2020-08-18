@@ -1,8 +1,21 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.4
+Date: 8/18/2020
+  Additions:
+    - Clicking on any bounce pad toggles it's range indicator visibility in alt-view.
+    - Primer Bounce Plate compatability with artillery shells.
+  Changes:
+    - Changed all bounce pad range indicators again to be the normal yellow/orange.
+    - Bounce pad range indicator is now more transparent so hopefully it's not as distracting in alt-view while still being helpful.
+  Bugfixes:
+    - Fixed another train crash involving cliffs that I already implemented but it turns out there's another spot in the code I had to integrate the fix lmao
+    - Fixed a crash that would happen if there isn't any room to drop an item on the ground after being thrown. It now searched infinitely for a free spot. Discovered by CaptainSlide.
+    - Fixed Hatch integration with blueprints/copy/paste by adding that it's a player-creation to its flags.
+---------------------------------------------------------------------------------------------------
 Version: 0.4.3
 Date: 8/16/2020
   Changes:
-    - Specified that trains must hit ramps exactly straight in the ramp description.
+    - Specified that trains must hit ramps exactly straight in the ramp description. Recommended by Sparen.
     - Specified thrower range can be adjusted using Interact in their descriptions.
     - Adjusted the bounce pad range image to line up better horizontally
 ---------------------------------------------------------------------------------------------------

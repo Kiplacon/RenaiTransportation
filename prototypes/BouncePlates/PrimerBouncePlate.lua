@@ -53,7 +53,7 @@ data:extend({
 						filename = "__RenaiTransportation__/graphics/PrimeRange.png",
 						size = 640
 					},
-				draw_on_selection = false,
+				draw_on_selection = true,
 				distance = 40
 			}
 	},

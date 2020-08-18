@@ -126,6 +126,9 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 			  }
 			}
 		  }
+		  
+	elseif (ThingData.ammo_type.action.action_delivery.type == "artillery") then -- artillery
+		TheProjectile.initial_action = data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].action
 		
 	else -- rockets/atomic bombs/other
 		TheProjectile.initial_action = data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].action
@@ -239,9 +242,9 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	end
 	
 	if (TheThrower.localised_description) then
-		TheThrower.localised_description = {"test.combo", "This inserter has been re-wired to throw items "..ItsRange.." tiles through the air. Range can be configured with the right research.", TheThrower.localised_description}
+		TheThrower.localised_description = {"test.combo", "This inserter has been re-wired to throw items "..ItsRange.." tiles through the air. Range can be configured once researched using Interact (default F).", TheThrower.localised_description}
 	else
-		TheThrower.localised_description = "This inserter has been re-wired to throw items "..ItsRange.." tiles through the air. Range can be configured with the right research."
+		TheThrower.localised_description = "This inserter has been re-wired to throw items "..ItsRange.." tiles through the air. Range can be configured once researched using Interact (default F)."
 	end	
 	TheThrower.hand_size = 0
 	TheThrower.hand_base_picture = 
@@ -292,10 +295,11 @@ for Category, ThingsTable in pairs(data.raw) do
 		if (ThingData.stack_size) then
 			MakeProjectile(ThingData)
 			
-			if (ThingData.type == "ammo" 
+			if (ThingData.type == "ammo" -- looking for things like rockets, tank shells, missles, etc
 				and ThingData.ammo_type.action --if this ammo does something
 				and ThingData.ammo_type.action.action_delivery --in the form of
-				and ThingData.ammo_type.action.action_delivery.type == "projectile" --a projectile
+				and (ThingData.ammo_type.action.action_delivery.type == "projectile" --a projectile
+					 or ThingData.ammo_type.action.action_delivery.type == "artillery") --artillery gets its own projectile catagory
 				) then
 				MakePrimedProjectile(ThingData)
 			elseif 

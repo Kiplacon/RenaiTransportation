@@ -92,8 +92,8 @@ data:extend({
 						filename = "__RenaiTransportation__/graphics/testalt.png",
 						size = 640
 					},
-				draw_on_selection = false,
-				distance = 9.9
+				draw_on_selection = true,
+				distance = 10
 			}
 	},
 	
