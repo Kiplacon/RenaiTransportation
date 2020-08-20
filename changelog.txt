@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.5
+Date: 8/19/2020
+  Changes:
+    - Made it so that trains won't speed up or slow down until either all carriages reconnect, or 4 seconds have passed since it landed. This makes train jumps about 69x more managable to use.
+---------------------------------------------------------------------------------------------------
 Version: 0.4.4
 Date: 8/18/2020
   Additions:
