@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.6
+Date: 8/22/2020
+  Additions:
+    - Added equipment grids to be carried over after a jump if the train has it. Suggested by MPeti1
+  Changes:
+    - Adjusted the train jump animation so it looks less jank.
+---------------------------------------------------------------------------------------------------
 Version: 0.4.5
 Date: 8/19/2020
   Changes:

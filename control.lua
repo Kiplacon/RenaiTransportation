@@ -986,7 +986,17 @@ function(eventf)
 						if (properties.schedule ~= nil) then
 							NewTrain.train.schedule = properties.schedule
 						end	
-					
+						
+						if (properties.gridd ~= nil and NewTrain.grid ~= nil) then
+							for each, equip in pairs(properties.gridd) do
+								NewTrain.grid.put
+									{
+										name = equip.EquipName,
+										position = {equip.xpos, equip.ypos}
+									}
+							end
+						end						
+						
 						if (NewTrain.type == "locomotive") then
 							NewTrain.color = properties.color
 							NewTrain.backer_name = properties.SpecialName
@@ -1058,28 +1068,31 @@ function(eventf)
 					
 				end
 			end	
-		elseif (game.tick < properties.LandTick) then	
+		elseif (game.tick < properties.LandTick) then
+			local SpinMagnitude = 0.05
+			local SpinSpeed = 23
+			local gravity = 500 -- affects arc "height", not air time or jump length
 			------------- animating -----------	
 			if (properties.RampOrientation == 0) then -- going down
-				rendering.set_target(properties.TrainImageID, properties.GuideCar, {0,((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/500})
-				rendering.set_target(properties.MaskID, properties.GuideCar, {0,((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/500})
-				rendering.set_target(properties.ShadowID, properties.GuideCar, {-((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/500,0})	
+				rendering.set_target(properties.TrainImageID, properties.GuideCar, {0,((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity})
+				rendering.set_target(properties.MaskID, properties.GuideCar, {0,((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity})
+				rendering.set_target(properties.ShadowID, properties.GuideCar, {-((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity,0})	
 			elseif (properties.RampOrientation == 0.25) then -- going left
-				rendering.set_target(properties.TrainImageID, properties.GuideCar, {0,(game.tick-properties.LaunchTick)*((game.tick-properties.LaunchTick)-properties.AirTime)/500})
-				rendering.set_orientation(properties.TrainImageID, 0.1*( (2*(game.tick-properties.LaunchTick)/properties.AirTime-1)^23 - (2*(game.tick-properties.LaunchTick)/properties.AirTime-1) ))
-				rendering.set_target(properties.MaskID, properties.GuideCar, {0,(game.tick-properties.LaunchTick)*((game.tick-properties.LaunchTick)-properties.AirTime)/500})
-				rendering.set_orientation(properties.MaskID, 0.1*( (2*(game.tick-properties.LaunchTick)/properties.AirTime-1)^23 - (2*(game.tick-properties.LaunchTick)/properties.AirTime-1) ))
-				rendering.set_target(properties.ShadowID, properties.GuideCar, {-((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/500,0})
+				rendering.set_target(properties.TrainImageID, properties.GuideCar, {0,(game.tick-properties.LaunchTick)*((game.tick-properties.LaunchTick)-properties.AirTime)/gravity})
+				rendering.set_orientation(properties.TrainImageID, SpinMagnitude*( (2*(game.tick-properties.LaunchTick)/properties.AirTime-1)^SpinSpeed - (2*(game.tick-properties.LaunchTick)/properties.AirTime-1) ))
+				rendering.set_target(properties.MaskID, properties.GuideCar, {0,(game.tick-properties.LaunchTick)*((game.tick-properties.LaunchTick)-properties.AirTime)/gravity})
+				rendering.set_orientation(properties.MaskID, SpinMagnitude*( (2*(game.tick-properties.LaunchTick)/properties.AirTime-1)^SpinSpeed - (2*(game.tick-properties.LaunchTick)/properties.AirTime-1) ))
+				rendering.set_target(properties.ShadowID, properties.GuideCar, {-((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity,0})
 			elseif (properties.RampOrientation == 0.50) then -- going up
-				rendering.set_target(properties.TrainImageID, properties.GuideCar, {0,((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/500})
-				rendering.set_target(properties.MaskID, properties.GuideCar, {0,((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/500})
-				rendering.set_target(properties.ShadowID, properties.GuideCar, {-((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/500,0})	
+				rendering.set_target(properties.TrainImageID, properties.GuideCar, {0,((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity})
+				rendering.set_target(properties.MaskID, properties.GuideCar, {0,((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity})
+				rendering.set_target(properties.ShadowID, properties.GuideCar, {-((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity,0})	
 			elseif (properties.RampOrientation == 0.75) then -- going right
-				rendering.set_target(properties.TrainImageID, properties.GuideCar, {0,(game.tick-properties.LaunchTick)*((game.tick-properties.LaunchTick)-properties.AirTime)/500})
-				rendering.set_orientation(properties.TrainImageID, -0.1*( (2*(game.tick-properties.LaunchTick)/properties.AirTime-1)^23 - (2*(game.tick-properties.LaunchTick)/properties.AirTime-1) ))
-				rendering.set_target(properties.MaskID, properties.GuideCar, {0,(game.tick-properties.LaunchTick)*((game.tick-properties.LaunchTick)-properties.AirTime)/500})
-				rendering.set_orientation(properties.MaskID, -0.1*( (2*(game.tick-properties.LaunchTick)/properties.AirTime-1)^23 - (2*(game.tick-properties.LaunchTick)/properties.AirTime-1) ))
-				rendering.set_target(properties.ShadowID, properties.GuideCar, {-((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/500,0})	
+				rendering.set_target(properties.TrainImageID, properties.GuideCar, {0,(game.tick-properties.LaunchTick)*((game.tick-properties.LaunchTick)-properties.AirTime)/gravity})
+				rendering.set_orientation(properties.TrainImageID, -SpinMagnitude*( (2*(game.tick-properties.LaunchTick)/properties.AirTime-1)^SpinSpeed - (2*(game.tick-properties.LaunchTick)/properties.AirTime-1) ))
+				rendering.set_target(properties.MaskID, properties.GuideCar, {0,(game.tick-properties.LaunchTick)*((game.tick-properties.LaunchTick)-properties.AirTime)/gravity})
+				rendering.set_orientation(properties.MaskID, -SpinMagnitude*( (2*(game.tick-properties.LaunchTick)/properties.AirTime-1)^SpinSpeed - (2*(game.tick-properties.LaunchTick)/properties.AirTime-1) ))
+				rendering.set_target(properties.ShadowID, properties.GuideCar, {-((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity,0})	
 			end
 			
 		elseif (game.tick > properties.LandTick and properties.length and properties.LandedTrain and properties.LandedTrain.valid) then
@@ -1095,7 +1108,7 @@ function(eventf)
 				global.FlyingTrains[PropUnitNumber] = nil
 			end
 			
-		elseif (game.tick > properties.LandTick) then -- for any trains already in the air when the speed control update was released or other catchall failsafes
+		elseif (game.tick > properties.LandTick) then -- for any trains already in the air when the speed control update was released or other catch all failsafes
 			global.FlyingTrains[PropUnitNumber] = nil
 			
 		end	
@@ -1278,6 +1291,17 @@ if (event.entity.name == "RTTrainRamp"
 		global.FlyingTrains[SpookyGhost.unit_number].fluids = event.cause.get_fluid_contents()
 	elseif (event.cause.type == "artillery-wagon") then
 		global.FlyingTrains[SpookyGhost.unit_number].artillery = event.cause.get_inventory(defines.inventory.artillery_wagon_ammo).get_contents()
+	end
+	
+	if (event.cause.grid ~= nil) then
+		global.FlyingTrains[SpookyGhost.unit_number].gridd = {}
+		for j = 0, event.cause.grid.height-1 do
+			for i = 0, event.cause.grid.width-1 do
+				if (event.cause.grid.get({i,j})) then
+					table.insert(global.FlyingTrains[SpookyGhost.unit_number].gridd, {xpos = i, ypos = j, EquipName = event.cause.grid.get({i,j}).name})
+				end
+			end
+		end
 	end
 	
 	event.cause.destroy()
