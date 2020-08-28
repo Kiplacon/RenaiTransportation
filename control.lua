@@ -566,15 +566,7 @@ function(eventf)
 						end
 
 						NewTrain.train.manual_mode = properties.ManualMode
-						if (properties.schedule ~= nil) then
-							if (not properties.follower) then
-								if (properties.schedule.current == 1) then
-									properties.schedule.current = #(properties.schedule.records) + 1
-								end
-								properties.schedule.current = properties.schedule.current - 1
-							end
-							NewTrain.train.schedule = properties.schedule
-						end	
+						NewTrain.train.schedule = properties.schedule
 					
 						if (NewTrain.type == "locomotive") then
 							NewTrain.color = properties.color
@@ -808,13 +800,6 @@ if (event.entity.name == "RTTrainRamp"
 	-- end
 		
 	global.FlyingTrains[SpookyGhost.unit_number].schedule = event.cause.train.schedule
-	if (global.FlyingTrains[SpookyGhost.unit_number].schedule ~= nil) then
-		if (global.FlyingTrains[SpookyGhost.unit_number].schedule.current == table_size(global.FlyingTrains[SpookyGhost.unit_number].schedule.records)) then
-		global.FlyingTrains[SpookyGhost.unit_number].schedule.current = 1
-		else
-		global.FlyingTrains[SpookyGhost.unit_number].schedule.current = global.FlyingTrains[SpookyGhost.unit_number].schedule.current+1
-		end
-	end
 	
 	for number, properties in pairs(global.FlyingTrains) do
 		if (properties.follower and properties.follower.valid and event.cause.unit_number == properties.follower.unit_number) then
