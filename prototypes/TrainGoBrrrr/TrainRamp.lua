@@ -10,16 +10,15 @@ data:extend({
     minable = {mining_time = 0.5, result = "RTTrainRampItem"},
     max_health = 500,
 	render_layer = "higher-object-under",
-    --corpse = "rail-signal-remnants",
-    --dying_explosion = "rail-signal-explosion",
+    --collision_box = {{-0.2, -0.2}, {0.2, 0.2}},
+    --selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
     collision_box = {{-0.01, -1.6}, {1.6, 1.6}},
     selection_box = {{-0.01, -2}, {2, 2}},
 	collision_mask = {"train-layer"},
 	selection_priority = 100,
-    --damaged_trigger_effect = hit_effects.entity(),
     animation =
     {
-      filename = "__RenaiTransportation__/graphics/TrainRamp/lol3.png",
+      filename = "__RenaiTransportation__/graphics/TrainRamp/lol3a.png",
       priority = "high",
       width = 200,
       height = 200,
@@ -51,6 +50,33 @@ data:extend({
 			{"concrete", 50}
 		},
 	result = "RTTrainRampItem"
+},
+------------- No station skip varient
+{ --------- ramp entity -------------
+	type = "rail-signal",
+	name = "RTTrainRampNoSkip",
+	icon = "__RenaiTransportation__/graphics/TrainRamp/icon.png",
+	icon_size = 64,
+	flags = {"placeable-neutral", "player-creation", "filter-directions", "fast-replaceable-no-build-while-moving"},
+    minable = {mining_time = 0.5, result = "RTTrainRampItem"},
+	placeable_by = {item = "RTTrainRampItem", count = 1},
+    max_health = 500,
+	render_layer = "higher-object-under",
+    --collision_box = {{-0.2, -0.2}, {0.2, 0.2}},
+    --selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
+    collision_box = {{-0.01, -1.6}, {1.6, 1.6}},
+    selection_box = {{-0.01, -2}, {2, 2}},
+	collision_mask = {"train-layer"},
+	selection_priority = 100,
+    animation =
+    {
+      filename = "__RenaiTransportation__/graphics/TrainRamp/lol3b.png",
+      priority = "high",
+      width = 200,
+      height = 200,
+      frame_count = 1,
+      direction_count = 4
+    },
 }
 
 })

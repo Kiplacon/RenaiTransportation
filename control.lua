@@ -1119,7 +1119,8 @@ end)
 
 script.on_event(defines.events.on_entity_damaged,
 function(event)
-if (event.entity.name == "RTTrainRamp" 
+if (
+	(event.entity.name == "RTTrainRamp" or event.entity.name == "RTTrainRampNoSkip")
 	and event.cause 
 	and (event.cause.type == "locomotive" or event.cause.type == "cargo-wagon" or event.cause.type == "fluid-wagon" or event.cause.type == "artillery-wagon")
 	and (math.abs(event.entity.orientation-event.cause.orientation) == 0.5 
@@ -1250,7 +1251,7 @@ if (event.entity.name == "RTTrainRamp"
 	-- end
 		
 	global.FlyingTrains[SpookyGhost.unit_number].schedule = event.cause.train.schedule
-	if (global.FlyingTrains[SpookyGhost.unit_number].schedule ~= nil) then
+	if (event.entity.name == "RTTrainRamp" and global.FlyingTrains[SpookyGhost.unit_number].schedule ~= nil) then
 		if (global.FlyingTrains[SpookyGhost.unit_number].schedule.current == table_size(global.FlyingTrains[SpookyGhost.unit_number].schedule.records)) then
 		global.FlyingTrains[SpookyGhost.unit_number].schedule.current = 1
 		else
@@ -1340,27 +1341,8 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 	end
 	
 	if (ThingHovering) then
-		if (ThingHovering.name == "PrimerBouncePlate") then
-			ThingHovering.surface.create_entity
-				({
-				name = "PrimerSpreadBouncePlate",
-				position = ThingHovering.position, --required setting for rendering, doesn't affect spawn
-				force = game.get_player(event1.player_index).force,
-				raise_built = true
-				})	
-			ThingHovering.destroy()
-			
-		elseif (ThingHovering.name == "PrimerSpreadBouncePlate") then
-			ThingHovering.surface.create_entity
-				({
-				name = "PrimerBouncePlate",
-				position = ThingHovering.position, --required setting for rendering, doesn't affect spawn
-				force = game.get_player(event1.player_index).force,
-				raise_built = true
-				})	
-			ThingHovering.destroy()	
-			
-		elseif (string.find(ThingHovering.name, "RTThrower-") and game.get_player(event1.player_index).force.technologies["RTFocusedFlinging"].researched == true) then
+		---- Adjusting thrower range ----
+		if (string.find(ThingHovering.name, "RTThrower-") and game.get_player(event1.player_index).force.technologies["RTFocusedFlinging"].researched == true) then
 			CurrentRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
 			if ((ThingHovering.name ~= "RTThrower-long-handed-inserter" and CurrentRange >= 15) or CurrentRange >= 25) then
 				ThingHovering.drop_position = 
@@ -1381,7 +1363,58 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 					position = ThingHovering.drop_position,
 					text = "Range: "..math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
 				})
-			
+		---- swapping primer modes ----		
+		elseif (ThingHovering.name == "PrimerBouncePlate") then
+			ThingHovering.surface.create_entity
+				({
+				name = "PrimerSpreadBouncePlate",
+				position = ThingHovering.position,
+				force = game.get_player(event1.player_index).force,
+				create_build_effect_smoke = false,
+				raise_built = true
+				})	
+			ThingHovering.destroy()
+		elseif (ThingHovering.name == "PrimerSpreadBouncePlate") then
+			ThingHovering.surface.create_entity
+				({
+				name = "PrimerBouncePlate",
+				position = ThingHovering.position,
+				force = game.get_player(event1.player_index).force,
+				create_build_effect_smoke = false,
+				raise_built = true
+				})	
+			ThingHovering.destroy()	
+		---- swapping train ramp modes ----		
+		elseif (ThingHovering.name == "RTTrainRamp") then
+			ElPosition = ThingHovering.position
+			ElForce = game.get_player(event1.player_index).force
+			ElDirection = ThingHovering.direction
+			ElSurface = ThingHovering.surface
+			ThingHovering.destroy()
+			ElSurface.create_entity
+				({
+				name = "RTTrainRampNoSkip",
+				position = ElPosition,
+				direction = ElDirection,
+				force = ElForce,
+				create_build_effect_smoke = false
+				})	
+
+		elseif (ThingHovering.name == "RTTrainRampNoSkip") then
+			ElPosition = ThingHovering.position
+			ElForce = game.get_player(event1.player_index).force
+			ElDirection = ThingHovering.direction
+			ElSurface = ThingHovering.surface
+			ThingHovering.destroy()		
+			ElSurface.create_entity
+				({
+				name = "RTTrainRamp",
+				position = ElPosition,
+				direction = ElDirection,
+				force = ElForce,
+				create_build_effect_smoke = false
+				})	
+		
 		end
 	end
 end)

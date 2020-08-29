@@ -285,6 +285,8 @@ for ThingID, ThingData in pairs(data.raw.inserter) do
 		and ThingData.draw_held_item ~= false 
 		and ThingData.selectable_in_game ~= false 
 		and ThingData.minable 
+		and ThingData.minable.result
+		and data.raw.item[ThingData.minable.result] ~= nil
 		and not string.find(ThingData.name, "RTThrower-")) then
 		MakeThrowerVariant(ThingData)
 	end

@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.8
+Date: 8/28/2020
+  Additions:
+    - Added an alternate mode for the Train Ramp that does not do the schedule skipping after a jump. Swap between the modes by hovering a ramp and pressing Interact. Requested by many people.
+  Bugfixes:
+    - Fixed that flying trains would be affected by belts transport belts underneath.
+---------------------------------------------------------------------------------------------------
+Version: 0.4.7
+Date: 8/23/2020
+  Bugfixes:
+    - Fixed (I think) a crash related to making thrower varient of an inserter without a minable.result
+---------------------------------------------------------------------------------------------------
 Version: 0.4.6
 Date: 8/22/2020
   Additions:
