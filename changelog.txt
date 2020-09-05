@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.5.1
+Date: 9/5/2020
+  Bugfixes:
+    - Fixed code analyzing power poles without a copper cable connection. Found by HairyDave
+---------------------------------------------------------------------------------------------------
 Version: 0.5.0
 Date: 9/5/2020
   Additions:
@@ -9,7 +14,6 @@ Date: 9/5/2020
     - Fixed a crash when using a Train Ramp in sandbox mode. The environment was probably too toxic in there. Found by notnotmelon.
     - Fixed a crazy situation where if two trains were trying to land close to each other and one didn't have a destination and thus stopped immediately to 0 speed while another train or wagon with a netagive speed (backwards) tried to attach to it and make the stationary train move with negative speed, the game would crash because I didn't take a 0 speed train into account. Report and initial investigation by mvolfik and ProkopRandacek on github.
     - Made the stand in cars that guided the trains jump invincible so it couldn't be destroyed premptively.
-
 ---------------------------------------------------------------------------------------------------
 Version: 0.4.8
 Date: 8/28/2020

@@ -356,9 +356,9 @@ for Category, ThingsTable in pairs(data.raw) do
 		
 		if (settings.startup["RTZiplineSetting"].value == true) then
 			if (ThingData.type == "electric-pole") then
-				if (ThingData.connection_points.wire) then
+				if (ThingData.connection_points.wire and ThingData.connection_points.wire.copper) then
 					Points = ThingData.connection_points.wire.copper
-				elseif (ThingData.connection_points[1].wire) then
+				elseif (ThingData.connection_points[1].wire and ThingData.connection_points[1].wire.copper) then
 					xavg = 0
 					yavg = 0
 					for each, varient in pairs(ThingData.connection_points) do
@@ -367,33 +367,35 @@ for Category, ThingsTable in pairs(data.raw) do
 					end
 					Points = {xavg/#ThingData.connection_points, yavg/#ThingData.connection_points}
 				end
-				data:extend
-				({
-					{
-						type = "recipe",
-						name = "RTGetTheGoods-"..ThingData.name.."X",
-						enabled = false,
-						hidden = true,
-						emissions_multiplier = Points[1],
-						ingredients = 
-							{
-								{"infinity-chest", 360}
-							},
-						result = "infinity-chest"
-					},
-					{
-						type = "recipe",
-						name = "RTGetTheGoods-"..ThingData.name.."Y",
-						enabled = false,
-						hidden = true,
-						emissions_multiplier = Points[2],
-						ingredients = 
-							{
-								{"infinity-chest", 360}
-							},
-						result = "infinity-pipe"
-					},
-				})
+				if (Points ~= nil) then
+					data:extend
+					({
+						{
+							type = "recipe",
+							name = "RTGetTheGoods-"..ThingData.name.."X",
+							enabled = false,
+							hidden = true,
+							emissions_multiplier = Points[1],
+							ingredients = 
+								{
+									{"infinity-chest", 360}
+								},
+							result = "infinity-chest"
+						},
+						{
+							type = "recipe",
+							name = "RTGetTheGoods-"..ThingData.name.."Y",
+							enabled = false,
+							hidden = true,
+							emissions_multiplier = Points[2],
+							ingredients = 
+								{
+									{"infinity-chest", 360}
+								},
+							result = "infinity-pipe"
+						},
+					})
+				end
 			end
 		end
 	end
