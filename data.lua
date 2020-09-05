@@ -1,25 +1,33 @@
-require("prototypes.BouncePlates.BouncePlate")
-require("prototypes.BouncePlates.PrimerBouncePlate")
-require("prototypes.BouncePlates.SignalBouncePlate")
-require("prototypes.BouncePlates.DirectedBouncePlate")
-require("prototypes.BouncePlates.TrainBouncePlate")
-require("prototypes.BouncePlates.TrainDirectedBouncePlate")
-
-require("prototypes.OpenContainer")
-
+require("prototypes.technology")
 require("prototypes.sounds")
-
 require("prototypes.TabSortingStuff")
 
+require("prototypes.BouncePlates.BouncePlate")
+require("prototypes.BouncePlates.DirectedBouncePlate")
 require("prototypes.PlayerLauncher")
 
+require("prototypes.OpenContainer")
 require("prototypes.hatch")
 
-require("prototypes.technology")
+if (settings.startup["RTBounceSetting"].value == true) then
+	require("prototypes.BouncePlates.PrimerBouncePlate")
+	require("prototypes.BouncePlates.SignalBouncePlate")
+end
 
-require("prototypes.TrainGoBrrrr.TrainRamp")
-require("prototypes.TrainGoBrrrr.PropHunt")
-require("prototypes.TrainGoBrrrr.sprites.base")
+if (settings.startup["RTTrainBounceSetting"].value == true and settings.startup["RTTrainRampSetting"].value == true) then
+	require("prototypes.BouncePlates.TrainBouncePlate")
+	require("prototypes.BouncePlates.TrainDirectedBouncePlate")
+end
+
+if (settings.startup["RTTrainRampSetting"].value == true) then
+	require("prototypes.TrainGoBrrrr.TrainRamp")
+	require("prototypes.TrainGoBrrrr.PropHunt")
+	require("prototypes.TrainGoBrrrr.sprites.base")
+end
+
+if (settings.startup["RTZiplineSetting"].value == true) then
+	require("prototypes.zipline")
+end
 
 data:extend({
   {

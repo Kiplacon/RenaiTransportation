@@ -8,7 +8,13 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
     TheProjectile.particle_spawn_interval = 0
     TheProjectile.particle_spawn_timeout = 0
     TheProjectile.particle_vertical_acceleration = 0.0035 -- gravity, default 0.0045
-    TheProjectile.particle_horizontal_speed = 0.18 -- speed, default 0.3375
+	if (ThingData.name == "MaybeIllBeTracer") then
+		TheProjectile.particle_horizontal_speed = 10
+		TheProjectile.shadow = nil
+	else
+	    TheProjectile.particle_horizontal_speed = 0.18 -- speed, default 0.3375
+	end
+
     TheProjectile.particle_horizontal_speed_deviation = 0
     --TheProjectile.particle_start_alpha = 0.5
     --TheProjectile.particle_end_alpha = 1
@@ -276,57 +282,118 @@ if (isitenabled == false) then
 	table.insert(data.raw["technology"]["RTThrowerTime"].effects,{type="unlock-recipe",recipe=TheRecipe.name})	
 end
 end
----------------------------------------------------------- loop through data.raw ---------------------------------
+--- loop through data.raw ---------------------------------
 ---- Make thrower variants first so that the projectile generating will work
+
 for ThingID, ThingData in pairs(data.raw.inserter) do	
 	-- lots of requirements to make sure not pick up any "function only" inserters from other mods --
-	if (ThingData.type == "inserter" 
-		and ThingData.energy_source.type ~= "void" 
-		and ThingData.draw_held_item ~= false 
-		and ThingData.selectable_in_game ~= false 
-		and ThingData.minable 
-		and ThingData.minable.result
-		and data.raw.item[ThingData.minable.result] ~= nil
-		and not string.find(ThingData.name, "RTThrower-")) then
-		MakeThrowerVariant(ThingData)
+	if (settings.startup["RTModdedThrowers"].value == true) then
+		if (ThingData.type == "inserter" 
+			and ThingData.energy_source.type ~= "void" 
+			and ThingData.draw_held_item ~= false 
+			and ThingData.selectable_in_game ~= false 
+			and ThingData.minable 
+			and ThingData.minable.result
+			and data.raw.item[ThingData.minable.result] ~= nil
+			and not string.find(ThingData.name, "RTThrower-")) then
+			MakeThrowerVariant(ThingData)
+		end
+	else
+		if (ThingData.name == "burner-inserter" 
+		or ThingData.name == "inserter" 
+		or ThingData.name == "fast-inserter"
+		or ThingData.name == "long-handed-inserter"	
+		or ThingData.name == "filter-inserter"
+		or ThingData.name == "stack-filter-inserter"
+		or ThingData.name == "stack-inserter") 
+		then
+			MakeThrowerVariant(ThingData)
+		end	
 	end
 end
+
 
 for Category, ThingsTable in pairs(data.raw) do
 	for ThingID, ThingData in pairs(ThingsTable) do	
 		if (ThingData.stack_size) then
 			MakeProjectile(ThingData)
 			
-			if (ThingData.type == "ammo" -- looking for things like rockets, tank shells, missles, etc
-				and ThingData.ammo_type.action --if this ammo does something
-				and ThingData.ammo_type.action.action_delivery --in the form of
-				and (ThingData.ammo_type.action.action_delivery.type == "projectile" --a projectile
-					 or ThingData.ammo_type.action.action_delivery.type == "artillery") --artillery gets its own projectile catagory
-				) then
-				MakePrimedProjectile(ThingData)
-			elseif 
-				(
+			if (settings.startup["RTBounceSetting"].value == true) then
+				if (ThingData.type == "ammo" -- looking for things like rockets, tank shells, missles, etc
+					and ThingData.ammo_type.action --if this ammo does something
+					and ThingData.ammo_type.action.action_delivery --in the form of
+					and (ThingData.ammo_type.action.action_delivery.type == "projectile" --a projectile
+						 or ThingData.ammo_type.action.action_delivery.type == "artillery") --artillery gets its own projectile catagory
+					) then
+					MakePrimedProjectile(ThingData)
+				elseif 
 					(
-						Category == "capsule" --if its a capsule
-						and ThingData.capsule_action.type == "throw" --with a thrown action
-						and 
 						(
-							( -- 0.18.36 capsule action notation
-							ThingData.capsule_action.attack_parameters.ammo_type.action[1]
-							and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile]--that has an associated projectile
-							and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile].action --that does something
+							Category == "capsule" --if its a capsule
+							and ThingData.capsule_action.type == "throw" --with a thrown action
+							and 
+							(
+								( -- 0.18.36 capsule action notation
+								ThingData.capsule_action.attack_parameters.ammo_type.action[1]
+								and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile]--that has an associated projectile
+								and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile].action --that does something
+								)
+								or	
+								( -- old capsule action notation
+								ThingData.capsule_action.attack_parameters.ammo_type.action
+								and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile]--that has an associated projectile
+								and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile].action --that does something
+								)
 							)
-							or	
-							( -- old capsule action notation
-							ThingData.capsule_action.attack_parameters.ammo_type.action
-							and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile]--that has an associated projectile
-							and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile].action --that does something
-							)
-						)
-					) 
-					or data.raw["land-mine"][ThingData.place_result]
-				) then
-				MakePrimedProjectile(ThingData)
+						) 
+						or data.raw["land-mine"][ThingData.place_result]
+					) then
+					MakePrimedProjectile(ThingData)
+				end
+			end
+		end
+
+		
+		if (settings.startup["RTZiplineSetting"].value == true) then
+			if (ThingData.type == "electric-pole") then
+				if (ThingData.connection_points.wire) then
+					Points = ThingData.connection_points.wire.copper
+				elseif (ThingData.connection_points[1].wire) then
+					xavg = 0
+					yavg = 0
+					for each, varient in pairs(ThingData.connection_points) do
+						xavg = xavg + varient.wire.copper[1]
+						yavg = yavg + varient.wire.copper[2]
+					end
+					Points = {xavg/#ThingData.connection_points, yavg/#ThingData.connection_points}
+				end
+				data:extend
+				({
+					{
+						type = "recipe",
+						name = "RTGetTheGoods-"..ThingData.name.."X",
+						enabled = false,
+						hidden = true,
+						emissions_multiplier = Points[1],
+						ingredients = 
+							{
+								{"infinity-chest", 360}
+							},
+						result = "infinity-chest"
+					},
+					{
+						type = "recipe",
+						name = "RTGetTheGoods-"..ThingData.name.."Y",
+						enabled = false,
+						hidden = true,
+						emissions_multiplier = Points[2],
+						ingredients = 
+							{
+								{"infinity-chest", 360}
+							},
+						result = "infinity-pipe"
+					},
+				})
 			end
 		end
 	end
@@ -335,6 +402,14 @@ end
 MakeProjectile(
 	{
 		name = "test",
+		icon = "__RenaiTransportation__/graphics/nothing.png",
+		icon_size = 32
+	}
+)
+
+MakeProjectile(
+	{
+		name = "MaybeIllBeTracer",
 		icon = "__RenaiTransportation__/graphics/nothing.png",
 		icon_size = 32
 	}

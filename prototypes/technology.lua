@@ -26,98 +26,7 @@ data:extend({
 	}
   },
   {
- 	type = "technology",
-	name = "HatchRTTech",
-	icon = "__RenaiTransportation__/graphics/hatch/icon.png",
-	icon_size = 64,
-	effects =
-	{
-		{
-			type = "unlock-recipe",
-			recipe = "HatchRTRecipe"
-		}
-	},
-	prerequisites = {"se~no"},
-	unit =
-	{
-		count = 20,
-		ingredients =
-		{
-		  {"automation-science-pack", 1}
-		},
-		time = 10
-	} 
-  },
-  {
- 	type = "technology",
-	name = "RTThrowerTime",
-	icon = "__RenaiTransportation__/graphics/tech/ThrowerTech.png",
-	icon_size = 128,
-	effects =
-	{
-	},
-	prerequisites = {"se~no", "logistic-science-pack"},
-	unit =
-	{
-		count = 50,
-		ingredients =
-		{
-		  {"automation-science-pack", 1},
-		  {"logistic-science-pack", 1}
-		},
-		time = 20
-	} 
-  },
-  {
- 	type = "technology",
-	name = "PrimerPlateTech",
-	icon = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerPlateIconn.png",
-	icon_size = 64,
-	effects =
-	{
-		{
-			type = "unlock-recipe",
-			recipe = "PrimerBouncePlateRecipie"
-		}
-	},
-	prerequisites = {"se~no", "military-2"},
-	unit =
-	{
-		count = 25,
-		ingredients =
-		{
-		  {"automation-science-pack", 1},
-		  {"logistic-science-pack", 1}
-		},
-		time = 25
-	} 
-  },
-  {
- 	type = "technology",
-	name = "SignalPlateTech",
-	icon = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlateIconn.png",
-	icon_size = 64,
-	effects =
-	{
-		{
-			type = "unlock-recipe",
-			recipe = "SignalBouncePlateRecipie"
-		}
-	},
-	prerequisites = {"se~no", "circuit-network"},
-	unit =
-	{
-		count = 25,
-		ingredients =
-		{
-		  {"automation-science-pack", 1},
-		  {"logistic-science-pack", 1}
-		},
-		time = 25
-	} 
-  },
-  {
- 	type = "technology",
+	type = "technology",
 	name = "RTFocusedFlinging",
 	icon = "__RenaiTransportation__/graphics/tech/focus.png",
 	icon_size = 128,
@@ -141,55 +50,194 @@ data:extend({
 	} 
   },
   {
- 	type = "technology",
-	name = "RTFlyingFreight",
-	icon = "__RenaiTransportation__/graphics/tech/FlyingFreight.png",
-	icon_size = 128,
+	type = "technology",
+	name = "HatchRTTech",
+	icon = "__RenaiTransportation__/graphics/hatch/icon.png",
+	icon_size = 64,
 	effects =
 	{
 		{
 			type = "unlock-recipe",
-			recipe = "RTTrainRampRecipe"
-		}	
+			recipe = "HatchRTRecipe"
+		}
 	},
-	prerequisites = {"railway", "concrete"},
+	prerequisites = {"se~no"},
 	unit =
 	{
-		count = 150,
+		count = 20,
 		ingredients =
 		{
-		  {"automation-science-pack", 1},
-		  {"logistic-science-pack", 1}
+		  {"automation-science-pack", 1}
 		},
-		time = 30
+		time = 10
 	} 
   },
   {
- 	type = "technology",
-	name = "RTFreightPlates",
-	icon = "__RenaiTransportation__/graphics/tech/FlyingFreightPlate.png",
+	type = "technology",
+	name = "RTThrowerTime",
+	icon = "__RenaiTransportation__/graphics/tech/ThrowerTech.png",
 	icon_size = 128,
 	effects =
 	{
-		{
-			type = "unlock-recipe",
-			recipe = "RTTrainBouncePlateRecipie"
-		},
-		{
-			type = "unlock-recipe",
-			recipe = "RTTrainDirectedBouncePlateRecipie"
-		}
 	},
-	prerequisites = {"se~no", "RTFlyingFreight"},
+	prerequisites = {"se~no", "logistic-science-pack"},
 	unit =
 	{
-		count = 100,
+		count = 50,
 		ingredients =
 		{
 		  {"automation-science-pack", 1},
 		  {"logistic-science-pack", 1}
 		},
-		time = 30
+		time = 20
 	} 
   }
 })
+
+
+if (settings.startup["RTBounceSetting"].value == true) then
+	data:extend({
+	  {
+		type = "technology",
+		name = "PrimerPlateTech",
+		icon = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerPlateIconn.png",
+		icon_size = 64,
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "PrimerBouncePlateRecipie"
+			}
+		},
+		prerequisites = {"se~no", "military-2"},
+		unit =
+		{
+			count = 25,
+			ingredients =
+			{
+			  {"automation-science-pack", 1},
+			  {"logistic-science-pack", 1}
+			},
+			time = 25
+		} 
+	  },
+	  {
+		type = "technology",
+		name = "SignalPlateTech",
+		icon = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlateIconn.png",
+		icon_size = 64,
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "SignalBouncePlateRecipie"
+			}
+		},
+		prerequisites = {"se~no", "circuit-network"},
+		unit =
+		{
+			count = 25,
+			ingredients =
+			{
+			  {"automation-science-pack", 1},
+			  {"logistic-science-pack", 1}
+			},
+			time = 25
+		} 
+	  }
+	})
+end
+
+if (settings.startup["RTTrainRampSetting"].value == true) then
+	data:extend({
+	  {
+		type = "technology",
+		name = "RTFlyingFreight",
+		icon = "__RenaiTransportation__/graphics/tech/FlyingFreight.png",
+		icon_size = 128,
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "RTTrainRampRecipe"
+			}	
+		},
+		prerequisites = {"railway", "concrete"},
+		unit =
+		{
+			count = 150,
+			ingredients =
+			{
+			  {"automation-science-pack", 1},
+			  {"logistic-science-pack", 1}
+			},
+			time = 30
+		} 
+	  }
+	})
+	
+	if (settings.startup["RTTrainBounceSetting"].value == true) then
+		data:extend({
+			{
+				type = "technology",
+				name = "RTFreightPlates",
+				icon = "__RenaiTransportation__/graphics/tech/FlyingFreightPlate.png",
+				icon_size = 128,
+				effects =
+				{
+					{
+						type = "unlock-recipe",
+						recipe = "RTTrainBouncePlateRecipie"
+					},
+					{
+						type = "unlock-recipe",
+						recipe = "RTTrainDirectedBouncePlateRecipie"
+					}
+				},
+				prerequisites = {"se~no", "RTFlyingFreight"},
+				unit =
+				{
+					count = 100,
+					ingredients =
+					{
+					  {"automation-science-pack", 1},
+					  {"logistic-science-pack", 1}
+					},
+					time = 30
+				} 
+			}
+		})
+	end
+end
+
+if (settings.startup["RTZiplineSetting"].value == true) then
+	data:extend({
+	  {
+		type = "technology",
+		name = "RTZiplineTech",
+		icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+		icon_size = 64,
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "RTZiplineRecipe"
+			},
+			{
+				type = "unlock-recipe",
+				recipe = "RTZiplineControlsRecipe"
+			}
+		},
+		prerequisites = {"se~no", "steel-processing"},
+		unit =
+		{
+			count = 100,
+			ingredients =
+			{
+			  {"automation-science-pack", 1}
+			},
+			time = 30
+		} 
+	  }
+	})
+end

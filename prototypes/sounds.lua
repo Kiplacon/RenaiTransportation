@@ -34,5 +34,27 @@ data:extend({
 			remove = true,
 			count_already_playing = true
 		}
+},
+
+{
+	type = "sound",
+	name = "RTZipAttach",
+	filename = "__base__/sound/power-switch-activate-2.ogg",
+	audible_distance_modifier = 0.5,
+	volume = 0.75
+},
+{
+	type = "sound",
+	name = "RTZipDettach",
+	filename = "__base__/sound/power-switch-activate-3.ogg",
+	audible_distance_modifier = 0.5,
+	volume = 0.75
+},
+{
+	type = "sound",
+	name = "RTZipWindDown",
+	filename = "__base__/sound/car-engine-stop.ogg",
+	audible_distance_modifier = 0.5,
+	volume = 0.75
 }
 })

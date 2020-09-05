@@ -1,6 +1,7 @@
 local MLG = table.deepcopy(data.raw.car["car"])
 MLG.name = "RTPropCar"
 MLG.collision_mask = {}
+MLG.selectable_in_game = false
 MLG.corpse = nil
 MLG.energy_source ={type = "void"}
 MLG.working_sound = 
@@ -22,6 +23,7 @@ MLG.animation =
 	size = 32,
 	direction_count = 1
 	}
+MLG.water_reflection = nil
 MLG.has_belt_immunity = true
 MLG.turret_rotation_speed = 0.00000000000001
 MLG.track_particle_triggers = nil

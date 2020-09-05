@@ -1,4 +1,4 @@
----- Setup tables and stuff for new/existing saves ----
+-- Setup tables and stuff for new/existing saves ----
 script.on_init( -- new saves
 function()
 	if (global.CatapultList == nil) then
@@ -18,7 +18,9 @@ function()
 	end
 	
 	for PlayerID, PlayerLuaData in pairs(game.players) do
-		global.AllPlayers[PlayerID] = {}
+		if (global.AllPlayers[PlayerID] == nil) then
+			global.AllPlayers[PlayerID] = {}
+		end
 	end
 	
 	if (global.FlyingTrains == nil) then
@@ -49,7 +51,9 @@ function()
 	end
 	
 	for PlayerID, PlayerLuaData in pairs(game.players) do
-		global.AllPlayers[PlayerID] = {}
+		if (global.AllPlayers[PlayerID] == nil) then
+			global.AllPlayers[PlayerID] = {}
+		end
 	end
 	
 	if (global.FlyingTrains == nil) then
@@ -69,12 +73,13 @@ function(event)
 	end	
 end)
 
+-- On Built/Copy/Stuff
 ---- adds new thrower inserters to the list of throwers to check. Make player launchers (reskined inserters) to be inoperable and inactive ----
 ---- built by hand ----
 script.on_event(defines.events.on_built_entity, 
 function(event)
 	if (string.find(event.created_entity.name, "RTThrower-")) then
-		global.CatapultList[event.created_entity.unit_number] = event.created_entity
+		global.CatapultList[event.created_entity.unit_number] = {entity = event.created_entity, target = "nothing"}
 	
 	elseif (event.created_entity.name == "PlayerLauncher") then
 		event.created_entity.operable = false
@@ -154,11 +159,12 @@ function(event)
 		end
 	end
 end)
+
 ---- built by robot ----
 script.on_event(defines.events.on_robot_built_entity, 
 function(event)
 	if (string.find(event.created_entity.name, "RTThrower-")) then
-		global.CatapultList[event.created_entity.unit_number] = event.created_entity
+		global.CatapultList[event.created_entity.unit_number] = {entity = event.created_entity, target = "nothing"}
 	
 	elseif (event.created_entity.name == "PlayerLauncher") then
 		event.created_entity.operable = false
@@ -243,7 +249,7 @@ end)
 script.on_event(defines.events.script_raised_built, 
 function(event)
 	if (string.find(event.entity.name, "RTThrower-")) then
-		global.CatapultList[event.entity.unit_number] = event.entity
+		global.CatapultList[event.entity.unit_number] = {entity = event.entity, target = "nothing"}
 	
 	elseif (event.entity.name == "PlayerLauncher") then
 		event.entity.operable = false
@@ -328,7 +334,7 @@ end)
 script.on_event(defines.events.on_entity_cloned, 
 function(event)
 	if (string.find(event.destination.name, "RTThrower-")) then
-		global.CatapultList[event.destination.unit_number] = event.destination
+		global.CatapultList[event.destination.unit_number] = {entity = event.destination, target = "nothing"}
 	
 	elseif (event.destination.name == "PlayerLauncher") then
 		event.destination.operable = false
@@ -412,7 +418,7 @@ end)
 script.on_event(defines.events.script_raised_revive, 
 function(event)
 	if (string.find(event.entity.name, "RTThrower-")) then
-		global.CatapultList[event.entity.unit_number] = event.entity
+		global.CatapultList[event.entity.unit_number] = {entity = event.entity, target = "nothing"}
 	
 	elseif (event.entity.name == "PlayerLauncher") then
 		event.entity.operable = false
@@ -494,6 +500,7 @@ function(event)
 end)
 
 
+-- On Rotate
 script.on_event(defines.events.on_player_rotated_entity,
 function(event)
 	if (event.entity.name == "DirectedBouncePlate" and global.BouncePadList[event.entity.unit_number] ~= nil) then
@@ -542,12 +549,14 @@ function(event)
 	end
 end)
 
-
+-- Thrower Check
 ---- checks if thrower inserters have something in their hands and it's in the throwing position, then creates the approppriate projectile ----
 script.on_nth_tick(3, 
 function(event)
 	if (global.CatapultList ~= {}) then
-		for catapultID, catapult in pairs(global.CatapultList) do
+		for catapultID, properties in pairs(global.CatapultList) do
+		
+			local catapult = properties.entity
 		
 			BurnerSelfRefuelCompensation = 0.2
 			if (catapult.valid and catapult.burner == nil and catapult.energy/catapult.electric_buffer_size >= 0.9) then
@@ -566,22 +575,34 @@ function(event)
 					}
 			end
 			
-			if (catapult.valid and catapult.active == true and catapult.held_stack.valid_for_read) then
-				if (catapult.orientation == 0    and catapult.held_stack_position.y >= catapult.position.y+BurnerSelfRefuelCompensation)
-				or (catapult.orientation == 0.25 and catapult.held_stack_position.x <= catapult.position.x-BurnerSelfRefuelCompensation)
-				or (catapult.orientation == 0.50 and catapult.held_stack_position.y <= catapult.position.y-BurnerSelfRefuelCompensation)	
-				or (catapult.orientation == 0.75 and catapult.held_stack_position.x >= catapult.position.x+BurnerSelfRefuelCompensation) 
-				then
-					for i = 1, catapult.held_stack.count do
-						catapult.surface.create_entity
-							({
-							name = catapult.held_stack.name.."-projectileFromRenaiTransportation", 
-							position = catapult.position, --required setting for rendering, doesn't affect spawn
-							source_position = catapult.held_stack_position, --launch from
-							target_position = catapult.drop_position --launch to
-							})
+			if (catapult.valid and catapult.held_stack.valid_for_read) then
+				if (settings.global["RTOverflowComp"].value == true) then
+					if (properties.target ~= "nothing" and properties.target.type == "transport-belt" and (properties.target.get_transport_line(1).can_insert_at_back() == false and properties.target.get_transport_line(2).can_insert_at_back() == false)) then
+						catapult.active = false
+					elseif (properties.target ~= "nothing" and properties.target.can_insert(catapult.held_stack) == false) then
+						catapult.active = false
+					else
+						catapult.active = true
 					end
-					catapult.held_stack.clear()
+				end
+				
+				if (catapult.active == true) then
+					if (catapult.orientation == 0    and catapult.held_stack_position.y >= catapult.position.y+BurnerSelfRefuelCompensation)
+					or (catapult.orientation == 0.25 and catapult.held_stack_position.x <= catapult.position.x-BurnerSelfRefuelCompensation)
+					or (catapult.orientation == 0.50 and catapult.held_stack_position.y <= catapult.position.y-BurnerSelfRefuelCompensation)	
+					or (catapult.orientation == 0.75 and catapult.held_stack_position.x >= catapult.position.x+BurnerSelfRefuelCompensation) 
+					then
+						for i = 1, catapult.held_stack.count do
+							catapult.surface.create_entity
+								({
+								name = catapult.held_stack.name.."-projectileFromRenaiTransportation", 
+								position = catapult.position, --required setting for rendering, doesn't affect spawn
+								source_position = catapult.held_stack_position, --launch from
+								target_position = catapult.drop_position --launch to
+								})
+						end
+						catapult.held_stack.clear()
+					end
 				end
 				
 			elseif (catapult.valid == false) then
@@ -592,8 +613,25 @@ function(event)
 	end
 end)
 
+script.on_nth_tick(120, 
+function(event)
+	if (settings.global["RTOverflowComp"].value == true) then
+		for catapultID, properties in pairs(global.CatapultList) do
+			properties.entity.surface.create_entity
+				({
+				name = "MaybeIllBeTracer-projectileFromRenaiTransportation", 
+				position = properties.entity.position, --required setting for rendering, doesn't affect spawn
+				source = properties.entity, --launch from
+				target_position = properties.entity.drop_position --launch to
+				})
+		end
+	else
+	--dont
+	end
+end)
 
----- When a projectile lands and its effect_id is triggered, what to do ----
+-- Projectile Lands
+-- When a projectile lands and its effect_id is triggered, what to do ----
 script.on_event(defines.events.on_script_trigger_effect,
 function (event) --has .effect_id, .surface_index, and .source_position, .source_entity, .target_position, and .target_entity depending on how the effect was triggered
 
@@ -673,35 +711,37 @@ if (string.find(event.effect_id, "-LandedRT")) then
 				target_position = {ThingLandedOn.position.x  +unitx*(range+RangeBonus)  +unity*(SidewaysShift), ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)},
 				force = ThingLandedOn.force
 				})
-			ThingLandedOn.surface.create_particle
-				({
-				name = effect,
-				position = ThingLandedOn.position,
-				movement = {0,0},
-				height = 0,
-				vertical_speed = 0.1,
-				frame_speed = 1
-				})
-			ThingLandedOn.surface.play_sound
-				{
-					path = tunez,
+			if (event.effect_id ~= "MaybeIllBeTracer-LandedRT") then
+				ThingLandedOn.surface.create_particle
+					({
+					name = effect,
 					position = ThingLandedOn.position,
-					volume = 0.7
-				}
-			
+					movement = {0,0},
+					height = 0,
+					vertical_speed = 0.1,
+					frame_speed = 1
+					})
+				ThingLandedOn.surface.play_sound
+					{
+						path = tunez,
+						position = ThingLandedOn.position,
+						volume = 0.7
+					}
+			end
 			---- Handling players ---- 
-			if (event.source_entity ~= nil) then
+			if (event.effect_id == "test-LandedRT") then
 				event.source_entity.teleport(ThingLandedOn.position)
 				global.AllPlayers[event.source_entity.player.index].direction = traveling
 				global.AllPlayers[event.source_entity.player.index].StartMovementTick = event.tick
 				global.AllPlayers[event.source_entity.player.index].LastBouncedOn = ThingLandedOn.name	
 				global.AllPlayers[event.source_entity.player.index].GuideProjectile = cheesewheel
+				global.AllPlayers[event.source_entity.player.index].jumping = true
 			end	
 				
 		---- If its a character (because it uses the test-LandedRT effect_id) destroy what they land on so they dont get stuck ----
 		elseif (event.effect_id == "test-LandedRT") then
 			
-			---- The only thing that doesn't .die() is a cliff ---- 
+			---- Doesn't make sense for player landing on cliff to destroy it ---- 
 			if (ThingLandedOn.name == "cliff") then
 				global.AllPlayers[event.source_entity.player.index].GuideProjectile = nil
 				event.source_entity.teleport(event.source_entity.surface.find_non_colliding_position("iron-chest", event.target_position, 0, 0.5))
@@ -711,30 +751,35 @@ if (string.find(event.effect_id, "-LandedRT")) then
 			game.get_player(event.source_entity.player.index).character.destructible = true	
 			event.source_entity.player.character.damage(10*(ThingLandedOn.bounding_box.right_bottom.x-ThingLandedOn.bounding_box.left_top.x)*(ThingLandedOn.bounding_box.right_bottom.y-ThingLandedOn.bounding_box.left_top.y), "neutral", "impact", ThingLandedOn)
 			ThingLandedOn.die()
-			
-		---- presumably the thrown thing is an item if not a character ----
-		---- If it landed on an open container, insert it ----
-		elseif (ThingLandedOn.name == "OpenContainer" and ThingLandedOn.can_insert({name=string.gsub(event.effect_id, "-LandedRT", "")})) then
-			ThingLandedOn.insert({name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
 		
-		---- If the thing it landed on has an inventory and a hatch, insert the item ----
-		elseif (ThingLandedOn.surface.find_entity('HatchRT', event.target_position) and ThingLandedOn.can_insert({name=string.gsub(event.effect_id, "-LandedRT", "")}) ) then
-			ThingLandedOn.insert({name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
+		elseif (event.effect_id ~= "MaybeIllBeTracer-LandedRT") then
+			---- presumably the thrown thing is an item if not a character ----
+			---- If it landed on an open container, insert it ----
+			if (ThingLandedOn.name == "OpenContainer" and ThingLandedOn.can_insert({name=string.gsub(event.effect_id, "-LandedRT", "")})) then
+				ThingLandedOn.insert({name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
 			
-		---- otherwise it bounces off whatever it landed on and lands as an item on the nearest empty space within 10 tiles. destroyed if no space ----
-		else	
-			game.get_surface(event.surface_index).spill_item_stack
-				(
-					game.get_surface(event.surface_index).find_non_colliding_position("item-on-ground", event.target_position, 0, 0.1),
-					{name=string.gsub(event.effect_id, "-LandedRT", ""), count=1}
-				)
+			---- If the thing it landed on has an inventory and a hatch, insert the item ----
+			elseif (ThingLandedOn.surface.find_entity('HatchRT', event.target_position) and ThingLandedOn.can_insert({name=string.gsub(event.effect_id, "-LandedRT", "")}) ) then
+				ThingLandedOn.insert({name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
+				
+			---- otherwise it bounces off whatever it landed on and lands as an item on the nearest empty space within 10 tiles. destroyed if no space ----
+			else	
+				game.get_surface(event.surface_index).spill_item_stack
+					(
+						game.get_surface(event.surface_index).find_non_colliding_position("item-on-ground", event.target_position, 0, 0.1),
+						{name=string.gsub(event.effect_id, "-LandedRT", ""), count=1}
+					)
+			end
+			
+		elseif (event.effect_id == "MaybeIllBeTracer-LandedRT") then
+			global.CatapultList[event.source_entity.unit_number].target = ThingLandedOn
 		end
 	
 	---- if the item/character lands in the water, it's gone ----
-	elseif (game.get_surface(event.surface_index).find_tiles_filtered{position = event.target_position, radius = 1, limit = 1, collision_mask = "player-layer"}[1] ~= nil) then -- in theory, tiles the player cant walk on are some sort of fluid or other non-survivable ground
+	elseif (event.effect_id ~= "MaybeIllBeTracer-LandedRT" and game.get_surface(event.surface_index).find_tiles_filtered{position = event.target_position, radius = 1, limit = 1, collision_mask = "player-layer"}[1] ~= nil) then -- in theory, tiles the player cant walk on are some sort of fluid or other non-survivable ground
 		
 		---- drown the character ----
-		if (event.source_entity ~= nil) then
+		if (event.effect_id == "test-LandedRT") then
 			game.get_player(event.source_entity.player.index).character.destructible = true
 			game.get_player(event.source_entity.player.index).character.die()
 		end
@@ -754,8 +799,11 @@ if (string.find(event.effect_id, "-LandedRT")) then
 	
 	---- the presumably thrown item lands as an item on the ground ----
 	else --if it fell on nothing just drop it
-		game.get_surface(event.surface_index).spill_item_stack({event.target_position.x, event.target_position.y}, {name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
-
+		if (event.effect_id ~= "MaybeIllBeTracer-LandedRT") then
+			game.get_surface(event.surface_index).spill_item_stack({event.target_position.x, event.target_position.y}, {name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
+		else
+			global.CatapultList[event.source_entity.unit_number].target = "nothing"
+		end
 		--[[ random item landing offset
 		local xoffset = 0.1*math.random(-1,6)
 		local yoffset = 0.1*math.random(-1,6)
@@ -767,13 +815,14 @@ end
 end)
 
 
-
----- Animates players launching form player launchers ----
+-- Animating/On Tick
 script.on_nth_tick(1, 
 function(eventf)
+	--| Players
 	for ThePlayer, TheirProperties in pairs(global.AllPlayers) do
-		if (TheirProperties.GuideProjectile and TheirProperties.GuideProjectile.valid and game.get_player(ThePlayer).character) then
-			game.get_player(ThePlayer).character_running_speed_modifier = -0.65
+		--|| Player Launchers
+		if (TheirProperties.GuideProjectile and TheirProperties.GuideProjectile.valid and TheirProperties.jumping == true and game.get_player(ThePlayer).character) then
+			game.get_player(ThePlayer).character_running_speed_modifier = -0.75
 			game.get_player(ThePlayer).character.destructible = false -- so they dont get damaged by things they are supposed to be "above"
 			if (TheirProperties.direction == "right") then
 				game.get_player(ThePlayer).walking_state = {walking = true, direction = defines.direction.east}
@@ -808,16 +857,262 @@ function(eventf)
 					})														
 			end
 			
-		elseif (game.get_player(ThePlayer).character) then	
+		elseif (TheirProperties.jumping == true and game.get_player(ThePlayer).character) then	
 			game.get_player(ThePlayer).character_running_speed_modifier = 0
 			game.get_player(ThePlayer).character.destructible = true
+			TheirProperties.jumping = false
+			global.AllPlayers[ThePlayer] = {}
+			
+		--|| Ziplines
+		elseif (TheirProperties.sliding == true and TheirProperties.LetMeGuideYou and TheirProperties.LetMeGuideYou.valid ) then
+			game.get_player(ThePlayer).character.character_running_speed_modifier = -0.99999
+			
+			--||| Set the destination
+			if (TheirProperties.WhereDidYouComeFrom ~= nil and TheirProperties.WhereDidYouComeFrom.valid == true and TheirProperties.WhereDidYouGo == nil and TheirProperties.WhereDidYouComeFrom.neighbours["copper"][1]) then
+				--game.print("searching")
+				game.get_player(ThePlayer).teleport({TheirProperties.ChuggaChugga.position.x, 1.5+TheirProperties.ChuggaChugga.position.y})
+				TheirProperties.succ.teleport(TheirProperties.WhereDidYouComeFrom.position)
+				--|||| Analyze neighbors
+				local possibilities = TheirProperties.WhereDidYouComeFrom.neighbours["copper"] -- table of connected pole entities
+				local AngleSorted = {}
+				--|||| Group them by direction
+				for i, pole in pairs(possibilities) do
+					local ToXWireOffset3 = game.recipe_prototypes["RTGetTheGoods-"..pole.name.."X"].emissions_multiplier
+					local ToYWireOffset3 = game.recipe_prototypes["RTGetTheGoods-"..pole.name.."Y"].emissions_multiplier
+					local WhichWay = (math.deg(math.atan2((TheirProperties.LetMeGuideYou.position.y-(pole.position.y+ToYWireOffset3)),(TheirProperties.LetMeGuideYou.position.x-(pole.position.x+ToXWireOffset3))))/1)-90
+					
+					if (WhichWay < 0) then -- converts all results to 0 -> +1 orientation notation
+						WhichWay = 360+WhichWay
+					end
+					--game.print(WhichWay)
+					if ((WhichWay >= 337.5 and WhichWay < 360) or (WhichWay >= 0 and WhichWay < 22.5)) then --U
+						AngleSorted[0] = pole
+					elseif (WhichWay >= 22.5 and WhichWay < 67.5) then --UR
+						AngleSorted[1] = pole
+					elseif (WhichWay >= 67.5 and WhichWay < 112.5) then --R
+						AngleSorted[2] = pole
+					elseif (WhichWay >= 112.5 and WhichWay < 157.5) then --DR
+						AngleSorted[3] = pole
+					elseif (WhichWay >= 157.5 and WhichWay < 202.5) then --D
+						AngleSorted[4] = pole
+					elseif (WhichWay >= 202.5 and WhichWay < 247.5) then --DL
+						AngleSorted[5] = pole
+					elseif (WhichWay >= 247.5 and WhichWay < 292.5) then --L
+						AngleSorted[6] = pole
+					elseif (WhichWay >= 292.5 and WhichWay < 337.5) then --UL
+						AngleSorted[7] = pole
+					end
+				end
+				
+				--|||| Check walking state
+				if (game.get_player(ThePlayer).walking_state.walking == true or TheirProperties.LetMeGuideYou.speed ~= 0) then
+					--||||| Set destination by matching walking state to a neighbor
+					WhenYou = game.get_player(ThePlayer).walking_state.direction
+					local FD = AngleSorted[WhenYou]
+					local heading = WhenYou 
+					if (FD == nil) then
+						if (WhenYou == 7) then
+							FD = AngleSorted[0]
+							heading = 0
+						else
+							FD = AngleSorted[WhenYou+1]
+							heading = WhenYou+1
+						end
+					end
+					if (FD == nil) then
+						if (WhenYou == 0) then
+							FD = AngleSorted[7]
+							heading = 7
+						else
+							FD = AngleSorted[WhenYou-1]
+							heading = WhenYou-1
+						end
+					end
+					if (FD and FD.valid) then
+						local current = TheirProperties.WhereDidYouComeFrom
+						local FromXWireOffset = game.recipe_prototypes["RTGetTheGoods-"..current.name.."X"].emissions_multiplier
+						local FromYWireOffset = game.recipe_prototypes["RTGetTheGoods-"..current.name.."Y"].emissions_multiplier
+						local ToXWireOffset = game.recipe_prototypes["RTGetTheGoods-"..FD.name.."X"].emissions_multiplier
+						local ToYWireOffset = game.recipe_prototypes["RTGetTheGoods-"..FD.name.."Y"].emissions_multiplier
+						TheirProperties.LetMeGuideYou.teleport({current.position.x+FromXWireOffset, current.position.y+FromYWireOffset})
+						local angle = math.deg(math.atan2((TheirProperties.LetMeGuideYou.position.y-(FD.position.y+ToYWireOffset)),(TheirProperties.LetMeGuideYou.position.x-(FD.position.x+ToXWireOffset))))
+						TheirProperties.LetMeGuideYou.orientation = (angle/360)-0.25 -- I think because Factorio's grid is x-axis flipped compared to a traditional graph, it needs this -0.25 adjustment
+						global.AllPlayers[ThePlayer].DaWhey = TheirProperties.LetMeGuideYou.orientation
+						--global.AllPlayers[ThePlayer].WhereDidYouComeFrom = arrived
+						global.AllPlayers[ThePlayer].WhereDidYouGo = FD
+						global.AllPlayers[ThePlayer].distance = math.sqrt(
+																		  ((current.position.y+FromYWireOffset)-(FD.position.y+ToYWireOffset))^2
+																		 +((current.position.x+FromXWireOffset)-(FD.position.x+ToXWireOffset))^2
+																		 )
+						global.AllPlayers[ThePlayer].FromWireOffset = {FromXWireOffset, FromYWireOffset}
+						global.AllPlayers[ThePlayer].ToWireOffset = {ToXWireOffset, ToYWireOffset}
+						if (heading == 0) then
+							global.AllPlayers[ThePlayer].ForwardDirection = {[7] = 3, [0] = 3, [1] = 3}
+							global.AllPlayers[ThePlayer].BackwardsDirection = {[5] = 3, [4] = 3, [3] = 3}
+						elseif (heading == 1) then
+							global.AllPlayers[ThePlayer].ForwardDirection = {[0] = 3, [1] = 3, [2] = 3}
+							global.AllPlayers[ThePlayer].BackwardsDirection = {[6] = 3, [5] = 3, [4] = 3}
+						elseif (heading == 2) then
+							global.AllPlayers[ThePlayer].ForwardDirection = {[1] = 3, [2] = 3, [3] = 3}
+							global.AllPlayers[ThePlayer].BackwardsDirection = {[7] = 3, [6] = 3, [5] = 3}
+						elseif (heading == 3) then
+							global.AllPlayers[ThePlayer].ForwardDirection = {[2] = 3, [3] = 3, [4] = 3}
+							global.AllPlayers[ThePlayer].BackwardsDirection = {[0] = 3, [7] = 3, [6] = 3}
+						elseif (heading == 4) then
+							global.AllPlayers[ThePlayer].ForwardDirection = {[3] = 3, [4] = 3, [5] = 3}
+							global.AllPlayers[ThePlayer].BackwardsDirection = {[1] = 3, [0] = 3, [7] = 3}
+						elseif (heading == 5) then
+							global.AllPlayers[ThePlayer].ForwardDirection = {[4] = 3, [5] = 3, [6] = 3}
+							global.AllPlayers[ThePlayer].BackwardsDirection = {[2] = 3, [1] = 3, [0] = 3}
+						elseif (heading == 6) then
+							global.AllPlayers[ThePlayer].ForwardDirection = {[5] = 3, [6] = 3, [7] = 3}
+							global.AllPlayers[ThePlayer].BackwardsDirection = {[3] = 3, [2] = 3, [1] = 3}
+						elseif (heading == 7) then
+							global.AllPlayers[ThePlayer].ForwardDirection = {[6] = 3, [7] = 3, [0] = 3}
+							global.AllPlayers[ThePlayer].BackwardsDirection = {[4] = 3, [3] = 3, [2] = 3}
+						else
+							global.AllPlayers[ThePlayer].ForwardDirection = {}
+							global.AllPlayers[ThePlayer].BackwardsDirection = {}
+						end
+						--game.print("set destination, heading off in "..heading)
+					else
+						TheirProperties.LetMeGuideYou.speed = 0
+						--game.print("not pressing a valid direction")
+					end
+					
+				else
+					TheirProperties.LetMeGuideYou.speed = 0
+					--game.print("not pressing movement key")
+				end
+				
+			--||| Do the movement
+			elseif (TheirProperties.WhereDidYouComeFrom.valid and TheirProperties.WhereDidYouGo.valid and TheirProperties.AreYouStillThere == true) then
+				--|||| Set/calc sliding "properties"
+				TheirProperties.AreYouStillThere = false
+				for the, poles in pairs(TheirProperties.WhereDidYouComeFrom.neighbours["copper"]) do
+					if (TheirProperties.WhereDidYouGo.unit_number == poles.unit_number) then
+						TheirProperties.AreYouStillThere = true
+					end
+				end
+				
+				local FromStart = math.sqrt((TheirProperties.LetMeGuideYou.position.y-(TheirProperties.WhereDidYouComeFrom.position.y+TheirProperties.FromWireOffset[2]))^2+(TheirProperties.LetMeGuideYou.position.x-(TheirProperties.WhereDidYouComeFrom.position.x+TheirProperties.FromWireOffset[1]))^2)
+				local FromEnd = math.sqrt((TheirProperties.LetMeGuideYou.position.y-(TheirProperties.WhereDidYouGo.position.y+TheirProperties.ToWireOffset[2]))^2+(TheirProperties.LetMeGuideYou.position.x-(TheirProperties.WhereDidYouGo.position.x+TheirProperties.ToWireOffset[1]))^2)
+				--game.print("From start "..string.format("%.2f", FromStart).."/"..TheirProperties.distance)
+				--game.print("From end "..string.format("%.9f", FromEnd).."/"..TheirProperties.distance)
+				--game.print(FromStart+FromEnd)
+				--|||| Before destination
+				if (FromStart <= TheirProperties.distance and FromEnd-0.1 <= TheirProperties.distance) then
+				
+					if (settings.get_player_settings(game.get_player(ThePlayer))["RTZiplineSmoothSetting"].value == "Motion Follows Trolley") then
+						FollowZip = (3*(FromStart^2-FromStart*TheirProperties.distance)/TheirProperties.distance^2)
+					else
+						FollowZip = 0
+					end
+					
+					game.get_player(ThePlayer).teleport
+						({
+							TheirProperties.LetMeGuideYou.position.x,
+							2+TheirProperties.LetMeGuideYou.position.y-FollowZip
+						})
+					TheirProperties.ChuggaChugga.teleport
+						({
+							TheirProperties.LetMeGuideYou.position.x,
+							0.5+TheirProperties.LetMeGuideYou.position.y-(3*(FromStart^2-FromStart*TheirProperties.distance)/TheirProperties.distance^2)
+						})
+					TheirProperties.LetMeGuideYou.orientation = TheirProperties.DaWhey
+					
+					if (game.get_player(ThePlayer).character.get_inventory(defines.inventory.character_guns)[game.get_player(ThePlayer).character.selected_gun_index].valid_for_read
+					and game.get_player(ThePlayer).character.get_inventory(defines.inventory.character_guns)[game.get_player(ThePlayer).character.selected_gun_index].name == "RTZiplineItem"
+					and game.get_player(ThePlayer).character.get_inventory(defines.inventory.character_ammo)[game.get_player(ThePlayer).character.selected_gun_index].valid_for_read
+					and game.get_player(ThePlayer).walking_state.walking == true
+					and TheirProperties.succ.energy ~= 0)
+					then
+						if (game.tick%2 == 0 and TheirProperties.ForwardDirection[game.get_player(ThePlayer).walking_state.direction] ~= nil) then
+							if (TheirProperties.LetMeGuideYou.speed <= 0.33) then
+								TheirProperties.LetMeGuideYou.speed = TheirProperties.LetMeGuideYou.speed + 0.008 --increments slower than 0.008 don't seem to do anything
+							end	
+						elseif (game.tick%2 == 0 and TheirProperties.BackwardsDirection[game.get_player(ThePlayer).walking_state.direction] ~= nil) then
+							if (TheirProperties.LetMeGuideYou.speed >= -0.33) then
+								TheirProperties.LetMeGuideYou.speed = TheirProperties.LetMeGuideYou.speed - 0.008
+							end
+						end
+					elseif (game.tick%2 == 0) then
+						if (TheirProperties.LetMeGuideYou.speed > 0) then
+							TheirProperties.LetMeGuideYou.speed = TheirProperties.LetMeGuideYou.speed - 0.004
+						elseif (TheirProperties.LetMeGuideYou.speed < 0) then
+							TheirProperties.LetMeGuideYou.speed = TheirProperties.LetMeGuideYou.speed + 0.004
+						end						
+					end
+					
+				--|||| At/After destination
+				elseif (FromStart >= TheirProperties.distance and #TheirProperties.WhereDidYouGo.neighbours["copper"] > 1 and TheirProperties.WhereDidYouGo.neighbours["copper"][1]) then
+					--game.print("Arrived, removing destination to find a new one")
+					TheirProperties.WhereDidYouComeFrom = TheirProperties.WhereDidYouGo
+					TheirProperties.WhereDidYouGo = nil
+					
+				--|||| Back at start	
+				elseif (FromEnd-0.1 > TheirProperties.distance and #TheirProperties.WhereDidYouComeFrom.neighbours["copper"] > 1 and TheirProperties.WhereDidYouComeFrom.neighbours["copper"][1]) then
+					--game.print("Returned, removing destination to find a new one")
+					TheirProperties.LetMeGuideYou.speed = 0 --For some reason character gets stuck if I don't do this
+					--TheirProperties.WhereDidYouComeFrom = TheirProperties.WhereDidYouGo
+					TheirProperties.WhereDidYouGo = nil					
+
+				--|||| Hit dead end
+				else 
+					TheirProperties.LetMeGuideYou.surface.play_sound
+						{
+							path = "RTZipDettach",
+							position = TheirProperties.LetMeGuideYou.position,
+							volume = 0.4
+						}
+					TheirProperties.LetMeGuideYou.surface.play_sound
+						{
+							path = "RTZipWindDown",
+							position = TheirProperties.LetMeGuideYou.position,
+							volume = 0.4
+						}
+					TheirProperties.LetMeGuideYou.destroy()
+					TheirProperties.ChuggaChugga.destroy()
+					TheirProperties.succ.destroy()
+					game.get_player(ThePlayer).character_running_speed_modifier = 0
+					game.get_player(ThePlayer).teleport(game.get_player(ThePlayer).surface.find_non_colliding_position("character", {game.get_player(ThePlayer).position.x, game.get_player(ThePlayer).position.y+2}, 0, 0.01))
+					global.AllPlayers[ThePlayer] = {}
+					--game.print("Dead end")
+				end
+			--||| Break if poles are invalid (destroyed or something)
+			else -- One of the two ends is no longer valid
+				TheirProperties.LetMeGuideYou.surface.play_sound
+					{
+						path = "RTZipDettach",
+						position = TheirProperties.LetMeGuideYou.position,
+						volume = 0.4
+					}
+				TheirProperties.LetMeGuideYou.surface.play_sound
+					{
+						path = "RTZipWindDown",
+						position = TheirProperties.LetMeGuideYou.position,
+						volume = 0.4
+					}
+				TheirProperties.LetMeGuideYou.destroy()
+				TheirProperties.ChuggaChugga.destroy()
+				TheirProperties.succ.destroy()
+				game.get_player(ThePlayer).character_running_speed_modifier = 0
+				game.get_player(ThePlayer).teleport(game.get_player(ThePlayer).surface.find_non_colliding_position("character", {game.get_player(ThePlayer).position.x, game.get_player(ThePlayer).position.y+2}, 0, 0.01))
+				global.AllPlayers[ThePlayer] = {}
+				--game.print("failsafe/wire destroyed")
+			end
 		end		
 	end
 
+	--| Trains
 	----------------- train flight ----------------
 	for PropUnitNumber, properties in pairs(global.FlyingTrains) do
-		---------- launching connected wagons ---------
-
+		
+		if (properties.GuideCar and properties.GuideCar.valid) then
+			properties.GuideCar.destructible = false
+		end
+		
+		--|| Follower speed comp
 		if (properties.follower and properties.follower.valid) then
 			if (properties.follower.train.speed>0) then
 				properties.follower.train.speed = math.abs(properties.speed)
@@ -826,8 +1121,9 @@ function(eventf)
 			end
 		end
 
-		--------- landing ----------
+		--|| Landing
 		if (game.tick == properties.LandTick) then
+			--||| Bounce Pad
 			TrainLandedOn = properties.GuideCar.surface.find_entities_filtered
 				{
 					name = {"RTTrainBouncePlate", "RTTrainDirectedBouncePlate"},
@@ -934,7 +1230,7 @@ function(eventf)
 						volume = 2
 					}			
 			
-			
+			--||| Try to reform train
 			else
 				NewTrain = properties.GuideCar.surface.create_entity
 					({
@@ -945,10 +1241,10 @@ function(eventf)
 						raise_built = true
 					})
 				global.FlyingTrains[PropUnitNumber].LandedTrain = NewTrain
-				-- train created --	
+				--|||| Success	
 				if (NewTrain ~= nil) then 
 					if (properties.passenger ~= nil) then
-						NewTrain.set_driver(game.players[properties.passenger])	
+						NewTrain.set_driver(properties.passenger)	
 					end	
 				
 					AngleChange = math.abs(NewTrain.orientation-properties.orientation) -- a new train will be made if there's enough rail, direction doesn't matter
@@ -1027,7 +1323,7 @@ function(eventf)
 					end
 					properties.GuideCar.destroy()
 					
-				-- no train created --
+				--|||| Failure
 				else 
 					if (properties.GuideCar.surface.find_tiles_filtered{position = properties.GuideCar.position, radius = 1, limit = 1, collision_mask = "player-layer"}[1] == nil) then
 						properties.GuideCar.surface.create_entity
@@ -1065,9 +1361,11 @@ function(eventf)
 							lol.destroy({do_cliff_correction = true})
 						end
 					end
+					--global.FlyingTrains[PropUnitNumber] = nil
 					
 				end
 			end	
+		--|| Animating Train
 		elseif (game.tick < properties.LandTick) then
 			local SpinMagnitude = 0.05
 			local SpinSpeed = 23
@@ -1094,14 +1392,16 @@ function(eventf)
 				rendering.set_orientation(properties.MaskID, -SpinMagnitude*( (2*(game.tick-properties.LaunchTick)/properties.AirTime-1)^SpinSpeed - (2*(game.tick-properties.LaunchTick)/properties.AirTime-1) ))
 				rendering.set_target(properties.ShadowID, properties.GuideCar, {-((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity,0})	
 			end
-			
+		
+		--|| Landing speed control
 		elseif (game.tick > properties.LandTick and properties.length and properties.LandedTrain and properties.LandedTrain.valid) then
 			if (#properties.LandedTrain.train.carriages ~= properties.length) then
 				--game.print("not all here")
 				if (properties.LandedTrain.train.speed>0) then
 					properties.LandedTrain.train.speed = math.abs(properties.speed)
-				else
+				elseif (properties.LandedTrain.train.speed<0) then
 					properties.LandedTrain.train.speed = -math.abs(properties.speed)
+				else
 				end
 			elseif (#properties.LandedTrain.train.carriages == properties.length or game.tick > properties.LandTick+240) then
 				--game.print("all here")
@@ -1116,9 +1416,10 @@ function(eventf)
 end)
 
 
-
+-- On Damaged
 script.on_event(defines.events.on_entity_damaged,
 function(event)
+--| Detect train hitting ramp
 if (
 	(event.entity.name == "RTTrainRamp" or event.entity.name == "RTTrainRampNoSkip")
 	and event.cause 
@@ -1144,6 +1445,7 @@ if (
 	SpookyGhost.orientation = event.cause.orientation
 	SpookyGhost.operable = false
 	SpookyGhost.speed = 0.8*event.cause.speed
+	SpookyGhost.destructible = false
 	
 	base = event.cause.type
 	mask = "NoMask"
@@ -1189,7 +1491,7 @@ if (
 	global.FlyingTrains[SpookyGhost.unit_number] = {}
 	global.FlyingTrains[SpookyGhost.unit_number].GuideCar = SpookyGhost
 	if (event.cause.get_driver() ~= nil) then
-		global.FlyingTrains[SpookyGhost.unit_number].passenger = event.cause.get_driver().player.index
+		global.FlyingTrains[SpookyGhost.unit_number].passenger = event.cause.get_driver()
 		SpookyGhost.set_passenger(event.cause.get_driver())	
 	end
 	global.FlyingTrains[SpookyGhost.unit_number].name = event.cause.name
@@ -1313,11 +1615,12 @@ end)
 
 
 
-
+-- On Interact
 script.on_event("EnterPipe", 
 function(event1) -- has .name = event ID number, .tick = tick number, .player_index, and .input_name = custom input name
 	
-	ThingHovering = game.get_player(event1.player_index).selected	
+	ThingHovering = game.get_player(event1.player_index).selected
+	--| Player Launcher
 	SteppingOn = game.get_player(event1.player_index).surface.find_entities_filtered
 	{
 		name = "PlayerLauncher",
@@ -1325,11 +1628,12 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 		radius = 0.6
 	}[1]
 	
-	if (SteppingOn ~= nil) then
+	if (SteppingOn ~= nil and global.AllPlayers[event1.player_index].sliding == nil) then
 		game.get_player(event1.player_index).teleport(SteppingOn.position) -- align player on the launch pad
 		
 		global.AllPlayers[event1.player_index].direction = global.OrientationUnitComponents[SteppingOn.orientation].name
 		global.AllPlayers[event1.player_index].StartMovementTick = event1.tick
+		global.AllPlayers[event1.player_index].jumping = true
 		global.AllPlayers[event1.player_index].GuideProjectile =
 			game.get_player(event1.player_index).surface.create_entity
 				({
@@ -1340,8 +1644,33 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 				})
 	end
 	
+	--| Drop from ziplining
+	if (global.AllPlayers[event1.player_index].sliding and global.AllPlayers[event1.player_index].sliding == true) then
+		global.AllPlayers[event1.player_index].LetMeGuideYou.surface.play_sound
+			{
+				path = "RTZipDettach",
+				position = global.AllPlayers[event1.player_index].LetMeGuideYou.position,
+				volume = 0.4
+			}
+		global.AllPlayers[event1.player_index].LetMeGuideYou.surface.play_sound
+			{
+				path = "RTZipWindDown",
+				position = global.AllPlayers[event1.player_index].LetMeGuideYou.position,
+				volume = 0.4
+			}
+		global.AllPlayers[event1.player_index].LetMeGuideYou.destroy()
+		global.AllPlayers[event1.player_index].ChuggaChugga.destroy()
+		global.AllPlayers[event1.player_index].succ.destroy()
+		game.get_player(event1.player_index).character_running_speed_modifier = 0
+		game.get_player(event1.player_index).teleport(game.get_player(event1.player_index).surface.find_non_colliding_position("character", {game.get_player(event1.player_index).position.x, game.get_player(event1.player_index).position.y+2}, 0, 0.01))
+		global.AllPlayers[event1.player_index] = {}	
+	
+		--game.print("manually detached")
+	end
+	
+	--| Hovering something
 	if (ThingHovering) then
-		---- Adjusting thrower range ----
+		--|| Adjusting Thrower Range
 		if (string.find(ThingHovering.name, "RTThrower-") and game.get_player(event1.player_index).force.technologies["RTFocusedFlinging"].researched == true) then
 			CurrentRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
 			if ((ThingHovering.name ~= "RTThrower-long-handed-inserter" and CurrentRange >= 15) or CurrentRange >= 25) then
@@ -1363,7 +1692,12 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 					position = ThingHovering.drop_position,
 					text = "Range: "..math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
 				})
-		---- swapping primer modes ----		
+			game.get_player(event1.player_index).play_sound{
+				path="utility/gui_click", 
+				position=game.get_player(event1.player_index).position, 
+				volume_modifier=1
+				}
+		--|| Swap Primer Modes		
 		elseif (ThingHovering.name == "PrimerBouncePlate") then
 			ThingHovering.surface.create_entity
 				({
@@ -1373,6 +1707,11 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 				create_build_effect_smoke = false,
 				raise_built = true
 				})	
+			game.get_player(event1.player_index).play_sound{
+				path="utility/rotated_medium", 
+				position=game.get_player(event1.player_index).position, 
+				volume_modifier=1
+				}
 			ThingHovering.destroy()
 		elseif (ThingHovering.name == "PrimerSpreadBouncePlate") then
 			ThingHovering.surface.create_entity
@@ -1383,8 +1722,13 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 				create_build_effect_smoke = false,
 				raise_built = true
 				})	
+			game.get_player(event1.player_index).play_sound{
+				path="utility/rotated_medium", 
+				position=game.get_player(event1.player_index).position, 
+				volume_modifier=1
+				}
 			ThingHovering.destroy()	
-		---- swapping train ramp modes ----		
+		--|| Swap Ramp Modes	
 		elseif (ThingHovering.name == "RTTrainRamp") then
 			ElPosition = ThingHovering.position
 			ElForce = game.get_player(event1.player_index).force
@@ -1399,7 +1743,11 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 				force = ElForce,
 				create_build_effect_smoke = false
 				})	
-
+			game.get_player(event1.player_index).play_sound{
+				path="utility/rotated_big", 
+				position=game.get_player(event1.player_index).position, 
+				volume_modifier=1
+				}
 		elseif (ThingHovering.name == "RTTrainRampNoSkip") then
 			ElPosition = ThingHovering.position
 			ElForce = game.get_player(event1.player_index).force
@@ -1414,14 +1762,106 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 				force = ElForce,
 				create_build_effect_smoke = false
 				})	
+			game.get_player(event1.player_index).play_sound{
+				path="utility/rotated_big", 
+				position=game.get_player(event1.player_index).position, 
+				volume_modifier=1
+				}				
+		--|| Zipline
+		elseif (game.get_player(event1.player_index).character.driving == false and global.AllPlayers[event1.player_index].LetMeGuideYou == nil and ThingHovering.type == "electric-pole" and #ThingHovering.neighbours["copper"] ~= 0) then
+			if (math.sqrt((game.get_player(event1.player_index).position.x-ThingHovering.position.x)^2+(game.get_player(event1.player_index).position.y-ThingHovering.position.y)^2) <= 3 ) then
+				if (game.get_player(event1.player_index).character.get_inventory(defines.inventory.character_guns)[game.get_player(event1.player_index).character.selected_gun_index].valid_for_read 
+				and game.get_player(event1.player_index).character.get_inventory(defines.inventory.character_guns)[game.get_player(event1.player_index).character.selected_gun_index].name == "RTZiplineItem"
+				and game.get_player(event1.player_index).character.get_inventory(defines.inventory.character_ammo)[game.get_player(event1.player_index).character.selected_gun_index].valid_for_read) 
+				then
+					local TheGuy = game.get_player(event1.player_index)
+					local FromXWireOffset = game.recipe_prototypes["RTGetTheGoods-"..ThingHovering.name.."X"].emissions_multiplier
+					local FromYWireOffset = game.recipe_prototypes["RTGetTheGoods-"..ThingHovering.name.."Y"].emissions_multiplier
+					local SpookySlideGhost = ThingHovering.surface.create_entity
+						({
+							name = "RTPropCar",
+							position = {ThingHovering.position.x+FromXWireOffset, ThingHovering.position.y+FromYWireOffset},
+							--force = TheGuy.force,
+							create_build_effect_smoke = false
+						})
+					local trolley = ThingHovering.surface.create_entity
+						({
+							name = "RTZipline",
+							position = {ThingHovering.position.x+FromXWireOffset, ThingHovering.position.y+FromYWireOffset},
+							force = TheGuy.force,
+							create_build_effect_smoke = false
+						})
+					local drain = ThingHovering.surface.create_entity
+						({
+							name = "RTZiplinePowerDrain",
+							position = ThingHovering.position,
+							force = TheGuy.force,
+							create_build_effect_smoke = false
+						})						
+					rendering.draw_animation
+						{
+							animation = "RTZiplineOverGFX",
+							surface = TheGuy.surface,
+							target = trolley,
+							target_offset = {0, -0.3},
+							x_scale = 0.5,
+							y_scale = 0.5,
+							render_layer = 136
+						}	
+					rendering.draw_sprite
+						{
+							sprite = "RTZiplineHarnessGFX",
+							surface = TheGuy.surface,
+							target = trolley,
+							target_offset = {0.03, 0.1},
+							x_scale = 0.5,
+							y_scale = 0.5,
+							render_layer = 128
+						}							
+					trolley.destructible = false
+					SpookySlideGhost.destructible = false
+					drain.destructible = false
+					TheGuy.teleport({SpookySlideGhost.position.x, 2+SpookySlideGhost.position.y})
+					trolley.teleport({SpookySlideGhost.position.x, 0.5+SpookySlideGhost.position.y})
+					global.AllPlayers[event1.player_index].LetMeGuideYou = SpookySlideGhost
+					global.AllPlayers[event1.player_index].ChuggaChugga = trolley
+					global.AllPlayers[event1.player_index].WhereDidYouComeFrom = ThingHovering
+					global.AllPlayers[event1.player_index].AreYouStillThere = true
+					global.AllPlayers[event1.player_index].succ = drain
+					--game.print("Attached to track")
+					global.AllPlayers[event1.player_index].sliding = true
+					ThingHovering.surface.play_sound
+						{
+							path = "RTZipAttach",
+							position = ThingHovering.position,
+							volume = 0.7
+						}
+				else
+					game.get_player(event1.player_index).print("I need an Electric Zipline Trolley with Controller equipped and selected to ride power lines.")
+				end
+			else
+				game.get_player(event1.player_index).print("Out of range.")
+			end
+			
+		elseif (game.get_player(event1.player_index).character.driving == false and global.AllPlayers[event1.player_index].LetMeGuideYou == nil and ThingHovering.type == "electric-pole" and #ThingHovering.neighbours == 0) then
+			game.get_player(event1.player_index).print("That pole isn't connected to anything")
 		
+		else
+			
 		end
 	end
+	
+
 end)
 
+
+-- On Click
 script.on_event("RTClick",
 function(event)
+	--| Toggle range overlay in alt-view
 	if (game.get_player(event.player_index).selected and global.BouncePadList[game.get_player(event.player_index).selected.unit_number] ~= nil) then
 		rendering.set_visible(global.BouncePadList[game.get_player(event.player_index).selected.unit_number].arrow, not rendering.get_visible(global.BouncePadList[game.get_player(event.player_index).selected.unit_number].arrow))
+	elseif (game.get_player(event.player_index).selected and string.find(game.get_player(event.player_index).selected.name, "RTThrower-")) then
+		game.print(global.CatapultList[game.get_player(event.player_index).selected.unit_number].target.name)
 	end
 end)

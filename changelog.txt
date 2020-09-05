@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.5.0
+Date: 9/5/2020
+  Additions:
+    - Electric Zipline Trolley. Use your existing power grid as a highway! See player settings to adjust zipline camera motion.
+    - Experimental overflow minimization code. Can be enable in Map Settings. Helps particularly with transport belts, a 3x3 "catching grid" should stop most overflow. 
+    - Settings to enable/disable different parts of the mod. Modules include: modded inserter throwers, train ramps, train bounce pads, advanced bounce pads (primer&signal), and zipline. Vanilla throwers, player launchers, hatches, and regular/directed bounce pads are always enabled. Recommended by Zuzak.
+  Bugfixes:
+    - Fixed a crash when using a Train Ramp in sandbox mode. The environment was probably too toxic in there. Found by notnotmelon.
+    - Fixed a crazy situation where if two trains were trying to land close to each other and one didn't have a destination and thus stopped immediately to 0 speed while another train or wagon with a netagive speed (backwards) tried to attach to it and make the stationary train move with negative speed, the game would crash because I didn't take a 0 speed train into account. Report and initial investigation by mvolfik and ProkopRandacek on github.
+    - Made the stand in cars that guided the trains jump invincible so it couldn't be destroyed premptively.
+
+---------------------------------------------------------------------------------------------------
 Version: 0.4.8
 Date: 8/28/2020
   Additions:
