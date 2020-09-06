@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.5.2
+Date: 9/6/2020
+  Changes:
+    - Removed some debugging code when clicking on throwers
+  Bugfixes:
+    - Fixed that characters would jump out of a train upon landing due to the change I made so that the jumps would work in sandbox mode
+---------------------------------------------------------------------------------------------------
 Version: 0.5.1
 Date: 9/5/2020
   Bugfixes:

@@ -1244,7 +1244,11 @@ function(eventf)
 				--|||| Success	
 				if (NewTrain ~= nil) then 
 					if (properties.passenger ~= nil) then
-						NewTrain.set_driver(properties.passenger)	
+						if (properties.passenger.is_player()) then
+							NewTrain.set_driver(properties.passenger)
+						else
+							NewTrain.set_driver(properties.passenger.player)
+						end
 					end	
 				
 					AngleChange = math.abs(NewTrain.orientation-properties.orientation) -- a new train will be made if there's enough rail, direction doesn't matter
@@ -1861,7 +1865,7 @@ function(event)
 	--| Toggle range overlay in alt-view
 	if (game.get_player(event.player_index).selected and global.BouncePadList[game.get_player(event.player_index).selected.unit_number] ~= nil) then
 		rendering.set_visible(global.BouncePadList[game.get_player(event.player_index).selected.unit_number].arrow, not rendering.get_visible(global.BouncePadList[game.get_player(event.player_index).selected.unit_number].arrow))
-	elseif (game.get_player(event.player_index).selected and string.find(game.get_player(event.player_index).selected.name, "RTThrower-")) then
-		game.print(global.CatapultList[game.get_player(event.player_index).selected.unit_number].target.name)
+	-- elseif (game.get_player(event.player_index).selected and string.find(game.get_player(event.player_index).selected.name, "RTThrower-")) then
+		-- game.print(global.CatapultList[game.get_player(event.player_index).selected.unit_number].target.name)
 	end
 end)
