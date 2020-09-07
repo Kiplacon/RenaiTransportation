@@ -864,7 +864,7 @@ function(eventf)
 			global.AllPlayers[ThePlayer] = {}
 			
 		--|| Ziplines
-		elseif (TheirProperties.sliding == true and TheirProperties.LetMeGuideYou and TheirProperties.LetMeGuideYou.valid ) then
+		elseif (TheirProperties.sliding == true and TheirProperties.LetMeGuideYou and TheirProperties.LetMeGuideYou.valid) then
 			game.get_player(ThePlayer).character.character_running_speed_modifier = -0.99999
 			
 			--||| Set the destination
@@ -877,30 +877,32 @@ function(eventf)
 				local AngleSorted = {}
 				--|||| Group them by direction
 				for i, pole in pairs(possibilities) do
-					local ToXWireOffset3 = game.recipe_prototypes["RTGetTheGoods-"..pole.name.."X"].emissions_multiplier
-					local ToYWireOffset3 = game.recipe_prototypes["RTGetTheGoods-"..pole.name.."Y"].emissions_multiplier
-					local WhichWay = (math.deg(math.atan2((TheirProperties.LetMeGuideYou.position.y-(pole.position.y+ToYWireOffset3)),(TheirProperties.LetMeGuideYou.position.x-(pole.position.x+ToXWireOffset3))))/1)-90
-					
-					if (WhichWay < 0) then -- converts all results to 0 -> +1 orientation notation
-						WhichWay = 360+WhichWay
-					end
-					--game.print(WhichWay)
-					if ((WhichWay >= 337.5 and WhichWay < 360) or (WhichWay >= 0 and WhichWay < 22.5)) then --U
-						AngleSorted[0] = pole
-					elseif (WhichWay >= 22.5 and WhichWay < 67.5) then --UR
-						AngleSorted[1] = pole
-					elseif (WhichWay >= 67.5 and WhichWay < 112.5) then --R
-						AngleSorted[2] = pole
-					elseif (WhichWay >= 112.5 and WhichWay < 157.5) then --DR
-						AngleSorted[3] = pole
-					elseif (WhichWay >= 157.5 and WhichWay < 202.5) then --D
-						AngleSorted[4] = pole
-					elseif (WhichWay >= 202.5 and WhichWay < 247.5) then --DL
-						AngleSorted[5] = pole
-					elseif (WhichWay >= 247.5 and WhichWay < 292.5) then --L
-						AngleSorted[6] = pole
-					elseif (WhichWay >= 292.5 and WhichWay < 337.5) then --UL
-						AngleSorted[7] = pole
+					if (pole.type == "electric-pole") then
+						local ToXWireOffset3 = game.recipe_prototypes["RTGetTheGoods-"..pole.name.."X"].emissions_multiplier
+						local ToYWireOffset3 = game.recipe_prototypes["RTGetTheGoods-"..pole.name.."Y"].emissions_multiplier
+						local WhichWay = (math.deg(math.atan2((TheirProperties.LetMeGuideYou.position.y-(pole.position.y+ToYWireOffset3)),(TheirProperties.LetMeGuideYou.position.x-(pole.position.x+ToXWireOffset3))))/1)-90
+						
+						if (WhichWay < 0) then -- converts all results to 0 -> +1 orientation notation
+							WhichWay = 360+WhichWay
+						end
+						--game.print(WhichWay)
+						if ((WhichWay >= 337.5 and WhichWay < 360) or (WhichWay >= 0 and WhichWay < 22.5)) then --U
+							AngleSorted[0] = pole
+						elseif (WhichWay >= 22.5 and WhichWay < 67.5) then --UR
+							AngleSorted[1] = pole
+						elseif (WhichWay >= 67.5 and WhichWay < 112.5) then --R
+							AngleSorted[2] = pole
+						elseif (WhichWay >= 112.5 and WhichWay < 157.5) then --DR
+							AngleSorted[3] = pole
+						elseif (WhichWay >= 157.5 and WhichWay < 202.5) then --D
+							AngleSorted[4] = pole
+						elseif (WhichWay >= 202.5 and WhichWay < 247.5) then --DL
+							AngleSorted[5] = pole
+						elseif (WhichWay >= 247.5 and WhichWay < 292.5) then --L
+							AngleSorted[6] = pole
+						elseif (WhichWay >= 292.5 and WhichWay < 337.5) then --UL
+							AngleSorted[7] = pole
+						end
 					end
 				end
 				
@@ -1438,7 +1440,7 @@ if (
 		)
 	) then
 	
-	event.entity.health = event.entity.health+event.final_damage_amount
+	event.entity.health = 99999999999
 	
 	SpookyGhost = event.entity.surface.create_entity
 		({
@@ -1772,7 +1774,7 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 				volume_modifier=1
 				}				
 		--|| Zipline
-		elseif (game.get_player(event1.player_index).character.driving == false and global.AllPlayers[event1.player_index].LetMeGuideYou == nil and ThingHovering.type == "electric-pole" and #ThingHovering.neighbours["copper"] ~= 0) then
+		elseif (game.get_player(event1.player_index).character and game.get_player(event1.player_index).character.driving == false and global.AllPlayers[event1.player_index].LetMeGuideYou == nil and ThingHovering.type == "electric-pole" and #ThingHovering.neighbours["copper"] ~= 0) then
 			if (math.sqrt((game.get_player(event1.player_index).position.x-ThingHovering.position.x)^2+(game.get_player(event1.player_index).position.y-ThingHovering.position.y)^2) <= 3 ) then
 				if (game.get_player(event1.player_index).character.get_inventory(defines.inventory.character_guns)[game.get_player(event1.player_index).character.selected_gun_index].valid_for_read 
 				and game.get_player(event1.player_index).character.get_inventory(defines.inventory.character_guns)[game.get_player(event1.player_index).character.selected_gun_index].name == "RTZiplineItem"
@@ -1847,7 +1849,7 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 				game.get_player(event1.player_index).print("Out of range.")
 			end
 			
-		elseif (game.get_player(event1.player_index).character.driving == false and global.AllPlayers[event1.player_index].LetMeGuideYou == nil and ThingHovering.type == "electric-pole" and #ThingHovering.neighbours == 0) then
+		elseif (game.get_player(event1.player_index).character and game.get_player(event1.player_index).character.driving == false and global.AllPlayers[event1.player_index].LetMeGuideYou == nil and ThingHovering.type == "electric-pole" and #ThingHovering.neighbours == 0) then
 			game.get_player(event1.player_index).print("That pole isn't connected to anything")
 		
 		else

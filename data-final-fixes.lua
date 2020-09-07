@@ -295,7 +295,9 @@ for ThingID, ThingData in pairs(data.raw.inserter) do
 			and ThingData.minable 
 			and ThingData.minable.result
 			and data.raw.item[ThingData.minable.result] ~= nil
-			and not string.find(ThingData.name, "RTThrower-")) then
+			and not string.find(ThingData.name, "RTThrower-")
+			--and (not ThingData.name ~= "thrower-inserter") 
+		)then
 			MakeThrowerVariant(ThingData)
 		end
 	else

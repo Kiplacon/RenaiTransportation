@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.5.3
+Date: 9/7/2020
+  Bugfixes:
+    - Semi-fix preventing players without an associated character from getting on a zipline. This should prevent crashes on a zipline when the character disapears but doesn't cover cases where the controlled character changes or disapears. Found by MPeti1 
+    - Fixed that wire connections to things other than power poles (like switches) would crash. Found by MPeti1 
+    - Made it so that ramps auto-heal to 99999999999 instead of whatever value it was last hit for in hopes that it prevents some weird cases where the ramps are just vanishing or occasionally left with some damage. Found by Ki-Tan
+---------------------------------------------------------------------------------------------------
 Version: 0.5.2
 Date: 9/6/2020
   Changes:
