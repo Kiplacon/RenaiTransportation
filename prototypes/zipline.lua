@@ -71,21 +71,7 @@ brrr,
     },
 },
 
-{ --------- zipline recipie ----------
-	type = "recipe",
-	name = "RTZiplineRecipe",
-	enabled = false,
-	energy_required = 0.5,
-	ingredients = 
-		{
-			{"copper-cable", 100},
-			{"iron-gear-wheel", 50},
-			{"electronic-circuit", 4},
-			{"PlayerLauncherItem", 1},
-			{"steel-chest", 1}		
-		},
-	result = "RTZiplineItem"
-},
+
 
 { --------- zipline controls -------------
 	type = "ammo",
@@ -165,3 +151,42 @@ succ.pictures =
 succ.working_sound = nil
 
 data:extend({ succ })
+
+
+if (settings.startup["RTThrowersSetting"].value == true) then
+	data:extend({
+		{ --------- zipline recipie ----------
+			type = "recipe",
+			name = "RTZiplineRecipe",
+			enabled = false,
+			energy_required = 0.5,
+			ingredients = 
+				{
+					{"copper-cable", 100},
+					{"iron-gear-wheel", 50},
+					{"electronic-circuit", 4},
+					{"PlayerLauncherItem", 1},
+					{"steel-chest", 1}		
+				},
+			result = "RTZiplineItem"
+		}
+	})
+
+else
+	data:extend({
+		{ --------- zipline recipie ----------
+			type = "recipe",
+			name = "RTZiplineRecipe",
+			enabled = false,
+			energy_required = 0.5,
+			ingredients = 
+				{
+					{"copper-cable", 100},
+					{"iron-gear-wheel", 50},
+					{"electronic-circuit", 5},
+					{"steel-chest", 1}		
+				},
+			result = "RTZiplineItem"
+		}
+	})
+end

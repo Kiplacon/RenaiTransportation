@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.5.4
+Date: 9/9/2020
+  Additions:
+    - Added setting to disable the base thrower/hatch/player laucher features of the mod. Slap F in the chat. Requested by Ki-Tan. Tech adjusted accordingly.
+  Bugfixes:
+    - Fixed that the motion guide for the zipline (which is the same as for the train ramp) would be disabled if you disabled the train ramp, causing a crash if the zipline was enabled but not the train ramp. Found by staviq
+---------------------------------------------------------------------------------------------------
 Version: 0.5.3
 Date: 9/7/2020
   Bugfixes:

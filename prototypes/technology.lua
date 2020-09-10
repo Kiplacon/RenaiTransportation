@@ -1,3 +1,5 @@
+if (settings.startup["RTThrowersSetting"].value == true) then
+
 data:extend({
   {
 	type = "technology",
@@ -94,8 +96,29 @@ data:extend({
   }
 })
 
+else
+	data:extend({
+	  {
+		type = "technology",
+		name = "se~no",
+		icon = "__RenaiTransportation__/graphics/tech/start.png",
+		icon_size = 128,
+		effects =
+		{},
+		unit =
+		{
+			count = 10,
+			ingredients =
+			{
+			  {"automation-science-pack", 1}
+			},
+			time = 10
+		}
+	  }
+	})
+end
 
-if (settings.startup["RTBounceSetting"].value == true) then
+if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RTBounceSetting"].value == true) then
 	data:extend({
 	  {
 		type = "technology",
@@ -149,34 +172,63 @@ if (settings.startup["RTBounceSetting"].value == true) then
 end
 
 if (settings.startup["RTTrainRampSetting"].value == true) then
-	data:extend({
-	  {
-		type = "technology",
-		name = "RTFlyingFreight",
-		icon = "__RenaiTransportation__/graphics/tech/FlyingFreight.png",
-		icon_size = 128,
-		effects =
-		{
+	if (settings.startup["RTThrowersSetting"].value == true) then
+		data:extend({
+		  {
+			type = "technology",
+			name = "RTFlyingFreight",
+			icon = "__RenaiTransportation__/graphics/tech/FlyingFreight.png",
+			icon_size = 128,
+			effects =
 			{
-				type = "unlock-recipe",
-				recipe = "RTTrainRampRecipe"
-			}	
-		},
-		prerequisites = {"railway", "concrete"},
-		unit =
-		{
-			count = 150,
-			ingredients =
-			{
-			  {"automation-science-pack", 1},
-			  {"logistic-science-pack", 1}
+				{
+					type = "unlock-recipe",
+					recipe = "RTTrainRampRecipe"
+				}	
 			},
-			time = 30
-		} 
-	  }
-	})
+			prerequisites = {"railway", "concrete"},
+			unit =
+			{
+				count = 150,
+				ingredients =
+				{
+				  {"automation-science-pack", 1},
+				  {"logistic-science-pack", 1}
+				},
+				time = 30
+			} 
+		  }
+		})
+	else
+		data:extend({
+		  {
+			type = "technology",
+			name = "RTFlyingFreight",
+			icon = "__RenaiTransportation__/graphics/tech/FlyingFreight.png",
+			icon_size = 128,
+			effects =
+			{
+				{
+					type = "unlock-recipe",
+					recipe = "RTTrainRampRecipe"
+				}	
+			},
+			prerequisites = {"se~no", "railway", "concrete"},
+			unit =
+			{
+				count = 150,
+				ingredients =
+				{
+				  {"automation-science-pack", 1},
+				  {"logistic-science-pack", 1}
+				},
+				time = 30
+			} 
+		  }
+		})	
+	end
 	
-	if (settings.startup["RTTrainBounceSetting"].value == true) then
+	if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RTTrainBounceSetting"].value == true) then
 		data:extend({
 			{
 				type = "technology",

@@ -1,8 +1,7 @@
 data:extend({
-
 {
 	type = "bool-setting",
-	name = "RTBounceSetting",
+	name = "RTThrowersSetting",
 	setting_type = "startup",
 	default_value = true,
 	order = "a"
@@ -16,24 +15,31 @@ data:extend({
 },
 {
 	type = "bool-setting",
-	name = "RTTrainRampSetting",
+	name = "RTBounceSetting",
 	setting_type = "startup",
 	default_value = true,
 	order = "c"
 },
 {
 	type = "bool-setting",
-	name = "RTTrainBounceSetting",
+	name = "RTTrainRampSetting",
 	setting_type = "startup",
 	default_value = true,
 	order = "d"
 },
 {
 	type = "bool-setting",
-	name = "RTZiplineSetting",
+	name = "RTTrainBounceSetting",
 	setting_type = "startup",
 	default_value = true,
 	order = "e"
+},
+{
+	type = "bool-setting",
+	name = "RTZiplineSetting",
+	setting_type = "startup",
+	default_value = true,
+	order = "f"
 },
 {
 	type = "string-setting",
@@ -41,13 +47,13 @@ data:extend({
 	setting_type = "runtime-per-user",
 	default_value = "Motion Follows Trolley",
     allowed_values = {"Motion Follows Trolley", "Level Motion"},
-	order = "f"
+	order = "g"
 },
 {
 	type = "bool-setting",
 	name = "RTOverflowComp",
 	setting_type = "runtime-global",
 	default_value = false,
-	order = "g"
+	order = "h"
 }
 })

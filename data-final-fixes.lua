@@ -287,7 +287,7 @@ end
 
 for ThingID, ThingData in pairs(data.raw.inserter) do	
 	-- lots of requirements to make sure not pick up any "function only" inserters from other mods --
-	if (settings.startup["RTModdedThrowers"].value == true) then
+	if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RTModdedThrowers"].value == true) then
 		if (ThingData.type == "inserter" 
 			and ThingData.energy_source.type ~= "void" 
 			and ThingData.draw_held_item ~= false 
@@ -300,7 +300,7 @@ for ThingID, ThingData in pairs(data.raw.inserter) do
 		)then
 			MakeThrowerVariant(ThingData)
 		end
-	else
+	elseif (settings.startup["RTThrowersSetting"].value == true and settings.startup["RTModdedThrowers"].value == false) then
 		if (ThingData.name == "burner-inserter" 
 		or ThingData.name == "inserter" 
 		or ThingData.name == "fast-inserter"
