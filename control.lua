@@ -864,7 +864,7 @@ function(eventf)
 			global.AllPlayers[ThePlayer] = {}
 			
 		--|| Ziplines
-		elseif (TheirProperties.sliding == true and TheirProperties.LetMeGuideYou and TheirProperties.LetMeGuideYou.valid) then
+		elseif (TheirProperties.sliding == true and TheirProperties.LetMeGuideYou and TheirProperties.LetMeGuideYou.valid and game.get_player(ThePlayer).character) then
 			game.get_player(ThePlayer).character.character_running_speed_modifier = -0.99999
 			
 			--||| Set the destination
@@ -1103,6 +1103,24 @@ function(eventf)
 				global.AllPlayers[ThePlayer] = {}
 				--game.print("failsafe/wire destroyed")
 			end
+		--||| Failsafe
+		elseif (TheirProperties.sliding == true) then
+			TheirProperties.LetMeGuideYou.destroy()
+			TheirProperties.ChuggaChugga.destroy()
+			TheirProperties.succ.destroy()
+			if (game.get_player(ThePlayer).character) then
+				game.get_player(ThePlayer).character_running_speed_modifier = 0			
+			end
+			global.AllPlayers[ThePlayer] = {}
+			
+		-- else
+			-- for each, thing in pairs(global.AllPlayers[ThePlayer]) do
+				-- if (thing.can_be_destroyed() ~= nil) then
+					-- thing.destroy()
+				-- end
+			-- end
+			-- global.AllPlayers[ThePlayer] = {}
+		
 		end		
 	end
 
