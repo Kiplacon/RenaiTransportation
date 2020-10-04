@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.6.0
+Date: 10/4/2020
+  Additions:
+    - Magnet Train Ramps. Powerful electromagnets let you control the landing point of a ramp regardless of a train's speed. It's like train tunnels but more fun.
+    - Recipe to turn open chests back into regular chests. Recommended by saaadel 
+  Bugfixes:
+    - Semi-fixed issue where trains that were landing and then jumpped again before the whole train landed would cause the train to fall apart. Now so long as at least one carriage fully on the ground at all times, chaining jumps should work fine
+---------------------------------------------------------------------------------------------------
 Version: 0.5.5
 Date: 9/12/2020
   Bugfixes:

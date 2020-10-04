@@ -15,6 +15,7 @@ function()
 		global.OrientationUnitComponents[0.25] = {x = 1, y = 0, name = "right"}
 		global.OrientationUnitComponents[0.5] = {x = 0, y = 1, name = "down"}
 		global.OrientationUnitComponents[0.75] = {x = -1, y = 0, name = "left"}
+		global.OrientationUnitComponents[1] = {x = 0, y = -1, name = "up"}
 	end
 	
 	for PlayerID, PlayerLuaData in pairs(game.players) do
@@ -25,6 +26,10 @@ function()
 	
 	if (global.FlyingTrains == nil) then
 		global.FlyingTrains = {}		
+	end
+	
+	if (global.MagnetRamps == nil) then
+		global.MagnetRamps = {}		
 	end
 	
 	if (global.BouncePadList == nil) then
@@ -38,13 +43,12 @@ function()
 		global.CatapultList = {}		
 	end
 	
-	if (global.OrientationUnitComponents == nil) then
-		global.OrientationUnitComponents = {}
-		global.OrientationUnitComponents[0] = {x = 0, y = -1, name = "up"}
-		global.OrientationUnitComponents[0.25] = {x = 1, y = 0, name = "right"}
-		global.OrientationUnitComponents[0.5] = {x = 0, y = 1, name = "down"}
-		global.OrientationUnitComponents[0.75] = {x = -1, y = 0, name = "left"}
-	end	
+	global.OrientationUnitComponents = {}
+	global.OrientationUnitComponents[0] = {x = 0, y = -1, name = "up"}
+	global.OrientationUnitComponents[0.25] = {x = 1, y = 0, name = "right"}
+	global.OrientationUnitComponents[0.5] = {x = 0, y = 1, name = "down"}
+	global.OrientationUnitComponents[0.75] = {x = -1, y = 0, name = "left"}
+	global.OrientationUnitComponents[1] = {x = 0, y = -1, name = "up"}
 	
 	if (global.AllPlayers == nil) then
 		global.AllPlayers = {}		
@@ -58,6 +62,10 @@ function()
 	
 	if (global.FlyingTrains == nil) then
 		global.FlyingTrains = {}		
+	end
+
+	if (global.MagnetRamps == nil) then
+		global.MagnetRamps = {}		
 	end
 	
 	if (global.BouncePadList == nil) then
@@ -75,7 +83,7 @@ end)
 
 -- On Built/Copy/Stuff
 ---- adds new thrower inserters to the list of throwers to check. Make player launchers (reskined inserters) to be inoperable and inactive ----
----- built by hand ----
+--| built by hand ----
 script.on_event(defines.events.on_built_entity, 
 function(event)
 	if (string.find(event.created_entity.name, "RTThrower-")) then
@@ -85,6 +93,21 @@ function(event)
 		event.created_entity.operable = false
 		event.created_entity.active = false
 	
+	elseif (event.created_entity.name == "RTMagnetTrainRamp" or event.created_entity.name == "RTMagnetTrainRampNoSkip") then
+		global.MagnetRamps[event.created_entity.unit_number] = {entity = event.created_entity, tiles = {}}
+		script.register_on_entity_destroyed(event.created_entity)
+		local SUCC = event.created_entity.surface.create_entity
+				({
+				name = "RTMagnetRampDrain", 
+				position = {event.created_entity.position.x, event.created_entity.position.y-0.25}, --required setting for rendering, doesn't affect spawn
+				direction = event.created_entity.direction,
+				force = event.created_entity.force
+				})
+		SUCC.electric_buffer_size = 1000000
+		SUCC.power_usage = 0
+		SUCC.destructible = false
+		global.MagnetRamps[event.created_entity.unit_number].power = SUCC
+		
 	elseif (string.find(event.created_entity.name, "BouncePlate") and not string.find(event.created_entity.name, "Train")) then
 		global.BouncePadList[event.created_entity.unit_number] = {TheEntity = event.created_entity}
 		if (event.created_entity.name == "DirectedBouncePlate") then
@@ -160,7 +183,7 @@ function(event)
 	end
 end)
 
----- built by robot ----
+--| built by robot ----
 script.on_event(defines.events.on_robot_built_entity, 
 function(event)
 	if (string.find(event.created_entity.name, "RTThrower-")) then
@@ -170,6 +193,21 @@ function(event)
 		event.created_entity.operable = false
 		event.created_entity.active = false
 		
+	elseif (event.created_entity.name == "RTMagnetTrainRamp" or event.created_entity.name == "RTMagnetTrainRampNoSkip") then
+		global.MagnetRamps[event.created_entity.unit_number] = {entity = event.created_entity, tiles = {}}
+		script.register_on_entity_destroyed(event.created_entity)
+		local SUCC = event.created_entity.surface.create_entity
+				({
+				name = "RTMagnetRampDrain", 
+				position = {event.created_entity.position.x, event.created_entity.position.y-0.25}, --required setting for rendering, doesn't affect spawn
+				direction = event.created_entity.direction,
+				force = event.created_entity.force
+				})
+		SUCC.electric_buffer_size = 1000000
+		SUCC.power_usage = 0
+		SUCC.destructible = false
+		global.MagnetRamps[event.created_entity.unit_number].power = SUCC
+		
 	elseif (string.find(event.created_entity.name, "BouncePlate") and not string.find(event.created_entity.name, "Train")) then
 		global.BouncePadList[event.created_entity.unit_number] = {TheEntity = event.created_entity}
 		if (event.created_entity.name == "DirectedBouncePlate") then
@@ -245,7 +283,7 @@ function(event)
 		
 	end
 end)
----- built by script ----
+--| built by script ----
 script.on_event(defines.events.script_raised_built, 
 function(event)
 	if (string.find(event.entity.name, "RTThrower-")) then
@@ -255,6 +293,21 @@ function(event)
 		event.entity.operable = false
 		event.entity.active = false
 
+	elseif (event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") then
+		global.MagnetRamps[event.entity.unit_number] = {entity = event.entity, tiles = {}}
+		script.register_on_entity_destroyed(event.entity)
+		local SUCC = event.entity.surface.create_entity
+				({
+				name = "RTMagnetRampDrain", 
+				position = {event.entity.position.x, event.entity.position.y-0.25}, --required setting for rendering, doesn't affect spawn
+				direction = event.entity.direction,
+				force = event.entity.force
+				})
+		SUCC.electric_buffer_size = 1000000
+		SUCC.power_usage = 0
+		SUCC.destructible = false
+		global.MagnetRamps[event.entity.unit_number].power = SUCC
+			
 	elseif (string.find(event.entity.name, "BouncePlate") and not string.find(event.entity.name, "Train")) then
 		global.BouncePadList[event.entity.unit_number] = {TheEntity = event.entity}
 		if (event.entity.name == "DirectedBouncePlate") then
@@ -330,7 +383,7 @@ function(event)
 
 	end
 end)
----- cloned by script ----
+--| cloned by script ----
 script.on_event(defines.events.on_entity_cloned, 
 function(event)
 	if (string.find(event.destination.name, "RTThrower-")) then
@@ -340,6 +393,21 @@ function(event)
 		event.destination.operable = false
 		event.destination.active = false
 
+	elseif (event.destination.name == "RTMagnetTrainRamp" or event.destination.name == "RTMagnetTrainRampNoSkip") then
+		global.MagnetRamps[event.destination.unit_number] = {entity = event.destination, tiles = {}}
+		script.register_on_entity_destroyed(event.destination)
+		local SUCC = event.destination.surface.create_entity
+				({
+				name = "RTMagnetRampDrain", 
+				position = {event.destination.position.x, event.destination.position.y-0.25}, --required setting for rendering, doesn't affect spawn
+				direction = event.destination.direction,
+				force = event.destination.force
+				})
+		SUCC.electric_buffer_size = 1000000
+		SUCC.power_usage = 0
+		SUCC.destructible = false
+		global.MagnetRamps[event.destination.unit_number].power = SUCC
+			
 	elseif (string.find(event.destination.name, "BouncePlate") and not string.find(event.destination.name, "Train")) then
 		global.BouncePadList[event.destination.unit_number] = {TheEntity = event.destination}
 		if (event.destination.name == "DirectedBouncePlate") then
@@ -414,7 +482,7 @@ function(event)
 		end		
 	end
 end)
----- revived(?) ----
+--| revived(?) ----
 script.on_event(defines.events.script_raised_revive, 
 function(event)
 	if (string.find(event.entity.name, "RTThrower-")) then
@@ -423,7 +491,22 @@ function(event)
 	elseif (event.entity.name == "PlayerLauncher") then
 		event.entity.operable = false
 		event.entity.active = false
-	
+
+	elseif (event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") then
+		global.MagnetRamps[event.entity.unit_number] = {entity = event.entity, tiles = {}}
+		script.register_on_entity_destroyed(event.entity)
+		local SUCC = event.entity.surface.create_entity
+				({
+				name = "RTMagnetRampDrain", 
+				position = {event.entity.position.x, event.entity.position.y-0.25}, --required setting for rendering, doesn't affect spawn
+				direction = event.entity.direction,
+				force = event.entity.force
+				})
+		SUCC.electric_buffer_size = 1000000
+		SUCC.power_usage = 0
+		SUCC.destructible = false
+		global.MagnetRamps[event.entity.unit_number].power = SUCC
+		
 	elseif (string.find(event.entity.name, "BouncePlate") and not string.find(event.entity.name, "Train")) then
 		global.BouncePadList[event.entity.unit_number] = {TheEntity = event.entity}
 		if (event.entity.name == "DirectedBouncePlate") then
@@ -538,6 +621,7 @@ function(event)
 	end
 end)
 
+-- Clear invalid things
 script.on_nth_tick(18000, 
 function(event)
 	for unitID, ItsStuff in pairs(global.BouncePadList) do
@@ -545,6 +629,14 @@ function(event)
 			-- it's good
 		else
 			global.BouncePadList[unitID] = nil
+		end
+	end
+	
+	for unitID, ItsStuff in pairs(global.MagnetRamps) do
+		if (ItsStuff.entity and ItsStuff.entity.valid) then
+			-- it's good
+		else
+			global.MagnetRamps[unitID] = nil
 		end
 	end
 end)
@@ -1030,11 +1122,11 @@ function(eventf)
 					and TheirProperties.succ.energy ~= 0)
 					then
 						if (game.tick%2 == 0 and TheirProperties.ForwardDirection[game.get_player(ThePlayer).walking_state.direction] ~= nil) then
-							if (TheirProperties.LetMeGuideYou.speed <= 0.33) then
+							if (TheirProperties.LetMeGuideYou.speed <= 0.315) then
 								TheirProperties.LetMeGuideYou.speed = TheirProperties.LetMeGuideYou.speed + 0.008 --increments slower than 0.008 don't seem to do anything
 							end	
 						elseif (game.tick%2 == 0 and TheirProperties.BackwardsDirection[game.get_player(ThePlayer).walking_state.direction] ~= nil) then
-							if (TheirProperties.LetMeGuideYou.speed >= -0.33) then
+							if (TheirProperties.LetMeGuideYou.speed >= -0.315) then
 								TheirProperties.LetMeGuideYou.speed = TheirProperties.LetMeGuideYou.speed - 0.008
 							end
 						end
@@ -1136,7 +1228,7 @@ function(eventf)
 		if (properties.follower and properties.follower.valid) then
 			if (properties.follower.train.speed>0) then
 				properties.follower.train.speed = math.abs(properties.speed)
-			else
+			elseif (properties.follower.train.speed<=0) then
 				properties.follower.train.speed = -math.abs(properties.speed)
 			end
 		end
@@ -1296,13 +1388,26 @@ function(eventf)
 					
 					if (NewTrain.valid) then
 						-- this order of setting speed -> manual mode -> schedule is very important, other orders mess up a lot more
-						if (properties.RampOrientation == properties.orientation) then
-							NewTrain.train.speed = -properties.speed
+						
+						if (properties.leader == nil) then
+							if (properties.RampOrientation == properties.orientation) then
+								NewTrain.train.speed = -properties.speed
+							else
+								NewTrain.train.speed = properties.speed
+							end
 						else
-							NewTrain.train.speed = properties.speed
+							if (NewTrain.train.speed>0) then
+								NewTrain.train.speed = math.abs(properties.speed)
+							else
+								NewTrain.train.speed = -math.abs(properties.speed)
+							end
 						end
 
-						NewTrain.train.manual_mode = properties.ManualMode -- Trains are default created in manual mode
+
+						if (properties.leader == nil or (properties.follower == nil and properties.length == #NewTrain.train.carriages)) then
+							NewTrain.train.manual_mode = properties.ManualMode -- Trains are default created in manual mode
+						end
+						
 						if (properties.schedule ~= nil) then
 							NewTrain.train.schedule = properties.schedule
 						end	
@@ -1394,6 +1499,18 @@ function(eventf)
 			local SpinMagnitude = 0.05
 			local SpinSpeed = 23
 			local gravity = 500 -- affects arc "height", not air time or jump length
+			
+			if (properties.MagnetComp ~= nil) then
+				--if (properties.MagnetComp >= 0) then
+					gravity = 0.08*properties.AirTime^2-0.5*properties.AirTime+11
+					--SpinMagnitude = 0.05*properties.MagnetComp
+				if (properties.MagnetComp < 0) then
+					--gravity = -30*properties.MagnetComp
+					--SpinSpeed = 19
+					--SpinMagnitude = 0.025
+				end
+			end
+			
 			------------- animating -----------	
 			if (properties.RampOrientation == 0) then -- going down
 				rendering.set_target(properties.TrainImageID, properties.GuideCar, {0,((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity})
@@ -1418,8 +1535,8 @@ function(eventf)
 			end
 		
 		--|| Landing speed control
-		elseif (game.tick > properties.LandTick and properties.length and properties.LandedTrain and properties.LandedTrain.valid) then
-			if (#properties.LandedTrain.train.carriages ~= properties.length) then
+		elseif (game.tick > properties.LandTick and properties.LandedTrain and properties.LandedTrain.valid) then
+			if (properties.follower and properties.followerID and global.FlyingTrains[properties.followerID] and global.FlyingTrains[properties.followerID].LandedTrain == nil) then
 				--game.print("not all here")
 				if (properties.LandedTrain.train.speed>0) then
 					properties.LandedTrain.train.speed = math.abs(properties.speed)
@@ -1427,10 +1544,24 @@ function(eventf)
 					properties.LandedTrain.train.speed = -math.abs(properties.speed)
 				else
 				end
-			elseif (#properties.LandedTrain.train.carriages == properties.length or game.tick > properties.LandTick+240) then
+			elseif (#properties.LandedTrain.train.carriages == properties.length or game.tick > properties.LandTick+300) then
 				--game.print("all here")
 				global.FlyingTrains[PropUnitNumber] = nil
 			end
+
+		-- elseif (game.tick > properties.LandTick and properties.follower and properties.LandedTrain and properties.LandedTrain.valid) then
+			-- if (#properties.LandedTrain.train.carriages ~= properties.length) then
+				-- --game.print("not all here")
+				-- if (properties.LandedTrain.train.speed>0) then
+					-- properties.LandedTrain.train.speed = math.abs(properties.speed)
+				-- elseif (properties.LandedTrain.train.speed<0) then
+					-- properties.LandedTrain.train.speed = -math.abs(properties.speed)
+				-- else
+				-- end
+			-- elseif (#properties.LandedTrain.train.carriages == properties.length or game.tick > properties.LandTick+240) then
+				-- --game.print("all here")
+				-- global.FlyingTrains[PropUnitNumber] = nil
+			-- end
 			
 		elseif (game.tick > properties.LandTick) then -- for any trains already in the air when the speed control update was released or other catch all failsafes
 			global.FlyingTrains[PropUnitNumber] = nil
@@ -1445,7 +1576,7 @@ script.on_event(defines.events.on_entity_damaged,
 function(event)
 --| Detect train hitting ramp
 if (
-	(event.entity.name == "RTTrainRamp" or event.entity.name == "RTTrainRampNoSkip")
+	(event.entity.name == "RTTrainRamp" or event.entity.name == "RTTrainRampNoSkip" or event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip")
 	and event.cause 
 	and (event.cause.type == "locomotive" or event.cause.type == "cargo-wagon" or event.cause.type == "fluid-wagon" or event.cause.type == "artillery-wagon")
 	and (math.abs(event.entity.orientation-event.cause.orientation) == 0.5 
@@ -1521,8 +1652,21 @@ if (
 	global.FlyingTrains[SpookyGhost.unit_number].name = event.cause.name
 	global.FlyingTrains[SpookyGhost.unit_number].type = event.cause.type
 	global.FlyingTrains[SpookyGhost.unit_number].LaunchTick = game.tick
-	global.FlyingTrains[SpookyGhost.unit_number].LandTick = math.ceil(game.tick + 130*math.abs(event.cause.speed))
+	if ((event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") and global.MagnetRamps[event.entity.unit_number].range ~= nil and global.MagnetRamps[event.entity.unit_number].power.energy == global.MagnetRamps[event.entity.unit_number].power.electric_buffer_size) then
+		global.FlyingTrains[SpookyGhost.unit_number].LandTick = math.ceil(game.tick + math.abs(global.MagnetRamps[event.entity.unit_number].range/(0.8*event.cause.speed)))
+		global.FlyingTrains[SpookyGhost.unit_number].MagnetComp = math.ceil(game.tick + 130*math.abs(event.cause.speed))-global.FlyingTrains[SpookyGhost.unit_number].LandTick
+		global.FlyingTrains[SpookyGhost.unit_number].MakeFX = "yes"
+		
+	elseif ((event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") and global.MagnetRamps[event.entity.unit_number].range ~= nil and global.MagnetRamps[event.entity.unit_number].power.energy ~= global.MagnetRamps[event.entity.unit_number].power.electric_buffer_size) then
+		global.FlyingTrains[SpookyGhost.unit_number].MakeFX = "NoEnergy"
+		global.FlyingTrains[SpookyGhost.unit_number].LandTick = math.ceil(game.tick + 130*math.abs(event.cause.speed))
+		
+	else
+		global.FlyingTrains[SpookyGhost.unit_number].LandTick = math.ceil(game.tick + 130*math.abs(event.cause.speed)) -- remember to adjust follower calculation too
+	end
+	
 	global.FlyingTrains[SpookyGhost.unit_number].AirTime = global.FlyingTrains[SpookyGhost.unit_number].LandTick - global.FlyingTrains[SpookyGhost.unit_number].LaunchTick
+
 	global.FlyingTrains[SpookyGhost.unit_number].TrainImageID = TrainImage
 	global.FlyingTrains[SpookyGhost.unit_number].MaskID = Mask
 	global.FlyingTrains[SpookyGhost.unit_number].speed = event.cause.speed
@@ -1532,7 +1676,15 @@ if (
 	global.FlyingTrains[SpookyGhost.unit_number].RampOrientation = event.entity.orientation
 	global.FlyingTrains[SpookyGhost.unit_number].ShadowID = OwTheEdge
 	global.FlyingTrains[SpookyGhost.unit_number].ManualMode = event.cause.train.manual_mode
-	global.FlyingTrains[SpookyGhost.unit_number].length = #event.cause.train.carriages
+	global.FlyingTrains[SpookyGhost.unit_number].length = #event.cause.train.carriages	
+	
+	for number, properties in pairs(global.FlyingTrains) do -- carriages jumping before the ends land
+		if (properties.LandedTrain ~= nil and properties.LandedTrain.valid and event.cause.unit_number == properties.LandedTrain.unit_number) then
+			global.FlyingTrains[SpookyGhost.unit_number].ManualMode = properties.ManualMode
+			global.FlyingTrains[SpookyGhost.unit_number].length = properties.length
+		end
+	end
+	
 	if (event.entity.orientation == 0) then --ramp down
 		SearchBox = 
 			{
@@ -1577,7 +1729,7 @@ if (
 	-- end
 		
 	global.FlyingTrains[SpookyGhost.unit_number].schedule = event.cause.train.schedule
-	if (event.entity.name == "RTTrainRamp" and global.FlyingTrains[SpookyGhost.unit_number].schedule ~= nil) then
+	if ((event.entity.name == "RTTrainRamp" or event.entity.name == "RTMagnetTrainRamp") and global.FlyingTrains[SpookyGhost.unit_number].schedule ~= nil) then
 		if (global.FlyingTrains[SpookyGhost.unit_number].schedule.current == table_size(global.FlyingTrains[SpookyGhost.unit_number].schedule.records)) then
 		global.FlyingTrains[SpookyGhost.unit_number].schedule.current = 1
 		else
@@ -1585,12 +1737,23 @@ if (
 		end
 	end
 	
+	--| Follower/leader tracking
 	for number, properties in pairs(global.FlyingTrains) do
 		if (properties.follower and properties.follower.valid and event.cause.unit_number == properties.follower.unit_number) then
 			global.FlyingTrains[SpookyGhost.unit_number].leader = number
+			global.FlyingTrains[number].followerID = SpookyGhost.unit_number
 			global.FlyingTrains[SpookyGhost.unit_number].schedule = global.FlyingTrains[number].schedule
 			global.FlyingTrains[SpookyGhost.unit_number].ManualMode = global.FlyingTrains[number].ManualMode
-			global.FlyingTrains[SpookyGhost.unit_number].LandTick = math.ceil(game.tick + 130*math.abs(global.FlyingTrains[number].speed))
+			if ((event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") and global.FlyingTrains[number].MagnetComp ~= nil and (global.FlyingTrains[number].MakeFX == "yes" or global.FlyingTrains[number].MakeFX == "followerY")) then
+				global.FlyingTrains[SpookyGhost.unit_number].LandTick = math.ceil(game.tick + math.abs(global.MagnetRamps[event.entity.unit_number].range/(0.8*event.cause.speed)))
+				global.FlyingTrains[SpookyGhost.unit_number].MagnetComp = global.FlyingTrains[number].MagnetComp
+				global.FlyingTrains[SpookyGhost.unit_number].MakeFX = "followerY"
+			else	
+				global.FlyingTrains[SpookyGhost.unit_number].LandTick = math.ceil(game.tick + 130*math.abs(global.FlyingTrains[number].speed))
+				global.FlyingTrains[SpookyGhost.unit_number].MagnetComp = nil
+				global.FlyingTrains[SpookyGhost.unit_number].MakeFX = "followerN"
+			end
+			
 			global.FlyingTrains[SpookyGhost.unit_number].AirTime = global.FlyingTrains[number].AirTime
 			global.FlyingTrains[SpookyGhost.unit_number].length = global.FlyingTrains[number].length
 			if (global.FlyingTrains[SpookyGhost.unit_number].speed>0) then
@@ -1600,8 +1763,44 @@ if (
 				SpookyGhost.speed = -0.8*math.abs(global.FlyingTrains[number].speed)
 				global.FlyingTrains[SpookyGhost.unit_number].speed = -math.abs(global.FlyingTrains[number].speed)
 			end
+			
 		end
 	end	
+	
+	if ((event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") and global.MagnetRamps[event.entity.unit_number].range ~= nil and global.FlyingTrains[SpookyGhost.unit_number].MakeFX == "yes") then
+		global.MagnetRamps[event.entity.unit_number].power.energy = 0
+		if (global.FlyingTrains[SpookyGhost.unit_number].MagnetComp < 0) then
+			polarity = "RTPush"
+			vroom = 0.75
+			shade = {r = 1, g = 0.2, b = 0.2, a = 0} 
+		else
+			polarity = "RTPull"
+			vroom = 0.75
+			shade = {r = 0.4, g = 0.4, b = 1, a = 0} 
+		end
+		
+		for each, railtile in pairs(global.MagnetRamps[event.entity.unit_number].tiles) do 
+			rendering.draw_animation
+				{
+					animation = polarity, 
+					target = railtile,
+					target_offset = {0,-1.65},
+					animation_speed = vroom,
+					animation_offset = math.random(0,99),
+					tint = shade,
+					surface = event.entity.surface,
+					x_scale = 0.3,
+					y_scale = 0.8,
+					time_to_live = global.FlyingTrains[SpookyGhost.unit_number].AirTime+((5.9*global.FlyingTrains[SpookyGhost.unit_number].length)/(0.8*event.cause.speed))
+				}
+		end
+		
+	elseif ((event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") and global.MagnetRamps[event.entity.unit_number].range ~= nil and global.FlyingTrains[SpookyGhost.unit_number].MakeFX == "NoEnergy") then
+		for each, guy in pairs(game.connected_players) do
+			guy.add_custom_alert(global.MagnetRamps[event.entity.unit_number].entity, {type = "item", name = "RTMagnetTrainRampItem"}, "A Magnet Ramp was used without a full buffer!", true)
+		end
+	
+	end
 	
 	if (event.cause.type == "locomotive" and event.cause.burner) then
 		global.FlyingTrains[SpookyGhost.unit_number].CurrentlyBurning = event.cause.burner.currently_burning
@@ -1640,7 +1839,7 @@ end)
 
 
 -- On Interact
-script.on_event("EnterPipe", 
+script.on_event("RTInteract", 
 function(event1) -- has .name = event ID number, .tick = tick number, .player_index, and .input_name = custom input name
 	
 	ThingHovering = game.get_player(event1.player_index).selected
@@ -1790,7 +1989,48 @@ function(event1) -- has .name = event ID number, .tick = tick number, .player_in
 				path="utility/rotated_big", 
 				position=game.get_player(event1.player_index).position, 
 				volume_modifier=1
-				}				
+				}	
+		--|| Swap Magnet Ramp Modes	
+		elseif (ThingHovering.name == "RTMagnetTrainRamp") then
+			ElPosition = ThingHovering.position
+			ElForce = game.get_player(event1.player_index).force
+			ElDirection = ThingHovering.direction
+			ElSurface = ThingHovering.surface
+			ThingHovering.destroy()
+			ElSurface.create_entity
+				({
+				name = "RTMagnetTrainRampNoSkip",
+				position = ElPosition,
+				direction = ElDirection,
+				force = ElForce,
+				create_build_effect_smoke = false,
+				raise_built = true
+				})	
+			game.get_player(event1.player_index).play_sound{
+				path="utility/rotated_big", 
+				position=game.get_player(event1.player_index).position, 
+				volume_modifier=1
+				}
+		elseif (ThingHovering.name == "RTMagnetTrainRampNoSkip") then
+			ElPosition = ThingHovering.position
+			ElForce = game.get_player(event1.player_index).force
+			ElDirection = ThingHovering.direction
+			ElSurface = ThingHovering.surface
+			ThingHovering.destroy()		
+			ElSurface.create_entity
+				({
+				name = "RTMagnetTrainRamp",
+				position = ElPosition,
+				direction = ElDirection,
+				force = ElForce,
+				create_build_effect_smoke = false,
+				raise_built = true
+				})	
+			game.get_player(event1.player_index).play_sound{
+				path="utility/rotated_big", 
+				position=game.get_player(event1.player_index).position, 
+				volume_modifier=1
+				}					
 		--|| Zipline
 		elseif (game.get_player(event1.player_index).character and game.get_player(event1.player_index).character.driving == false and global.AllPlayers[event1.player_index].LetMeGuideYou == nil and ThingHovering.type == "electric-pole" and #ThingHovering.neighbours["copper"] ~= 0) then
 			if (math.sqrt((game.get_player(event1.player_index).position.x-ThingHovering.position.x)^2+(game.get_player(event1.player_index).position.y-ThingHovering.position.y)^2) <= 3 ) then
@@ -1885,7 +2125,215 @@ function(event)
 	--| Toggle range overlay in alt-view
 	if (game.get_player(event.player_index).selected and global.BouncePadList[game.get_player(event.player_index).selected.unit_number] ~= nil) then
 		rendering.set_visible(global.BouncePadList[game.get_player(event.player_index).selected.unit_number].arrow, not rendering.get_visible(global.BouncePadList[game.get_player(event.player_index).selected.unit_number].arrow))
+
+	--| Start setting range of magenet ramp
+	elseif (game.get_player(event.player_index).selected and (game.get_player(event.player_index).selected.name == "RTMagnetTrainRamp" or game.get_player(event.player_index).selected.name == "RTMagnetTrainRampNoSkip")) then
+		local ramp = game.get_player(event.player_index).selected
+		local MaxRange = 100
+		game.get_player(event.player_index).print("Now click a straight rail in range to set Magnet Ramp jump distance.")
+		local rektangle = rendering.draw_sprite
+			{
+				sprite = "RTMagnetTrainRampRange",
+				surface = ramp.surface,
+				orientation = ramp.orientation+0.25,
+				target = ramp,
+				target_offset = 
+					{
+						global.OrientationUnitComponents[ramp.orientation+0.25].x-(MaxRange+1)/2*global.OrientationUnitComponents[ramp.orientation].x, 
+						global.OrientationUnitComponents[ramp.orientation+0.25].y-(MaxRange+1)/2*global.OrientationUnitComponents[ramp.orientation].y
+					},
+				x_scale = MaxRange/2,
+				y_scale = 1,
+				time_to_live = 6000,
+				tint = {r = 0.5, g = 0, b = 0, a = 0}
+			}		
+		global.AllPlayers[event.player_index].SettingRange = true
+		global.AllPlayers[event.player_index].Setting = ramp
+		global.AllPlayers[event.player_index].point = ramp.orientation
+		global.AllPlayers[event.player_index].rekt = rektangle
+		global.AllPlayers[event.player_index].range = MaxRange
+	
+	--| Set magnet ramp range
+	elseif (global.AllPlayers[event.player_index].SettingRange == true and game.get_player(event.player_index).selected) then
+		if (game.get_player(event.player_index).selected.name == "straight-rail") then
+			local TheRail = game.get_player(event.player_index).selected
+			local TheRamp = global.AllPlayers[event.player_index].Setting
+			--|| Vertical ramps
+			if ((global.AllPlayers[event.player_index].point == 0 or global.AllPlayers[event.player_index].point == 0.5)
+				and TheRail.position.x == TheRamp.position.x+global.OrientationUnitComponents[TheRamp.orientation+0.25].x
+				and math.abs(TheRail.position.y-TheRamp.position.y) <= global.AllPlayers[event.player_index].range
+			) then
+				if (rendering.is_valid(global.AllPlayers[event.player_index].rekt)) then
+					rendering.destroy(global.AllPlayers[event.player_index].rekt)
+				end
+				local range = math.abs(TheRail.position.y-TheRamp.position.y)
+				global.MagnetRamps[TheRamp.unit_number].range = range+6
+				if (global.MagnetRamps[TheRamp.unit_number].rangeID ~= nil) then
+					rendering.destroy(global.MagnetRamps[TheRamp.unit_number].rangeID)
+				end
+
+				local q = rendering.draw_sprite
+					{
+						sprite = "RTMagnetTrainRampRange",
+						surface = TheRamp.surface,
+						orientation = TheRamp.orientation+0.25,
+						target = TheRamp,
+						target_offset = 
+							{
+								global.OrientationUnitComponents[TheRamp.orientation+0.25].x-(range+1)/2*global.OrientationUnitComponents[TheRamp.orientation].x, 
+								global.OrientationUnitComponents[TheRamp.orientation+0.25].y-(range+1)/2*global.OrientationUnitComponents[TheRamp.orientation].y
+							},
+						only_in_alt_mode = true,
+						x_scale = range/2,
+						y_scale = 0.5,
+						tint = {r = 0.5, g = 0.5, b = 0, a = 0.5}
+					}
+					
+				for each, tile in pairs(global.MagnetRamps[TheRamp.unit_number].tiles) do
+					tile.destroy()
+				end				
+				global.MagnetRamps[TheRamp.unit_number].tiles = {}
+				
+				for i = 0, range do
+					local a = TheRamp.surface.create_entity
+						({
+							name = "RTMagnetRail", 
+							position = {TheRamp.position.x+0.5*global.OrientationUnitComponents[TheRamp.orientation+0.25].x, TheRamp.position.y+i*-global.OrientationUnitComponents[TheRamp.orientation].y},
+							create_build_effect_smoke = true
+						})
+					rendering.draw_sprite
+						{
+							sprite = "RTMagnetRailSprite",
+							x_scale = 0.5,
+							y_scale = 0.5,
+							surface = TheRamp.surface,
+							target = a,
+							render_layer = 80
+						}
+					a.destructible = false
+					table.insert(global.MagnetRamps[TheRamp.unit_number].tiles, a)
+					
+					local b = TheRamp.surface.create_entity
+						({
+							name = "RTMagnetRail", 
+							position = {TheRamp.position.x+1.5*global.OrientationUnitComponents[TheRamp.orientation+0.25].x, TheRamp.position.y+i*-global.OrientationUnitComponents[TheRamp.orientation].y},
+							create_build_effect_smoke = true
+						})
+					rendering.draw_sprite
+						{
+							sprite = "RTMagnetRailSprite",
+							x_scale = 0.5,
+							y_scale = 0.5,
+							surface = TheRamp.surface,
+							target = b,
+							render_layer = 80
+						}
+					b.destructible = false
+					table.insert(global.MagnetRamps[TheRamp.unit_number].tiles, b)
+				end
+				global.MagnetRamps[TheRamp.unit_number].power.electric_buffer_size = 100000*#global.MagnetRamps[TheRamp.unit_number].tiles
+				
+				game.get_player(event.player_index).print("Set Range: "..range.." tiles. Required power: "..0.1*#global.MagnetRamps[TheRamp.unit_number].tiles.."MJ")
+				global.MagnetRamps[TheRamp.unit_number].rangeID = q
+				global.AllPlayers[event.player_index] = {}
+				
+			--|| Horizontal ramps
+			elseif ((global.AllPlayers[event.player_index].point == 0.25 or global.AllPlayers[event.player_index].point == 0.75)
+				and TheRail.position.y == TheRamp.position.y+global.OrientationUnitComponents[global.AllPlayers[event.player_index].Setting.orientation+0.25].y
+				and math.abs(TheRail.position.x-TheRamp.position.x) <= global.AllPlayers[event.player_index].range
+			) then
+				if (rendering.is_valid(global.AllPlayers[event.player_index].rekt)) then
+					rendering.destroy(global.AllPlayers[event.player_index].rekt)
+				end
+				
+				local range = math.abs(TheRail.position.x-TheRamp.position.x)
+				global.MagnetRamps[TheRamp.unit_number].range = range+6
+				if (global.MagnetRamps[TheRamp.unit_number].rangeID ~= nil) then
+					rendering.destroy(global.MagnetRamps[TheRamp.unit_number].rangeID)
+				end
+				local q = rendering.draw_sprite
+					{
+						sprite = "RTMagnetTrainRampRange",
+						surface = TheRamp.surface,
+						orientation = TheRamp.orientation+0.25,
+						target = TheRamp,
+						target_offset = 
+							{
+								global.OrientationUnitComponents[TheRamp.orientation+0.25].x-(range+1)/2*global.OrientationUnitComponents[TheRamp.orientation].x, 
+								global.OrientationUnitComponents[TheRamp.orientation+0.25].y-(range+1)/2*global.OrientationUnitComponents[TheRamp.orientation].y
+							},
+						only_in_alt_mode = true,
+						x_scale = range/2,
+						y_scale = 0.5,
+						tint = {r = 0.5, g = 0.5, b = 0, a = 0.5}
+					}
+					
+				for each, tile in pairs(global.MagnetRamps[TheRamp.unit_number].tiles) do
+					tile.destroy()
+				end
+				global.MagnetRamps[TheRamp.unit_number].tiles = {}
+				
+				for i = 0, range do
+					local a = TheRamp.surface.create_entity
+						({
+							name = "RTMagnetRail", 
+							position = {TheRamp.position.x+i*-global.OrientationUnitComponents[TheRamp.orientation].x, TheRamp.position.y+0.5*global.OrientationUnitComponents[TheRamp.orientation+0.25].y},
+							create_build_effect_smoke = true
+						})
+					rendering.draw_sprite
+						{
+							sprite = "RTMagnetRailSprite",
+							x_scale = 0.5,
+							y_scale = 0.5,
+							surface = TheRamp.surface,
+							target = a,
+							render_layer = 80
+						}
+					a.destructible = false
+					table.insert(global.MagnetRamps[TheRamp.unit_number].tiles, a)
+					
+					local b = TheRamp.surface.create_entity
+						({
+							name = "RTMagnetRail", 
+							position = {TheRamp.position.x+i*-global.OrientationUnitComponents[TheRamp.orientation].x, TheRamp.position.y+1.5*global.OrientationUnitComponents[TheRamp.orientation+0.25].y},
+							create_build_effect_smoke = true
+						})
+					rendering.draw_sprite
+						{
+							sprite = "RTMagnetRailSprite",
+							x_scale = 0.5,
+							y_scale = 0.5,
+							surface = TheRamp.surface,
+							target = b,
+							render_layer = 80
+						}
+					b.destructible = false
+					table.insert(global.MagnetRamps[TheRamp.unit_number].tiles, b)
+				end
+				global.MagnetRamps[TheRamp.unit_number].power.electric_buffer_size = 100000*#global.MagnetRamps[TheRamp.unit_number].tiles
+				
+				game.get_player(event.player_index).print("Set Range: "..range.." tiles. Required power: "..0.1*#global.MagnetRamps[TheRamp.unit_number].tiles.."MJ")
+				global.MagnetRamps[TheRamp.unit_number].rangeID = q
+				global.AllPlayers[event.player_index] = {}					
+
+			else
+				game.get_player(event.player_index).print("Out of range")
+			end
+		else
+			game.get_player(event.player_index).print("That's not a straight rail")
+		end
 	-- elseif (game.get_player(event.player_index).selected and string.find(game.get_player(event.player_index).selected.name, "RTThrower-")) then
 		-- game.print(global.CatapultList[game.get_player(event.player_index).selected.unit_number].target.name)
+	end
+end)
+
+
+script.on_event(defines.events.on_entity_destroyed,
+function(event)
+	if (global.MagnetRamps[event.unit_number]) then
+		for each, tile in pairs(global.MagnetRamps[event.unit_number].tiles) do
+			tile.destroy()
+		end	
+		global.MagnetRamps[event.unit_number].power.destroy()
 	end
 end)

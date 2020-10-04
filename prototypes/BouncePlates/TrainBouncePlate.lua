@@ -51,7 +51,7 @@ data:extend({
 		icon = "__RenaiTransportation__/graphics/BouncePlates/TrainBouncePlate/TrainPlate.png",
 		icon_size = 64, --icon_mipmaps = 4,
 		subgroup = "RT",
-		order = "h",
+		order = "i",
 		place_result = "RTTrainBouncePlate",
 		stack_size = 50
 	},

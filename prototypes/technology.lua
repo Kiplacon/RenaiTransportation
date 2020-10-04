@@ -172,36 +172,9 @@ if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RT
 end
 
 if (settings.startup["RTTrainRampSetting"].value == true) then
-	if (settings.startup["RTThrowersSetting"].value == true) then
-		data:extend({
-		  {
-			type = "technology",
-			name = "RTFlyingFreight",
-			icon = "__RenaiTransportation__/graphics/tech/FlyingFreight.png",
-			icon_size = 128,
-			effects =
-			{
-				{
-					type = "unlock-recipe",
-					recipe = "RTTrainRampRecipe"
-				}	
-			},
-			prerequisites = {"railway", "concrete"},
-			unit =
-			{
-				count = 150,
-				ingredients =
-				{
-				  {"automation-science-pack", 1},
-				  {"logistic-science-pack", 1}
-				},
-				time = 30
-			} 
-		  }
-		})
-	else
-		data:extend({
-		  {
+
+	data:extend({
+		{
 			type = "technology",
 			name = "RTFlyingFreight",
 			icon = "__RenaiTransportation__/graphics/tech/FlyingFreight.png",
@@ -224,9 +197,34 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 				},
 				time = 30
 			} 
-		  }
-		})	
-	end
+		},
+		{
+			type = "technology",
+			name = "RTMagnetTrainRamps",
+			icon = "__RenaiTransportation__/graphics/tech/MagnetFreight.png",
+			icon_size = 128,
+			effects =
+			{
+				{
+					type = "unlock-recipe",
+					recipe = "RTMagnetTrainRampRecipe"
+				}
+			},
+			prerequisites = {"RTFlyingFreight", "electric-energy-accumulators", "electric-energy-distribution-2"},
+			unit =
+			{
+				count = 200,
+				ingredients =
+				{
+				  {"automation-science-pack", 1},
+				  {"logistic-science-pack", 1},
+				  {"chemical-science-pack", 1}
+				},
+				time = 45
+			} 
+		}
+	})	
+
 	
 	if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RTTrainBounceSetting"].value == true) then
 		data:extend({
@@ -246,7 +244,7 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 						recipe = "RTTrainDirectedBouncePlateRecipie"
 					}
 				},
-				prerequisites = {"se~no", "RTFlyingFreight"},
+				prerequisites = {"RTFlyingFreight"},
 				unit =
 				{
 					count = 100,
@@ -260,6 +258,7 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 			}
 		})
 	end
+	
 end
 
 if (settings.startup["RTZiplineSetting"].value == true) then

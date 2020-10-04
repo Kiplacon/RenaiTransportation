@@ -23,6 +23,7 @@ end
 
 if (settings.startup["RTTrainRampSetting"].value == true) then
 	require("prototypes.TrainGoBrrrr.TrainRamp")
+	require("prototypes.TrainGoBrrrr.MagnetTrainRamp")
 	require("prototypes.TrainGoBrrrr.sprites.base")
 end
 
@@ -33,9 +34,15 @@ end
 data:extend({
   {
     type = "custom-input",
-    name = "EnterPipe",
+    name = "RTInteract",
     key_sequence = "F"
   },
+  
+  -- {
+    -- type = "custom-input",
+    -- name = "RTtcaretnI",
+    -- key_sequence = "SHIFT + F"
+  -- },
   
   {
     type = "custom-input",

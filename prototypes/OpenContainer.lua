@@ -28,6 +28,15 @@ data:extend({
 		result = "OpenContainerItem"
 	},
 	
+	{ --------- open to regular chest recipie ----------
+		type = "recipe",
+		name = "OpenContainerRevertRecipie",
+		enabled = true,
+		energy_required = 0.5,
+		ingredients = {{"OpenContainerItem", 1}},
+		result = "iron-chest"
+	},
+	
 	datboi
 	
 })
