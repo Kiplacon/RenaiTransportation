@@ -1426,9 +1426,9 @@ function(eventf)
 							})
 
 						elseif NewTrain.type == 'locomotive' then
-							local frontStock = NewTrain.train.front_stock
-							
-							if frontStock.name == 'RT-ghostLocomotive' then frontStock.destroy() end
+							for _, stock in pairs(NewTrain.train.carriages) do								
+								if stock.name == 'RT-ghostLocomotive' then stock.destroy() end
+							end
 						end
 
 						-- this order of setting speed -> manual mode -> schedule is very important, other orders mess up a lot more
@@ -1527,6 +1527,12 @@ function(eventf)
 					end
 					
 					for urmum, lol in pairs(boom.surface.find_entities_filtered({position = boom.position, radius = 4})) do
+						if lol.train ~= nil then
+							-- destroy ghost locos just to be safe
+							for _, stock in pairs(lol.train.carriages) do								
+								if stock.name == 'RT-ghostLocomotive' then stock.destroy() end
+							end
+						end
 						if (lol.valid and lol.is_entity_with_health == true and lol.health ~= nil) then
 							lol.damage(1000, "neutral", "explosion")
 						elseif (lol.valid and lol.name == "cliff") then
