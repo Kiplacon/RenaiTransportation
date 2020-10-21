@@ -1212,7 +1212,7 @@ function(eventf)
 				-- end
 			-- end
 			-- global.AllPlayers[ThePlayer] = {}
-		
+
 		end		
 	end
 
@@ -1404,7 +1404,12 @@ function(eventf)
 						end
 
 
-						if (properties.leader == nil or (properties.follower == nil and properties.length == #NewTrain.train.carriages)) then
+						if (
+							(properties.leader == nil) or
+							(properties.follower == nil and properties.length == #NewTrain.train.carriages) or
+							(#NewTrain.train.locomotives.front_movers > 0 and NewTrain.train.speed > 0) or
+							(#NewTrain.train.locomotives.back_movers > 0 and NewTrain.train.speed < 0)
+						) then
 							NewTrain.train.manual_mode = properties.ManualMode -- Trains are default created in manual mode
 						end
 						
