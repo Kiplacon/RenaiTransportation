@@ -2,7 +2,7 @@
 Version: 0.6.2
 Date: 10/21/2020
   Bugfixes:
-    - Fixed two issues with train landing thanks to contribution from Xcelled on Github. They are:
+    - Fixed two issues with train landing thanks to contribution from Mooeing-747. They are:
     - Fixed train freezing and crashing upon landing for trains that are being pushed from the back rather than pulled from the front.
     - Fixed that trains didn't take non-default paths for forks in the rail very close to where trains land, ie while the back half of the train is still in mid air.
 ---------------------------------------------------------------------------------------------------
