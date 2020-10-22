@@ -2181,7 +2181,7 @@ function(event)
 		rendering.set_visible(global.BouncePadList[game.get_player(event.player_index).selected.unit_number].arrow, not rendering.get_visible(global.BouncePadList[game.get_player(event.player_index).selected.unit_number].arrow))
 
 	--| Start setting range of magenet ramp
-	elseif (game.get_player(event.player_index).selected and (game.get_player(event.player_index).selected.name == "RTMagnetTrainRamp" or game.get_player(event.player_index).selected.name == "RTMagnetTrainRampNoSkip")) then
+	elseif (game.get_player(event.player_index).selected and (game.get_player(event.player_index).selected.name == "RTMagnetTrainRamp" or game.get_player(event.player_index).selected.name == "RTMagnetTrainRampNoSkip") and global.AllPlayers[event.player_index].SettingRange == nil) then
 		local ramp = game.get_player(event.player_index).selected
 		local MaxRange = 100
 		game.get_player(event.player_index).print("Now click a straight rail in range to set Magnet Ramp jump distance.")
@@ -2198,7 +2198,6 @@ function(event)
 					},
 				x_scale = MaxRange/2,
 				y_scale = 1,
-				time_to_live = 6000,
 				tint = {r = 0.5, g = 0, b = 0, a = 0}
 			}		
 		global.AllPlayers[event.player_index].SettingRange = true
@@ -2209,22 +2208,20 @@ function(event)
 	
 	--| Set magnet ramp range
 	elseif (global.AllPlayers[event.player_index].SettingRange == true and game.get_player(event.player_index).selected) then
+		local TheRail = game.get_player(event.player_index).selected
+		local TheRamp = global.AllPlayers[event.player_index].Setting
+		
 		if (game.get_player(event.player_index).selected.name == "straight-rail") then
-			local TheRail = game.get_player(event.player_index).selected
-			local TheRamp = global.AllPlayers[event.player_index].Setting
 			--|| Vertical ramps
 			if ((global.AllPlayers[event.player_index].point == 0 or global.AllPlayers[event.player_index].point == 0.5)
+				and TheRamp ~= nil
+				and TheRamp.valid == true
 				and TheRail.position.x == TheRamp.position.x+global.OrientationUnitComponents[TheRamp.orientation+0.25].x
 				and math.abs(TheRail.position.y-TheRamp.position.y) <= global.AllPlayers[event.player_index].range
 			) then
-				if (rendering.is_valid(global.AllPlayers[event.player_index].rekt)) then
-					rendering.destroy(global.AllPlayers[event.player_index].rekt)
-				end
+
 				local range = math.abs(TheRail.position.y-TheRamp.position.y)
 				global.MagnetRamps[TheRamp.unit_number].range = range+6
-				if (global.MagnetRamps[TheRamp.unit_number].rangeID ~= nil) then
-					rendering.destroy(global.MagnetRamps[TheRamp.unit_number].rangeID)
-				end
 
 				local q = rendering.draw_sprite
 					{
@@ -2289,22 +2286,18 @@ function(event)
 				
 				game.get_player(event.player_index).print("Set Range: "..range.." tiles. Required power: "..0.1*#global.MagnetRamps[TheRamp.unit_number].tiles.."MJ")
 				global.MagnetRamps[TheRamp.unit_number].rangeID = q
-				global.AllPlayers[event.player_index] = {}
 				
 			--|| Horizontal ramps
 			elseif ((global.AllPlayers[event.player_index].point == 0.25 or global.AllPlayers[event.player_index].point == 0.75)
+				and TheRamp ~= nil
+				and TheRamp.valid == true				
 				and TheRail.position.y == TheRamp.position.y+global.OrientationUnitComponents[global.AllPlayers[event.player_index].Setting.orientation+0.25].y
 				and math.abs(TheRail.position.x-TheRamp.position.x) <= global.AllPlayers[event.player_index].range
 			) then
-				if (rendering.is_valid(global.AllPlayers[event.player_index].rekt)) then
-					rendering.destroy(global.AllPlayers[event.player_index].rekt)
-				end
 				
 				local range = math.abs(TheRail.position.x-TheRamp.position.x)
 				global.MagnetRamps[TheRamp.unit_number].range = range+6
-				if (global.MagnetRamps[TheRamp.unit_number].rangeID ~= nil) then
-					rendering.destroy(global.MagnetRamps[TheRamp.unit_number].rangeID)
-				end
+
 				local q = rendering.draw_sprite
 					{
 						sprite = "RTMagnetTrainRampRange",
@@ -2365,17 +2358,31 @@ function(event)
 					table.insert(global.MagnetRamps[TheRamp.unit_number].tiles, b)
 				end
 				global.MagnetRamps[TheRamp.unit_number].power.electric_buffer_size = 100000*#global.MagnetRamps[TheRamp.unit_number].tiles
-				
 				game.get_player(event.player_index).print("Set Range: "..range.." tiles. Required power: "..0.1*#global.MagnetRamps[TheRamp.unit_number].tiles.."MJ")
 				global.MagnetRamps[TheRamp.unit_number].rangeID = q
-				global.AllPlayers[event.player_index] = {}					
+					
 
+			elseif (TheRamp == nil or TheRamp.valid == false) then
+				game.get_player(event.player_index).print("Magnet Ramp is missing")
+	
+				
 			else
 				game.get_player(event.player_index).print("Out of range")
+
 			end
+			
 		else
 			game.get_player(event.player_index).print("That's not a straight rail")
+
 		end
+		
+		if (rendering.is_valid(global.AllPlayers[event.player_index].rekt)) then
+			rendering.destroy(global.AllPlayers[event.player_index].rekt)
+		end
+		if (TheRamp.valid and global.MagnetRamps[TheRamp.unit_number] and global.MagnetRamps[TheRamp.unit_number].rangeID ~= nil) then
+			rendering.destroy(global.MagnetRamps[TheRamp.unit_number].rangeID)
+		end
+		global.AllPlayers[event.player_index] = {}	
 	-- elseif (game.get_player(event.player_index).selected and string.find(game.get_player(event.player_index).selected.name, "RTThrower-")) then
 		-- game.print(global.CatapultList[game.get_player(event.player_index).selected.unit_number].target.name)
 	end
@@ -2389,5 +2396,6 @@ function(event)
 			tile.destroy()
 		end	
 		global.MagnetRamps[event.unit_number].power.destroy()
+		global.MagnetRamps[event.unit_number] = nil
 	end
 end)
