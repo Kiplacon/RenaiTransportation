@@ -25,6 +25,7 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 	require("prototypes.TrainGoBrrrr.TrainRamp")
 	require("prototypes.TrainGoBrrrr.MagnetTrainRamp")
 	require("prototypes.TrainGoBrrrr.sprites.base")
+	require("prototypes.TrainGoBrrrr.GhostLoco")
 end
 
 if (settings.startup["RTZiplineSetting"].value == true) then

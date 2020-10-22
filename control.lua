@@ -1353,7 +1353,7 @@ function(eventf)
 						raise_built = true
 					})
 				global.FlyingTrains[PropUnitNumber].LandedTrain = NewTrain
-				--|||| Success	
+				--|||| Success
 				if (NewTrain ~= nil) then 
 					if (properties.passenger ~= nil) then
 						if (properties.passenger.is_player()) then
@@ -1387,6 +1387,50 @@ function(eventf)
 					end
 					
 					if (NewTrain.valid) then
+						if properties.leader == nil and NewTrain.type ~= "locomotive" then
+							local bb = NewTrain.prototype.collision_box
+							local length = bb.right_bottom.y - bb.left_top.y
+
+							length = length + 3 -- Add connection distance
+
+							local delta = {x = 0, y = 0}
+							local direction
+
+							-- Face the loco the direction the ramp is facing and
+							-- calculate its offset (down and to the right are positive)
+							if (properties.RampOrientation == 0) then
+								direction = defines.direction.south
+								delta.y = length
+							elseif (properties.RampOrientation == 0.25) then
+								direction = defines.direction.west
+								delta.x = -length
+							elseif (properties.RampOrientation == 0.50) then
+								direction = defines.direction.north
+								delta.y = -length
+							elseif (properties.RampOrientation == 0.75) then
+								direction = defines.direction.east
+								delta.x = length
+							end
+
+							-- game.print("Creating ghost loco offset by " .. serpent.block(delta) .. " direction " .. direction)
+
+							-- if it fails, that means there's a problem that the train is about to hit
+							-- so don't worry about it
+							local ghostLoco = NewTrain.surface.create_entity
+							({
+								name = 'RT-ghostLocomotive',
+								position = {x = NewTrain.position.x + delta.x, y = NewTrain.position.y + delta.y},
+								direction = direction,
+								force = NewTrain.force,
+								raise_built = false
+							})
+
+						elseif NewTrain.type == 'locomotive' then
+							for _, stock in pairs(NewTrain.train.carriages) do								
+								if stock.name == 'RT-ghostLocomotive' then stock.destroy() end
+							end
+						end
+
 						-- this order of setting speed -> manual mode -> schedule is very important, other orders mess up a lot more
 						
 						if (properties.leader == nil) then
@@ -1402,8 +1446,7 @@ function(eventf)
 								NewTrain.train.speed = -math.abs(properties.speed)
 							end
 						end
-
-
+						
 						if (
 							(properties.leader == nil) or
 							(properties.follower == nil and properties.length == #NewTrain.train.carriages) or
@@ -1458,7 +1501,7 @@ function(eventf)
 					properties.GuideCar.destroy()
 					
 				--|||| Failure
-				else 
+				else
 					if (properties.GuideCar.surface.find_tiles_filtered{position = properties.GuideCar.position, radius = 1, limit = 1, collision_mask = "player-layer"}[1] == nil) then
 						properties.GuideCar.surface.create_entity
 							({
@@ -1489,6 +1532,12 @@ function(eventf)
 					end
 					
 					for urmum, lol in pairs(boom.surface.find_entities_filtered({position = boom.position, radius = 4})) do
+						if lol.train ~= nil then
+							-- destroy ghost locos just to be safe
+							for _, stock in pairs(lol.train.carriages) do								
+								if stock.name == 'RT-ghostLocomotive' then stock.destroy() end
+							end
+						end
 						if (lol.valid and lol.is_entity_with_health == true and lol.health ~= nil) then
 							lol.damage(1000, "neutral", "explosion")
 						elseif (lol.valid and lol.name == "cliff") then
