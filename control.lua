@@ -1481,12 +1481,12 @@ function(eventf)
 								end
 							end
 						elseif (NewTrain.type == "cargo-wagon") then
-							for ItemName, quantity in pairs(properties.cargo) do
-								NewTrain.get_inventory(defines.inventory.cargo_wagon).insert({name = ItemName, count = quantity})
-							end
 							NewTrain.get_inventory(defines.inventory.cargo_wagon).set_bar(properties.bar)
 							for i, filter in pairs(properties.filter) do
 								NewTrain.get_inventory(defines.inventory.cargo_wagon).set_filter(i, filter)
+							end
+							for ItemName, quantity in pairs(properties.cargo) do
+								NewTrain.get_inventory(defines.inventory.cargo_wagon).insert({name = ItemName, count = quantity})
 							end
 						elseif (NewTrain.type == "fluid-wagon") then
 							for FluidName, quantity in pairs(properties.fluids) do
