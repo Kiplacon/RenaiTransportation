@@ -1434,13 +1434,14 @@ function(eventf)
 						-- this order of setting speed -> manual mode -> schedule is very important, other orders mess up a lot more
 						
 						if (properties.leader == nil) then
-							if (properties.RampOrientation == properties.orientation) then
-								NewTrain.train.speed = -properties.speed
+							if ((properties.ghostLoco ~= nil and properties.ghostLoco.valid == true and properties.RampOrientation == properties.ghostLoco.orientation)
+							or (properties.RampOrientation == properties.orientation))then
+								NewTrain.train.speed = -math.abs(properties.speed)
 							else
-								NewTrain.train.speed = properties.speed
-							end
+								NewTrain.train.speed = math.abs(properties.speed)
+							end							
 						else
-							if (NewTrain.train.speed>0) then
+							if (NewTrain.train.speed>=0) then
 								NewTrain.train.speed = math.abs(properties.speed)
 							else
 								NewTrain.train.speed = -math.abs(properties.speed)
