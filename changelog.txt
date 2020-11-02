@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.6.3
+Date: 11/1/2020
+  Bugfixes:
+    - Fix from Mooeing-747 so cargo wagon filters are set before the items are put back in so that items retain proper order and placement after a jump
+    - Fixed pushed trains going backwards upon landing if the cargo wagon was facing backwards
+    - Changed landing trains to have a positive speed rather than a negative by default in cases where it doesn't know which way to go
+---------------------------------------------------------------------------------------------------
 Version: 0.6.2
 Date: 10/21/2020
   Bugfixes:
