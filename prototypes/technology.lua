@@ -169,6 +169,37 @@ if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RT
 		} 
 	  }
 	})
+	
+	if (settings.startup["RTTrainRampSetting"].value == true) then
+		data:extend({
+			{
+				type = "technology",
+				name = "RTDeliverThePayload",
+				icon = "__RenaiTransportation__/graphics/tech/boom.png",
+				icon_size = 128,
+				effects =
+				{
+					{
+						type = "unlock-recipe",
+						recipe = "RTPayloadWagonRecipe"
+					}	
+				},
+				prerequisites = {"PrimerPlateTech", "RTFlyingFreight", "explosives", "military-3"},
+				unit =
+				{
+					count = 200,
+					ingredients =
+						{
+						  {"automation-science-pack", 1},
+						  {"logistic-science-pack", 1},
+						  {"military-science-pack", 1},
+						  {"chemical-science-pack", 1}
+						},
+					time = 30
+					} 
+			}
+		})
+	end
 end
 
 if (settings.startup["RTTrainRampSetting"].value == true) then
