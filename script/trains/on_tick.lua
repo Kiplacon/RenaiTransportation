@@ -160,7 +160,7 @@ local function on_tick(event)
 						NewTrain.connect_rolling_stock(defines.rail_direction.back)
 					else -- AngleChange is between 0.125 and 0.375, which is a rail ~90 degrees off from original launch. doesn't make sense so destroy
 						NewTrain.die()
-						for urmum, lol in pairs(properties.GuideCar.surface.find_entities_filtered({position = properties.GuideCar.position, radius = 4})) do
+						for urmum, lol in pairs(properties.GuideCar.surface.find_entities_filtered({position = properties.GuideCar.position, radius = 7})) do
 							if (lol.valid and lol.is_entity_with_health == true and lol.health ~= nil) then
 								lol.damage(1000, "neutral", "explosion")
 							elseif (lol.valid and lol.name == "cliff") then
@@ -309,13 +309,12 @@ local function on_tick(event)
 							name = "locomotive-explosion",
 							position = properties.GuideCar.position
 						})
-					properties.GuideCar.destroy()
 
 					for each, guy in pairs(game.connected_players) do
 						guy.add_alert(rip,defines.alert_type.entity_destroyed)
 					end
 
-					for urmum, lol in pairs(boom.surface.find_entities_filtered({position = boom.position, radius = 4})) do
+					for urmum, lol in pairs(boom.surface.find_entities_filtered({position = boom.position, radius = 7})) do
 						if lol.train ~= nil then
 							-- destroy ghost locos just to be safe
 							for _, stock in pairs(lol.train.carriages) do
@@ -328,6 +327,38 @@ local function on_tick(event)
 							lol.destroy({do_cliff_correction = true})
 						end
 					end
+					
+					if (properties.name == "RTPayloadWagon") then
+						if (properties.cargo["explosives"] ~= nil) then
+							CrashSpread = 100 + 2*properties.cargo["explosives"]
+						else
+							CrashSpread = 100
+						end
+						for ItemName, quantity in pairs(properties.cargo) do
+							if (game.entity_prototypes[ItemName.."-projectileFromRenaiTransportationPrimed"]) then
+								if (quantity > game.item_prototypes[ItemName].stack_size) then
+									quantity = game.item_prototypes[ItemName].stack_size
+								end
+								if (CrashSpread > 400) then
+									CrashSpread = 400
+								end								
+								for i = 1, quantity do
+									local xshift = math.random(-CrashSpread,CrashSpread)/10
+									local yshift = math.random(-math.sqrt((CrashSpread^2)-(xshift*10)^2),math.sqrt((CrashSpread^2)-(xshift*10)^2))/10								
+										properties.GuideCar.surface.create_entity
+											({
+											name = ItemName.."-projectileFromRenaiTransportationPrimed",
+											position = properties.GuideCar.position, --required setting for rendering, doesn't affect spawn
+											source_position = properties.GuideCar.position,
+											target_position = {properties.GuideCar.position.x + xshift, properties.GuideCar.position.y + yshift},
+											force = properties.GuideCar.force
+											})		
+								end
+							end
+						end					
+					end
+					
+					properties.GuideCar.destroy()
 					--global.FlyingTrains[PropUnitNumber] = nil
 
 				end

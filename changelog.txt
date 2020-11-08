@@ -1,4 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.6.4
+Date: 11/8/2020
+  Additions:
+    - Payload Wagon. Designed specifically to weaponize the train ramp. When it crash lands, primable items inside will prime, fly out and activate near the point of impact. Deliver all your explosive weaponry directly to the point of use.
+  Changes:
+    - Adjusted the tint of primed projectiles to be a lighter
+shade of red
+    - Changed damage radius of crash landing carriages from 4 to 7 tiles
+    - Code restructuring by Mooeing-747 for easier navigation, control.lua file broken up into a bunch of smaller files
+---------------------------------------------------------------------------------------------------
 Version: 0.6.3
 Date: 11/1/2020
   Bugfixes:

@@ -9,16 +9,20 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 	require("prototypes.PlayerLauncher")
 	require("prototypes.OpenContainer")
 	require("prototypes.hatch")
-end
+	
+	if (settings.startup["RTBounceSetting"].value == true) then
+		require("prototypes.BouncePlates.PrimerBouncePlate")
+		require("prototypes.BouncePlates.SignalBouncePlate")
+		
+		if (settings.startup["RTTrainRampSetting"].value == true) then
+			require("prototypes.TrainGoBrrrr.PayloadWagon")
+		end
+	end
 
-if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RTBounceSetting"].value == true) then
-	require("prototypes.BouncePlates.PrimerBouncePlate")
-	require("prototypes.BouncePlates.SignalBouncePlate")
-end
-
-if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RTTrainBounceSetting"].value == true and settings.startup["RTTrainRampSetting"].value == true) then
-	require("prototypes.BouncePlates.TrainBouncePlate")
-	require("prototypes.BouncePlates.TrainDirectedBouncePlate")
+	if (settings.startup["RTTrainBounceSetting"].value == true and settings.startup["RTTrainRampSetting"].value == true) then
+		require("prototypes.BouncePlates.TrainBouncePlate")
+		require("prototypes.BouncePlates.TrainDirectedBouncePlate")
+	end
 end
 
 if (settings.startup["RTTrainRampSetting"].value == true) then

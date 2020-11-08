@@ -164,7 +164,7 @@ if (ThingData.icons) then
 				priority = "high",
 				scale = 19.2/eeee,
 				size = eeee,
-				tint = {200,0,0}
+				tint = {255,70,70}
 			})
 	end
 else
@@ -174,7 +174,7 @@ else
       width = ThingData.icon_size,
       height = ThingData.icon_size,
       frame_count = 1,
-	  tint = {200,0,0},
+	  tint = {255,70,70},
       --shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
       priority = "high",
       scale = 19.2/ThingData.icon_size --0.3

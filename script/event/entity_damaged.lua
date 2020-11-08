@@ -32,6 +32,8 @@ local function entity_damaged(event)
 		way = global.OrientationUnitComponents[event.cause.orientation].name
 		if (event.cause.type == "locomotive") then
 			mask = "locomotiveMask"..way
+		elseif (event.cause.name == "RTPayloadWagon") then
+			huehuehue = {220,125,0}
 		--elseif (event.cause.type == "cargo-wagon") then
 		--elseif (event.cause.type == "fluid-wagon") then
 		--elseif (event.cause.type == "artillery-wagon") then
@@ -44,7 +46,8 @@ local function entity_damaged(event)
 			surface = SpookyGhost.surface,
 			x_scale = 0.5,
 			y_scale = 0.5,
-			render_layer = 145
+			render_layer = 145,
+			tint = huehuehue
 			}
 		Mask = rendering.draw_sprite
 			{
