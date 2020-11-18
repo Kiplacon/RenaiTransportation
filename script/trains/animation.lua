@@ -59,11 +59,11 @@ function Animation.updateRotation(properties, elapsed)
 end
 
 function Animation.updateScale(properties, height)
-	local scaleDelta = math.abs(height) * 0.05
-	local scale = scaleDelta + 0.5
-
+	
 	if (properties.RampOrientation == 0 or properties.RampOrientation == 0.50) then
 		-- Going down or up, scale train to make it pop out
+		local scaleDelta = math.abs(height) * 0.05
+		local scale = scaleDelta + 0.5
 		rendering.set_x_scale(properties.TrainImageID, scale)
 		rendering.set_y_scale(properties.TrainImageID, scale)
 		rendering.set_x_scale(properties.MaskID, scale)
