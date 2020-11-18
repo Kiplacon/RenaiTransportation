@@ -28,6 +28,17 @@ function Animation.updateRendering(properties)
 	rendering.set_target(properties.MaskID, properties.GuideCar, {0, height})
 	rendering.set_target(properties.ShadowID, properties.GuideCar, {-height + 1, 0.5})
 
+	-- Going left or right, spin the car
+	local completedPercent = elapsed / properties.AirTime
+	local spinPercent = (2 * completedPercent) - 1 -- double the rotation arc and center it on 0, aka upright
+	local spinScale = (spinPercent ^ SpinSpeed) - spinPercent
+	local spinAmount = SpinMagnitude * spinScale
+
+	if (properties.RampOrientation == 0.75 or properties.RampOrientation == 0) then
+		-- Going right or down, reverse spin
+		spinAmount = -spinAmount
+	end
+
 	if (properties.RampOrientation == 0 or properties.RampOrientation == 0.50) then
 		-- Going down or up, zoom the car
 		local scaleDelta = math.abs(height) * 0.05
@@ -41,19 +52,10 @@ function Animation.updateRendering(properties)
 		local shadowScaleDelta = math.abs(height) * 0.025
 		rendering.set_x_scale(properties.ShadowID, 0.25 - shadowScaleDelta)
 		rendering.set_y_scale(properties.ShadowID, 0.5 - scaleDelta)
+
+		rendering.set_orientation(properties.ShadowID, spinAmount + 0.5)
 	end
 	if (properties.RampOrientation == 0.25 or properties.RampOrientation == 0.75) then
-		-- Going left or right, spin the car
-		local completedPercent = elapsed / properties.AirTime
-		local spinPercent = (2 * completedPercent) - 1 -- double the rotation arc and center it on 0, aka upright
-		local spinScale = (spinPercent ^ SpinSpeed) - spinPercent
-		local spinAmount = SpinMagnitude * spinScale
-
-		if properties.RampOrientation == 0.75 then
-			-- Going right, reverse spin
-			spinAmount = -spinAmount
-		end
-
 		rendering.set_orientation(properties.TrainImageID, spinAmount)
 		rendering.set_orientation(properties.MaskID, spinAmount)
 	end
