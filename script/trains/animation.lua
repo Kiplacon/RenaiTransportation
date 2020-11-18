@@ -1,8 +1,6 @@
 local Animation = {}
 
 function Animation.updateRendering(properties)
-	local SpinMagnitude = 0.05
-	local SpinSpeed = 23
 	local gravity = 1/250 -- Approximately (9.8 m/s^2) from a 45 degree perspective, expressed in (m / tick^2). Affects arc "height", not air time or jump length
 
 	if (properties.MagnetComp ~= nil) then
@@ -23,12 +21,22 @@ function Animation.updateRendering(properties)
 	local initialVerticalVelocity = -0.5 * (gravity * properties.AirTime) -- v_0 = -(1/2) * (a * t)
 	local height = (initialVerticalVelocity * elapsed) + (0.5 * gravity * (elapsed ^ 2)) -- x = (v_0 * t) + (1/2) * a * t^2
 
+	Animation.updateOffsets(properties, height)
+	Animation.updateScale(properties, height)
+	Animation.updateRotation(properties, elapsed)
+end
+
+function Animation.updateOffsets(properties, height)
 	-- Adjust offset of rendered sprites
 	rendering.set_target(properties.TrainImageID, properties.GuideCar, {0, height})
 	rendering.set_target(properties.MaskID, properties.GuideCar, {0, height})
-	rendering.set_target(properties.ShadowID, properties.GuideCar, {-height + 1, 0.5})
+	rendering.set_target(properties.ShadowID, properties.GuideCar, {-height + 1, 0.5})	
+end
 
-	-- Going left or right, spin the car
+function Animation.updateRotation(properties, elapsed)
+	local SpinMagnitude = 0.05
+	local SpinSpeed = 23
+
 	local completedPercent = elapsed / properties.AirTime
 	local spinPercent = (2 * completedPercent) - 1 -- double the rotation arc and center it on 0, aka upright
 	local spinScale = (spinPercent ^ SpinSpeed) - spinPercent
@@ -40,25 +48,29 @@ function Animation.updateRendering(properties)
 	end
 
 	if (properties.RampOrientation == 0 or properties.RampOrientation == 0.50) then
-		-- Going down or up, zoom the car
-		local scaleDelta = math.abs(height) * 0.05
-		local scale = scaleDelta + 0.5
-		rendering.set_x_scale(properties.TrainImageID, scale)
-		rendering.set_y_scale(properties.TrainImageID, scale)
-		rendering.set_x_scale(properties.MaskID, scale)
-		rendering.set_y_scale(properties.MaskID, scale)
-		
-		-- make the shadow smaller with height
-		local shadowScaleDelta = math.abs(height) * 0.025
-		rendering.set_x_scale(properties.ShadowID, 0.25 - shadowScaleDelta)
-		rendering.set_y_scale(properties.ShadowID, 0.5 - scaleDelta)
-
+		-- going down or up, spin the shadows
+		-- Spin amount plus 0.5 so the shadows orient north/south
 		rendering.set_orientation(properties.ShadowID, spinAmount + 0.5)
-	end
-	if (properties.RampOrientation == 0.25 or properties.RampOrientation == 0.75) then
+	else
+		-- going left or right, spin the cars
 		rendering.set_orientation(properties.TrainImageID, spinAmount)
 		rendering.set_orientation(properties.MaskID, spinAmount)
 	end
+end
+
+function Animation.updateScale(properties, height)
+	local scaleDelta = math.abs(height) * 0.05
+	local scale = scaleDelta + 0.5
+	rendering.set_x_scale(properties.TrainImageID, scale)
+	rendering.set_y_scale(properties.TrainImageID, scale)
+	rendering.set_x_scale(properties.MaskID, scale)
+	rendering.set_y_scale(properties.MaskID, scale)
+
+	-- Scale shadow height differently to maintain perspective
+	local shadowScaleDelta = math.abs(height) * 0.025
+
+	rendering.set_x_scale(properties.ShadowID, 0.25 - shadowScaleDelta)
+	rendering.set_y_scale(properties.ShadowID, 0.5 - scaleDelta)
 end
 
 return Animation
