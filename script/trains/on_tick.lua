@@ -1,3 +1,5 @@
+local Animation = require("animation")
+
 local function on_tick(event)
 	--| Trains
 	----------------- train flight ----------------
@@ -365,43 +367,7 @@ local function on_tick(event)
 			end
 		--|| Animating Train
 		elseif (game.tick < properties.LandTick) then
-			local SpinMagnitude = 0.05
-			local SpinSpeed = 23
-			local gravity = 500 -- affects arc "height", not air time or jump length
-
-			if (properties.MagnetComp ~= nil) then
-				--if (properties.MagnetComp >= 0) then
-					gravity = 0.08*properties.AirTime^2-0.5*properties.AirTime+11
-					--SpinMagnitude = 0.05*properties.MagnetComp
-				if (properties.MagnetComp < 0) then
-					--gravity = -30*properties.MagnetComp
-					--SpinSpeed = 19
-					--SpinMagnitude = 0.025
-				end
-			end
-
-			------------- animating -----------
-			if (properties.RampOrientation == 0) then -- going down
-				rendering.set_target(properties.TrainImageID, properties.GuideCar, {0,((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity})
-				rendering.set_target(properties.MaskID, properties.GuideCar, {0,((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity})
-				rendering.set_target(properties.ShadowID, properties.GuideCar, {-((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity,0})
-			elseif (properties.RampOrientation == 0.25) then -- going left
-				rendering.set_target(properties.TrainImageID, properties.GuideCar, {0,(game.tick-properties.LaunchTick)*((game.tick-properties.LaunchTick)-properties.AirTime)/gravity})
-				rendering.set_orientation(properties.TrainImageID, SpinMagnitude*( (2*(game.tick-properties.LaunchTick)/properties.AirTime-1)^SpinSpeed - (2*(game.tick-properties.LaunchTick)/properties.AirTime-1) ))
-				rendering.set_target(properties.MaskID, properties.GuideCar, {0,(game.tick-properties.LaunchTick)*((game.tick-properties.LaunchTick)-properties.AirTime)/gravity})
-				rendering.set_orientation(properties.MaskID, SpinMagnitude*( (2*(game.tick-properties.LaunchTick)/properties.AirTime-1)^SpinSpeed - (2*(game.tick-properties.LaunchTick)/properties.AirTime-1) ))
-				rendering.set_target(properties.ShadowID, properties.GuideCar, {-((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity,0})
-			elseif (properties.RampOrientation == 0.50) then -- going up
-				rendering.set_target(properties.TrainImageID, properties.GuideCar, {0,((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity})
-				rendering.set_target(properties.MaskID, properties.GuideCar, {0,((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity})
-				rendering.set_target(properties.ShadowID, properties.GuideCar, {-((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity,0})
-			elseif (properties.RampOrientation == 0.75) then -- going right
-				rendering.set_target(properties.TrainImageID, properties.GuideCar, {0,(game.tick-properties.LaunchTick)*((game.tick-properties.LaunchTick)-properties.AirTime)/gravity})
-				rendering.set_orientation(properties.TrainImageID, -SpinMagnitude*( (2*(game.tick-properties.LaunchTick)/properties.AirTime-1)^SpinSpeed - (2*(game.tick-properties.LaunchTick)/properties.AirTime-1) ))
-				rendering.set_target(properties.MaskID, properties.GuideCar, {0,(game.tick-properties.LaunchTick)*((game.tick-properties.LaunchTick)-properties.AirTime)/gravity})
-				rendering.set_orientation(properties.MaskID, -SpinMagnitude*( (2*(game.tick-properties.LaunchTick)/properties.AirTime-1)^SpinSpeed - (2*(game.tick-properties.LaunchTick)/properties.AirTime-1) ))
-				rendering.set_target(properties.ShadowID, properties.GuideCar, {-((game.tick-properties.LaunchTick)^2-(game.tick-properties.LaunchTick)*properties.AirTime)/gravity,0})
-			end
+			Animation.updateRendering(properties)
 
 		--|| Landing speed control
 		elseif (game.tick > properties.LandTick and properties.LandedTrain and properties.LandedTrain.valid) then
