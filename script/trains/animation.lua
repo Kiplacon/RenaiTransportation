@@ -5,7 +5,7 @@ function Animation.updateRendering(properties)
 
 	if (properties.MagnetComp ~= nil) then
 		--if (properties.MagnetComp >= 0) then
-			gravity = ((0.08 * properties.AirTime ^ 2) - (0.5 * properties.AirTime) + 11) / 125000
+			gravity = 2 / ((0.08 * properties.AirTime ^ 2) - (0.5 * properties.AirTime) + 11)
 
 			--SpinMagnitude = 0.05*properties.MagnetComp
 		if (properties.MagnetComp < 0) then
