@@ -61,10 +61,14 @@ end
 function Animation.updateScale(properties, height)
 	local scaleDelta = math.abs(height) * 0.05
 	local scale = scaleDelta + 0.5
-	rendering.set_x_scale(properties.TrainImageID, scale)
-	rendering.set_y_scale(properties.TrainImageID, scale)
-	rendering.set_x_scale(properties.MaskID, scale)
-	rendering.set_y_scale(properties.MaskID, scale)
+
+	if (properties.RampOrientation == 0 or properties.RampOrientation == 0.50) then
+		-- Going down or up, scale train to make it pop out
+		rendering.set_x_scale(properties.TrainImageID, scale)
+		rendering.set_y_scale(properties.TrainImageID, scale)
+		rendering.set_x_scale(properties.MaskID, scale)
+		rendering.set_y_scale(properties.MaskID, scale)
+	end
 
 	-- Scale shadow height differently to maintain perspective
 	local shadowScaleDelta = math.abs(height) * 0.025
