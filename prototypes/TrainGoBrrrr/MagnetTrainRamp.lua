@@ -1,36 +1,3 @@
-local function scaleSprite(sprite, scale)
-	if sprite == nil then
-		return nil
-	end
-
-	local scaled = table.deepcopy(sprite)
-
-	if sprite.layers ~= nil then
-		scaled.layers = {}
-		for _, layer in pairs(sprite.layers) do
-			scaled.layers[_] = scaleSprite(layer, scale)
-		end
-	end
-
-	scaled.hr_version = scaleSprite(sprite.hr_version, scale)
-	scaled.north = scaleSprite(sprite.north, scale)
-	scaled.east = scaleSprite(sprite.east, scale)
-	scaled.south = scaleSprite(sprite.south, scale)
-	scaled.west = scaleSprite(sprite.west, scale)
-	scaled.sheet = scaleSprite(sprite.sheet, scale)
-
-	if sprite.sheets ~= nil then
-		scaled.sheets = {}
-		for _, sheet in pairs(sprite.sheets) do
-			scaled.sheets[_] = scaleSprite(sheet, scale)
-		end
-	end
-
-	scaled.scale = scale * (sprite.scale or 1)
-
-	return scaled
-end
-
 data:extend({ 
 
 --------------------------------------------Magnet train ramp
@@ -163,31 +130,33 @@ picture =
 	size = {105,169},
 	frame_count = 99,
 	line_length = 3
-}
+},
 
-})
-
-local accumulator = data.raw.accumulator.accumulator
-
-data:extend({
-	{
-		type = "electric-energy-interface",
-		name = "RTMagnetRampDrain",
-		icon = "__RenaiTransportation__/graphics/TrainRamp/icon2.png",
-		icon_size = 64,
-		flags = {"placeable-neutral", "placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-flammable", "no-copy-paste", "hidden", "not-rotatable"},
-		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
-		collision_box = {{-0.4, -0.4}, {0.4, 0.4}},
-		selection_priority = 101,
-		--collision_mask = {},
-		render_layer = "lower-object-above-shadow",
-		energy_source = {
+{
+	type = "electric-energy-interface",
+	name = "RTMagnetRampDrain",
+	icon = "__RenaiTransportation__/graphics/TrainRamp/icon2.png",
+	icon_size = 64,
+	flags = {"placeable-neutral", "placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-flammable", "no-copy-paste"},
+	selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
+	collision_box = {{-0.4, -0.4}, {0.4, 0.4}},
+	selection_priority = 101,
+	--collision_mask = {},
+	render_layer = "lower-object-above-shadow",
+	energy_source = 
+		{
 			type = "electric",
 			usage_priority = "secondary-input",
 			input_flow_limit = "4MW"
 		},
-		picture = scaleSprite(accumulator.picture, 0.4),
-		light = accumulator.charge_light,
-		animation = scaleSprite(accumulator.charge_animation, 0.4)
-	}
+	picture = 
+		{
+			filename = "__base__/graphics/entity/accumulator/accumulator.png",
+			priority = "high",
+			width = 66,
+			height = 94,
+			scale = 0.4
+		}
+}
+
 })
