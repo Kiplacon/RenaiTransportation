@@ -70,7 +70,7 @@ function Animation.updateScale(properties, height)
 	local shadowScaleDelta = math.abs(height) * 0.025
 
 	rendering.set_x_scale(properties.ShadowID, 0.25 - shadowScaleDelta)
-	rendering.set_y_scale(properties.ShadowID, 0.5 - scaleDelta)
+	rendering.set_y_scale(properties.ShadowID, 0.5 - shadowScaleDelta)
 end
 
 return Animation
