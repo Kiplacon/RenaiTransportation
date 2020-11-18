@@ -7,9 +7,7 @@ function Animation.updateRendering(properties)
 
 	if (properties.MagnetComp ~= nil) then
 		--if (properties.MagnetComp >= 0) then
-			-- Calculated gravity such that we reach a height of 5 tiles midway through the jump
-			-- a = -8 * (x / t^2)
-			gravity = (8 * 5) / (properties.AirTime) ^ 2
+			gravity = ((0.08 * properties.AirTime ^ 2) - (0.5 * properties.AirTime) + 11) / 125000
 
 			--SpinMagnitude = 0.05*properties.MagnetComp
 		if (properties.MagnetComp < 0) then
@@ -32,11 +30,14 @@ function Animation.updateRendering(properties)
 
 	if (properties.RampOrientation == 0 or properties.RampOrientation == 0.50) then
 		-- Going down or up, zoom the car
-		local scale = math.abs(height) * 0.05 + 0.5
+		local scaleDelta = math.abs(height) * 0.05
+		local scale = scaleDelta + 0.5
 		rendering.set_x_scale(properties.TrainImageID, scale)
 		rendering.set_y_scale(properties.TrainImageID, scale)
 		rendering.set_x_scale(properties.MaskID, scale)
 		rendering.set_y_scale(properties.MaskID, scale)
+		-- rendering.set_x_scale(properties.ShadowID, scale)
+		-- rendering.set_y_scale(properties.ShadowID, scale)
 	end
 	if (properties.RampOrientation == 0.25 or properties.RampOrientation == 0.75) then
 		-- Going left or right, spin the car
