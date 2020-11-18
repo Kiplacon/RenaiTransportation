@@ -26,7 +26,7 @@ function Animation.updateRendering(properties)
 	-- Adjust offset of rendered sprites
 	rendering.set_target(properties.TrainImageID, properties.GuideCar, {0, height})
 	rendering.set_target(properties.MaskID, properties.GuideCar, {0, height})
-	rendering.set_target(properties.ShadowID, properties.GuideCar, {-height, 0})
+	rendering.set_target(properties.ShadowID, properties.GuideCar, {-height + 1, 0.5})
 
 	if (properties.RampOrientation == 0 or properties.RampOrientation == 0.50) then
 		-- Going down or up, zoom the car
@@ -36,8 +36,11 @@ function Animation.updateRendering(properties)
 		rendering.set_y_scale(properties.TrainImageID, scale)
 		rendering.set_x_scale(properties.MaskID, scale)
 		rendering.set_y_scale(properties.MaskID, scale)
-		-- rendering.set_x_scale(properties.ShadowID, scale)
-		-- rendering.set_y_scale(properties.ShadowID, scale)
+		
+		-- make the shadow smaller with height
+		local shadowScaleDelta = math.abs(height) * 0.025
+		rendering.set_x_scale(properties.ShadowID, 0.25 - shadowScaleDelta)
+		rendering.set_y_scale(properties.ShadowID, 0.5 - scaleDelta)
 	end
 	if (properties.RampOrientation == 0.25 or properties.RampOrientation == 0.75) then
 		-- Going left or right, spin the car

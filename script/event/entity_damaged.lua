@@ -67,7 +67,7 @@ local function entity_damaged(event)
 			surface = SpookyGhost.surface,
 			orientation = event.cause.orientation,
 			x_scale = 0.25,
-			y_scale = 0.4,
+			y_scale = 0.5,
 			render_layer = 144
 			}
 
