@@ -164,7 +164,7 @@ local function on_tick(event)
 							if (lol.valid and lol.is_entity_with_health == true and lol.health ~= nil) then
 								lol.damage(1000, "neutral", "explosion")
 							elseif (lol.valid and lol.name == "cliff") then
-								lol.destroy({do_cliff_correction = true})
+								lol.destroy({do_cliff_correction = true, raise_destroy = true})
 							end
 						end
 					end
@@ -324,7 +324,7 @@ local function on_tick(event)
 						if (lol.valid and lol.is_entity_with_health == true and lol.health ~= nil) then
 							lol.damage(1000, "neutral", "explosion")
 						elseif (lol.valid and lol.name == "cliff") then
-							lol.destroy({do_cliff_correction = true})
+							lol.destroy({do_cliff_correction = true,  raise_destroy = true})
 						end
 					end
 					
