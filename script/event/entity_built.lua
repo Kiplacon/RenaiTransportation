@@ -1,5 +1,5 @@
 local function entity_built(event)
-	local entity = event.created_entity or event.entity
+	local entity = event.created_entity or event.entity or event.destination
 
 	if (string.find(entity.name, "RTThrower-")) then
 		global.CatapultList[entity.unit_number] = {entity = entity, target = "nothing"}

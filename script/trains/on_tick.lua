@@ -166,7 +166,7 @@ local function on_tick(event)
 							if (lol.valid and lol.is_entity_with_health == true and lol.health ~= nil) then
 								lol.damage(1000, "neutral", "explosion")
 							elseif (lol.valid and lol.name == "cliff") then
-								lol.destroy({do_cliff_correction = true})
+								lol.destroy({do_cliff_correction = true, raise_destroy = true})
 							end
 						end
 					end
@@ -317,7 +317,7 @@ local function on_tick(event)
 					end
 
 					for urmum, lol in pairs(boom.surface.find_entities_filtered({position = boom.position, radius = 7})) do
-						if lol.train ~= nil then
+						if (lol.valid and lol.train ~= nil) then
 							-- destroy ghost locos just to be safe
 							for _, stock in pairs(lol.train.carriages) do
 								if stock.name == 'RT-ghostLocomotive' then stock.destroy() end
@@ -326,7 +326,7 @@ local function on_tick(event)
 						if (lol.valid and lol.is_entity_with_health == true and lol.health ~= nil) then
 							lol.damage(1000, "neutral", "explosion")
 						elseif (lol.valid and lol.name == "cliff") then
-							lol.destroy({do_cliff_correction = true})
+							lol.destroy({do_cliff_correction = true,  raise_destroy = true})
 						end
 					end
 					

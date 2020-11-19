@@ -258,7 +258,7 @@ local function entity_damaged(event)
 			end
 		end
 
-		event.cause.destroy()
+		event.cause.destroy({ raise_destroy = true })
 	end
 end
 
