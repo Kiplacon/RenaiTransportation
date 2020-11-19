@@ -315,7 +315,7 @@ local function on_tick(event)
 					end
 
 					for urmum, lol in pairs(boom.surface.find_entities_filtered({position = boom.position, radius = 7})) do
-						if lol.train ~= nil then
+						if (lol.valid and lol.train ~= nil) then
 							-- destroy ghost locos just to be safe
 							for _, stock in pairs(lol.train.carriages) do
 								if stock.name == 'RT-ghostLocomotive' then stock.destroy() end
