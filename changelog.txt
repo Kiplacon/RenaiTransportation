@@ -1,13 +1,15 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.6.5
-Date: 11/18/2020
+Date: 11/22/2020
   Bugfixes:
     - Mooeing-747: Added raise_destroy = true to crashlanding trains
     - Mooeing-747: Added missing valid check to guide locomotives
     - Fixed crash from on_entity_cloned 
+    - Fixed crash with experimental overflow setting when deleting entity target of a thrower
   Changes:
     - Mooeing-747: Reorganized train jump animation code
-    - Mooeing-747: Changed shadows to rotate and, train sprite to scale in size during jump
+    - Mooeing-747: Changed shadows to rotate and train sprites to scale in size during jump.
+    - Made shadows fade with jump height
 ---------------------------------------------------------------------------------------------------
 Version: 0.6.4
 Date: 11/8/2020

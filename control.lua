@@ -85,9 +85,9 @@ function(event)
 
 			if (catapult.valid and catapult.held_stack.valid_for_read) then
 				if (settings.global["RTOverflowComp"].value == true) then
-					if (properties.target ~= "nothing" and properties.target.type == "transport-belt" and (properties.target.get_transport_line(1).can_insert_at_back() == false and properties.target.get_transport_line(2).can_insert_at_back() == false)) then
+					if (properties.target and properties.target.valid and properties.target ~= "nothing" and properties.target.type == "transport-belt" and (properties.target.get_transport_line(1).can_insert_at_back() == false and properties.target.get_transport_line(2).can_insert_at_back() == false)) then
 						catapult.active = false
-					elseif (properties.target ~= "nothing" and properties.target.can_insert(catapult.held_stack) == false) then
+					elseif (properties.target and properties.target.valid and properties.target ~= "nothing" and properties.target.can_insert(catapult.held_stack) == false) then
 						catapult.active = false
 					else
 						catapult.active = true
