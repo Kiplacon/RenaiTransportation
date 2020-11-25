@@ -85,7 +85,7 @@ local function on_tick(event)
 					surface = properties.GuideCar.surface,
 					x_scale = 0.5,
 					y_scale = 0.5,
-					render_layer = 145
+					render_layer = "air-object"
 					}
 				properties.MaskID = rendering.draw_sprite
 					{
@@ -95,7 +95,7 @@ local function on_tick(event)
 					surface = properties.GuideCar.surface,
 					x_scale = 0.5,
 					y_scale = 0.5,
-					render_layer = 145
+					render_layer = "air-object"
 					}
 				properties.ShadowID = rendering.draw_sprite
 					{
@@ -106,7 +106,7 @@ local function on_tick(event)
 					orientation = properties.orientation,
 					x_scale = 0.25,
 					y_scale = 0.4,
-					render_layer = 144
+					render_layer = "air-object"
 					}
 
 				properties.LaunchTick = game.tick

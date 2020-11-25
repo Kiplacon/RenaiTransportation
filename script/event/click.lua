@@ -82,7 +82,7 @@ local function click(event)
 							y_scale = 0.5,
 							surface = TheRamp.surface,
 							target = a,
-							render_layer = 80
+							render_layer = "80"
 						}
 					a.destructible = false
 					table.insert(global.MagnetRamps[TheRamp.unit_number].tiles, a)
@@ -100,7 +100,7 @@ local function click(event)
 							y_scale = 0.5,
 							surface = TheRamp.surface,
 							target = b,
-							render_layer = 80
+							render_layer = "80"
 						}
 					b.destructible = false
 					table.insert(global.MagnetRamps[TheRamp.unit_number].tiles, b)
@@ -157,7 +157,7 @@ local function click(event)
 							y_scale = 0.5,
 							surface = TheRamp.surface,
 							target = a,
-							render_layer = 80
+							render_layer = "80"
 						}
 					a.destructible = false
 					table.insert(global.MagnetRamps[TheRamp.unit_number].tiles, a)
@@ -175,7 +175,7 @@ local function click(event)
 							y_scale = 0.5,
 							surface = TheRamp.surface,
 							target = b,
-							render_layer = 80
+							render_layer = "80"
 						}
 					b.destructible = false
 					table.insert(global.MagnetRamps[TheRamp.unit_number].tiles, b)

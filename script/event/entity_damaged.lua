@@ -46,7 +46,7 @@ local function entity_damaged(event)
 			surface = SpookyGhost.surface,
 			x_scale = 0.5,
 			y_scale = 0.5,
-			render_layer = 145,
+			render_layer = "air-object",
 			tint = huehuehue
 			}
 		Mask = rendering.draw_sprite
@@ -57,7 +57,7 @@ local function entity_damaged(event)
 			surface = SpookyGhost.surface,
 			x_scale = 0.5,
 			y_scale = 0.5,
-			render_layer = 145
+			render_layer = "air-object"
 			}
 		OwTheEdge = rendering.draw_sprite
 			{
@@ -68,7 +68,7 @@ local function entity_damaged(event)
 			orientation = event.cause.orientation,
 			x_scale = 0.25,
 			y_scale = 0.5,
-			render_layer = 144
+			render_layer = "air-object"
 			}
 
 		global.FlyingTrains[SpookyGhost.unit_number] = {}
