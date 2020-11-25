@@ -1,5 +1,19 @@
+local trainHandler = require("__RenaiTransportation__/script/trains/entity_built")
+
 local function entity_built(event)
 	local entity = event.created_entity or event.entity or event.destination
+
+	local player = nil
+
+	if event.player_index then
+		player = game.players[event.player_index]
+	elseif event.robot then
+		player = event.robot.last_user
+	end
+
+	if trainHandler(entity, player) then
+		return
+	end
 
 	if (string.find(entity.name, "RTThrower-")) then
 		global.CatapultList[entity.unit_number] = {entity = entity, target = "nothing"}
@@ -7,21 +21,6 @@ local function entity_built(event)
 	elseif (entity.name == "PlayerLauncher") then
 		entity.operable = false
 		entity.active = false
-
-	elseif (entity.name == "RTMagnetTrainRamp" or entity.name == "RTMagnetTrainRampNoSkip") then
-		global.MagnetRamps[entity.unit_number] = {entity = entity, tiles = {}}
-		script.register_on_entity_destroyed(entity)
-		local SUCC = entity.surface.create_entity
-				({
-				name = "RTMagnetRampDrain",
-				position = {entity.position.x, entity.position.y-0.25}, --required setting for rendering, doesn't affect spawn
-				direction = entity.direction,
-				force = entity.force
-				})
-		SUCC.electric_buffer_size = 1000000
-		SUCC.power_usage = 0
-		SUCC.destructible = false
-		global.MagnetRamps[entity.unit_number].power = SUCC
 
 	elseif (string.find(entity.name, "BouncePlate") and not string.find(entity.name, "Train")) then
 		global.BouncePadList[entity.unit_number] = {TheEntity = entity}
