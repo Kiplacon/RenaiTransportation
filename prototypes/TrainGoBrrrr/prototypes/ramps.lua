@@ -27,6 +27,7 @@ local function makeRampPlacerEntity(name, icon, pictureFileName, placerItem)
 		collision_mask = {"rail-layer", "train-layer"},
 		selection_priority = 100,
 		collision_box = {{-0.01, -2.35}, {2.25, 1.30}},
+		selection_box = {{-0.01, -2.35}, {2.25, 1.30}},
 		animation = {
 			filename = pictureFileName,
 			width = 200,
