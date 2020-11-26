@@ -1,3 +1,7 @@
+local math2d = require('math2d')
+local util = require('util')
+local constants = require('constants')
+
 local function handleMagnetRampBuilt(entity)
 	global.MagnetRamps[entity.unit_number] = {entity = entity, tiles = {}}
 	script.register_on_entity_destroyed(entity)
@@ -15,9 +19,10 @@ end
 
 local function handleTrainRampPlacerBuilt(entity, player)
 	-- Swap the placer out for the real thing
+
 	local ramp = entity.surface.create_entity({
 		name = string.gsub(entity.name, '-placer', ''),
-		position = entity.position,
+		position = math2d.position.add(entity.position, constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction]),
 		direction = entity.direction,
 		force = entity.force,
 		raise_built = true,
@@ -27,14 +32,13 @@ local function handleTrainRampPlacerBuilt(entity, player)
 
 	if not ramp then
 		local dst = player or game
-		dst.print('Unable to build ramp - please report this as a bug')
+		dst.print('Unable to build ramp here, please try again')
 	else
 		entity.destroy({raise_destroy = true})
 	end
 end
 
 local function on_entity_built(entity, player)
-	game.print(entity.name)
 	if (string.find(entity.name, '^RT') and string.find(entity.name, 'TrainRamp') and string.find(entity.name, '-placer$')) then
 		handleTrainRampPlacerBuilt(entity)
 		game.print('Swapped')

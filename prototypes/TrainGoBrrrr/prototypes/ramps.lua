@@ -1,5 +1,7 @@
 local util = require("util")
 
+local constants = require("__RenaiTransportation__/script/trains/constants")
+
 local function makeRampItem(name, icon, placerEntity)
 	return {
 		type = "item",
@@ -22,9 +24,9 @@ local function makeRampPlacerEntity(name, icon, pictureFileName, placerItem)
 		flags = {"filter-directions", "fast-replaceable-no-build-while-moving"},
 		minable = { mining_time = 0.5, result = placerItem },-- Minable so they can get the item back if the placer swap bugs out
 		render_layer = "higher-object-under",
-		collision_mask = {"rail-layer"},
+		collision_mask = {"rail-layer", "train-layer"},
 		selection_priority = 100,
-		selection_box = {{-0.01, -2.3}, {2, 1}},
+		collision_box = {{-0.01, -2.35}, {2.25, 1.30}},
 		animation = {
 			filename = pictureFileName,
 			width = 200,
@@ -45,41 +47,39 @@ local function makeRampEntity(name, icon, pictureFileName, placerItem)
 		minable = {mining_time = 0.5, result = placerItem},
 		max_health = 500,
 		render_layer = "higher-object-under",
-		selection_box = {{0.5, -2.5}, {2.5, 1.5}},
+		selection_box = {{-0.01, -2}, {2, 2}},
 		selection_priority = 100,
-		collision_box = {{-0.01, -2.35}, {2.25, 1.30}},
+		collision_box = {{-0.01, -1.6}, {1.6, 1.6}},
 		collision_mask = {"train-layer", "object-layer"},
 		sprites = {
-			-- Use explicit sprite directions so we can shift them appropriately
-			-- TODO: Trim these and update the shifts
-			-- Even better, use a single sprite sheet with runtime tinting layer for the color
+			-- Shifts are inverted because the sprites are pre-shifted to be at the ramp position already
 			north = {
 				filename = pictureFileName,
 				width = 200,
 				height = 200,
 				y = 0,
-				shift = {0.5, -0.5}
+				-- shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.north], -1)
 			},
 			east = {
 				filename = pictureFileName,
 				width = 200,
 				height = 200,
 				y = 200,
-				shift = { 0.5, 0.5 }
+				-- shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.east], -1)
 			},
 			south = {
 				filename = pictureFileName,
 				width = 200,
 				height = 200,
 				y = 400,
-				shift = {-0.5, 0.5}
+				-- shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.south], -1)
 			},
 			west = {
 				filename = pictureFileName,
 				width = 200,
 				height = 200,
 				y = 600,
-				shift = {-0.5, -0.5 }
+				-- shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.west], -1)
 			},
 		},
 		placeable_by = { item = placerItem, count = 1 }, -- Controls `q` and blueprint behavior
