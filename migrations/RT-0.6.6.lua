@@ -72,7 +72,7 @@ local function locateBuffer(ramp)
 	)
 end
 
-local migrated
+migrated = 0
 
 local function migrateRamp(surface, oldRamp)
 	local buffer = locateBuffer(oldRamp)

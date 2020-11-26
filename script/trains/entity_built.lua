@@ -41,7 +41,6 @@ end
 local function on_entity_built(entity, player)
 	if (string.find(entity.name, '^RT') and string.find(entity.name, 'TrainRamp') and string.find(entity.name, '-placer$')) then
 		handleTrainRampPlacerBuilt(entity)
-		game.print('Swapped')
 		return true
 	elseif (entity.name == "RTMagnetTrainRamp" or entity.name == "RTMagnetTrainRampNoSkip") then
 		handleMagnetRampBuilt(entity)
