@@ -40,7 +40,7 @@ end
 
 local function makeRampEntity(name, icon, pictureFileName, placerItem)
 	return {
-		type = "constant-combinator", -- Simplist entity that has 4 diections of sprites
+		type = "simple-entity-with-owner", -- Simplist entity that has 4 diections of sprites
 		name = name,
 		icon = icon,
 		icon_size = 64,
@@ -48,58 +48,59 @@ local function makeRampEntity(name, icon, pictureFileName, placerItem)
 		minable = {mining_time = 0.5, result = placerItem},
 		max_health = 500,
 		render_layer = "higher-object-under",
-		selection_box = {{-0.01, -2}, {2, 2}},
+		selection_box = {{-0.01, -1.6}, {2, 2.4}},
 		selection_priority = 100,
-		collision_box = {{-0.01, -1.6}, {1.6, 1.6}},
+		collision_box = {{-0.01, -1.5}, {1.9, 2.4}},
 		collision_mask = {"train-layer", "object-layer"},
-		sprites = {
+		render_layer = "lower-object-above-shadow",
+		picture = {
 			-- Shifts are inverted because the sprites are pre-shifted to be at the ramp position already
 			north = {
 				filename = pictureFileName,
 				width = 200,
 				height = 200,
 				y = 0,
-				-- shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.north], -1)
+				shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.north], -1)
 			},
 			east = {
 				filename = pictureFileName,
 				width = 200,
 				height = 200,
 				y = 200,
-				-- shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.east], -1)
+				shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.east], -1)
 			},
 			south = {
 				filename = pictureFileName,
 				width = 200,
 				height = 200,
 				y = 400,
-				-- shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.south], -1)
+				shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.south], -1)
 			},
 			west = {
 				filename = pictureFileName,
 				width = 200,
 				height = 200,
 				y = 600,
-				-- shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.west], -1)
+				shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.west], -1)
 			},
 		},
 		placeable_by = { item = placerItem, count = 1 }, -- Controls `q` and blueprint behavior
 
 		-- null out the standard combinator stuff
-		item_slot_count = 0,
-		activity_led_sprites = util.empty_sprite(),
-		activity_led_light_offsets = {
-			{0, 0},
-			{0, 0},
-			{0, 0},
-			{0, 0}
-		},
-		circuit_wire_connection_points = {
-			{ shadow = {}, wire = {} },
-			{ shadow = {}, wire = {} },
-			{ shadow = {}, wire = {} },
-			{ shadow = {}, wire = {} },
-		}
+		-- item_slot_count = 0,
+		-- activity_led_sprites = util.empty_sprite(),
+		-- activity_led_light_offsets = {
+			-- {0, 0},
+			-- {0, 0},
+			-- {0, 0},
+			-- {0, 0}
+		-- },
+		-- circuit_wire_connection_points = {
+			-- { shadow = {}, wire = {} },
+			-- { shadow = {}, wire = {} },
+			-- { shadow = {}, wire = {} },
+			-- { shadow = {}, wire = {} },
+		-- }
 	}
 end
 
