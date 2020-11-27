@@ -30,6 +30,8 @@ local function entity_damaged(event)
 		base = event.cause.type
 		mask = "NoMask"
 		way = global.OrientationUnitComponents[event.cause.orientation].name
+		huehuehue = nil
+		
 		if (event.cause.type == "locomotive") then
 			mask = "locomotiveMask"..way
 		elseif (event.cause.name == "RTPayloadWagon") then
@@ -80,13 +82,15 @@ local function entity_damaged(event)
 		global.FlyingTrains[SpookyGhost.unit_number].name = event.cause.name
 		global.FlyingTrains[SpookyGhost.unit_number].type = event.cause.type
 		global.FlyingTrains[SpookyGhost.unit_number].LaunchTick = game.tick
-		if ((event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") and global.MagnetRamps[event.entity.unit_number].range ~= nil and global.MagnetRamps[event.entity.unit_number].power.energy == global.MagnetRamps[event.entity.unit_number].power.electric_buffer_size) then
+		if ((event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") and global.MagnetRamps[event.entity.unit_number].range ~= nil and global.MagnetRamps[event.entity.unit_number].power.energy/global.MagnetRamps[event.entity.unit_number].power.electric_buffer_size >= 0.95) then
 			global.FlyingTrains[SpookyGhost.unit_number].LandTick = math.ceil(game.tick + math.abs(global.MagnetRamps[event.entity.unit_number].range/(0.8*event.cause.speed)))
 			global.FlyingTrains[SpookyGhost.unit_number].MagnetComp = math.ceil(game.tick + 130*math.abs(event.cause.speed))-global.FlyingTrains[SpookyGhost.unit_number].LandTick
 			global.FlyingTrains[SpookyGhost.unit_number].MakeFX = "yes"
+			--game.print("power")
 
-		elseif ((event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") and global.MagnetRamps[event.entity.unit_number].range ~= nil and global.MagnetRamps[event.entity.unit_number].power.energy ~= global.MagnetRamps[event.entity.unit_number].power.electric_buffer_size) then
+		elseif ((event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") and global.MagnetRamps[event.entity.unit_number].range ~= nil and global.MagnetRamps[event.entity.unit_number].power.energy/global.MagnetRamps[event.entity.unit_number].power.electric_buffer_size < 0.95) then
 			global.FlyingTrains[SpookyGhost.unit_number].MakeFX = "NoEnergy"
+			--game.print("no power")
 			global.FlyingTrains[SpookyGhost.unit_number].LandTick = math.ceil(game.tick + 130*math.abs(event.cause.speed))
 
 		else
