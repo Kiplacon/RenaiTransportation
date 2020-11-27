@@ -51,7 +51,7 @@ local function makeRampEntity(name, icon, pictureFileName, placerItem)
 		selection_box = {{-0.01, -1.6}, {2, 2.4}},
 		selection_priority = 100,
 		collision_box = {{-0.01, -1.5}, {1.9, 2.4}},
-		collision_mask = {"train-layer", "object-layer"},
+		collision_mask = {"train-layer"},
 		render_layer = "lower-object-above-shadow",
 		picture = {
 			-- Shifts are inverted because the sprites are pre-shifted to be at the ramp position already
