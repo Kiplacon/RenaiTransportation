@@ -23,6 +23,7 @@ MLG.animation =
 	size = 32,
 	direction_count = 1
 	}
+MLG.light_animation = MLG.animation
 MLG.water_reflection = nil
 MLG.has_belt_immunity = true
 MLG.turret_rotation_speed = 0.00000000000001

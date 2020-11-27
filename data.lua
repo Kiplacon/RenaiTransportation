@@ -26,8 +26,7 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 end
 
 if (settings.startup["RTTrainRampSetting"].value == true) then
-	require("prototypes.TrainGoBrrrr.TrainRamp")
-	require("prototypes.TrainGoBrrrr.MagnetTrainRamp")
+	require("prototypes.TrainGoBrrrr.prototypes.ramps")
 	require("prototypes.TrainGoBrrrr.sprites.base")
 	require("prototypes.TrainGoBrrrr.GhostLoco")
 end

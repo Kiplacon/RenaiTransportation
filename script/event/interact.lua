@@ -228,7 +228,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 							target_offset = {0, -0.3},
 							x_scale = 0.5,
 							y_scale = 0.5,
-							render_layer = 136
+							render_layer = "wires-above"
 						}
 					rendering.draw_sprite
 						{
@@ -238,7 +238,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 							target_offset = {0.03, 0.1},
 							x_scale = 0.5,
 							y_scale = 0.5,
-							render_layer = 128
+							render_layer = "128"
 						}
 					trolley.destructible = false
 					SpookySlideGhost.destructible = false
