@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.6.7
+Date: 11/27/2020
+  Changes:
+    - Compatability fix for Space Exploration because apparently SE changes signal collision boxes and apparently all signals have to have colliding collision masks
+---------------------------------------------------------------------------------------------------
 Version: 0.6.6
 Date: 11/27/2020
   Changes:
