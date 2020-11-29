@@ -33,19 +33,21 @@ local function finalizeLandedTrain(PropUnitNumber, properties)
 		properties.destinationStation.trains_limit = properties.destinationStation.trains_limit + 1
 	end
 
-	-- Remove temporary pathing station, if present
-	local schedule = properties.LandedTrain.train.schedule
-	if schedule and schedule.current then
-		local dst = schedule.records[schedule.current]
+	if properties.LandedTrain and properties.LandedTrain.valid then
+		-- Remove temporary pathing station, if present
+		local schedule = properties.LandedTrain.train.schedule
+		if schedule and schedule.current then
+			local dst = schedule.records[schedule.current]
 
-		if dst and dst.wait_conditions then
-			local firstWaitCond = dst.wait_conditions[1]
+			if dst and dst.wait_conditions then
+				local firstWaitCond = dst.wait_conditions[1]
 
-			if firstWaitCond.condition and firstWaitCond.condition.first_signal and firstWaitCond.condition.first_signal.name == 'RTPropCarItem' then
-				local newSchedule = table.deepcopy(schedule)
-				table.remove(newSchedule.records, newSchedule.current)
-				properties.LandedTrain.train.schedule = newSchedule
-				properties.LandedTrain.train.go_to_station(newSchedule.current)
+				if firstWaitCond.condition and firstWaitCond.condition.first_signal and firstWaitCond.condition.first_signal.name == 'RTPropCarItem' then
+					local newSchedule = table.deepcopy(schedule)
+					table.remove(newSchedule.records, newSchedule.current)
+					properties.LandedTrain.train.schedule = newSchedule
+					properties.LandedTrain.train.go_to_station(newSchedule.current)
+				end
 			end
 		end
 	end
