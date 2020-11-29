@@ -28,6 +28,11 @@ local function reEnableSchedule(train, schedule, destinationStation)
 end
 
 local function finalizeLandedTrain(PropUnitNumber, properties)
+	-- undo station reservation
+	if properties.adjustDestinationLimit then
+		properties.destinationStation.trains_limit = properties.destinationStation.trains_limit + 1
+	end
+
 	-- Remove temporary pathing station, if present
 	local schedule = properties.LandedTrain.train.schedule
 	if schedule and schedule.current then
