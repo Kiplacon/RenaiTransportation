@@ -1,5 +1,53 @@
 local Animation = require("animation")
 
+local temporaryPathingCondition = {
+	type = "item_count",
+	compare_type = "and",
+	condition = {
+		comparator = "=",
+	  	first_signal = {type="item", name="RTPropCarItem" },
+		constant = 69
+	}
+}
+
+local function reEnableSchedule(train, schedule, destinationStation)
+	schedule = table.deepcopy(schedule)
+	if (destinationStation and destinationStation.valid and destinationStation.trains_limit and destinationStation.connected_rail) then
+		tempStation = {
+			rail = destinationStation.connected_rail,
+			wait_conditions = { temporaryPathingCondition },
+			temporary = true
+		}
+
+		table.insert(schedule.records, schedule.current, tempStation)
+		train.schedule = schedule
+	else
+		-- set the schedule but don't enable it
+		train.schedule = schedule
+	end
+end
+
+local function finalizeLandedTrain(PropUnitNumber, properties)
+	-- Remove temporary pathing station, if present
+	local schedule = properties.LandedTrain.train.schedule
+	if schedule and schedule.current then
+		local dst = schedule.records[schedule.current]
+
+		if dst and dst.wait_conditions then
+			local firstWaitCond = dst.wait_conditions[1]
+
+			if firstWaitCond.condition and firstWaitCond.condition.first_signal and firstWaitCond.condition.first_signal.name == 'RTPropCarItem' then
+				local newSchedule = table.deepcopy(schedule)
+				table.remove(newSchedule.records, newSchedule.current)
+				properties.LandedTrain.train.schedule = newSchedule
+				properties.LandedTrain.train.go_to_station(newSchedule.current)
+			end
+		end
+	end
+
+	global.FlyingTrains[PropUnitNumber] = nil
+end
+
 local function on_tick(event)
 	--| Trains
 	----------------- train flight ----------------
@@ -242,8 +290,8 @@ local function on_tick(event)
 							NewTrain.train.manual_mode = properties.ManualMode -- Trains are default created in manual mode
 						end
 
-						if (properties.schedule ~= nil) then
-							NewTrain.train.schedule = properties.schedule
+						if (NewTrain.train.schedule == nil and properties.schedule ~= nil) then
+							reEnableSchedule(NewTrain.train, properties.schedule, properties.destinationStation)
 						end
 
 						if (properties.gridd ~= nil and NewTrain.grid ~= nil) then
@@ -381,7 +429,7 @@ local function on_tick(event)
 				end
 			elseif (#properties.LandedTrain.train.carriages == properties.length or game.tick > properties.LandTick+300) then
 				--game.print("all here")
-				global.FlyingTrains[PropUnitNumber] = nil
+				finalizeLandedTrain(PropUnitNumber, properties)
 			end
 
 		-- elseif (game.tick > properties.LandTick and properties.follower and properties.LandedTrain and properties.LandedTrain.valid) then
@@ -399,7 +447,7 @@ local function on_tick(event)
 			-- end
 
 		elseif (game.tick > properties.LandTick) then -- for any trains already in the air when the speed control update was released or other catch all failsafes
-			global.FlyingTrains[PropUnitNumber] = nil
+			finalizeLandedTrain(PropUnitNumber, properties)
 		end
 	end
 end
