@@ -24,7 +24,7 @@ local function makeRampPlacerEntity(name, icon, pictureFileName, placerItem)
 		flags = {"filter-directions", "fast-replaceable-no-build-while-moving"},
 		minable = { mining_time = 0.5, result = placerItem },-- Minable so they can get the item back if the placer swap bugs out
 		render_layer = "higher-object-under",
-		collision_mask = {"rail-layer", "train-layer", "water-tile"}, -- "water-tile" makes it compatible with Space Explotation because for some reason it changes signal collison masks and all signals have to have at least one overlapping collision mask
+		collision_mask = {"floor-layer", "rail-layer", "item-layer", "water-tile"}, -- "water-tile" makes it compatible with Space Explotation because for some reason it changes signal collison masks and all signals have to have at least one overlapping collision mask
 		selection_priority = 100,
 		collision_box = {{-0.01, -2.35}, {2.25, 1.30}},
 		selection_box = {{-0.01, -2.35}, {2.25, 1.30}},
