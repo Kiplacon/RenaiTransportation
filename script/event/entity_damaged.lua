@@ -109,6 +109,13 @@ local function entity_damaged(event)
 		global.FlyingTrains[SpookyGhost.unit_number].ShadowID = OwTheEdge
 		global.FlyingTrains[SpookyGhost.unit_number].ManualMode = event.cause.train.manual_mode
 		global.FlyingTrains[SpookyGhost.unit_number].length = #event.cause.train.carriages
+		global.FlyingTrains[SpookyGhost.unit_number].destinationStation = event.cause.train.path_end_stop
+		global.FlyingTrains[SpookyGhost.unit_number].adjustDestinationLimit = event.cause.train.path_end_stop and event.cause.train.path_end_stop.trains_limit > 0
+
+		if global.FlyingTrains[SpookyGhost.unit_number].adjustDestinationLimit then
+			-- Artifically reserve the station by decrementing the available blocks
+			event.cause.train.path_end_stop.trains_limit = event.cause.train.path_end_stop.trains_limit - 1
+		end
 
 		for number, properties in pairs(global.FlyingTrains) do -- carriages jumping before the ends land
 			if (properties.LandedTrain ~= nil and properties.LandedTrain.valid and event.cause.unit_number == properties.LandedTrain.unit_number) then
