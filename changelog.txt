@@ -3,6 +3,7 @@ Version: 0.6.8
 Date: 12/3/2020
   Bugfixes:
     - Fixed that trains with multiple locomotives would sometimes seperate during a jump if the locomotives used fuels with different top speeds
+    - Mooeing-747: Fixed interaction with station limits so that a spot will be reserved for a train during a jump for it to use again when it lands
   Changes:
     - Changed collision mask for the train ramp again to hopefully be more universally compatible with the new signal change in 1.1+
 ---------------------------------------------------------------------------------------------------
