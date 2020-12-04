@@ -242,7 +242,12 @@ local function entity_damaged(event)
 		end
 
 		if (event.cause.type == "locomotive" and event.cause.burner) then
-			global.FlyingTrains[SpookyGhost.unit_number].CurrentlyBurning = event.cause.burner.currently_burning
+			if (global.About2Jump[event.cause.unit_number] ~= nil) then
+				global.FlyingTrains[SpookyGhost.unit_number].CurrentlyBurning = global.About2Jump[event.cause.unit_number].BurningFuel
+				global.About2Jump[event.cause.unit_number] = nil
+			else
+				global.FlyingTrains[SpookyGhost.unit_number].CurrentlyBurning = event.cause.burner.currently_burning
+			end
 			global.FlyingTrains[SpookyGhost.unit_number].RemainingFuel = event.cause.burner.remaining_burning_fuel
 			global.FlyingTrains[SpookyGhost.unit_number].FuelInventory = event.cause.get_fuel_inventory().get_contents()
 		elseif (event.cause.type == "cargo-wagon") then
@@ -256,6 +261,16 @@ local function entity_damaged(event)
 			global.FlyingTrains[SpookyGhost.unit_number].fluids = event.cause.get_fluid_contents()
 		elseif (event.cause.type == "artillery-wagon") then
 			global.FlyingTrains[SpookyGhost.unit_number].artillery = event.cause.get_inventory(defines.inventory.artillery_wagon_ammo).get_contents()
+		end
+
+		if (global.FlyingTrains[SpookyGhost.unit_number].leader == nil) then
+			for each, carriage in pairs(event.cause.train.carriages) do
+				if (carriage.burner) then
+					global.About2Jump[carriage.unit_number] = {}
+					global.About2Jump[carriage.unit_number].BurningFuel = carriage.burner.currently_burning
+					carriage.burner.currently_burning = game.item_prototypes[global.FastestFuel]
+				end
+			end
 		end
 
 		if (event.cause.grid ~= nil) then

@@ -6,7 +6,7 @@ local temporaryPathingCondition = {
 	condition = {
 		comparator = "=",
 	  	first_signal = {type="item", name="RTPropCarItem" },
-		constant = 69
+		constant = 69 -- nice
 	}
 }
 

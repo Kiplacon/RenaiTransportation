@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.6.8
+Date: 12/3/2020
+  Bugfixes:
+    - Fixed that trains with multiple locomotives would sometimes seperate during a jump if the locomotives used fuels with different top speeds
+  Changes:
+    - Changed collision mask for the train ramp again to hopefully be more universally compatible with the new signal change in 1.1+
+---------------------------------------------------------------------------------------------------
 Version: 0.6.7
 Date: 11/27/2020
   Changes:
