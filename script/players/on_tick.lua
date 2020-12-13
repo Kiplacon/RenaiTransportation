@@ -284,23 +284,20 @@ local function on_tick(event)
 				global.AllPlayers[ThePlayer] = {}
 				--game.print("failsafe/wire destroyed")
 			end
-		--||| Failsafe
+		--||| Zipline Failsafe
 		elseif (TheirProperties.sliding == true) then
 			TheirProperties.LetMeGuideYou.destroy()
 			TheirProperties.ChuggaChugga.destroy()
 			TheirProperties.succ.destroy()
-			if (game.get_player(ThePlayer).character) then
-				game.get_player(ThePlayer).character_running_speed_modifier = 0
-			end
 			global.AllPlayers[ThePlayer] = {}
 
-		-- else
-			-- for each, thing in pairs(global.AllPlayers[ThePlayer]) do
-				-- if (thing.can_be_destroyed() ~= nil) then
-					-- thing.destroy()
-				-- end
-			-- end
-			-- global.AllPlayers[ThePlayer] = {}
+		--||| Failsafe failsafe
+		elseif (TheirProperties.reset == nil and game.get_player(ThePlayer).connected and game.get_player(ThePlayer).character) then
+				game.get_player(ThePlayer).character_running_speed_modifier = 0
+				game.get_player(ThePlayer).character.destructible = true
+				global.AllPlayers[ThePlayer] = {}
+				global.AllPlayers[ThePlayer].reset = true
+
 		end
 	end
 end
