@@ -32,9 +32,10 @@ local function config_changed()
 		global.BouncePadList = {}
 	end
 	
-	if (global.FastestFuel == nil) then
+	if (game.item_prototypes[global.FastestFuel] == nil or global.FastestFuel == nil) then
 		global.FastestFuel = "nuclear-fuel"
 	end
+	
 	for ItemName, info in pairs(game.item_prototypes) do 
 		if (info.fuel_top_speed_multiplier 
 		and info.fuel_top_speed_multiplier > game.item_prototypes[global.FastestFuel].fuel_top_speed_multiplier) then
