@@ -5,8 +5,19 @@ local function entity_built(event)
 
 	local player = nil
 
+	--game.print(entity.name)
+
 	if event.player_index then
 		player = game.players[event.player_index]
+		if (global.AllPlayers[event.player_index].RangeAdjusting 
+		and entity.name == "entity-ghost" 
+		and string.find(entity.ghost_prototype.name, "RTThrower-")
+		and player.get_main_inventory().find_item_stack(entity.ghost_prototype.name.."-Item")
+		) then
+			player.get_main_inventory().remove({name=entity.ghost_prototype.name.."-Item", count=1})
+			entity.revive({raise_revive = true})
+			return
+		end
 	elseif event.robot then
 		player = event.robot.last_user
 	end

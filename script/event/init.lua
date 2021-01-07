@@ -16,6 +16,15 @@ local function on_int()
 		global.OrientationUnitComponents[1] = {x = 0, y = -1, name = "up"}
 	end
 
+	if (global.Dir2Ori == nil) then
+		global.Dir2Ori = {}
+		global.Dir2Ori[4] = 0.5
+		global.Dir2Ori[6] = 0.75
+		global.Dir2Ori[0] = 0
+		global.Dir2Ori[2] = 0.25
+		global.Dir2Ori[4] = 0.5
+	end
+
 	for PlayerID, PlayerLuaData in pairs(game.players) do
 		if (global.AllPlayers[PlayerID] == nil) then
 			global.AllPlayers[PlayerID] = {}

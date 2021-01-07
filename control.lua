@@ -37,6 +37,16 @@ script.on_event(
 	require("script.event.rotate")
 )
 
+
+-- Thrower Range blueprint auto build cancel
+script.on_event(defines.events.on_player_cursor_stack_changed, -- only has .player_index
+function(event)
+if (global.AllPlayers[event.player_index].RangeAdjusting == true) then
+	global.AllPlayers[event.player_index].RangeAdjusting = nil
+end
+end)
+
+
 -- Clear invalid things
 script.on_nth_tick(18000,
 function(event)

@@ -86,6 +86,7 @@ local function click(event)
 			rendering.destroy(global.MagnetRamps[TheRamp.unit_number].rangeID)
 		end
 		global.AllPlayers[event.player_index] = {}
+	
 	-- elseif (game.get_player(event.player_index).selected and string.find(game.get_player(event.player_index).selected.name, "RTThrower-")) then
 		-- game.print(global.CatapultList[game.get_player(event.player_index).selected.unit_number].target.name)
 	end

@@ -193,3 +193,4 @@ data:extend({
 
 -- Add supporting entities for the mag ramp
 data:extend(require('mag_ramp_entities'))
+

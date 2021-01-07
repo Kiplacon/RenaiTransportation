@@ -270,6 +270,72 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 
 		end
 	end
+	
+	
+	--| Adjust thrower range before placing
+	if (game.get_player(event1.player_index).cursor_stack.valid_for_read 
+	and string.find(game.get_player(event1.player_index).cursor_stack.name, "RTThrower-")
+	and game.get_player(event1.player_index).force.technologies["RTFocusedFlinging"].researched == true) then
+		local thrower = string.gsub(game.get_player(event1.player_index).cursor_stack.name, "-Item", "")
+		game.get_player(event1.player_index).activate_paste() -- tests if activating paste brings up a blueprint to cursor
+		if (game.get_player(event1.player_index).is_cursor_blueprint() == false) then -- only happens in saves where the player has never copied anything yet
+			local vvv = game.get_player(event1.player_index).surface.create_entity({
+				name = "wooden-chest",
+				position = {0, 0},
+				raise_built = false,
+				create_build_effect_smoke = false})
+			vvv.insert({name = "blueprint"})
+			vvv.get_inventory(defines.inventory.chest)[1].set_blueprint_entities(
+				{ 
+					{entity_number = 1, name = thrower, position = {0,0}, direction = 4, drop_position = {0,-.8984} }
+				})
+			game.get_player(event1.player_index).add_to_clipboard(vvv.get_inventory(defines.inventory.chest)[1])
+			game.get_player(event1.player_index).activate_paste()
+			vvv.destroy()
+		else
+			game.get_player(event1.player_index).cursor_stack.set_blueprint_entities(
+				{ 
+					{entity_number = 1, name = thrower, position = {0,0}, direction = 4, drop_position = {0,-.8984} }
+				})
+		end
+		global.AllPlayers[event1.player_index].RangeAdjusting = true -- seems to immediately reset to false since the cursor stack changes to the blueprint but idk how to have the check go first and then set the global.RangeAdjusting
+		
+	elseif (game.get_player(event1.player_index).is_cursor_blueprint() 
+	and game.get_player(event1.player_index).get_blueprint_entities() ~= nil
+	and #game.get_player(event1.player_index).get_blueprint_entities() == 1 
+	and string.find(game.get_player(event1.player_index).get_blueprint_entities()[1].name, "RTThrower-") 
+	and game.get_player(event1.player_index).get_blueprint_entities()[1].drop_position
+	and game.get_player(event1.player_index).force.technologies["RTFocusedFlinging"].researched == true) then
+		local thrower = game.get_player(event1.player_index).get_blueprint_entities()[1]
+		local OneD = game.get_player(event1.player_index).get_blueprint_entities()[1].direction
+		local CurrentRange = math.ceil(math.abs(thrower.drop_position.x-thrower.position.x + thrower.drop_position.y-thrower.position.y))
+		if ((thrower.name ~= "RTThrower-long-handed-inserter" and CurrentRange >= 16) or CurrentRange >= 26) then
+			WhereWeDroppin =
+				{
+					thrower.drop_position.x+(CurrentRange-2)*global.OrientationUnitComponents[global.Dir2Ori[thrower.direction]].x,
+					thrower.drop_position.y+(CurrentRange-2)*global.OrientationUnitComponents[global.Dir2Ori[thrower.direction]].y
+				}
+		else
+			WhereWeDroppin =
+				{
+					thrower.drop_position.x-global.OrientationUnitComponents[global.Dir2Ori[thrower.direction]].x,
+					thrower.drop_position.y-global.OrientationUnitComponents[global.Dir2Ori[thrower.direction]].y
+				}
+		end
+
+		game.get_player(event1.player_index).cursor_stack.set_blueprint_entities(
+			{ 
+				{entity_number = 1, name = thrower.name, position = {0,0}, direction = OneD, drop_position = WhereWeDroppin }
+			})
+		-- game.get_player(event1.player_index).create_local_flying_text
+			-- {
+				-- create_at_cursor = true,
+				-- text = "Range: "..math.ceil(math.abs(thrower.drop_position.x-thrower.position.x + thrower.drop_position.y-thrower.position.y))
+			-- }
+		global.AllPlayers[event1.player_index].RangeAdjusting = true
+	
+		
+	end
 end
 
 return interact

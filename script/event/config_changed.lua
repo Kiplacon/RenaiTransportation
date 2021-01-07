@@ -10,6 +10,14 @@ local function config_changed()
 	global.OrientationUnitComponents[0.75] = {x = -1, y = 0, name = "left"}
 	global.OrientationUnitComponents[1] = {x = 0, y = -1, name = "up"}
 
+	global.Dir2Ori = {}
+	global.Dir2Ori[4] = 0.5
+	global.Dir2Ori[6] = 0.75
+	global.Dir2Ori[0] = 0
+	global.Dir2Ori[2] = 0.25
+	global.Dir2Ori[4] = 0.5
+
+
 	if (global.AllPlayers == nil) then
 		global.AllPlayers = {}
 	end

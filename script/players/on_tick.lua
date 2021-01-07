@@ -186,7 +186,7 @@ local function on_tick(event)
 				--|||| Before destination
 				if (FromStart <= TheirProperties.distance and FromEnd-0.1 <= TheirProperties.distance) then
 
-					if (settings.get_player_settings(game.get_player(ThePlayer))["RTZiplineSmoothSetting"].value == "Motion Follows Trolley") then
+					if (settings.get_player_settings(game.get_player(ThePlayer))["RTZiplineSmoothSetting"].value == "Bobbing Motion") then
 						FollowZip = (3*(FromStart^2-FromStart*TheirProperties.distance)/TheirProperties.distance^2)
 					else
 						FollowZip = 0
@@ -208,7 +208,8 @@ local function on_tick(event)
 					and game.get_player(ThePlayer).character.get_inventory(defines.inventory.character_guns)[game.get_player(ThePlayer).character.selected_gun_index].name == "RTZiplineItem"
 					and game.get_player(ThePlayer).character.get_inventory(defines.inventory.character_ammo)[game.get_player(ThePlayer).character.selected_gun_index].valid_for_read
 					and game.get_player(ThePlayer).walking_state.walking == true
-					and TheirProperties.succ.energy ~= 0)
+					and TheirProperties.succ.energy ~= 0
+					and math.abs(TheirProperties.LetMeGuideYou.speed) <= 0.315)
 					then
 						if (game.tick%2 == 0 and TheirProperties.ForwardDirection[game.get_player(ThePlayer).walking_state.direction] ~= nil) then
 							if (TheirProperties.LetMeGuideYou.speed <= 0.315) then
@@ -290,13 +291,18 @@ local function on_tick(event)
 			TheirProperties.ChuggaChugga.destroy()
 			TheirProperties.succ.destroy()
 			global.AllPlayers[ThePlayer] = {}
-
+		
+		--||| Set thrower range before placing
+		elseif (TheirProperties.RangeAdjusting == true) then
+			-- keep it on
+			
 		--||| Failsafe failsafe
 		elseif (TheirProperties.reset == nil and game.get_player(ThePlayer).connected and game.get_player(ThePlayer).character) then
-				game.get_player(ThePlayer).character_running_speed_modifier = 0
-				game.get_player(ThePlayer).character.destructible = true
-				global.AllPlayers[ThePlayer] = {}
-				global.AllPlayers[ThePlayer].reset = true
+			game.get_player(ThePlayer).character_running_speed_modifier = 0
+			game.get_player(ThePlayer).character.destructible = true
+			global.AllPlayers[ThePlayer] = {}
+			global.AllPlayers[ThePlayer].reset = true
+				
 
 		end
 	end

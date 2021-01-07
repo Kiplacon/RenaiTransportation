@@ -320,6 +320,29 @@ if (settings.startup["RTZiplineSetting"].value == true) then
 			},
 			time = 30
 		} 
+	  },
+	  {
+		type = "technology",
+		name = "RTZiplineControlTech1",
+		icon = "__RenaiTransportation__/graphics/zipline/crankcontrols.png",
+		icon_size = 64,
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "RTZiplineCrankControlsRecipe"
+			}
+		},
+		prerequisites = {"RTZiplineTech"},
+		unit =
+		{
+			count = 50,
+			ingredients =
+			{
+			  {"automation-science-pack", 1}
+			},
+			time = 30
+		} 
 	  }
 	})
 end

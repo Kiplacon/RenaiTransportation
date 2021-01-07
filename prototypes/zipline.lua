@@ -84,9 +84,9 @@ brrr,
 	ammo_type =
     {
       category = "ZiplineMotor"
+
 	}
 },
-
 { --------- zipline controls recipie ----------
 	type = "recipe",
 	name = "RTZiplineControlsRecipe",
@@ -100,6 +100,56 @@ brrr,
 			{"electronic-circuit", 2}
 		},
 	result = "RTZiplineControlsItem"
+},
+
+{ --------- zipline crank controls -------------
+	type = "ammo",
+	name = "RTZiplineCrankControlsItem",
+	icon = "__RenaiTransportation__/graphics/zipline/crankcontrols.png",
+	icon_size = 64,
+	subgroup = "gun",
+	order = "hj",
+	stack_size = 1,
+	magazine_size = 1000,
+	ammo_type =
+    {
+      category = "ZiplineMotor",
+	  target_type = "position",
+	  clamp_position = true,
+	  cooldown_modifier = 0.2,
+	  action =
+		{
+			{
+			  type = "direct",
+			  action_delivery =
+			  {
+				{
+				  type = "instant",
+				  source_effects =
+				  {
+					{
+					  type = "script",
+					  effect_id = "RTCrank"
+					}
+				  }
+				}
+			  }
+			}		
+		}
+	}
+},
+{ --------- zipline crank controls recipie ----------
+	type = "recipe",
+	name = "RTZiplineCrankControlsRecipe",
+	enabled = false,
+	energy_required = 0.5,
+	ingredients = 
+		{
+			{"RTZiplineControlsItem", 1},
+			{"iron-stick", 2},
+			{"iron-gear-wheel", 10}
+		},
+	result = "RTZiplineCrankControlsItem"
 },
 
 { ------ zipline over player graphic -----------

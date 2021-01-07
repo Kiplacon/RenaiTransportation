@@ -84,7 +84,7 @@ else
       --shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
       --tint = data.tint,
       priority = "high",
-      scale = 19.2/ThingData.icon_size --0.3
+      scale = 19.2/ThingData.icon_size --0.3 of a tile
       --animation_speed = 1,
     }
 end	

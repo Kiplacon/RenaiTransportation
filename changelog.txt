@@ -1,8 +1,25 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.6.13
+Date: 1/6/2021
+  Bugfixes:
+    - Fixed crashes related to adjusting thrower range before placing. Based on reports by SoupGuyMan and GeneralTank.
+    - Fixed that adjusting range before placing could be done before the adjusting reasearch was done.
+---------------------------------------------------------------------------------------------------
+Version: 0.6.12
+Date: 12/30/2020
+  Changes:
+    - Changed zipline crank to boost while holding the shoot key rather than on clicking. Suggested by Tellingohn.
+---------------------------------------------------------------------------------------------------
+Version: 0.6.11
+Date: 12/26/2020
+  Additions:
+    - You can now adjust thrower inserter range before placing it. Press Interact while it's in your cursor to adjust range like how you would while it's placed. This is done using dynamic custom blueprints so note that by default Interact has the same hotkey as Factorio's new "Flip Blueprint Horizontally" key, and you might want to change one of them so they don't clash
+    - Zipline Crank Controller. Equiping this zipline controller varient allows you to boost your speed by clicking. Suggested by Tellingohn
+---------------------------------------------------------------------------------------------------
 Version: 0.6.10
 Date: 12/19/2020
   Bugfixes:
-    - Fixed that the mod wouldn't load if the fuel with the fastest speed multiplier was removed.
+    - Fixed that the saves wouldn't load if the fuel with the fastest speed multiplier was removed.
 ---------------------------------------------------------------------------------------------------
 Version: 0.6.9
 Date: 12/3/2020
