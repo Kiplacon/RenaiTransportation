@@ -1,4 +1,19 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.7.0
+Date: 2/7/2021
+  Bugfixes:
+    - Now pulls train sprites dynamically for each carriage so that modded carriages should retain their image during a jump rather than using vanilla ones based on their type
+    - Fixed some icon incompatability with some mods, specifically using Industrial Revolution 2 for testing, which should now work.
+    - Adjusted the thrower generation criteria so that some creative type inserters don't make thrower varients
+---------------------------------------------------------------------------------------------------
+Version: 0.6.14
+Date: 2/4/2021
+  Changes:
+    - Changed thrown items to be able to land in cargo wagons
+  Bugfixes:
+    - Fixed that changing surfaces (like when entering a Factorissimo building) while ziplining would cause a crash/softlock. Reported by saaadel.
+    - Fixed some missing locale names
+---------------------------------------------------------------------------------------------------
 Version: 0.6.13
 Date: 1/6/2021
   Bugfixes:
@@ -8,7 +23,7 @@ Date: 1/6/2021
 Version: 0.6.12
 Date: 12/30/2020
   Changes:
-    - Changed zipline crank to boost while holding the shoot key rather than on clicking. Suggested by Tellingohn.
+    - Changed zipline crank to boost while holding the shoot key rather than on clicking. 100% more usable but 75% less meme. Suggested by Tellingohn.
 ---------------------------------------------------------------------------------------------------
 Version: 0.6.11
 Date: 12/26/2020

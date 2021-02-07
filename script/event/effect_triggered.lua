@@ -9,7 +9,13 @@ local function effect_triggered(event) --has .effect_id, .surface_index, and .so
 				position = event.target_position,
 				collision_mask = "object-layer"
 			}[1] -- in theory only one thing should be detected in the object layer this way
-
+			
+		LandedOnCargoWagon = game.get_surface(event.surface_index).find_entities_filtered
+			{
+				area = {{event.target_position.x-0.5,event.target_position.y-0.5}, {event.target_position.x+0.5,event.target_position.y+0.5}},
+				type = "cargo-wagon"
+			}[1]
+			
 		if (ThingLandedOn ~= nil) then -- if it landed on something
 			if (string.find(ThingLandedOn.name, "BouncePlate")) then -- if that thing was a bounce plate
 
@@ -126,7 +132,11 @@ local function effect_triggered(event) --has .effect_id, .surface_index, and .so
 				---- If the thing it landed on has an inventory and a hatch, insert the item ----
 				elseif (ThingLandedOn.surface.find_entity('HatchRT', event.target_position) and ThingLandedOn.can_insert({name=string.gsub(event.effect_id, "-LandedRT", "")}) ) then
 					ThingLandedOn.insert({name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
-
+				
+				---- If it landed on something but there's also a cargo wagon there
+				elseif (LandedOnCargoWagon ~= nil and LandedOnCargoWagon.can_insert({name=string.gsub(event.effect_id, "-LandedRT", "")})) then
+					LandedOnCargoWagon.insert({name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
+				
 				---- otherwise it bounces off whatever it landed on and lands as an item on the nearest empty space within 10 tiles. destroyed if no space ----
 				else
 					game.get_surface(event.surface_index).spill_item_stack
@@ -139,6 +149,10 @@ local function effect_triggered(event) --has .effect_id, .surface_index, and .so
 			elseif (event.effect_id == "MaybeIllBeTracer-LandedRT") then
 				global.CatapultList[event.source_entity.unit_number].target = ThingLandedOn
 			end
+		
+		---- If it didnt land on anything but theres a cargo wagon there
+		elseif (LandedOnCargoWagon ~= nil and LandedOnCargoWagon.can_insert({name=string.gsub(event.effect_id, "-LandedRT", "")})) then
+			LandedOnCargoWagon.insert({name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
 
 		---- if the item/character lands in the water, it's gone ----
 		elseif (event.effect_id ~= "MaybeIllBeTracer-LandedRT" and game.get_surface(event.surface_index).find_tiles_filtered{position = event.target_position, radius = 1, limit = 1, collision_mask = "player-layer"}[1] ~= nil) then -- in theory, tiles the player cant walk on are some sort of fluid or other non-survivable ground

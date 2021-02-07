@@ -252,6 +252,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					global.AllPlayers[event1.player_index].succ = drain
 					--game.print("Attached to track")
 					global.AllPlayers[event1.player_index].sliding = true
+					global.AllPlayers[event1.player_index].StartingSurface = TheGuy.surface
 					ThingHovering.surface.play_sound
 						{
 							path = "RTZipAttach",

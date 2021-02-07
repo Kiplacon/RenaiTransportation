@@ -34,7 +34,8 @@ data:extend({
 		enabled = true,
 		energy_required = 0.5,
 		ingredients = {{"OpenContainerItem", 1}},
-		result = "iron-chest"
+		result = "iron-chest",
+		allow_as_intermediate = false
 	},
 	
 	datboi

@@ -45,8 +45,8 @@ data:extend({
 	type = "string-setting",
 	name = "RTZiplineSmoothSetting",
 	setting_type = "runtime-per-user",
-	default_value = "Motion Follows Trolley",
-    allowed_values = {"Motion Follows Trolley", "Level Motion"},
+	default_value = "Bobbing Motion",
+    allowed_values = {"Bobbing Motion", "Level Motion"},
 	order = "g"
 },
 {

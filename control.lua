@@ -182,3 +182,16 @@ script.on_event(
 	defines.events.on_entity_destroyed,
 	require("script.event.entity_destroyed")
 )
+
+
+script.on_event(defines.events.on_player_changed_surface,
+-- .player_index :: uint: The player who changed surfaces
+-- .surface_index :: uint: The surface index the player was on
+function(event)
+local player = game.players[event.player_index]
+if (global.AllPlayers[event.player_index] and global.AllPlayers[event.player_index].sliding and global.AllPlayers[event.player_index].sliding == true and player.surface.name ~= global.AllPlayers[event.player_index].StartingSurface.name) then
+	player.teleport(player.position, game.get_surface(event.surface_index))
+	
+end
+
+end)

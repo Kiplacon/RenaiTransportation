@@ -74,7 +74,8 @@ if (ThingData.icons) then
 				tint = rrrr
 			})
 	end
-else
+	
+elseif (ThingData.icon) then
 	TheProjectile.particle = {
       filename = ThingData.icon,
       line_length = 1,
@@ -85,6 +86,19 @@ else
       --tint = data.tint,
       priority = "high",
       scale = 19.2/ThingData.icon_size --0.3 of a tile
+      --animation_speed = 1,
+    }
+else
+	TheProjectile.particle = {
+      filename = "__RenaiTransportation__/graphics/icon.png",
+      line_length = 1,
+      width = 32,
+      height = 32,
+      frame_count = 1,
+      --shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
+      --tint = data.tint,
+      priority = "high",
+      scale = 19.2/32 --0.3 of a tile
       --animation_speed = 1,
     }
 end	
@@ -282,6 +296,199 @@ if (isitenabled == false) then
 	table.insert(data.raw["technology"]["RTThrowerTime"].effects,{type="unlock-recipe",recipe=TheRecipe.name})	
 end
 end
+
+----- Get the sprites of the carriage to use during a jump
+function MakeCarriageSprites(ThingData)
+	if (ThingData.pictures and ThingData.pictures.layers) then
+		for each, SpriteSet in pairs(ThingData.pictures.layers) do
+			if (ThingData.type == "locomotive") then
+				SpriteShift = {0,-1}
+			elseif (ThingData.type == "cargo-wagon") then
+				SpriteShift = {0,-1.2}
+			elseif (ThingData.type == "fluid-wagon") then
+				SpriteShift = {0,-1.3}
+			end
+			if (SpriteSet.flags == nil or (SpriteSet.flags and SpriteSet.flags[1] ~= "mask" and SpriteSet.flags[1] ~= "shadow")) then  -- carriage "body" sprite
+				if (SpriteSet.hr_version) then
+					if (SpriteSet.hr_version.back_equals_front ~= true) then
+						UpSprite = SpriteSet.hr_version.filenames[1]
+						RightSprite = SpriteSet.hr_version.filenames[(#SpriteSet.hr_version.filenames/4)+1]
+						DownSprite = SpriteSet.hr_version.filenames[(#SpriteSet.hr_version.filenames/2)+1]
+						LeftSprite = SpriteSet.hr_version.filenames[3*(#SpriteSet.hr_version.filenames/4)+1]
+					else
+						UpSprite = SpriteSet.hr_version.filenames[1]
+						RightSprite = SpriteSet.hr_version.filenames[(#SpriteSet.hr_version.filenames/2)+1]
+						DownSprite = UpSprite
+						LeftSprite = RightSprite				
+					end
+					SpriteSize = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}
+					SpriteScale = 0.5
+				else
+					if (SpriteSet.back_equals_front ~= true) then
+						UpSprite = SpriteSet.filenames[1]
+						RightSprite = SpriteSet.filenames[(#SpriteSet.filenames/4)+1]
+						DownSprite = SpriteSet.filenames[(#SpriteSet.filenames/2)+1]
+						LeftSprite = SpriteSet.filenames[3*(#SpriteSet.filenames/4)+1]
+					else
+						UpSprite = SpriteSet.filenames[1]
+						RightSprite = SpriteSet.filenames[(#SpriteSet.filenames/2)+1]
+						DownSprite = UpSprite
+						LeftSprite = RightSprite				
+					end
+					SpriteSize = {SpriteSet.width, SpriteSet.height}
+					SpriteScale = 1					
+				end
+				if (UpSprite and RightSprite and DownSprite and LeftSprite) then
+					data:extend({
+						{
+							type = "sprite",
+							name = "RT"..ThingData.name.."up",
+							layers = 
+							{
+								{
+									filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WheelsVertical.png",
+									size = {200,500},
+									scale = 0.5,
+									tint = {0.5, 0.5, 0.5}
+								},
+								{
+									filename = UpSprite,
+									size = SpriteSize,
+									scale = SpriteScale
+								}								
+							}
+						},
+						{
+							type = "sprite",
+							name = "RT"..ThingData.name.."right",
+							layers =
+							{
+								{
+									filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WheelsHorizontal.png",
+									size = {500,200},
+									shift = SpriteShift,
+									scale = 0.5,
+									tint = {0.5, 0.5, 0.5}
+								},
+								{
+									filename = RightSprite,
+									size = SpriteSize,
+									shift = SpriteShift,
+									scale = SpriteScale
+								}
+							}
+						},
+						{
+							type = "sprite",
+							name = "RT"..ThingData.name.."down",
+							layers = 
+							{
+								{
+									filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WheelsVertical.png",
+									size = {200,500},
+									scale = 0.5,
+									tint = {0.5, 0.5, 0.5}
+								},
+								{
+									filename = DownSprite,
+									size = SpriteSize,
+									scale = SpriteScale
+								}
+							}
+						},
+						{
+							type = "sprite",
+							name = "RT"..ThingData.name.."left",
+							layers =
+							{
+								{
+									filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WheelsHorizontal.png",
+									size = {500,200},
+									shift = SpriteShift,
+									scale = 0.5,
+									tint = {0.5, 0.5, 0.5}
+								},
+								{
+									filename = LeftSprite,
+									size = SpriteSize,
+									shift = SpriteShift,
+									scale = SpriteScale
+								}
+							}
+						}				
+					})
+				end
+				
+			elseif (SpriteSet.flags and SpriteSet.flags[1] == "mask") then	-- carriage mask
+				if (SpriteSet.hr_version) then
+					if (SpriteSet.hr_version.back_equals_front ~= true) then
+						UpSprite = SpriteSet.hr_version.filenames[1]
+						RightSprite = SpriteSet.hr_version.filenames[(#SpriteSet.hr_version.filenames/4)+1]
+						DownSprite = SpriteSet.hr_version.filenames[(#SpriteSet.hr_version.filenames/2)+1]
+						LeftSprite = SpriteSet.hr_version.filenames[3*(#SpriteSet.hr_version.filenames/4)+1]
+					else
+						UpSprite = SpriteSet.hr_version.filenames[1]
+						RightSprite = SpriteSet.hr_version.filenames[(#SpriteSet.hr_version.filenames/4)+1]
+						DownSprite = UpSprite
+						LeftSprite = RightSprite				
+					end
+					SpriteSize = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}
+					SpriteScale = 0.5
+				else
+					if (SpriteSet.back_equals_front ~= true) then
+						UpSprite = SpriteSet.filenames[1]
+						RightSprite = SpriteSet.filenames[(#SpriteSet.filenames/4)+1]
+						DownSprite = SpriteSet.filenames[(#SpriteSet.filenames/2)+1]
+						LeftSprite = SpriteSet.filenames[3*(#SpriteSet.filenames/4)+1]
+					else
+						UpSprite = SpriteSet.filenames[1]
+						RightSprite = SpriteSet.filenames[(#SpriteSet.filenames/4)+1]
+						DownSprite = UpSprite
+						LeftSprite = RightSprite				
+					end
+					SpriteSize = {SpriteSet.width, SpriteSet.height}	
+					SpriteScale = 1					
+				end
+				if (UpSprite and RightSprite and DownSprite and LeftSprite) then
+					data:extend({
+						{
+							type = "sprite",
+							name = "RT"..ThingData.name.."Maskup",
+							filename = UpSprite,
+							size = SpriteSize,
+							scale = SpriteScale
+						},
+						{
+							type = "sprite",
+							name = "RT"..ThingData.name.."Maskright",
+							filename = RightSprite,
+							size = SpriteSize,
+							scale = SpriteScale,
+							shift = SpriteShift
+						},
+						{
+							type = "sprite",
+							name = "RT"..ThingData.name.."Maskdown",
+							filename = DownSprite,
+							size = SpriteSize,
+							scale = SpriteScale
+						},
+						{
+							type = "sprite",
+							name = "RT"..ThingData.name.."Maskleft",
+							filename = LeftSprite,
+							size = SpriteSize,
+							scale = SpriteScale,
+							shift = SpriteShift
+						}				
+					})		
+				end
+			end
+		end
+	end
+end
+
+
 --- loop through data.raw ---------------------------------
 ---- Make thrower variants first so that the projectile generating will work
 
@@ -294,6 +501,8 @@ for ThingID, ThingData in pairs(data.raw.inserter) do
 			and ThingData.selectable_in_game ~= false 
 			and ThingData.minable 
 			and ThingData.minable.result
+			and ThingData.rotation_speed ~= 0
+			and ThingData.extension_speed ~= 0
 			and data.raw.item[ThingData.minable.result] ~= nil
 			and not string.find(ThingData.name, "RTThrower-")
 			--and (not ThingData.name ~= "thrower-inserter") 
@@ -317,7 +526,7 @@ end
 
 for Category, ThingsTable in pairs(data.raw) do
 	for ThingID, ThingData in pairs(ThingsTable) do	
-		if (ThingData.stack_size) then
+		if (ThingData.stack_size ) then
 			MakeProjectile(ThingData)
 			
 			if (settings.startup["RTBounceSetting"].value == true) then
@@ -335,7 +544,7 @@ for Category, ThingsTable in pairs(data.raw) do
 							and ThingData.capsule_action.type == "throw" --with a thrown action
 							and 
 							(
-								( -- 0.18.36 capsule action notation
+								( -- 0.18.36+ capsule action notation
 								ThingData.capsule_action.attack_parameters.ammo_type.action[1]
 								and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile]--that has an associated projectile
 								and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile].action --that does something
@@ -400,6 +609,11 @@ for Category, ThingsTable in pairs(data.raw) do
 				end
 			end
 		end
+		
+		if (Category == "locomotive" or Category == "cargo-wagon" or Category == "fluid-wagon") then
+			MakeCarriageSprites(ThingData)
+		end
+		
 	end
 end
 

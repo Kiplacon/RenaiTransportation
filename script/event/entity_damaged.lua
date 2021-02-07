@@ -27,13 +27,13 @@ local function entity_damaged(event)
 		SpookyGhost.speed = 0.8*event.cause.speed
 		SpookyGhost.destructible = false
 
-		base = event.cause.type
+		base = event.cause.name
 		mask = "NoMask"
 		way = global.OrientationUnitComponents[event.cause.orientation].name
 		huehuehue = nil
 		
 		if (event.cause.type == "locomotive") then
-			mask = "locomotiveMask"..way
+			mask = base.."Mask"..way or "NoMask"
 		elseif (event.cause.name == "RTPayloadWagon") then
 			huehuehue = {220,125,0}
 		--elseif (event.cause.type == "cargo-wagon") then
@@ -43,11 +43,11 @@ local function entity_damaged(event)
 
 		TrainImage = rendering.draw_sprite
 			{
-			sprite = "RT"..base..way,
+			sprite = "RT"..base..way or "RT"..event.cause.type..way,
 			target = SpookyGhost,
 			surface = SpookyGhost.surface,
-			x_scale = 0.5,
-			y_scale = 0.5,
+			--x_scale = 0.5,
+			--y_scale = 0.5,
 			render_layer = "air-object",
 			tint = huehuehue
 			}
@@ -57,8 +57,8 @@ local function entity_damaged(event)
 			tint = event.cause.color or {r = 234, g = 17, b = 0, a = 100},
 			target = SpookyGhost,
 			surface = SpookyGhost.surface,
-			x_scale = 0.5,
-			y_scale = 0.5,
+			--x_scale = 0.5,
+			--y_scale = 0.5,
 			render_layer = "air-object"
 			}
 		OwTheEdge = rendering.draw_sprite
