@@ -28,22 +28,36 @@ local function entity_damaged(event)
 		SpookyGhost.destructible = false
 
 		base = event.cause.name
-		mask = "NoMask"
+		--mask = "NoMask"
 		way = global.OrientationUnitComponents[event.cause.orientation].name
-		huehuehue = nil
+		
+		if (game.is_valid_sprite_path("RT"..base..way)) then
+			image = "RT"..base..way
+		else
+			image = "RT"..event.cause.type..way
+		end
+
+		if (game.is_valid_sprite_path("RT"..base.."Mask"..way)) then
+			mask = "RT"..base.."Mask"..way
+		else
+			mask = "RTNoMask"
+		end
 		
 		if (event.cause.type == "locomotive") then
-			mask = base.."Mask"..way or "NoMask"
-		elseif (event.cause.name == "RTPayloadWagon") then
+			maskhue = {r = 234, g = 17, b = 0, a = 100}
+		else
+			maskhue = event.cause.color
+		end
+		
+		if (event.cause.name == "RTPayloadWagon") then
 			huehuehue = {220,125,0}
-		--elseif (event.cause.type == "cargo-wagon") then
-		--elseif (event.cause.type == "fluid-wagon") then
-		--elseif (event.cause.type == "artillery-wagon") then
+		else
+			huehuehue = nil
 		end
 
 		TrainImage = rendering.draw_sprite
 			{
-			sprite = "RT"..base..way or "RT"..event.cause.type..way,
+			sprite = image,
 			target = SpookyGhost,
 			surface = SpookyGhost.surface,
 			--x_scale = 0.5,
@@ -53,8 +67,8 @@ local function entity_damaged(event)
 			}
 		Mask = rendering.draw_sprite
 			{
-			sprite = "RT"..mask,
-			tint = event.cause.color or {r = 234, g = 17, b = 0, a = 100},
+			sprite = mask,
+			tint =  maskhue,
 			target = SpookyGhost,
 			surface = SpookyGhost.surface,
 			--x_scale = 0.5,
@@ -283,8 +297,16 @@ local function entity_damaged(event)
 				end
 			end
 		end
-
-		event.cause.destroy({ raise_destroy = true })
+		
+		if remote.interfaces.VehicleWagon2.get_wagon_data then
+		  global.savedVehicleWagons[event.cause.unit_number] = remote.call("VehicleWagon2", "get_wagon_data", event.cause) -- returns nil if not a vehicle wagon
+		  global.FlyingTrains[SpookyGhost.unit_number].WagonUnitNumber = event.cause.unit_number
+		  script.raise_event(defines.events.script_raised_destroy, {entity=event.cause, cloned=true})
+		  event.cause.destroy({ raise_destroy = false })
+		else  
+		  event.cause.destroy({ raise_destroy = true })
+		end
+		
 	end
 end
 

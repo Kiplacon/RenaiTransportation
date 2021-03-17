@@ -5,6 +5,7 @@ local constants = require('constants')
 local function handleMagnetRampBuilt(entity)
 	global.MagnetRamps[entity.unit_number] = {entity = entity, tiles = {}}
 	script.register_on_entity_destroyed(entity)
+	entity.rotatable = false
 	local SUCC = entity.surface.create_entity({
 		name = "RTMagnetRampDrain",
 		position = {entity.position.x, entity.position.y-0.25}, --required setting for rendering, doesn't affect spawn

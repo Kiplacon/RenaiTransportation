@@ -2,6 +2,10 @@ local function on_int()
 	if (global.CatapultList == nil) then
 		global.CatapultList = {}
 	end
+	
+	if (global.savedVehicleWagons == nil) then -- used for Vehicle Wagons 2 compatability
+		global.savedVehicleWagons = {}
+	end
 
 	if (global.AllPlayers == nil) then
 		global.AllPlayers = {}

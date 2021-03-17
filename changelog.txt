@@ -1,4 +1,19 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.7.2
+Date: 3/16/2021
+  Additions:
+    - Official compatability for Vehicle Wagons 2. Vehicles on wagons are now retained after a jump.
+  Changes:
+    - Magnet Train Ramp buffer recharge rate increased from 4MW to 40MW. The slow recharge rate was causing problems when multiple trains tried using the ramps one right after another
+  Bugfixes:
+    - Fixed the dynamic train sprite pulling some more to improve compatability and reduce crashes. Tested with Vehicle Wagons 2 and Schall's Armored Train from report by rEvolutionTU.
+    - Fixed crash when a train's scheduled destination station was removed between jumping and landing. Added valid check for station upon landing. Reported by DrogiwanCannobi.
+---------------------------------------------------------------------------------------------------
+Version: 0.7.1
+Date: 2/21/2021
+  Bugfixes:
+    - Fixed that train ramps didnt work with blueprints and copy/paste. It turns out I left the "non-rotatable" flag in which caused the ramps to always paste in the default orientation. Also adjusted some other things about ramps and magnet ramps to work better with bots, blueprints, etc. You still have to set up magnet ramp ranges after they are built though.
+---------------------------------------------------------------------------------------------------
 Version: 0.7.0
 Date: 2/7/2021
   Bugfixes:

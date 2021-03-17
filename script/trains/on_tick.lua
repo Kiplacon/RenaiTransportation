@@ -29,7 +29,7 @@ end
 
 local function finalizeLandedTrain(PropUnitNumber, properties)
 	-- undo station reservation
-	if properties.adjustDestinationLimit then
+	if (properties.adjustDestinationLimit and properties.destinationStation and properties.destinationStation.valid)then
 		properties.destinationStation.trains_limit = properties.destinationStation.trains_limit + 1
 	end
 
@@ -195,6 +195,11 @@ local function on_tick(event)
 				global.FlyingTrains[PropUnitNumber].LandedTrain = NewTrain
 				--|||| Success
 				if (NewTrain ~= nil) then
+				
+					if (remote.interfaces.VehicleWagon2.set_wagon_data and global.savedVehicleWagons[properties.WagonUnitNumber]) then
+						remote.call("VehicleWagon2", "set_wagon_data", NewTrain, global.savedVehicleWagons[properties.WagonUnitNumber])
+					end
+					
 					if (properties.passenger ~= nil) then
 						if (properties.passenger.is_player()) then
 							NewTrain.set_driver(properties.passenger)
@@ -370,7 +375,11 @@ local function on_tick(event)
 					for each, guy in pairs(game.connected_players) do
 						guy.add_alert(rip,defines.alert_type.entity_destroyed)
 					end
-
+					
+					-- if (global.savedVehicleWagons[properties.WagonUnitNumber] and remote.interfaces.VehicleWagon2.kill_wagon_data) then --Vehicle wagon destroy message
+						-- remote.call("VehicleWagon2", "kill_wagon_data", global.savedVehicleWagons[properties.WagonUnitNumber])
+					-- end
+					
 					for urmum, lol in pairs(boom.surface.find_entities_filtered({position = boom.position, radius = 7})) do
 						if (lol.valid and lol.train ~= nil) then
 							-- destroy ghost locos just to be safe

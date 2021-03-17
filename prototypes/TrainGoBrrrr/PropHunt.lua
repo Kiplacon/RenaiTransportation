@@ -28,6 +28,7 @@ MLG.water_reflection = nil
 MLG.has_belt_immunity = true
 MLG.turret_rotation_speed = 0.00000000000001
 MLG.track_particle_triggers = nil
+--MLG.allow_passengers = false   -- cant have this because otherwise players are ejected when a train jumps
 
 data:extend({ 
 

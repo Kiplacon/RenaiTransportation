@@ -122,6 +122,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				position = ElPosition,
 				direction = ElDirection,
 				force = ElForce,
+				raise_built = true,
 				create_build_effect_smoke = false
 				})
 			game.get_player(event1.player_index).play_sound{
@@ -141,6 +142,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				position = ElPosition,
 				direction = ElDirection,
 				force = ElForce,
+				raise_built = true,
 				create_build_effect_smoke = false
 				})
 			game.get_player(event1.player_index).play_sound{
@@ -161,6 +163,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				position = ElPosition,
 				direction = ElDirection,
 				force = ElForce,
+				raise_built = true,
 				create_build_effect_smoke = false,
 				raise_built = true
 				})
@@ -181,6 +184,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				position = ElPosition,
 				direction = ElDirection,
 				force = ElForce,
+				raise_built = true,
 				create_build_effect_smoke = false,
 				raise_built = true
 				})

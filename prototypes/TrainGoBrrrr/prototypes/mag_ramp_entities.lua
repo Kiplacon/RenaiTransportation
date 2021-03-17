@@ -84,12 +84,12 @@ magRampEntities = {
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		collision_box = {{-0.4, -0.4}, {0.4, 0.4}},
 		selection_priority = 101,
-		--collision_mask = {},
+		collision_mask = {},
 		render_layer = "lower-object-above-shadow",
 		energy_source = {
 			type = "electric",
 			usage_priority = "secondary-input",
-			input_flow_limit = "4MW"
+			input_flow_limit = "40MW"
 		},
 		picture = removeShift(scaleSprite(accumulator.picture, 0.4)),
 		animation = removeShift(scaleSprite(accumulator.charge_animation, 0.4)),

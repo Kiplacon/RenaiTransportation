@@ -44,7 +44,7 @@ local function makeRampEntity(name, icon, pictureFileName, placerItem)
 		name = name,
 		icon = icon,
 		icon_size = 64,
-		flags = {"player-creation", "hidden", "not-rotatable", "not-on-map"},
+		flags = {"player-creation", "hidden", "not-on-map"},
 		minable = {mining_time = 0.5, result = placerItem},
 		max_health = 500,
 		render_layer = "higher-object-under",

@@ -105,6 +105,9 @@ local function entity_built(event)
 					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0}
 				}
 		end
+		
+	elseif (entity.name == "RTTrainRamp" or entity.name == "RTTrainRampNoSkip" or entity.name == "RTMagnetTrainRamp" or entity.name == "RTMagnetTrainRampNoSkip") then	
+		entity.rotatable = false
 	end
 end
 

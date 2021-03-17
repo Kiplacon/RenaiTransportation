@@ -3,6 +3,10 @@ local function config_changed()
 		global.CatapultList = {}
 	end
 
+	if (global.savedVehicleWagons == nil) then -- used for Vehicle Wagons 2 compatability
+		global.savedVehicleWagons = {}
+	end
+
 	global.OrientationUnitComponents = {}
 	global.OrientationUnitComponents[0] = {x = 0, y = -1, name = "up"}
 	global.OrientationUnitComponents[0.25] = {x = 1, y = 0, name = "right"}
