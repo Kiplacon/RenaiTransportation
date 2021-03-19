@@ -298,7 +298,7 @@ local function entity_damaged(event)
 			end
 		end
 		
-		if remote.interfaces.VehicleWagon2.get_wagon_data then
+		if remote.interfaces.VehicleWagon2 and remote.interfaces.VehicleWagon2.get_wagon_data then
 		  global.savedVehicleWagons[event.cause.unit_number] = remote.call("VehicleWagon2", "get_wagon_data", event.cause) -- returns nil if not a vehicle wagon
 		  global.FlyingTrains[SpookyGhost.unit_number].WagonUnitNumber = event.cause.unit_number
 		  script.raise_event(defines.events.script_raised_destroy, {entity=event.cause, cloned=true})

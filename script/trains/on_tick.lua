@@ -196,7 +196,7 @@ local function on_tick(event)
 				--|||| Success
 				if (NewTrain ~= nil) then
 				
-					if (remote.interfaces.VehicleWagon2.set_wagon_data and global.savedVehicleWagons[properties.WagonUnitNumber]) then
+					if (remote.interfaces.VehicleWagon2 and remote.interfaces.VehicleWagon2.set_wagon_data and global.savedVehicleWagons[properties.WagonUnitNumber]) then
 						remote.call("VehicleWagon2", "set_wagon_data", NewTrain, global.savedVehicleWagons[properties.WagonUnitNumber])
 					end
 					
