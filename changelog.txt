@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.7.5
+Date: 3/24/2021
+  Bugfixes:
+    - Fixed crash caused when a train's destination station's train limit was changed mid-jump. Reported by DrogiwanCannobi
+    - Fixed some issues with trains disconnecting and driving about wildly if they get inturupted mid-jump
+    - Fixed animations of trains going off a magnet ramp then bouncing onto a directed train bounce pad
+---------------------------------------------------------------------------------------------------
+Version: 0.7.4
+Date: 3/19/2021
+  Changes:
+    - Reactivated the Vehicle Wagons 2 interaction that displays its 'vehicle lost' message when a vehicle wagon crashes from a train jump
+---------------------------------------------------------------------------------------------------
 Version: 0.7.3
 Date: 3/18/2021
   Bugfixes:

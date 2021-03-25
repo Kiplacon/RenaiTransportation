@@ -124,9 +124,9 @@ local function entity_damaged(event)
 		global.FlyingTrains[SpookyGhost.unit_number].ManualMode = event.cause.train.manual_mode
 		global.FlyingTrains[SpookyGhost.unit_number].length = #event.cause.train.carriages
 		global.FlyingTrains[SpookyGhost.unit_number].destinationStation = event.cause.train.path_end_stop
-		global.FlyingTrains[SpookyGhost.unit_number].adjustDestinationLimit = event.cause.train.path_end_stop and event.cause.train.path_end_stop.trains_limit > 0
+		global.FlyingTrains[SpookyGhost.unit_number].adjustDestinationLimit = event.cause.train.path_end_stop -- manual trains don't have this, it will be nill
 
-		if global.FlyingTrains[SpookyGhost.unit_number].adjustDestinationLimit then
+		if (global.FlyingTrains[SpookyGhost.unit_number].adjustDestinationLimit and event.cause.train.path_end_stop.trains_limit > 0 and event.cause.train.path_end_stop.trains_limit < 4294967295) then -- apparently 4294967295 means train limit is disabled
 			-- Artifically reserve the station by decrementing the available blocks
 			event.cause.train.path_end_stop.trains_limit = event.cause.train.path_end_stop.trains_limit - 1
 		end
