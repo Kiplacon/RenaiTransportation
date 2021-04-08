@@ -77,10 +77,10 @@ function(event)
 			local catapult = properties.entity
 
 			BurnerSelfRefuelCompensation = 0.2
-			if (catapult.valid and catapult.burner == nil and catapult.energy/catapult.electric_buffer_size >= 0.9) then
+			if (catapult.valid and catapult.burner == nil and catapult.fluidbox == nil and catapult.energy/catapult.electric_buffer_size >= 0.9) then
 				catapult.active = true
-				BurnerSelfRefuelCompensation = 0
-			elseif (catapult.valid and catapult.burner == nil) then
+				BurnerSelfRefuelCompensation = 0					
+			elseif (catapult.valid and catapult.burner == nil and catapult.fluidbox == nil) then
 				catapult.active = false
 				rendering.draw_sprite
 					{
@@ -117,10 +117,12 @@ function(event)
 								position = catapult.position, --required setting for rendering, doesn't affect spawn
 								source_position = catapult.held_stack_position, --launch from
 								target_position = catapult.drop_position --launch to
-								}) end)) then
-						                        for ii, player in pairs(game.players) do
-								        	player.print("Discarded invalid throwable item "..catapult.held_stack.name.." at "..catapult.held_stack_position.x..","..catapult.held_stack_position.x..".")
-									end
+								}) 
+								end) --end of pcall function
+							) then
+						        	for ii, player in pairs(game.players) do
+									player.print("Discarded invalid throwable item "..catapult.held_stack.name.." at "..catapult.held_stack_position.x..","..catapult.held_stack_position.x..".")
+								end
 							end
 						end
 						catapult.held_stack.clear()
