@@ -111,13 +111,17 @@ function(event)
 					or (catapult.orientation == 0.75 and catapult.held_stack_position.x >= catapult.position.x+BurnerSelfRefuelCompensation)
 					then
 						for i = 1, catapult.held_stack.count do
-							catapult.surface.create_entity
+							if (not pcall(function() catapult.surface.create_entity
 								({
 								name = catapult.held_stack.name.."-projectileFromRenaiTransportation",
 								position = catapult.position, --required setting for rendering, doesn't affect spawn
 								source_position = catapult.held_stack_position, --launch from
 								target_position = catapult.drop_position --launch to
-								})
+								}) end)) then
+						                        for ii, player in pairs(game.players) do
+								        	player.print("Discarded invalid throwable item "..catapult.held_stack.name.." at "..catapult.held_stack_position.x..","..catapult.held_stack_position.x..".")
+									end
+							end
 						end
 						catapult.held_stack.clear()
 					end
