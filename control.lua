@@ -79,7 +79,7 @@ function(event)
 			BurnerSelfRefuelCompensation = 0.2
 			if (catapult.valid and catapult.burner == nil and catapult.fluidbox == nil and catapult.energy/catapult.electric_buffer_size >= 0.9) then
 				catapult.active = true
-				BurnerSelfRefuelCompensation = 0					
+				BurnerSelfRefuelCompensation = 0
 			elseif (catapult.valid and catapult.burner == nil and catapult.fluidbox == nil) then
 				catapult.active = false
 				rendering.draw_sprite
@@ -120,8 +120,9 @@ function(event)
 								}) 
 								end) --end of pcall function
 							) then
-						        	for ii, player in pairs(game.players) do
-									player.print("Discarded invalid throwable item "..catapult.held_stack.name.." at "..catapult.held_stack_position.x..","..catapult.held_stack_position.x..".")
+								catapult.active = false
+						        for ii, player in pairs(game.players) do
+									player.print("Invalid throwable item "..catapult.held_stack.name.." at "..catapult.held_stack_position.x..","..catapult.held_stack_position.x..". Thrower halted. Please report the item to the mod portal form.")
 								end
 							end
 						end

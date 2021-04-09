@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.7.6
+Date: 4/8/2021
+  Bugfixes:
+    - Fixed crash caused by inserters that run on fluids. I didn't even know that was possible
+    - Made thrower inserters use 1J to stretch so that in times of low energy for burner/fluid thrower inserters, the arm wouldn't stretch out
+    - Incorporated fix by kewne7768 on Github that prevents crashes when an inserter tries to throw an invalid item. These are usually procedurally generated items that happen to be created after my mod is loaded (probably).
+---------------------------------------------------------------------------------------------------
 Version: 0.7.5
 Date: 3/24/2021
   Bugfixes:

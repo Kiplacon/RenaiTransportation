@@ -252,6 +252,10 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	TheThrower.insert_position = {0, 14.9}
 	TheThrower.allow_custom_vectors = true
 	ItsRange = 15
+	
+	if (TheThrower.energy_per_rotation) then
+		TheThrower.energy_per_movement = "1J" -- this prevents inserters from elongating first and then rotating when energy is low
+	end
 
 	if (TheThrower.name == "RTThrower-inserter") then
 	    TheThrower.extension_speed = 0.027 -- default 0.03, needs to be a but slower so we don't get LongB0is
