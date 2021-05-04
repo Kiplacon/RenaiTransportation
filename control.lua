@@ -48,7 +48,7 @@ end)
 
 
 -- Clear invalid things
-script.on_nth_tick(18000,
+script.on_nth_tick(300,
 function(event)
 	for unitID, ItsStuff in pairs(global.BouncePadList) do
 		if (ItsStuff.TheEntity and ItsStuff.TheEntity.valid) then
@@ -63,6 +63,23 @@ function(event)
 			-- it's good
 		else
 			global.MagnetRamps[unitID] = nil
+		end
+	end
+	
+	for each, world in pairs(game.surfaces) do
+		for every, ZiplinePart in pairs(world.find_entities_filtered{name = {"RTZipline", "RTZiplinePowerDrain", "RTPropCar"}}) do
+			local owned = false
+			for all, player in pairs(global.AllPlayers) do
+				if ((player.ChuggaChugga and ZiplinePart.unit_number == player.ChuggaChugga.unit_number)
+				or  (player.succ and ZiplinePart.unit_number == player.succ.unit_number)
+				or  (player.LetMeGuideYou and ZiplinePart.unit_number == player.LetMeGuideYou.unit_number)
+				) then
+					owned = true
+				end
+			end
+			if (owned == false) then
+				ZiplinePart.destroy()
+			end
 		end
 	end
 end)

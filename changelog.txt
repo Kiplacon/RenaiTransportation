@@ -1,10 +1,18 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.7.7
+Date: 5/3/2021
+  Bugfixes:
+    - Corrected contribution attribution in the changlog last patch
+    - Set the "not-rotatable" flag for the Hatch. Doesn't really matter but it keeps the selection box correct
+    - Added the zipline components to the periodic valid check to delete lingering ziplines that might come up. Reported by davfrs
+    - Fixed that the rail signal tutorial crashed for some reason. Reported by saaadel
+---------------------------------------------------------------------------------------------------
 Version: 0.7.6
 Date: 4/8/2021
   Bugfixes:
-    - Fixed crash caused by inserters that run on fluids. I didn't even know that was possible
+    - Fixed crash caused by inserters that run on fluids. I didn't even know that was possible. Reported by kewne7768
     - Made thrower inserters use 1J to stretch so that in times of low energy for burner/fluid thrower inserters, the arm wouldn't stretch out
-    - Incorporated fix by kewne7768 on Github that prevents crashes when an inserter tries to throw an invalid item. These are usually procedurally generated items that happen to be created after my mod is loaded (probably).
+    - Incorporated fix by killwort on Github that prevents crashes when an inserter tries to throw an invalid item. These are usually procedurally generated items that happen to be created after my mod is loaded (probably).
 ---------------------------------------------------------------------------------------------------
 Version: 0.7.5
 Date: 3/24/2021
