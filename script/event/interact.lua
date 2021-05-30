@@ -330,7 +330,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 
 		game.get_player(event1.player_index).cursor_stack.set_blueprint_entities(
 			{ 
-				{entity_number = 1, name = thrower.name, position = {0,0}, direction = OneD, drop_position = WhereWeDroppin }
+				{entity_number = 1, name = thrower.name, position = {0,0}, direction = 2, drop_position = WhereWeDroppin }
 			})
 		-- game.get_player(event1.player_index).create_local_flying_text
 			-- {

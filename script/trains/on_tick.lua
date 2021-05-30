@@ -84,6 +84,7 @@ local function on_tick(event)
 
 		--|| Landing
 		if (game.tick == properties.LandTick) then
+			--game.print("land")
 			--||| Bounce Pad
 			TrainLandedOn = properties.GuideCar.surface.find_entities_filtered
 				{
@@ -442,6 +443,7 @@ local function on_tick(event)
 					end
 					
 					properties.GuideCar.destroy()
+					--game.print("D")
 					--global.FlyingTrains[PropUnitNumber] = nil
 
 				end
@@ -449,6 +451,7 @@ local function on_tick(event)
 		--|| Animating Train
 		elseif (game.tick < properties.LandTick) then
 			Animation.updateRendering(properties)
+			--game.print(properties.GuideCar.valid)
 
 		--|| Landing speed control
 		elseif (game.tick > properties.LandTick and properties.LandedTrain and properties.LandedTrain.valid) then

@@ -58,6 +58,13 @@ local function config_changed()
 	if (global.About2Jump == nil) then
 		global.About2Jump = {}
 	end	
+	
+	if (global.ThrowerTargets == nil) then
+		global.ThrowerTargets = {}
+	end	
+	if (global.ThrownItems == nil) then
+		global.ThrownItems = {}
+	end
 end
 
 return config_changed

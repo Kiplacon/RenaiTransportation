@@ -1,3 +1,4 @@
+if script.active_mods["gvv"] then require("__gvv__.gvv")() end
 -- Setup tables and stuff for new/existing saves ----
 script.on_init(
 	require("script.event.init")
@@ -112,13 +113,59 @@ function(event)
 
 			if (catapult.valid and catapult.held_stack.valid_for_read) then
 				if (settings.global["RTOverflowComp"].value == true) then
-					if (properties.target and properties.target.valid and properties.target ~= "nothing" and properties.target.type == "transport-belt" and (properties.target.get_transport_line(1).can_insert_at_back() == false and properties.target.get_transport_line(2).can_insert_at_back() == false)) then
-						catapult.active = false
-					elseif (properties.target and properties.target.valid and properties.target ~= "nothing" and properties.target.can_insert(catapult.held_stack) == false) then
-						catapult.active = false
-					else
+					if (properties.target ~= "nothing" and properties.target.valid and global.ThrowerTargets[properties.target.unit_number]) then						
+						if (properties.target.type ~= "transport-belt") then
+							local InAir = {}
+							for name, count in pairs(global.ThrowerTargets[properties.target.unit_number].OnTheWay) do
+								local total = count
+								if (name == catapult.held_stack.name) then
+									total = count + catapult.held_stack.count
+								end
+								local inserted = nil
+								if (total > 0) then
+									inserted = properties.target.insert({name=name, count=total})
+									InAir[name] = inserted
+								end
+								if (total > 0 and inserted < total) then
+									for namee, countt in pairs(InAir) do
+										if (countt > 0) then
+											properties.target.remove_item({name=namee, count=countt})
+										end
+									end
+									catapult.active = false
+									InAir = {}
+									break
+								elseif (InAir == {}) then
+									catapult.active = true
+								else
+									catapult.active = true
+								end
+							end
+							for namee, countt in pairs(InAir) do
+								properties.target.remove_item({name=namee, count=countt})
+							end
+							
+						elseif (properties.target.type == "transport-belt" 
+						and (properties.target.get_transport_line(1).can_insert_at_back() == true 
+							 or properties.target.get_transport_line(2).can_insert_at_back() == true)
+						) then
+							local InAir = 0
+							for name, count in pairs(global.ThrowerTargets[properties.target.unit_number].OnTheWay) do
+								InAir = InAir + count
+							end
+							local total = InAir + properties.target.get_transport_line(1).get_item_count() + properties.target.get_transport_line(2).get_item_count()
+							if (total <= 6) then
+								catapult.active = true
+							else
+								catapult.active = false
+							end
+						end
+						
+					elseif (properties.target == "nothing") then
 						catapult.active = true
 					end
+				else
+					catapult.active = true
 				end
 
 				if (catapult.active == true) then
@@ -135,12 +182,31 @@ function(event)
 								source_position = catapult.held_stack_position, --launch from
 								target_position = catapult.drop_position --launch to
 								}) 
-								end) --end of pcall function
+								end)
 							) then
 								catapult.active = false
 						        for ii, player in pairs(game.players) do
 									player.print("Invalid throwable item "..catapult.held_stack.name.." at "..catapult.held_stack_position.x..","..catapult.held_stack_position.x..". Thrower halted. Please report the item to the mod portal form.")
 								end
+								
+							elseif (settings.global["RTOverflowComp"].value == true and properties.target ~= "nothing" and properties.target.valid) then
+								local unused = 1
+								while (global.ThrownItems[unused] ~= nil) do
+									unused = unused + 1
+								end
+								
+								global.ThrownItems[unused] = {
+									from = catapult.held_stack_position,
+									to = catapult.drop_position,
+									destination = properties.target.unit_number,
+									item = catapult.held_stack.name}
+									
+								if (global.ThrowerTargets[properties.target.unit_number].OnTheWay[catapult.held_stack.name] == nil) then
+									global.ThrowerTargets[properties.target.unit_number].OnTheWay[catapult.held_stack.name] = 1
+								else
+									global.ThrowerTargets[properties.target.unit_number].OnTheWay[catapult.held_stack.name] = global.ThrowerTargets[properties.target.unit_number].OnTheWay[catapult.held_stack.name] + 1
+								end
+								
 							end
 						end
 						catapult.held_stack.clear()
@@ -149,6 +215,7 @@ function(event)
 
 			elseif (catapult.valid == false) then
 				global.CatapultList[catapultID] = nil
+				
 			end
 		end
 	end
@@ -158,13 +225,16 @@ script.on_nth_tick(120,
 function(event)
 	if (settings.global["RTOverflowComp"].value == true) then
 		for catapultID, properties in pairs(global.CatapultList) do
-			properties.entity.surface.create_entity
-				({
-				name = "MaybeIllBeTracer-projectileFromRenaiTransportation",
-				position = properties.entity.position, --required setting for rendering, doesn't affect spawn
-				source = properties.entity, --launch from
-				target_position = properties.entity.drop_position --launch to
-				})
+			if (properties.ImAlreadyTracer == nil or properties.ImAlreadyTracer == "traced") then
+				properties.ImAlreadyTracer = "tracing"
+				properties.entity.surface.create_entity
+					({
+					name = "MaybeIllBeTracer-projectileFromRenaiTransportation",
+					position = properties.entity.position, --required setting for rendering, doesn't affect spawn
+					source = properties.entity, --launch from
+					target_position = properties.entity.drop_position --launch to
+					})
+			end
 		end
 	else
 	--dont
@@ -213,9 +283,18 @@ script.on_event(defines.events.on_player_changed_surface,
 -- .surface_index :: uint: The surface index the player was on
 function(event)
 local player = game.players[event.player_index]
-if (global.AllPlayers[event.player_index] and global.AllPlayers[event.player_index].sliding and global.AllPlayers[event.player_index].sliding == true and player.surface.name ~= global.AllPlayers[event.player_index].StartingSurface.name) then
-	player.teleport(player.position, game.get_surface(event.surface_index))
-	
-end
+	if (global.AllPlayers[event.player_index] and global.AllPlayers[event.player_index].sliding and global.AllPlayers[event.player_index].sliding == true and player.surface.name ~= global.AllPlayers[event.player_index].StartingSurface.name) then
+		player.teleport(player.position, game.get_surface(event.surface_index))
+	end
+end)
 
+script.on_event(defines.events.on_runtime_mod_setting_changed,
+-- player_index :: uint (optional): The player who changed the setting or nil if changed by script.
+-- setting :: string: The setting name that changed.
+-- setting_type :: string: The setting type: "runtime-per-user", or "runtime-global".
+function(event)
+	if (event.setting == "RTOverflowComp" and settings.global["RTOverflowComp"].value == false) then
+		global.ThrowerTargets = {}
+		global.ThrownItems = {}
+	end
 end)

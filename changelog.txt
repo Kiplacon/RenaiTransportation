@@ -1,4 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.1
+Date: 5/29/2021
+  Bugfixes:
+    - Fixed crash from saves that had the old overflow prevention transitioning to the new one
+---------------------------------------------------------------------------------------------------
+Version: 0.8.0
+Date: 5/29/2021
+  Changes:
+    - Updated overflow prevention code. Throwers will now freeze if it detects that the item won't fit in to the destination inventory taking into account items in the air and items bouncing through bounce pads. Of note, throwing onto a curved belt is still a bit off, but throwing onto straight belts work quite well.
+---------------------------------------------------------------------------------------------------
 Version: 0.7.7
 Date: 5/3/2021
   Bugfixes:

@@ -110,9 +110,11 @@ local function entity_damaged(event)
 		else
 			global.FlyingTrains[SpookyGhost.unit_number].LandTick = math.ceil(game.tick + 130*math.abs(event.cause.speed)) -- remember to adjust follower calculation too
 		end
-
+		
+		
+		
 		global.FlyingTrains[SpookyGhost.unit_number].AirTime = global.FlyingTrains[SpookyGhost.unit_number].LandTick - global.FlyingTrains[SpookyGhost.unit_number].LaunchTick
-
+		--game.print(global.FlyingTrains[SpookyGhost.unit_number].AirTime)
 		global.FlyingTrains[SpookyGhost.unit_number].TrainImageID = TrainImage
 		global.FlyingTrains[SpookyGhost.unit_number].MaskID = Mask
 		global.FlyingTrains[SpookyGhost.unit_number].speed = event.cause.speed

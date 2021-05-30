@@ -1,4 +1,33 @@
-local function effect_triggered(event) --has .effect_id, .surface_index, and .source_position, .source_entity, .target_position, and .target_entity depending on how the effect was triggered
+local function TrackProjectile(event)
+	if (settings.global["RTOverflowComp"].value == true) then
+		for id, stuff in pairs(global.ThrownItems) do
+			--game.print(string.gsub(event.effect_id, "-LandedRT", ""))
+			if (math.abs(event.target_position.x - stuff.to.x) < 0.1
+			and math.abs(event.target_position.y - stuff.to.y) < 0.1
+			and math.abs(event.source_position.x - stuff.from.x) < 0.1
+			and math.abs(event.source_position.y - stuff.from.y) < 0.1
+			and string.gsub(event.effect_id, "-LandedRT", "") == stuff.item) then
+				if (global.ThrowerTargets[stuff.destination] ~= nil) then
+					global.ThrowerTargets[stuff.destination].OnTheWay[stuff.item] = global.ThrowerTargets[stuff.destination].OnTheWay[stuff.item] - 1
+				end
+				global.ThrownItems[id] = nil
+				break
+			end
+		end
+	end
+end
+
+-- effect_id :: string: The effect_id specified in the trigger effect.
+-- surface_index :: uint: The surface the effect happened on.
+-- source_position :: Position (optional)
+-- source_entity :: LuaEntity (optional)
+-- target_position :: Position (optional)
+-- target_entity :: LuaEntity (optional)
+
+
+
+
+local function effect_triggered(event)
 
 	---- If it's from this mod ----
 	if (string.find(event.effect_id, "-LandedRT")) then
@@ -82,6 +111,8 @@ local function effect_triggered(event) --has .effect_id, .surface_index, and .so
 					target_position = {ThingLandedOn.position.x  +unitx*(range+RangeBonus)  +unity*(SidewaysShift), ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)},
 					force = ThingLandedOn.force
 					})
+				-- game.print(cheesewheel.unit_number) -- projectiles dont have unit_numbers i guess
+				
 				if (event.effect_id ~= "MaybeIllBeTracer-LandedRT") then
 					ThingLandedOn.surface.create_particle
 						({
@@ -98,6 +129,23 @@ local function effect_triggered(event) --has .effect_id, .surface_index, and .so
 							position = ThingLandedOn.position,
 							volume = 0.7
 						}
+					if (settings.global["RTOverflowComp"].value == true and event.effect_id ~= "test-LandedRT") then
+						for id, stuff in pairs(global.ThrownItems) do
+							if (math.abs(event.target_position.x - stuff.to.x) < 0.1
+							and math.abs(event.target_position.y - stuff.to.y) < 0.1
+							and math.abs(event.source_position.x - stuff.from.x) < 0.1
+							and math.abs(event.source_position.y - stuff.from.y) < 0.1
+							and string.gsub(event.effect_id, "-LandedRT", "") == stuff.item) then
+								stuff.from.x = ThingLandedOn.position.x
+								stuff.from.y = ThingLandedOn.position.y
+								stuff.to.x = ThingLandedOn.position.x  +unitx*(range+RangeBonus)  +unity*(SidewaysShift)
+								stuff.to.y = ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)
+								break
+							end
+						end
+					end
+				else
+					--global.CatapultList[event.source_entity.unit_number].bounces = global.CatapultList[event.source_entity.unit_number].bounces + 1
 				end
 				---- Handling players ----
 				if (event.effect_id == "test-LandedRT") then
@@ -145,15 +193,27 @@ local function effect_triggered(event) --has .effect_id, .surface_index, and .so
 							{name=string.gsub(event.effect_id, "-LandedRT", ""), count=1}
 						)
 				end
+				
+				TrackProjectile(event)
 
 			elseif (event.effect_id == "MaybeIllBeTracer-LandedRT") then
-				global.CatapultList[event.source_entity.unit_number].target = ThingLandedOn
+				if (global.CatapultList[event.source_entity.unit_number]) then
+					global.CatapultList[event.source_entity.unit_number].target = ThingLandedOn
+					global.CatapultList[event.source_entity.unit_number].ImAlreadyTracer = "traced"
+					if (global.ThrowerTargets[ThingLandedOn.unit_number] == nil) then
+						global.ThrowerTargets[ThingLandedOn.unit_number] = {}
+						global.ThrowerTargets[ThingLandedOn.unit_number].entity = ThingLandedOn
+						global.ThrowerTargets[ThingLandedOn.unit_number].OnTheWay = {}
+						script.register_on_entity_destroyed(ThingLandedOn)
+					end
+				end
 			end
 		
 		---- If it didnt land on anything but theres a cargo wagon there
 		elseif (LandedOnCargoWagon ~= nil and LandedOnCargoWagon.can_insert({name=string.gsub(event.effect_id, "-LandedRT", "")})) then
 			LandedOnCargoWagon.insert({name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
-
+			TrackProjectile(event)
+			
 		---- if the item/character lands in the water, it's gone ----
 		elseif (event.effect_id ~= "MaybeIllBeTracer-LandedRT" and game.get_surface(event.surface_index).find_tiles_filtered{position = event.target_position, radius = 1, limit = 1, collision_mask = "player-layer"}[1] ~= nil) then -- in theory, tiles the player cant walk on are some sort of fluid or other non-survivable ground
 
@@ -161,6 +221,9 @@ local function effect_triggered(event) --has .effect_id, .surface_index, and .so
 			if (event.effect_id == "test-LandedRT") then
 				game.get_player(event.source_entity.player.index).character.destructible = true
 				game.get_player(event.source_entity.player.index).character.die()
+			else
+				---- dont drop an item ----
+				TrackProjectile(event)
 			end
 
 			---- splash ----
@@ -170,7 +233,7 @@ local function effect_triggered(event) --has .effect_id, .surface_index, and .so
 					position = event.target_position
 				})
 
-			---- dont drop an item ----
+			
 
 		---- if thrown thing didn't land on anything and not in water, i don't want characters to do anything upon landing. it would cause an error if it got to the item drop code  ----
 		elseif (event.effect_id == "test-LandedRT") then
@@ -180,8 +243,10 @@ local function effect_triggered(event) --has .effect_id, .surface_index, and .so
 		else --if it fell on nothing just drop it
 			if (event.effect_id ~= "MaybeIllBeTracer-LandedRT") then
 				game.get_surface(event.surface_index).spill_item_stack({event.target_position.x, event.target_position.y}, {name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
+				TrackProjectile(event)	
 			else
 				global.CatapultList[event.source_entity.unit_number].target = "nothing"
+				global.CatapultList[event.source_entity.unit_number].ImAlreadyTracer = "traced"
 			end
 			--[[ random item landing offset
 			local xoffset = 0.1*math.random(-1,6)
