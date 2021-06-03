@@ -110,7 +110,7 @@ end
 
 
 function MakePrimedProjectile(ThingData)-------------------------------------------
-  
+log("Creating primed projectile for "..ThingData.type..": "..ThingData.name)
 TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 	TheProjectile.name = ThingData.name.."-projectileFromRenaiTransportationPrimed"
 	TheProjectile.special_neutral_target_damage = {amount = 0, type = "acid"}
@@ -607,6 +607,7 @@ end
 for Category, ThingsTable in pairs(data.raw) do
 	for ThingID, ThingData in pairs(ThingsTable) do	
 		if (ThingData.stack_size ) then
+			log("Creating item projectile for "..ThingData.type..": "..ThingData.name)
 			MakeProjectile(ThingData)
 			
 			if (settings.startup["RTBounceSetting"].value == true) then
@@ -626,12 +627,16 @@ for Category, ThingsTable in pairs(data.raw) do
 							(
 								( -- 0.18.36+ capsule action notation
 								ThingData.capsule_action.attack_parameters.ammo_type.action[1]
+								and ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery
+								and ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile
 								and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile]--that has an associated projectile
 								and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile].action --that does something
 								)
 								or	
 								( -- old capsule action notation
 								ThingData.capsule_action.attack_parameters.ammo_type.action
+								and ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery
+								and ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile
 								and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile]--that has an associated projectile
 								and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile].action --that does something
 								)

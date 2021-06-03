@@ -68,12 +68,11 @@ function(event)
 	end
 	
 	for each, world in pairs(game.surfaces) do
-		for every, ZiplinePart in pairs(world.find_entities_filtered{name = {"RTZipline", "RTZiplinePowerDrain", "RTPropCar"}}) do
+		for every, ZiplinePart in pairs(world.find_entities_filtered{name = {"RTZipline", "RTZiplinePowerDrain"}}) do
 			local owned = false
 			for all, player in pairs(global.AllPlayers) do
 				if ((player.ChuggaChugga and ZiplinePart.unit_number == player.ChuggaChugga.unit_number)
 				or  (player.succ and ZiplinePart.unit_number == player.succ.unit_number)
-				or  (player.LetMeGuideYou and ZiplinePart.unit_number == player.LetMeGuideYou.unit_number)
 				) then
 					owned = true
 				end
@@ -189,7 +188,7 @@ function(event)
 									player.print("Invalid throwable item "..catapult.held_stack.name.." at "..catapult.held_stack_position.x..","..catapult.held_stack_position.x..". Thrower halted. Please report the item to the mod portal form.")
 								end
 								
-							elseif (settings.global["RTOverflowComp"].value == true and properties.target ~= "nothing" and properties.target.valid) then
+							elseif (settings.global["RTOverflowComp"].value == true and properties.target ~= "nothing" and properties.target.valid and global.ThrowerTargets[properties.target.unit_number]) then
 								local unused = 1
 								while (global.ThrownItems[unused] ~= nil) do
 									unused = unused + 1

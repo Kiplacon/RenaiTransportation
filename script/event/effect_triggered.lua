@@ -244,7 +244,7 @@ local function effect_triggered(event)
 			if (event.effect_id ~= "MaybeIllBeTracer-LandedRT") then
 				game.get_surface(event.surface_index).spill_item_stack({event.target_position.x, event.target_position.y}, {name=string.gsub(event.effect_id, "-LandedRT", ""), count=1})
 				TrackProjectile(event)	
-			else
+			elseif (global.CatapultList[event.source_entity.unit_number]) then
 				global.CatapultList[event.source_entity.unit_number].target = "nothing"
 				global.CatapultList[event.source_entity.unit_number].ImAlreadyTracer = "traced"
 			end
