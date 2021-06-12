@@ -6,11 +6,11 @@ for _, force in pairs(game.forces) do
   local techs = force.technologies
   local recipes = force.recipes
 
-  if techs["military-2"].researched then
+  if (techs["military-2"].researched and recipes["PrimerBouncePlateRecipie"]) then
     recipes["PrimerBouncePlateRecipie"].enabled = true
   end  
   
-  if techs["circuit-network"].researched then
+  if (techs["circuit-network"].researched and recipes["SignalBouncePlateRecipie"]) then
     recipes["SignalBouncePlateRecipie"].enabled = true
   end   
 end

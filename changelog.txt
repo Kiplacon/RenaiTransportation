@@ -1,8 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.6
+Date: 6/11/2021
+  Bugfixes:
+    - Fixed a crash with Eradicator's Screenshot Maker Deluxe 3.0. Capsule compatibility overall should be improved even more as a result. Reported by Pi-C
+    - Fixed migration crashes when adding the mod to an existing save, specifically 0.2.0 and 0.2.1 migration files. Reported by MasterBuilder
+---------------------------------------------------------------------------------------------------
 Version: 0.8.5
 Date: 6/3/2021
   Bugfixes:
-    - Fixed a crash with Combat Robots Overhaul. Capsule compatibility should be improved as a result. Reported by Porkchop13
+    - Fixed a crash with Combat Robots Overhaul. Capsule compatibility overall should be improved as a result. Reported by Porkchop13
     - Not really fixing anything but added the invisible cars used for train jumps and ziplines to AAI Vehicles blacklist. Recommended by Pi-C
 ---------------------------------------------------------------------------------------------------
 Version: 0.8.4

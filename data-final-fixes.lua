@@ -626,7 +626,8 @@ for Category, ThingsTable in pairs(data.raw) do
 							and 
 							(
 								( -- 0.18.36+ capsule action notation
-								ThingData.capsule_action.attack_parameters.ammo_type.action[1]
+								ThingData.capsule_action.attack_parameters.ammo_type.action
+								and ThingData.capsule_action.attack_parameters.ammo_type.action[1]
 								and ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery
 								and ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile
 								and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile]--that has an associated projectile

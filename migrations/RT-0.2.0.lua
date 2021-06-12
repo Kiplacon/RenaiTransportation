@@ -7,16 +7,16 @@ if (not game.entity_prototypes["RTThrower-inserter"]) then
 	  -- create tech/recipe table once
 	  local techs = force.technologies
 	  local recipes = force.recipes
-	  if techs["fast-inserter"].researched then
+	  if (techs["fast-inserter"].researched and recipes["FastThrowerInserterRecipie"]) then
 		recipes["FastThrowerInserterRecipie"].enabled = true
 		recipes["FilterThrowerInserterRecipie"].enabled = true
 	  end
 	  
-	  if techs["automation"].researched then
+	  if (techs["automation"].researched and recipes["LongHandedThrowerInserterRecipie"]) then
 		recipes["LongHandedThrowerInserterRecipie"].enabled = true
 	  end
 	  
-	  if techs["stack-inserter"].researched then
+	  if (techs["stack-inserter"].researched and recipes["StackThrowerInserterRecipie"]) then
 		recipes["StackThrowerInserterRecipie"].enabled = true
 		recipes["StackFilterThrowerInserterRecipie"].enabled = true
 	  end  
