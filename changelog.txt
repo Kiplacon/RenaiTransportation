@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.7
+Date: 9/14/2021
+  Bugfixes:
+    - Fixed that I somehow broke the range adjust function. Reported by Callaghan_
+  Changes:
+    - Changed the hatch to use collision mask "layer-51" from "train-layer" for improved compatibility. The mod Hovercrafts was adding "train-layer" to all buildings for its hovercrafts' collision which was causing the hatch to not be placeable on those things. Reported by ridesdragons.
+---------------------------------------------------------------------------------------------------
 Version: 0.8.6
 Date: 6/11/2021
   Bugfixes:
@@ -66,7 +73,7 @@ Date: 3/19/2021
 Version: 0.7.3
 Date: 3/18/2021
   Bugfixes:
-    - Fixed crash that would happen if Vehicle Wagons 2 was NOT installed. lmao whops 
+    - Fixed crash that would happen if Vehicle Wagons 2 was NOT installed. lmao whops
 ---------------------------------------------------------------------------------------------------
 Version: 0.7.2
 Date: 3/16/2021
@@ -153,7 +160,7 @@ Date: 11/22/2020
   Bugfixes:
     - Mooeing-747: Added raise_destroy = true to crashlanding trains
     - Mooeing-747: Added missing valid check to guide locomotives
-    - Fixed crash from on_entity_cloned 
+    - Fixed crash from on_entity_cloned
     - Fixed crash with experimental overflow setting when deleting entity target of a thrower
   Changes:
     - Mooeing-747: Reorganized train jump animation code
@@ -192,7 +199,7 @@ Version: 0.6.0
 Date: 10/4/2020
   Additions:
     - Magnet Train Ramps. Powerful electromagnets let you control the landing point of a ramp regardless of a train's speed. It's like train tunnels but more fun.
-    - Recipe to turn open chests back into regular chests. Recommended by saaadel 
+    - Recipe to turn open chests back into regular chests. Recommended by saaadel
   Bugfixes:
     - Semi-fixed issue where trains that were landing and then jumpped again before the whole train landed would cause the train to fall apart. Now so long as at least one carriage fully on the ground at all times, chaining jumps should work fine
 ---------------------------------------------------------------------------------------------------
@@ -211,8 +218,8 @@ Date: 9/9/2020
 Version: 0.5.3
 Date: 9/7/2020
   Bugfixes:
-    - Semi-fix preventing players without an associated character from getting on a zipline. This should prevent crashes on a zipline when the character disapears but doesn't cover cases where the controlled character changes or disapears. Found by MPeti1 
-    - Fixed that wire connections to things other than power poles (like switches) would crash. Found by MPeti1 
+    - Semi-fix preventing players without an associated character from getting on a zipline. This should prevent crashes on a zipline when the character disapears but doesn't cover cases where the controlled character changes or disapears. Found by MPeti1
+    - Fixed that wire connections to things other than power poles (like switches) would crash. Found by MPeti1
     - Made it so that ramps auto-heal to 99999999999 instead of whatever value it was last hit for in hopes that it prevents some weird cases where the ramps are just vanishing or occasionally left with some damage. Found by Ki-Tan
 ---------------------------------------------------------------------------------------------------
 Version: 0.5.2
@@ -231,7 +238,7 @@ Version: 0.5.0
 Date: 9/5/2020
   Additions:
     - Electric Zipline Trolley. Use your existing power grid as a highway! See player settings to adjust zipline camera motion.
-    - Experimental overflow minimization code. Can be enable in Map Settings. Helps particularly with transport belts, a 3x3 "catching grid" should stop most overflow. 
+    - Experimental overflow minimization code. Can be enable in Map Settings. Helps particularly with transport belts, a 3x3 "catching grid" should stop most overflow.
     - Settings to enable/disable different parts of the mod. Modules include: modded inserter throwers, train ramps, train bounce pads, advanced bounce pads (primer&signal), and zipline. Vanilla throwers, player launchers, hatches, and regular/directed bounce pads are always enabled. Recommended by Zuzak.
   Bugfixes:
     - Fixed a crash when using a Train Ramp in sandbox mode. The environment was probably too toxic in there. Found by notnotmelon.
@@ -295,7 +302,7 @@ Date: 8/15/2020
     - Fixed thrower bunrner inserters not self refueling when facing down or right
     - Fixed another crash when jumping trains land, explode, and damage surrounding entities which were somehow becoming invalid between being detected and being dealt damage
     - Fixed Spread Primer Bounce Pad integration with blueprints/copy/paste by adding placeable_by to its prototype
-    - Added raise_built=true when recreating launched trains for better modded train compatability 
+    - Added raise_built=true when recreating launched trains for better modded train compatability
 ---------------------------------------------------------------------------------------------------
 Version: 0.4.1
 Date: 8/8/2020
@@ -343,7 +350,7 @@ Date: 7/4/2020
 Version: 0.3.2
 Date: 7/3/2020
   Changes:
-    - Adjusted bounce effects to appear on top of the bounce pads, in the "higher-object-above" render_layer to be exact. 
+    - Adjusted bounce effects to appear on top of the bounce pads, in the "higher-object-above" render_layer to be exact.
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.1
 Date: 7/1/2020

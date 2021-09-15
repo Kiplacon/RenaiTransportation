@@ -275,10 +275,10 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 
 		end
 	end
-	
-	
+
+
 	--| Adjust thrower range before placing
-	if (game.get_player(event1.player_index).cursor_stack.valid_for_read 
+	if (game.get_player(event1.player_index).cursor_stack.valid_for_read
 	and string.find(game.get_player(event1.player_index).cursor_stack.name, "RTThrower-")
 	and game.get_player(event1.player_index).force.technologies["RTFocusedFlinging"].researched == true) then
 		local thrower = string.gsub(game.get_player(event1.player_index).cursor_stack.name, "-Item", "")
@@ -291,7 +291,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				create_build_effect_smoke = false})
 			vvv.insert({name = "blueprint"})
 			vvv.get_inventory(defines.inventory.chest)[1].set_blueprint_entities(
-				{ 
+				{
 					{entity_number = 1, name = thrower, position = {0,0}, direction = 4, drop_position = {0,-.8984} }
 				})
 			game.get_player(event1.player_index).add_to_clipboard(vvv.get_inventory(defines.inventory.chest)[1])
@@ -299,16 +299,16 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			vvv.destroy()
 		else
 			game.get_player(event1.player_index).cursor_stack.set_blueprint_entities(
-				{ 
+				{
 					{entity_number = 1, name = thrower, position = {0,0}, direction = 4, drop_position = {0,-.8984} }
 				})
 		end
 		global.AllPlayers[event1.player_index].RangeAdjusting = true -- seems to immediately reset to false since the cursor stack changes to the blueprint but idk how to have the check go first and then set the global.RangeAdjusting
-		
-	elseif (game.get_player(event1.player_index).is_cursor_blueprint() 
+
+	elseif (game.get_player(event1.player_index).is_cursor_blueprint()
 	and game.get_player(event1.player_index).get_blueprint_entities() ~= nil
-	and #game.get_player(event1.player_index).get_blueprint_entities() == 1 
-	and string.find(game.get_player(event1.player_index).get_blueprint_entities()[1].name, "RTThrower-") 
+	and #game.get_player(event1.player_index).get_blueprint_entities() == 1
+	and string.find(game.get_player(event1.player_index).get_blueprint_entities()[1].name, "RTThrower-")
 	and game.get_player(event1.player_index).get_blueprint_entities()[1].drop_position
 	and game.get_player(event1.player_index).force.technologies["RTFocusedFlinging"].researched == true) then
 		local thrower = game.get_player(event1.player_index).get_blueprint_entities()[1]
@@ -329,8 +329,8 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		end
 
 		game.get_player(event1.player_index).cursor_stack.set_blueprint_entities(
-			{ 
-				{entity_number = 1, name = thrower.name, position = {0,0}, direction = 2, drop_position = WhereWeDroppin }
+			{
+				{entity_number = 1, name = thrower.name, position = {0,0}, direction = OneD, drop_position = WhereWeDroppin }
 			})
 		-- game.get_player(event1.player_index).create_local_flying_text
 			-- {
@@ -338,8 +338,8 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				-- text = "Range: "..math.ceil(math.abs(thrower.drop_position.x-thrower.position.x + thrower.drop_position.y-thrower.position.y))
 			-- }
 		global.AllPlayers[event1.player_index].RangeAdjusting = true
-	
-		
+
+
 	end
 end
 
