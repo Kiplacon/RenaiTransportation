@@ -280,6 +280,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	--| Adjust thrower range before placing
 	if (game.get_player(event1.player_index).cursor_stack.valid_for_read
 	and string.find(game.get_player(event1.player_index).cursor_stack.name, "RTThrower-")
+	and game.get_player(event1.player_index).cursor_stack.name ~= "RTThrower-EjectorHatchRTItem"
 	and game.get_player(event1.player_index).force.technologies["RTFocusedFlinging"].researched == true) then
 		local thrower = string.gsub(game.get_player(event1.player_index).cursor_stack.name, "-Item", "")
 		game.get_player(event1.player_index).activate_paste() -- tests if activating paste brings up a blueprint to cursor
@@ -309,6 +310,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	and game.get_player(event1.player_index).get_blueprint_entities() ~= nil
 	and #game.get_player(event1.player_index).get_blueprint_entities() == 1
 	and string.find(game.get_player(event1.player_index).get_blueprint_entities()[1].name, "RTThrower-")
+	and game.get_player(event1.player_index).cursor_stack.name ~= "RTThrower-EjectorHatchRTItem"
 	and game.get_player(event1.player_index).get_blueprint_entities()[1].drop_position
 	and game.get_player(event1.player_index).force.technologies["RTFocusedFlinging"].researched == true) then
 		local thrower = game.get_player(event1.player_index).get_blueprint_entities()[1]

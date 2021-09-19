@@ -9,8 +9,8 @@ local function entity_built(event)
 
 	if event.player_index then
 		player = game.players[event.player_index]
-		if (global.AllPlayers[event.player_index].RangeAdjusting 
-		and entity.name == "entity-ghost" 
+		if (global.AllPlayers[event.player_index].RangeAdjusting
+		and entity.name == "entity-ghost"
 		and string.find(entity.ghost_prototype.name, "RTThrower-")
 		and player.get_main_inventory().find_item_stack(entity.ghost_prototype.name.."-Item")
 		) then
@@ -28,7 +28,18 @@ local function entity_built(event)
 
 	if (string.find(entity.name, "RTThrower-")) then
 		global.CatapultList[entity.unit_number] = {entity = entity, target = "nothing"}
-
+		if (entity.name == "RTThrower-EjectorHatchRT") then
+			global.CatapultList[entity.unit_number].sprite = rendering.draw_animation
+				{
+					animation = "EjectorHatchFrames",
+					surface = entity.surface,
+					target = entity,
+					animation_offset = global.EjectorPointing[entity.direction],
+					render_layer = 131,
+					animation_speed = 0,
+					only_in_alt_mode = false
+				}
+		end
 	elseif (entity.name == "PlayerLauncher") then
 		entity.operable = false
 		entity.active = false
@@ -105,8 +116,8 @@ local function entity_built(event)
 					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0}
 				}
 		end
-		
-	elseif (entity.name == "RTTrainRamp" or entity.name == "RTTrainRampNoSkip" or entity.name == "RTMagnetTrainRamp" or entity.name == "RTMagnetTrainRampNoSkip") then	
+
+	elseif (entity.name == "RTTrainRamp" or entity.name == "RTTrainRampNoSkip" or entity.name == "RTMagnetTrainRamp" or entity.name == "RTMagnetTrainRampNoSkip") then
 		entity.rotatable = false
 	end
 end

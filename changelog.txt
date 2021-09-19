@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.8
+Date: 9/19/2021
+  Additions:
+    - Ejector Hatch. A varient of the Hatch that ejects the contents of whatever it's placed on out.
+  Changed:
+    - Added "object-layer" to the collision mask for Train Ramp placers because it was conflicting with some mods that add it to train signals like 5Dim's apparently. Reported by Frozenbolt.
+---------------------------------------------------------------------------------------------------
 Version: 0.8.7
 Date: 9/14/2021
   Bugfixes:

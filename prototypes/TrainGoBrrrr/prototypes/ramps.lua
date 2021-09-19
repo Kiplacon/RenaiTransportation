@@ -24,7 +24,7 @@ local function makeRampPlacerEntity(name, icon, pictureFileName, placerItem)
 		flags = {"filter-directions", "fast-replaceable-no-build-while-moving"},
 		minable = { mining_time = 0.5, result = placerItem },-- Minable so they can get the item back if the placer swap bugs out
 		render_layer = "higher-object-under",
-		collision_mask = {"floor-layer", "rail-layer", "item-layer", "water-tile"}, -- "water-tile" makes it compatible with Space Explotation because for some reason it changes signal collison masks and all signals have to have at least one overlapping collision mask
+		collision_mask = {"floor-layer", "rail-layer", "item-layer", "water-tile", "object-layer"}, -- "water-tile" makes it compatible with Space Explotation because for some reason it changes signal collison masks and all signals have to have at least one overlapping collision mask
 		selection_priority = 100,
 		collision_box = {{-0.01, -2.35}, {2.25, 1.30}},
 		selection_box = {{-0.01, -2.35}, {2.25, 1.30}},
@@ -165,7 +165,7 @@ data:extend({
 		name = "RTTrainRampRecipe",
 		enabled = false,
 		energy_required = 2,
-		ingredients = 
+		ingredients =
 			{
 				{"rail", 4},
 				{"steel-plate", 30},
@@ -179,7 +179,7 @@ data:extend({
 		name = "RTMagnetTrainRampRecipe",
 		enabled = false,
 		energy_required = 2,
-		ingredients = 
+		ingredients =
 			{
 				{"RTTrainRampItem", 1},
 				{"accumulator", 1},
@@ -193,4 +193,3 @@ data:extend({
 
 -- Add supporting entities for the mag ramp
 data:extend(require('mag_ramp_entities'))
-

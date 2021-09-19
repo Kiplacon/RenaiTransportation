@@ -66,7 +66,7 @@ function(event)
 			global.MagnetRamps[unitID] = nil
 		end
 	end
-	
+
 	for each, world in pairs(game.surfaces) do
 		for every, ZiplinePart in pairs(world.find_entities_filtered{name = {"RTZipline", "RTZiplinePowerDrain"}}) do
 			local owned = false
@@ -112,7 +112,7 @@ function(event)
 
 			if (catapult.valid and catapult.held_stack.valid_for_read) then
 				if (settings.global["RTOverflowComp"].value == true) then
-					if (properties.target ~= "nothing" and properties.target.valid and global.ThrowerTargets[properties.target.unit_number]) then						
+					if (properties.target ~= "nothing" and properties.target.valid and global.ThrowerTargets[properties.target.unit_number]) then
 						if (properties.target.type ~= "transport-belt") then
 							local InAir = {}
 							for name, count in pairs(global.ThrowerTargets[properties.target.unit_number].OnTheWay) do
@@ -143,9 +143,9 @@ function(event)
 							for namee, countt in pairs(InAir) do
 								properties.target.remove_item({name=namee, count=countt})
 							end
-							
-						elseif (properties.target.type == "transport-belt" 
-						and (properties.target.get_transport_line(1).can_insert_at_back() == true 
+
+						elseif (properties.target.type == "transport-belt"
+						and (properties.target.get_transport_line(1).can_insert_at_back() == true
 							 or properties.target.get_transport_line(2).can_insert_at_back() == true)
 						) then
 							local InAir = 0
@@ -159,7 +159,7 @@ function(event)
 								catapult.active = false
 							end
 						end
-						
+
 					elseif (properties.target == "nothing") then
 						catapult.active = true
 					end
@@ -173,39 +173,45 @@ function(event)
 					or (catapult.orientation == 0.50 and catapult.held_stack_position.y <= catapult.position.y-BurnerSelfRefuelCompensation)
 					or (catapult.orientation == 0.75 and catapult.held_stack_position.x >= catapult.position.x+BurnerSelfRefuelCompensation)
 					then
+						local ThrowFrom = catapult.held_stack_position
+						local ThrowTo = catapult.drop_position
+						if (catapult.name == "RTThrower-EjectorHatchRT") then
+							ThrowFrom = catapult.position
+							--ThrowTo = {catapult.drop_position.x+(math.random(-12,12)/10), catapult.drop_position.y+(math.random(-12,12)/10)}
+						end
 						for i = 1, catapult.held_stack.count do
 							if (not pcall(function() catapult.surface.create_entity
 								({
 								name = catapult.held_stack.name.."-projectileFromRenaiTransportation",
 								position = catapult.position, --required setting for rendering, doesn't affect spawn
-								source_position = catapult.held_stack_position, --launch from
-								target_position = catapult.drop_position --launch to
-								}) 
+								source_position = ThrowFrom, --launch from
+								target_position = ThrowTo --launch to
+								})
 								end)
 							) then
 								catapult.active = false
 						        for ii, player in pairs(game.players) do
 									player.print("Invalid throwable item "..catapult.held_stack.name.." at "..catapult.held_stack_position.x..","..catapult.held_stack_position.x..". Thrower halted. Please report the item to the mod portal form.")
 								end
-								
+
 							elseif (settings.global["RTOverflowComp"].value == true and properties.target ~= "nothing" and properties.target.valid and global.ThrowerTargets[properties.target.unit_number]) then
 								local unused = 1
 								while (global.ThrownItems[unused] ~= nil) do
 									unused = unused + 1
 								end
-								
+
 								global.ThrownItems[unused] = {
-									from = catapult.held_stack_position,
-									to = catapult.drop_position,
+									from = ThrowFrom,
+									to = ThrowTo,
 									destination = properties.target.unit_number,
 									item = catapult.held_stack.name}
-									
+
 								if (global.ThrowerTargets[properties.target.unit_number].OnTheWay[catapult.held_stack.name] == nil) then
 									global.ThrowerTargets[properties.target.unit_number].OnTheWay[catapult.held_stack.name] = 1
 								else
 									global.ThrowerTargets[properties.target.unit_number].OnTheWay[catapult.held_stack.name] = global.ThrowerTargets[properties.target.unit_number].OnTheWay[catapult.held_stack.name] + 1
 								end
-								
+
 							end
 						end
 						catapult.held_stack.clear()
@@ -214,7 +220,7 @@ function(event)
 
 			elseif (catapult.valid == false) then
 				global.CatapultList[catapultID] = nil
-				
+
 			end
 		end
 	end

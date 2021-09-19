@@ -2,7 +2,7 @@ local function on_int()
 	if (global.CatapultList == nil) then
 		global.CatapultList = {}
 	end
-	
+
 	if (global.savedVehicleWagons == nil) then -- used for Vehicle Wagons 2 compatability
 		global.savedVehicleWagons = {}
 	end
@@ -29,6 +29,14 @@ local function on_int()
 		global.Dir2Ori[4] = 0.5
 	end
 
+	if (global.EjectorPointing == nil) then
+		global.EjectorPointing = {}
+		global.EjectorPointing[0] = 2
+		global.EjectorPointing[2] = 3
+		global.EjectorPointing[4] = 0
+		global.EjectorPointing[6] = 1
+	end
+
 	for PlayerID, PlayerLuaData in pairs(game.players) do
 		if (global.AllPlayers[PlayerID] == nil) then
 			global.AllPlayers[PlayerID] = {}
@@ -46,24 +54,24 @@ local function on_int()
 	if (global.BouncePadList == nil) then
 		global.BouncePadList = {}
 	end
-	
+
 	if (global.FastestFuel == nil) then
 		global.FastestFuel = "nuclear-fuel"
 	end
-	for ItemName, info in pairs(game.item_prototypes) do 
-		if (info.fuel_top_speed_multiplier 
+	for ItemName, info in pairs(game.item_prototypes) do
+		if (info.fuel_top_speed_multiplier
 		and info.fuel_top_speed_multiplier > game.item_prototypes[global.FastestFuel].fuel_top_speed_multiplier) then
 			global.FastestFuel = ItemName
 		end
 	end
-	
+
 	if (global.About2Jump == nil) then
 		global.About2Jump = {}
-	end	
-	
+	end
+
 	if (global.ThrowerTargets == nil) then
 		global.ThrowerTargets = {}
-	end	
+	end
 	if (global.ThrownItems == nil) then
 		global.ThrownItems = {}
 	end

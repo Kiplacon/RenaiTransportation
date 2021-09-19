@@ -21,6 +21,11 @@ local function config_changed()
 	global.Dir2Ori[2] = 0.25
 	global.Dir2Ori[4] = 0.5
 
+	global.EjectorPointing = {}
+	global.EjectorPointing[0] = 2
+	global.EjectorPointing[2] = 3
+	global.EjectorPointing[4] = 0
+	global.EjectorPointing[6] = 1
 
 	if (global.AllPlayers == nil) then
 		global.AllPlayers = {}
@@ -43,25 +48,25 @@ local function config_changed()
 	if (global.BouncePadList == nil) then
 		global.BouncePadList = {}
 	end
-	
+
 	if (game.item_prototypes[global.FastestFuel] == nil or global.FastestFuel == nil) then
 		global.FastestFuel = "nuclear-fuel"
 	end
-	
-	for ItemName, info in pairs(game.item_prototypes) do 
-		if (info.fuel_top_speed_multiplier 
+
+	for ItemName, info in pairs(game.item_prototypes) do
+		if (info.fuel_top_speed_multiplier
 		and info.fuel_top_speed_multiplier > game.item_prototypes[global.FastestFuel].fuel_top_speed_multiplier) then
 			global.FastestFuel = ItemName
 		end
 	end
-	
+
 	if (global.About2Jump == nil) then
 		global.About2Jump = {}
-	end	
-	
+	end
+
 	if (global.ThrowerTargets == nil) then
 		global.ThrowerTargets = {}
-	end	
+	end
 	if (global.ThrownItems == nil) then
 		global.ThrownItems = {}
 	end

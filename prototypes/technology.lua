@@ -35,9 +35,9 @@ data:extend({
 	effects =
 	{
 		{
-			type = "nothing", 
+			type = "nothing",
 			effect_description = "Thrower Range 1-15 tiles"
-		}	
+		}
 	},
 	prerequisites = {"RTThrowerTime"},
 	unit =
@@ -49,7 +49,7 @@ data:extend({
 		  {"logistic-science-pack", 1}
 		},
 		time = 30
-	} 
+	}
   },
   {
 	type = "technology",
@@ -72,7 +72,31 @@ data:extend({
 		  {"automation-science-pack", 1}
 		},
 		time = 10
-	} 
+	}
+  },
+  {
+	type = "technology",
+	name = "EjectorHatchRTTech",
+	icon = "__RenaiTransportation__/graphics/hatch/EjeectorIccon.png",
+	icon_size = 43,
+	effects =
+	{
+		{
+			type = "unlock-recipe",
+			recipe = "RTThrower-EjectorHatchRTRecipe"
+		}
+	},
+	prerequisites = {"HatchRTTech"},
+	unit =
+	{
+		count = 25,
+		ingredients =
+		{
+		  {"automation-science-pack", 1},
+        {"logistic-science-pack", 1}
+		},
+		time = 15
+	}
   },
   {
 	type = "technology",
@@ -92,7 +116,7 @@ data:extend({
 		  {"logistic-science-pack", 1}
 		},
 		time = 20
-	} 
+	}
   }
 })
 
@@ -142,7 +166,7 @@ if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RT
 			  {"logistic-science-pack", 1}
 			},
 			time = 25
-		} 
+		}
 	  },
 	  {
 		type = "technology",
@@ -166,10 +190,10 @@ if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RT
 			  {"logistic-science-pack", 1}
 			},
 			time = 25
-		} 
+		}
 	  }
 	})
-	
+
 	if (settings.startup["RTTrainRampSetting"].value == true) then
 		data:extend({
 			{
@@ -182,7 +206,7 @@ if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RT
 					{
 						type = "unlock-recipe",
 						recipe = "RTPayloadWagonRecipe"
-					}	
+					}
 				},
 				prerequisites = {"PrimerPlateTech", "RTFlyingFreight", "explosives", "military-3"},
 				unit =
@@ -196,7 +220,7 @@ if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RT
 						  {"chemical-science-pack", 1}
 						},
 					time = 30
-					} 
+					}
 			}
 		})
 	end
@@ -215,7 +239,7 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 				{
 					type = "unlock-recipe",
 					recipe = "RTTrainRampRecipe"
-				}	
+				}
 			},
 			prerequisites = {"se~no", "railway", "concrete"},
 			unit =
@@ -227,7 +251,7 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 				  {"logistic-science-pack", 1}
 				},
 				time = 30
-			} 
+			}
 		},
 		{
 			type = "technology",
@@ -252,11 +276,11 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 				  {"chemical-science-pack", 1}
 				},
 				time = 45
-			} 
+			}
 		}
-	})	
+	})
 
-	
+
 	if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RTTrainBounceSetting"].value == true) then
 		data:extend({
 			{
@@ -285,11 +309,11 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 					  {"logistic-science-pack", 1}
 					},
 					time = 30
-				} 
+				}
 			}
 		})
 	end
-	
+
 end
 
 if (settings.startup["RTZiplineSetting"].value == true) then
@@ -319,7 +343,7 @@ if (settings.startup["RTZiplineSetting"].value == true) then
 			  {"automation-science-pack", 1}
 			},
 			time = 30
-		} 
+		}
 	  },
 	  {
 		type = "technology",
@@ -342,7 +366,7 @@ if (settings.startup["RTZiplineSetting"].value == true) then
 			  {"automation-science-pack", 1}
 			},
 			time = 30
-		} 
+		}
 	  }
 	})
 end
