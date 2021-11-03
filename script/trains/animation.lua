@@ -75,7 +75,8 @@ function Animation.updateScale(properties, height)
 
 	rendering.set_x_scale(properties.ShadowID, 0.25 + shadowScaleDelta)
 	rendering.set_y_scale(properties.ShadowID, 0.5 + shadowScaleDelta)
-	rendering.set_color(properties.ShadowID, {1, 1, 1, math.abs(90 - 4*math.abs(math.ceil(height)))})
+	rendering.set_color(properties.ShadowID, {1, 1, 1, 5/(5-height)})
+	--rendering.set_color(properties.ShadowID, {1, 1, 1, math.abs(90 - 4*math.abs(math.ceil(height)))})
 end
 
 return Animation

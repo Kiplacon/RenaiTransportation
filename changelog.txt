@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.9
+Date: 11/2/2021
+  Bugfixes:
+    - Fixed a crash that would happen with how super fast trains jumping off train ramps would affect the shadow. Reported by X_Man11092006.
+    - Fixed a crash with the overflow protection v2 when the overflow tracker would trigger after it's respective thrower was deleted. Reported by overloader7 and saaadel.
+---------------------------------------------------------------------------------------------------
 Version: 0.8.8
 Date: 9/19/2021
   Additions:
