@@ -32,7 +32,14 @@ data:extend({
 	name = "RTTrainBounceSetting",
 	setting_type = "startup",
 	default_value = true,
-	order = "e"
+	order = "ea"
+},
+{
+	type = "bool-setting",
+	name = "RTImpactSetting",
+	setting_type = "startup",
+	default_value = true,
+	order = "eb"
 },
 {
 	type = "bool-setting",
@@ -53,7 +60,15 @@ data:extend({
 	type = "bool-setting",
 	name = "RTOverflowComp",
 	setting_type = "runtime-global",
-	default_value = false,
+	default_value = true,
 	order = "h"
+},
+{
+	type = "int-setting",
+	name = "RTItemGrouping",
+	setting_type = "runtime-global",
+	default_value = 1,
+	minimum_value = 1,
+	order = "i"
 }
 })

@@ -39,6 +39,20 @@ local function makeRampPlacerEntity(name, icon, pictureFileName, placerItem)
 end
 
 local function makeRampEntity(name, icon, pictureFileName, placerItem)
+	local impact = 50
+	local HP = 500
+	if (name == "RTImpactUnloader") then
+		impact = 95
+		HP = 1500
+	end
+	local resists =
+		{
+			{
+			  type = "impact",
+			  percent = impact
+			}
+		}
+
 	return {
 		type = "simple-entity-with-owner", -- Simplist entity that has 4 diections of sprites
 		name = name,
@@ -46,7 +60,7 @@ local function makeRampEntity(name, icon, pictureFileName, placerItem)
 		icon_size = 64,
 		flags = {"player-creation", "hidden", "not-on-map"},
 		minable = {mining_time = 0.5, result = placerItem},
-		max_health = 500,
+		max_health = HP,
 		render_layer = "higher-object-under",
 		selection_box = {{-0.01, -1.6}, {2, 2.4}},
 		selection_priority = 100,
@@ -85,7 +99,7 @@ local function makeRampEntity(name, icon, pictureFileName, placerItem)
 			},
 		},
 		placeable_by = { item = placerItem, count = 1 }, -- Controls `q` and blueprint behavior
-
+		resistances = resists
 		-- null out the standard combinator stuff
 		-- item_slot_count = 0,
 		-- activity_led_sprites = util.empty_sprite(),
@@ -158,6 +172,9 @@ data:extend(makeRampPrototypes("RTTrainRamp"))
 -- Mag ramp
 data:extend(makeRampPrototypes("RTMagnetTrainRamp"))
 
+-- Impact UNloader
+data:extend(makeRampPrototypes("RTImpactUnloader"))
+
 -- Add recipes for both items
 data:extend({
 	{ --------- ramp recipie ----------
@@ -189,6 +206,20 @@ data:extend({
 			},
 		result = "RTMagnetTrainRampItem"
 	},
+
+	{ --------- ramp recipie ----------
+		type = "recipe",
+		name = "RTImpactUnloaderRecipe",
+		enabled = false,
+		energy_required = 2,
+		ingredients =
+			{
+				{"advanced-circuit", 20},
+				{"steel-plate", 100},
+				{"refined-concrete", 100}
+			},
+		result = "RTImpactUnloaderItem"
+	}
 })
 
 -- Add supporting entities for the mag ramp

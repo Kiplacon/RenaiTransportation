@@ -30,7 +30,7 @@ local function entity_damaged(event)
 		base = event.cause.name
 		--mask = "NoMask"
 		way = global.OrientationUnitComponents[event.cause.orientation].name
-		
+
 		if (game.is_valid_sprite_path("RT"..base..way)) then
 			image = "RT"..base..way
 		else
@@ -42,13 +42,13 @@ local function entity_damaged(event)
 		else
 			mask = "RTNoMask"
 		end
-		
+
 		if (event.cause.type == "locomotive") then
 			maskhue = {r = 234, g = 17, b = 0, a = 100}
 		else
 			maskhue = event.cause.color
 		end
-		
+
 		if (event.cause.name == "RTPayloadWagon") then
 			huehuehue = {220,125,0}
 		else
@@ -110,9 +110,9 @@ local function entity_damaged(event)
 		else
 			global.FlyingTrains[SpookyGhost.unit_number].LandTick = math.ceil(game.tick + 130*math.abs(event.cause.speed)) -- remember to adjust follower calculation too
 		end
-		
-		
-		
+
+
+
 		global.FlyingTrains[SpookyGhost.unit_number].AirTime = global.FlyingTrains[SpookyGhost.unit_number].LandTick - global.FlyingTrains[SpookyGhost.unit_number].LaunchTick
 		--game.print(global.FlyingTrains[SpookyGhost.unit_number].AirTime)
 		global.FlyingTrains[SpookyGhost.unit_number].TrainImageID = TrainImage
@@ -299,16 +299,119 @@ local function entity_damaged(event)
 				end
 			end
 		end
-		
+
 		if remote.interfaces.VehicleWagon2 and remote.interfaces.VehicleWagon2.get_wagon_data then
 		  global.savedVehicleWagons[event.cause.unit_number] = remote.call("VehicleWagon2", "get_wagon_data", event.cause) -- returns nil if not a vehicle wagon
 		  global.FlyingTrains[SpookyGhost.unit_number].WagonUnitNumber = event.cause.unit_number
 		  script.raise_event(defines.events.script_raised_destroy, {entity=event.cause, cloned=true})
 		  event.cause.destroy({ raise_destroy = false })
-		else  
+		else
 		  event.cause.destroy({ raise_destroy = true })
 		end
-		
+
+	elseif (event.entity.name == "RTImpactUnloader"
+		and event.cause
+		and (event.cause.type == "locomotive" or event.cause.type == "cargo-wagon" or event.cause.type == "fluid-wagon" or event.cause.type == "artillery-wagon")
+		) then
+		if (event.cause.train and event.cause.train.cargo_wagons) then
+			for each, wagon in pairs(event.cause.train.cargo_wagons) do
+				if (wagon.name == "RTImpactWagon") then
+					local LaunchedPortion = math.abs(wagon.speed)/0.75
+					if (LaunchedPortion > 1) then
+						LaunchedPortion = 1
+					end
+					for ItemName, amount in pairs(wagon.get_inventory(defines.inventory.cargo_wagon).get_contents()) do
+						local LaunchedAmount = math.floor(amount*LaunchedPortion)
+						if (LaunchedAmount > 0) then
+							local GroupSize = settings.global["RTItemGrouping"].value
+							for i = 1, math.floor(LaunchedAmount/GroupSize) do
+								local sprite = rendering.draw_sprite
+									{
+										sprite = "item/"..ItemName,
+										x_scale = 0.5,
+										y_scale = 0.5,
+										target = wagon.position,
+										surface = wagon.surface
+									}
+								local shadow = rendering.draw_sprite
+									{
+										sprite = "item/"..ItemName,
+										tint = {0,0,0,0.5},
+										x_scale = 0.5,
+										y_scale = 0.5,
+										target = wagon.position,
+										surface = wagon.surface
+									}
+								local xUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation+0.25)))/(0.5*math.pi)) - 1
+								local yUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation)))/(0.5*math.pi)) - 1
+								local ForwardSpread = math.random(100,350)*0.1
+								local HorizontalSpread = math.random(-4,4)*ForwardSpread*0.1
+								local	x = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
+								local y = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
+								local distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
+								local speed = math.abs(wagon.speed)*0.70
+								local arc = -(0.3236*distance^-0.404) -- lower number is higher arc
+								local AirTime = math.floor(distance/speed)
+								local vector = {x=x-wagon.position.x, y=y-wagon.position.y}
+								local spin = math.random(-10,10)*0.01
+								global.FlyingItems[global.FlightNumber] = {sprite=sprite, shadow=shadow, speed=speed, arc=arc, spin=spin, item=ItemName, amount=GroupSize, target={x=x, y=y}, start={x=wagon.position.x+(math.random(-10, 10)*0.1), y=wagon.position.y+(math.random(-10, 10)*0.1)}, AirTime=AirTime, StartTick=game.tick, LandTick=game.tick+AirTime, vector=vector}
+								global.FlightNumber = global.FlightNumber + 1
+							end
+							if (LaunchedAmount%GroupSize ~= 0) then
+								local sprite = rendering.draw_sprite
+									{
+										sprite = "item/"..ItemName,
+										x_scale = 0.5,
+										y_scale = 0.5,
+										target = wagon.position,
+										surface = wagon.surface
+									}
+								local shadow = rendering.draw_sprite
+									{
+										sprite = "item/"..ItemName,
+										tint = {0,0,0,0.5},
+										x_scale = 0.5,
+										y_scale = 0.5,
+										target = wagon.position,
+										surface = wagon.surface
+									}
+								local xUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation+0.25)))/(0.5*math.pi)) - 1
+								local yUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation)))/(0.5*math.pi)) - 1
+								local ForwardSpread = math.random(100,350)*0.1
+								local HorizontalSpread = math.random(-4,4)*ForwardSpread*0.1
+								local	x = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
+								local y = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
+								local distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
+								local speed = math.abs(wagon.speed)*0.75
+								local arc = -(0.3236*distance^-0.404) -- lower number is higher arc
+								local AirTime = math.floor(distance/speed)
+								local vector = {x=x-wagon.position.x, y=y-wagon.position.y}
+								local spin = math.random(-10,10)*0.01
+								global.FlyingItems[global.FlightNumber] = {sprite=sprite, shadow=shadow, speed=speed, arc=arc, spin=spin, item=ItemName, amount=LaunchedAmount%GroupSize, target={x=x, y=y}, start={x=wagon.position.x+(math.random(-10, 10)*0.1), y=wagon.position.y+(math.random(-10, 10)*0.1)}, AirTime=AirTime, StartTick=game.tick, LandTick=game.tick+AirTime, vector=vector}
+								global.FlightNumber = global.FlightNumber + 1
+							end
+							wagon.get_inventory(defines.inventory.cargo_wagon).remove({name = ItemName, count=LaunchedAmount})
+						end
+					end
+					--wagon.get_inventory(defines.inventory.cargo_wagon).clear()
+				end
+			end
+			if (event.cause.train.schedule and event.cause.train.manual_mode == false) then
+				local stor = event.cause.train.schedule
+				if (event.cause.train.schedule.current == table_size(event.cause.train.schedule.records)) then
+					stor.current = 1
+				else
+					stor.current = stor.current + 1
+				end
+				event.cause.train.schedule = stor
+			end
+		end
+		if (event.cause.train.speed > 0.15) then
+			event.cause.health = event.cause.health - (event.cause.prototype.max_health/8)
+			if (event.cause.health <= 0) then
+				event.cause.die()
+			end
+		end
 	end
 end
 

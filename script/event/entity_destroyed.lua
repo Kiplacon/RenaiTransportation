@@ -5,10 +5,9 @@ local function entity_destroyed(event)
 		end
 		global.MagnetRamps[event.unit_number].power.destroy()
 		global.MagnetRamps[event.unit_number] = nil
-		
-	elseif (global.ThrowerTargets[event.unit_number]) then
-		global.ThrowerTargets[event.unit_number] = nil
-		
+
+	elseif (global.OnTheWay[event.unit_number]) then
+		global.OnTheWay[event.unit_number] = nil
 	end
 end
 

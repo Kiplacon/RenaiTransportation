@@ -244,7 +244,7 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 			prerequisites = {"se~no", "railway", "concrete"},
 			unit =
 			{
-				count = 150,
+				count = 200,
 				ingredients =
 				{
 				  {"automation-science-pack", 1},
@@ -268,7 +268,7 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 			prerequisites = {"RTFlyingFreight", "electric-energy-accumulators", "electric-energy-distribution-2"},
 			unit =
 			{
-				count = 200,
+				count = 250,
 				ingredients =
 				{
 				  {"automation-science-pack", 1},
@@ -302,7 +302,7 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 				prerequisites = {"RTFlyingFreight"},
 				unit =
 				{
-					count = 100,
+					count = 150,
 					ingredients =
 					{
 					  {"automation-science-pack", 1},
@@ -366,6 +366,39 @@ if (settings.startup["RTZiplineSetting"].value == true) then
 			  {"automation-science-pack", 1}
 			},
 			time = 30
+		}
+	  }
+	})
+end
+
+if (settings.startup["RTImpactSetting"].value == true) then
+	data:extend({
+	  {
+		type = "technology",
+		name = "RTImpactTech",
+		icon = "__RenaiTransportation__/graphics/tech/Impact.png",
+		icon_size = 128,
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "RTImpactWagonRecipe"
+			},
+			{
+				type = "unlock-recipe",
+				recipe = "RTImpactUnloaderRecipe"
+			}
+		},
+		prerequisites = {"se~no", "railway", "concrete", "advanced-electronics"},
+		unit =
+		{
+			count = 200,
+			ingredients =
+			{
+            {"automation-science-pack", 1},
+            {"logistic-science-pack", 1}
+			},
+			time = 45
 		}
 	  }
 	})

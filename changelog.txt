@@ -1,4 +1,15 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.9.0
+Date: 11/12/2021
+  Additions:
+    - Impact Wagon and Impact Unloader. Instantly unload an entire cargo wagon with the power of inertia! Just make sure you catch everything.
+  Changes:
+    - When jumping on the player launcher or riding the zipline, the character is swapped with a collision immune copy meaning that while jumping and ziplining the character cant be hit by trains or cars. Can still be hit by enemies though.
+    - Throwing an item into the water now creates 0.5 pollution. For reference that's about how much a stone furnace makes in 15s.
+    - Redid the item projectile code to be animated sprite rather than reskined spitter projectiles. It's probably less laggy, at least it was when testing the Impact Wagon.
+    - This in turn means the overflow prevention code could be improved enough that I feel confident having it on by default should be okay. The option to turn if off is still there in case.
+    - Changed the player launcher code to be more like the item projectile code so it's hopefully less jittery.
+---------------------------------------------------------------------------------------------------
 Version: 0.8.9
 Date: 11/2/2021
   Bugfixes:

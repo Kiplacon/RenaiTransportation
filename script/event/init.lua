@@ -64,16 +64,28 @@ local function on_int()
 			global.FastestFuel = ItemName
 		end
 	end
-
+	-- trains
 	if (global.About2Jump == nil) then
 		global.About2Jump = {}
 	end
-
-	if (global.ThrowerTargets == nil) then
-		global.ThrowerTargets = {}
+	-- thrown item tracking for overflow prevention
+	if (global.OnTheWay == nil) then
+		global.OnTheWay = {}
 	end
-	if (global.ThrownItems == nil) then
-		global.ThrownItems = {}
+	-- thrown item properties and animation
+	global.FlightNumber = 1
+	global.FlyingItems = {}
+	
+	if (game.surfaces["RTStasisRealm"] == nil) then
+		game.create_surface("RTStasisRealm",
+		{
+			peaceful_mode = true,
+			water = "none",
+			starting_area = "none",
+			autoplace_controls = {},
+			default_enable_all_autoplace_controls = false,
+			cliff_settings = {name = "cliff", cliff_elevation_0 = 0, richness = 0}
+		})
 	end
 end
 

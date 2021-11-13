@@ -1,0 +1,113 @@
+local OhYouLikeTrains = table.deepcopy(data.raw["cargo-wagon"]["cargo-wagon"])
+local color = {100,100,100}
+OhYouLikeTrains.name = "RTImpactWagon"
+OhYouLikeTrains.icons =
+{
+	{
+		icon = "__base__/graphics/icons/cargo-wagon.png",
+		icon_size = 64,
+		icon_mipmaps = 4,
+		tint = color
+	}
+}
+OhYouLikeTrains.minable = {mining_time = 0.5, result = "RTImpactWagonItem"}
+--OhYouLikeTrains.inventory_size = 8
+
+OhYouLikeTrains.pictures.layers[1].tint = color
+OhYouLikeTrains.pictures.layers[1].hr_version.tint = color
+OhYouLikeTrains.pictures.layers[2].tint = color
+OhYouLikeTrains.pictures.layers[2].hr_version.tint = color
+OhYouLikeTrains.pictures.layers[3].tint = color
+OhYouLikeTrains.pictures.layers[3].hr_version.tint = color
+
+OhYouLikeTrains.horizontal_doors.layers[1].tint = color
+OhYouLikeTrains.horizontal_doors.layers[1].hr_version.tint = color
+OhYouLikeTrains.horizontal_doors.layers[2].tint = color
+OhYouLikeTrains.horizontal_doors.layers[2].hr_version.tint = color
+OhYouLikeTrains.horizontal_doors.layers[3].tint = color
+OhYouLikeTrains.horizontal_doors.layers[3].hr_version.tint = color
+OhYouLikeTrains.horizontal_doors.layers[4].tint = color
+OhYouLikeTrains.horizontal_doors.layers[4].hr_version.tint = color
+OhYouLikeTrains.horizontal_doors.layers[5].tint = color
+OhYouLikeTrains.horizontal_doors.layers[5].hr_version.tint = color
+
+OhYouLikeTrains.vertical_doors.layers[1].tint = color
+OhYouLikeTrains.vertical_doors.layers[1].hr_version.tint = color
+OhYouLikeTrains.vertical_doors.layers[2].tint = color
+OhYouLikeTrains.vertical_doors.layers[2].hr_version.tint = color
+OhYouLikeTrains.vertical_doors.layers[3].tint = color
+OhYouLikeTrains.vertical_doors.layers[3].hr_version.tint = color
+OhYouLikeTrains.vertical_doors.layers[4].tint = color
+OhYouLikeTrains.vertical_doors.layers[4].hr_version.tint = color
+OhYouLikeTrains.vertical_doors.layers[5].tint = color
+OhYouLikeTrains.vertical_doors.layers[5].hr_version.tint = color
+
+
+
+local NameEveryTrainStation = table.deepcopy(data.raw["train-stop"]["train-stop"])
+NameEveryTrainStation.name = "RTImpactUnloader"
+
+
+data:extend({
+----wagon
+OhYouLikeTrains,
+
+{ --------- wagon item -------------
+	type = "item",
+	name = "RTImpactWagonItem",
+	icon_size = 64,
+	icons =
+	{
+		{
+			icon = "__base__/graphics/icons/cargo-wagon.png",
+			icon_mipmaps = 4,
+			tint = color
+		}
+	},
+	subgroup = "train-transport",
+	order = "aj",
+	place_result = "RTImpactWagon",
+	stack_size = 5
+},
+
+{ --------- wagon recipie ----------
+	type = "recipe",
+	name = "RTImpactWagonRecipe",
+	enabled = false,
+	energy_required = 1,
+	ingredients =
+		{
+			{"advanced-circuit", 10},
+			{"steel-plate", 50},
+			{"cargo-wagon", 1}
+		},
+	result = "RTImpactWagonItem"
+},
+
+-- -------------- Impact unloader
+-- NameEveryTrainStation,
+--
+-- { --------- impact unloader item ----------
+-- 	type = "item",
+-- 	name = "RTImpactUnloaderItem",
+-- 	icon = '__RenaiTransportation__/graphics/TrainRamp/RTImpactUnloader-icon.png',
+-- 	icon_size = 64,
+-- 	subgroup = "RT",
+-- 	order = "g",
+-- 	place_result = "RTImpactUnloader",
+-- 	stack_size = 10
+-- },
+-- { --------- impact unloader recipie ----------
+-- 	type = "recipe",
+-- 	name = "RTImpactUnloaderRecipe",
+-- 	enabled = false,
+-- 	energy_required = 2,
+-- 	ingredients =
+-- 		{
+-- 			{"steel-plate", 100},
+-- 			{"refined-concrete", 100}
+-- 		},
+-- 	result = "RTImpactUnloaderItem"
+-- }
+
+})

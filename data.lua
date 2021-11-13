@@ -9,11 +9,11 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 	require("prototypes.PlayerLauncher")
 	require("prototypes.OpenContainer")
 	require("prototypes.hatch")
-	
+
 	if (settings.startup["RTBounceSetting"].value == true) then
 		require("prototypes.BouncePlates.PrimerBouncePlate")
 		require("prototypes.BouncePlates.SignalBouncePlate")
-		
+
 		if (settings.startup["RTTrainRampSetting"].value == true) then
 			require("prototypes.TrainGoBrrrr.PayloadWagon")
 		end
@@ -35,22 +35,33 @@ if (settings.startup["RTZiplineSetting"].value == true) then
 	require("prototypes.zipline")
 end
 
+if (settings.startup["RTImpactSetting"].value == true) then
+	require("prototypes.TrainGoBrrrr.ImpactWagon")
+end
+
+
 data:extend({
   {
     type = "custom-input",
     name = "RTInteract",
     key_sequence = "F"
   },
-  
+
   -- {
     -- type = "custom-input",
     -- name = "RTtcaretnI",
     -- key_sequence = "SHIFT + F"
   -- },
-  
+
   {
     type = "custom-input",
     name = "RTClick",
     key_sequence = "mouse-button-1"
+  },
+  {
+	  type = "sprite",
+	  name = "RTBlank",
+	  filename = "__RenaiTransportation__/graphics/nothing.png",
+	  size = 1
   }
 })

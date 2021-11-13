@@ -112,56 +112,38 @@ function(event)
 
 			if (catapult.valid and catapult.held_stack.valid_for_read) then
 				if (settings.global["RTOverflowComp"].value == true) then
-					if (properties.target ~= "nothing" and properties.target.valid and global.ThrowerTargets[properties.target.unit_number]) then
-						if (properties.target.type ~= "transport-belt") then
-							local InAir = {}
-							for name, count in pairs(global.ThrowerTargets[properties.target.unit_number].OnTheWay) do
-								local total = count
-								if (name == catapult.held_stack.name) then
-									total = count + catapult.held_stack.count
-								end
-								local inserted = nil
-								if (total > 0) then
-									inserted = properties.target.insert({name=name, count=total})
-									InAir[name] = inserted
-								end
-								if (total > 0 and inserted < total) then
-									for namee, countt in pairs(InAir) do
-										if (countt > 0) then
-											properties.target.remove_item({name=namee, count=countt})
-										end
-									end
-									catapult.active = false
-									InAir = {}
-									break
-								elseif (InAir == {}) then
-									catapult.active = true
-								else
-									catapult.active = true
-								end
+					-- pointing at some entity
+					if (properties.target ~= "nothing" and properties.target.valid and global.OnTheWay[properties.target.unit_number]) then
+					 	if (properties.target.type ~= "transport-belt" and global.OnTheWay[properties.target.unit_number][catapult.held_stack.name]) then
+							local total = global.OnTheWay[properties.target.unit_number][catapult.held_stack.name] + catapult.held_stack.count
+							local inserted = properties.target.insert({name=catapult.held_stack.name, count=total})
+							if (inserted < total) then
+								catapult.active = false
+							else
+								catapult.active = true
 							end
-							for namee, countt in pairs(InAir) do
-								properties.target.remove_item({name=namee, count=countt})
+							if (inserted > 0) then -- when the destination is full. Have to check otherwise there's an error
+								properties.target.remove_item({name=catapult.held_stack.name, count=inserted})
 							end
 
 						elseif (properties.target.type == "transport-belt"
-						and (properties.target.get_transport_line(1).can_insert_at_back() == true
-							 or properties.target.get_transport_line(2).can_insert_at_back() == true)
-						) then
-							local InAir = 0
-							for name, count in pairs(global.ThrowerTargets[properties.target.unit_number].OnTheWay) do
-								InAir = InAir + count
+					 	and (properties.target.get_transport_line(1).can_insert_at_back() == true
+					 		 or properties.target.get_transport_line(2).can_insert_at_back() == true)
+					 	) then
+					 		local incomming = 0
+							for name, count in pairs(global.OnTheWay[properties.target.unit_number]) do
+								incomming = incomming + count
 							end
-							local total = InAir + properties.target.get_transport_line(1).get_item_count() + properties.target.get_transport_line(2).get_item_count()
-							if (total <= 6) then
-								catapult.active = true
-							else
-								catapult.active = false
-							end
-						end
-
+					 		local total = incomming + properties.target.get_transport_line(1).get_item_count() + properties.target.get_transport_line(2).get_item_count()
+					 		if (total <= 6) then
+					 			catapult.active = true
+					 		else
+					 			catapult.active = false
+					 		end
+					 	end
+					-- pointing at nothing/the ground
 					elseif (properties.target == "nothing") then
-						catapult.active = true
+					 	catapult.active = true
 					end
 				else
 					catapult.active = true
@@ -173,51 +155,74 @@ function(event)
 					or (catapult.orientation == 0.50 and catapult.held_stack_position.y <= catapult.position.y-BurnerSelfRefuelCompensation)
 					or (catapult.orientation == 0.75 and catapult.held_stack_position.x >= catapult.position.x+BurnerSelfRefuelCompensation)
 					then
-						local ThrowFrom = catapult.held_stack_position
-						local ThrowTo = catapult.drop_position
+						local sprite = rendering.draw_sprite
+							{
+								sprite = "item/"..catapult.held_stack.name,
+								x_scale = 0.5,
+								y_scale = 0.5,
+								target = catapult.held_stack_position,
+								surface = catapult.surface
+							}
+						local shadow = rendering.draw_sprite
+							{
+								sprite = "item/"..catapult.held_stack.name,
+								tint = {0,0,0,0.5},
+								x_scale = 0.5,
+								y_scale = 0.5,
+								target = catapult.held_stack_position,
+								surface = catapult.surface
+							}
+						local	x = catapult.drop_position.x
+						local y = catapult.drop_position.y
+						local start=catapult.held_stack_position
+						local distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
+						local vector = {x=x-catapult.held_stack_position.x, y=y-catapult.held_stack_position.y}
 						if (catapult.name == "RTThrower-EjectorHatchRT") then
-							ThrowFrom = catapult.position
-							--ThrowTo = {catapult.drop_position.x+(math.random(-12,12)/10), catapult.drop_position.y+(math.random(-12,12)/10)}
+							distance = math.sqrt((x-catapult.position.x)^2 + (y-catapult.position.y)^2)
+							vector = {x=x-catapult.position.x, y=y-catapult.position.y}
+							start=catapult.position
+							rendering.set_target(sprite, catapult.position)
+							rendering.set_target(shadow, catapult.position)
 						end
-						for i = 1, catapult.held_stack.count do
-							if (not pcall(function() catapult.surface.create_entity
-								({
-								name = catapult.held_stack.name.."-projectileFromRenaiTransportation",
-								position = catapult.position, --required setting for rendering, doesn't affect spawn
-								source_position = ThrowFrom, --launch from
-								target_position = ThrowTo --launch to
-								})
-								end)
-							) then
-								catapult.active = false
-						        for ii, player in pairs(game.players) do
-									player.print("Invalid throwable item "..catapult.held_stack.name.." at "..catapult.held_stack_position.x..","..catapult.held_stack_position.x..". Thrower halted. Please report the item to the mod portal form.")
-								end
-
-							elseif (settings.global["RTOverflowComp"].value == true and properties.target ~= "nothing" and properties.target.valid and global.ThrowerTargets[properties.target.unit_number]) then
-								local unused = 1
-								while (global.ThrownItems[unused] ~= nil) do
-									unused = unused + 1
-								end
-
-								global.ThrownItems[unused] = {
-									from = ThrowFrom,
-									to = ThrowTo,
-									destination = properties.target.unit_number,
-									item = catapult.held_stack.name}
-
-								if (global.ThrowerTargets[properties.target.unit_number].OnTheWay[catapult.held_stack.name] == nil) then
-									global.ThrowerTargets[properties.target.unit_number].OnTheWay[catapult.held_stack.name] = 1
+						local speed = 0.18
+						local arc = -(0.3236*distance^-0.404)-- closer to 0 = higher arc
+						local AirTime = math.floor(distance/speed)
+						local spin = math.random(-10,10)*0.01
+						local destination = nil
+						if (settings.global["RTOverflowComp"].value == true) then
+							if (properties.target ~= "nothing" and properties.target.valid) then
+								destination = properties.target.unit_number
+								if (global.OnTheWay[properties.target.unit_number] == nil) then
+									global.OnTheWay[properties.target.unit_number] = {}
+									global.OnTheWay[properties.target.unit_number][catapult.held_stack.name] = catapult.held_stack.count
+								elseif (global.OnTheWay[properties.target.unit_number][catapult.held_stack.name] == nil) then
+									global.OnTheWay[properties.target.unit_number][catapult.held_stack.name] = catapult.held_stack.count
 								else
-									global.ThrowerTargets[properties.target.unit_number].OnTheWay[catapult.held_stack.name] = global.ThrowerTargets[properties.target.unit_number].OnTheWay[catapult.held_stack.name] + 1
+									global.OnTheWay[properties.target.unit_number][catapult.held_stack.name] = global.OnTheWay[properties.target.unit_number][catapult.held_stack.name] + catapult.held_stack.count
 								end
-
 							end
 						end
+						global.FlyingItems[global.FlightNumber] =
+							{sprite=sprite,
+							shadow=shadow,
+							speed=speed,
+							arc=arc,
+							spin=spin,
+							item=catapult.held_stack.name,
+							amount=catapult.held_stack.count,
+							target={x=x, y=y},
+							start=start,
+							AirTime=AirTime,
+							StartTick=game.tick,
+							LandTick=game.tick+AirTime,
+							vector=vector,
+							destination=destination}
+						global.FlightNumber = global.FlightNumber + 1
 						catapult.held_stack.clear()
 					end
 				end
-
+			elseif (catapult.valid and catapult.held_stack.valid_for_read == false) then
+				catapult.active = true
 			elseif (catapult.valid == false) then
 				global.CatapultList[catapultID] = nil
 
@@ -232,13 +237,41 @@ function(event)
 		for catapultID, properties in pairs(global.CatapultList) do
 			if (properties.ImAlreadyTracer == nil or properties.ImAlreadyTracer == "traced") then
 				properties.ImAlreadyTracer = "tracing"
-				properties.entity.surface.create_entity
-					({
-					name = "MaybeIllBeTracer-projectileFromRenaiTransportation",
-					position = properties.entity.position, --required setting for rendering, doesn't affect spawn
-					source = properties.entity, --launch from
-					target_position = properties.entity.drop_position --launch to
-					})
+				local sprite = rendering.draw_sprite
+					{
+						sprite = "RTBlank",
+						target = properties.entity.position,
+						surface = properties.entity.surface
+					}
+				local shadow = rendering.draw_sprite
+					{
+						sprite = "RTBlank",
+						target = properties.entity.position,
+						surface = properties.entity.surface
+					}
+				local	x = properties.entity.drop_position.x
+				local y = properties.entity.drop_position.y
+				local speed = 999
+				local arc = -5 -- lower number is higher arc
+				local AirTime = 1
+				local vector = {x=x-properties.entity.position.x, y=y-properties.entity.position.y}
+				local spin = 0
+				global.FlyingItems[global.FlightNumber] =
+					{sprite=sprite,
+					shadow=shadow,
+					speed=speed,
+					arc=arc,
+					spin=spin,
+					item="tracer",
+					amount=420,
+					target={x=x, y=y},
+					start=properties.entity.position,
+					AirTime=AirTime,
+					StartTick=game.tick,
+					LandTick=game.tick+AirTime,
+					vector=vector,
+					tracing = properties.entity.unit_number}
+				global.FlightNumber = global.FlightNumber + 1
 			end
 		end
 	else
@@ -299,7 +332,6 @@ script.on_event(defines.events.on_runtime_mod_setting_changed,
 -- setting_type :: string: The setting type: "runtime-per-user", or "runtime-global".
 function(event)
 	if (event.setting == "RTOverflowComp" and settings.global["RTOverflowComp"].value == false) then
-		global.ThrowerTargets = {}
-		global.ThrownItems = {}
+		global.OnTheWay = {}
 	end
 end)

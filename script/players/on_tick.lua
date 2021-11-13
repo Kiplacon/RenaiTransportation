@@ -2,47 +2,27 @@ local function on_tick(event)
 	--| Players
 	for ThePlayer, TheirProperties in pairs(global.AllPlayers) do
 		--|| Player Launchers
-		if (TheirProperties.GuideProjectile and TheirProperties.GuideProjectile.valid and TheirProperties.jumping == true and game.get_player(ThePlayer).character) then
+		if (TheirProperties.jumping and game.get_player(ThePlayer).character and TheirProperties.sliding ~= true) then
 			game.get_player(ThePlayer).character_running_speed_modifier = -0.75
-			game.get_player(ThePlayer).character.destructible = false -- so they dont get damaged by things they are supposed to be "above"
+			local FlyingItem = global.FlyingItems[TheirProperties.jumping]
+			local duration = game.tick-FlyingItem.StartTick
+			local progress = duration/FlyingItem.AirTime
+			local height = (duration/(FlyingItem.arc*FlyingItem.AirTime))-(duration^2/(FlyingItem.arc*FlyingItem.AirTime^2))
+			--rendering.set_target(FlyingItem.sprite, {FlyingItem.start.x+(progress*FlyingItem.vector.x), FlyingItem.start.y+(progress*FlyingItem.vector.y)+height})
+			rendering.set_target(FlyingItem.shadow, {FlyingItem.start.x+(progress*FlyingItem.vector.x)-height, FlyingItem.start.y+(progress*FlyingItem.vector.y)})
+			game.get_player(ThePlayer).teleport -- predefined bounce "animation"
+				(
+					{FlyingItem.start.x+(progress*FlyingItem.vector.x), FlyingItem.start.y+(progress*FlyingItem.vector.y)+height}
+				)
 			if (TheirProperties.direction == "right") then
 				game.get_player(ThePlayer).walking_state = {walking = true, direction = defines.direction.east}
-				game.get_player(ThePlayer).teleport -- predefined bounce "animation". wube plz let me read actual projectile position then i could just stick (ie teleport) the character to the projectile
-					({
-						TheirProperties.GuideProjectile.position.x+0.18*(game.tick-TheirProperties.StartMovementTick)-0.5,
-						TheirProperties.GuideProjectile.position.y-2+((game.tick-TheirProperties.StartMovementTick-27)/24)^2
-					})
-
 			elseif (TheirProperties.direction == "left") then
 				game.get_player(ThePlayer).walking_state = {walking = true, direction = defines.direction.west}
-				game.get_player(ThePlayer).teleport -- predefined bounce "animation"
-					({
-						TheirProperties.GuideProjectile.position.x-0.18*(game.tick-TheirProperties.StartMovementTick)-0.5,
-						TheirProperties.GuideProjectile.position.y-2+((game.tick-TheirProperties.StartMovementTick-27)/24)^2
-					})
-
 			elseif (TheirProperties.direction == "up") then
 				game.get_player(ThePlayer).walking_state = {walking = true, direction = defines.direction.north}
-				game.get_player(ThePlayer).teleport -- predefined bounce "animation"
-					({
-						TheirProperties.GuideProjectile.position.x-0.5,
-						TheirProperties.GuideProjectile.position.y-25.6*((1/(1+math.exp(-0.04*(game.tick-TheirProperties.StartMovementTick))))-0.5)
-					})
-
 			elseif (TheirProperties.direction == "down") then
 				game.get_player(ThePlayer).walking_state = {walking = true, direction = defines.direction.south}
-				game.get_player(ThePlayer).teleport -- predefined bounce "animation"
-					({
-						TheirProperties.GuideProjectile.position.x-0.5,
-						TheirProperties.GuideProjectile.position.y+0.002*(game.tick-TheirProperties.StartMovementTick+15)^2-0.427
-					})
 			end
-
-		elseif (TheirProperties.jumping == true and game.get_player(ThePlayer).character) then
-			game.get_player(ThePlayer).character_running_speed_modifier = 0
-			game.get_player(ThePlayer).character.destructible = true
-			TheirProperties.jumping = false
-			global.AllPlayers[ThePlayer] = {}
 
 		--|| Ziplines
 		elseif (TheirProperties.sliding == true and TheirProperties.LetMeGuideYou and TheirProperties.LetMeGuideYou.valid and game.get_player(ThePlayer).character) then
@@ -243,6 +223,33 @@ local function on_tick(event)
 
 				--|||| Hit dead end
 				else
+					local player = game.players[ThePlayer]
+					if (player.character) then
+						local OG2 = player.character
+						TheirProperties.SwapBack.teleport(player.position)
+						player.character = TheirProperties.SwapBack
+						TheirProperties.SwapBack.direction = OG2.direction
+						for i = 1, #OG2.get_main_inventory() do
+							player.character.get_main_inventory().insert(OG2.get_main_inventory()[i])
+						end
+						for i = 1, #OG2.get_inventory(defines.inventory.character_guns) do
+							player.character.get_inventory(defines.inventory.character_guns).insert(OG2.get_inventory(defines.inventory.character_guns)[i])
+						end
+						for i = 1, #OG2.get_inventory(defines.inventory.character_ammo) do
+							player.character.get_inventory(defines.inventory.character_ammo).insert(OG2.get_inventory(defines.inventory.character_ammo)[i])
+						end
+						for i = 1, #OG2.get_inventory(defines.inventory.character_armor) do
+							player.character.get_inventory(defines.inventory.character_armor).insert(OG2.get_inventory(defines.inventory.character_armor)[i])
+						end
+						for i = 1, #OG2.get_inventory(defines.inventory.character_trash) do
+							player.character.get_inventory(defines.inventory.character_trash).insert(OG2.get_inventory(defines.inventory.character_trash)[i])
+						end
+						TheirProperties.SwapBack.destructible = true
+						TheirProperties.SwapBack.health = OG2.health
+						TheirProperties.SwapBack.selected_gun_index = OG2.selected_gun_index
+						player.character_running_speed_modifier = 0
+						OG2.destroy()
+					end
 					TheirProperties.LetMeGuideYou.surface.play_sound
 						{
 							path = "RTZipDettach",
@@ -265,6 +272,33 @@ local function on_tick(event)
 				end
 			--||| Break if poles are invalid (destroyed or something)
 			else -- One of the two ends is no longer valid
+				local player = game.players[ThePlayer]
+				if (player.character) then
+					local OG2 = player.character
+					TheirProperties.SwapBack.teleport(player.position)
+					player.character = TheirProperties.SwapBack
+					TheirProperties.SwapBack.direction = OG2.direction
+					for i = 1, #OG2.get_main_inventory() do
+						player.character.get_main_inventory().insert(OG2.get_main_inventory()[i])
+					end
+					for i = 1, #OG2.get_inventory(defines.inventory.character_guns) do
+						player.character.get_inventory(defines.inventory.character_guns).insert(OG2.get_inventory(defines.inventory.character_guns)[i])
+					end
+					for i = 1, #OG2.get_inventory(defines.inventory.character_ammo) do
+						player.character.get_inventory(defines.inventory.character_ammo).insert(OG2.get_inventory(defines.inventory.character_ammo)[i])
+					end
+					for i = 1, #OG2.get_inventory(defines.inventory.character_armor) do
+						player.character.get_inventory(defines.inventory.character_armor).insert(OG2.get_inventory(defines.inventory.character_armor)[i])
+					end
+					for i = 1, #OG2.get_inventory(defines.inventory.character_trash) do
+						player.character.get_inventory(defines.inventory.character_trash).insert(OG2.get_inventory(defines.inventory.character_trash)[i])
+					end
+					TheirProperties.SwapBack.destructible = true
+					TheirProperties.SwapBack.health = OG2.health
+					TheirProperties.SwapBack.selected_gun_index = OG2.selected_gun_index
+					player.character_running_speed_modifier = 0
+					OG2.destroy()
+				end
 				TheirProperties.LetMeGuideYou.surface.play_sound
 					{
 						path = "RTZipDettach",
@@ -287,22 +321,49 @@ local function on_tick(event)
 			end
 		--||| Zipline Failsafe
 		elseif (TheirProperties.sliding == true) then
+			local player = game.players[ThePlayer]
+			if (player.character) then
+				local OG2 = player.character
+				TheirProperties.SwapBack.teleport(player.position)
+				player.character = TheirProperties.SwapBack
+				TheirProperties.SwapBack.direction = OG2.direction
+				for i = 1, #OG2.get_main_inventory() do
+					player.character.get_main_inventory().insert(OG2.get_main_inventory()[i])
+				end
+				for i = 1, #OG2.get_inventory(defines.inventory.character_guns) do
+					player.character.get_inventory(defines.inventory.character_guns).insert(OG2.get_inventory(defines.inventory.character_guns)[i])
+				end
+				for i = 1, #OG2.get_inventory(defines.inventory.character_ammo) do
+					player.character.get_inventory(defines.inventory.character_ammo).insert(OG2.get_inventory(defines.inventory.character_ammo)[i])
+				end
+				for i = 1, #OG2.get_inventory(defines.inventory.character_armor) do
+					player.character.get_inventory(defines.inventory.character_armor).insert(OG2.get_inventory(defines.inventory.character_armor)[i])
+				end
+				for i = 1, #OG2.get_inventory(defines.inventory.character_trash) do
+					player.character.get_inventory(defines.inventory.character_trash).insert(OG2.get_inventory(defines.inventory.character_trash)[i])
+				end
+				TheirProperties.SwapBack.destructible = true
+				TheirProperties.SwapBack.health = OG2.health
+				TheirProperties.SwapBack.selected_gun_index = OG2.selected_gun_index
+				player.character_running_speed_modifier = 0
+				OG2.destroy()
+			end
 			TheirProperties.LetMeGuideYou.destroy()
 			TheirProperties.ChuggaChugga.destroy()
 			TheirProperties.succ.destroy()
 			global.AllPlayers[ThePlayer] = {}
-		
+
 		--||| Set thrower range before placing
 		elseif (TheirProperties.RangeAdjusting == true) then
 			-- keep it on
-			
+
 		--||| Failsafe failsafe
 		elseif (TheirProperties.reset == nil and game.get_player(ThePlayer).connected and game.get_player(ThePlayer).character) then
 			game.get_player(ThePlayer).character_running_speed_modifier = 0
 			game.get_player(ThePlayer).character.destructible = true
 			global.AllPlayers[ThePlayer] = {}
 			global.AllPlayers[ThePlayer].reset = true
-				
+
 
 		end
 	end

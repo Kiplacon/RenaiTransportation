@@ -1,5 +1,5 @@
 function MakeProjectile(ThingData)
-  
+
 TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 	TheProjectile.name = ThingData.name.."-projectileFromRenaiTransportation"
 	TheProjectile.special_neutral_target_damage = {amount = 0, type = "acid"}
@@ -23,9 +23,9 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
     --TheProjectile.particle_loop_frame_count = 15
     --TheProjectile.particle_fade_out_duration = 2
     --TheProjectile.particle_loop_exit_threshold = 0.25
-	
+
 	TheProjectile.working_sound = nil
-	
+
 	TheProjectile.initial_action =
 	  {
 		type = "direct",
@@ -41,14 +41,14 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 		  }
 		}
 	  }
-	  
+
 if (ThingData.icons) then
 	if (ThingData.icon_size) then
 		TheProjectile.particle.size = ThingData.icon_size
 	else
 		TheProjectile.particle.size = ThingData.icons[1].icon_size
 	end
-	
+
 	TheProjectile.particle.layers = {}
 	for iconlayer, iconspecs in pairs(ThingData.icons) do
 		if (iconspecs.icon_size) then
@@ -56,14 +56,14 @@ if (ThingData.icons) then
 		else
 			eeee = TheProjectile.particle.size
 		end
-		
+
 		if (iconspecs.tint) then
 			rrrr = iconspecs.tint
 		else
 			rrrr = nil
 		end
-	
-		table.insert(TheProjectile.particle.layers, 
+
+		table.insert(TheProjectile.particle.layers,
 			{
 				filename = iconspecs.icon,
 				line_length = 1,
@@ -74,7 +74,7 @@ if (ThingData.icons) then
 				tint = rrrr
 			})
 	end
-	
+
 elseif (ThingData.icon) then
 	TheProjectile.particle = {
       filename = ThingData.icon,
@@ -101,8 +101,8 @@ else
       scale = 19.2/32 --0.3 of a tile
       --animation_speed = 1,
     }
-end	
-	
+end
+
 	TheProjectile.spine_animation = nil
 
 	data:extend({TheProjectile})
@@ -120,10 +120,10 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
     TheProjectile.particle_horizontal_speed = 0.3 -- speed, default 0.3375
     TheProjectile.particle_horizontal_speed_deviation = 0
 	TheProjectile.working_sound = nil
-	
+
 	if (ThingData.ammo_type and ThingData.ammo_type.category == "cannon-shell") then -- tank shells
 		TheProjectile.initial_action = data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].final_action
-		  
+
 	elseif (ThingData.capsule_action) then --capsules with thrown actions: grenades, combat robots, poison, slowdown
 		if (ThingData.capsule_action.attack_parameters.ammo_type.action[1]) then
 			TheProjectile.initial_action = data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile].action
@@ -131,7 +131,7 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 			TheProjectile.initial_action = data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile].action
 		end
 	elseif (data.raw["land-mine"][ThingData.place_result]) then  --landmines
-		TheProjectile.initial_action = 
+		TheProjectile.initial_action =
 		  {
 			type = "direct",
 			action_delivery =
@@ -146,22 +146,22 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 			  }
 			}
 		  }
-		  
+
 	elseif (ThingData.ammo_type.action.action_delivery.type == "artillery") then -- artillery
 		TheProjectile.initial_action = data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].action
-		
+
 	else -- rockets/atomic bombs/other
 		TheProjectile.initial_action = data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].action
-		 
+
 	end
-	
+
 if (ThingData.icons) then
 	if (ThingData.icon_size) then
 		TheProjectile.particle.size = ThingData.icon_size
 	else
 		TheProjectile.particle.size = ThingData.icons[1].icon_size
 	end
-	
+
 	TheProjectile.particle.layers = {}
 	for iconlayer, iconspecs in pairs(ThingData.icons) do
 		if (iconspecs.icon_size) then
@@ -169,8 +169,8 @@ if (ThingData.icons) then
 		else
 			eeee = TheProjectile.particle.size
 		end
-	
-		table.insert(TheProjectile.particle.layers, 
+
+		table.insert(TheProjectile.particle.layers,
 			{
 				filename = iconspecs.icon,
 				line_length = 1,
@@ -194,7 +194,7 @@ else
       scale = 19.2/ThingData.icon_size --0.3
       --animation_speed = 1,
     }
-end	
+end
 	TheProjectile.spine_animation = nil
 
 	data:extend({TheProjectile})
@@ -215,7 +215,7 @@ TheItem = table.deepcopy(data.raw.item[ThingData.minable.result])
 				icon_size = TheItem.icon_size,
 				icon_mipmaps = TheItem.icon_mipmaps
 				},
-				
+
 				{
 				icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",
 				icon_size = 64,
@@ -231,13 +231,13 @@ if (ThingData.name == "inserter" or ThingData.name == "burner-inserter") then
 else
 	isitenabled = false
 end
-TheRecipe = 
+TheRecipe =
 	{
 		type = "recipe",
 		name = "RTThrower-"..ThingData.name.."-Recipe",
 		enabled = isitenabled,
 		energy_required = 1,
-		ingredients = 
+		ingredients =
 			{
 				{ThingData.minable.result, 1},
 				{"copper-cable", 4}
@@ -252,7 +252,7 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	TheThrower.insert_position = {0, 14.9}
 	TheThrower.allow_custom_vectors = true
 	ItsRange = 15
-	
+
 	if (TheThrower.energy_per_rotation) then
 		TheThrower.energy_per_movement = "1J" -- this prevents inserters from elongating first and then rotating when energy is low
 	end
@@ -264,14 +264,14 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 		TheThrower.insert_position = {0, 24.9}
 		ItsRange = 25
 	end
-	
+
 	if (TheThrower.localised_description) then
 		TheThrower.localised_description = {"test.combo", "This inserter has been re-wired to throw items "..ItsRange.." tiles through the air. Range can be configured once researched using Interact (default F).", TheThrower.localised_description}
 	else
 		TheThrower.localised_description = "This inserter has been re-wired to throw items "..ItsRange.." tiles through the air. Range can be configured once researched using Interact (default F)."
-	end	
+	end
 	TheThrower.hand_size = 0
-	TheThrower.hand_base_picture = 
+	TheThrower.hand_base_picture =
 		{
 		filename = "__RenaiTransportation__/graphics/ThrowerInserter/hr-inserter-hand-base.png",
         priority = "extra-high",
@@ -279,7 +279,7 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
         height = 136,
         scale = 0.25
 		}
-	TheThrower.hand_closed_picture = 
+	TheThrower.hand_closed_picture =
 		{
 		filename = "__RenaiTransportation__/graphics/ThrowerInserter/hr-inserter-hand-closed.png",
         priority = "extra-high",
@@ -297,7 +297,7 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 		}
 data:extend({TheThrower, TheItem, TheRecipe})
 if (isitenabled == false) then
-	table.insert(data.raw["technology"]["RTThrowerTime"].effects,{type="unlock-recipe",recipe=TheRecipe.name})	
+	table.insert(data.raw["technology"]["RTThrowerTime"].effects,{type="unlock-recipe",recipe=TheRecipe.name})
 end
 end
 
@@ -336,179 +336,179 @@ function MakeCarriageSprites(ThingData)
 		local MaskLeftSprites = {}
 		-- local SpriteSize = {1,1}
 		-- local SpriteScale = 1
-		
+
 		for each, SpriteSet in pairs(ThingData.pictures.layers) do
 			if ((SpriteSet.flags == nil or (SpriteSet.flags and SpriteSet.flags[1] ~= "mask" and SpriteSet.flags[1] ~= "shadow")) and SpriteSet.draw_as_shadow == nil) then  -- carriage "body" sprite
 				if (SpriteSet.hr_version and SpriteSet.hr_version.filenames and (SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%4 == 0) then
 					if (SpriteSet.hr_version.back_equals_front ~= true) then
-						UpSprites[each+1] = {filename = SpriteSet.hr_version.filenames[1+0], 
-											x = SpriteSet.hr_version.width*(0%SpriteSet.hr_version.line_length), 
-											y = SpriteSet.hr_version.height*math.floor((0%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length), 
-											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}, 
-											scale = SpriteSet.hr_version.scale, 
+						UpSprites[each+1] = {filename = SpriteSet.hr_version.filenames[1+0],
+											x = SpriteSet.hr_version.width*(0%SpriteSet.hr_version.line_length),
+											y = SpriteSet.hr_version.height*math.floor((0%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length),
+											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height},
+											scale = SpriteSet.hr_version.scale,
 											shift = SpriteSet.hr_version.shift}
-						RightSprites[each+1] = {filename = SpriteSet.hr_version.filenames[1+math.floor(0.25*#SpriteSet.hr_version.filenames)], 
-											x = SpriteSet.hr_version.width*((0.25*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%SpriteSet.hr_version.line_length), 
-											y = SpriteSet.hr_version.height*math.floor(((0.25*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length), 
-											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}, 
-											scale = SpriteSet.hr_version.scale, 
+						RightSprites[each+1] = {filename = SpriteSet.hr_version.filenames[1+math.floor(0.25*#SpriteSet.hr_version.filenames)],
+											x = SpriteSet.hr_version.width*((0.25*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%SpriteSet.hr_version.line_length),
+											y = SpriteSet.hr_version.height*math.floor(((0.25*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length),
+											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height},
+											scale = SpriteSet.hr_version.scale,
 											shift = SpriteSet.hr_version.shift}
-						DownSprites[each+1] = {filename = SpriteSet.hr_version.filenames[1+math.floor(0.5*#SpriteSet.hr_version.filenames)], 
-											x = SpriteSet.hr_version.width*((0.5*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%SpriteSet.hr_version.line_length), 
-											y = SpriteSet.hr_version.height*math.floor(((0.5*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length), 
-											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}, 
-											scale = SpriteSet.hr_version.scale, 
+						DownSprites[each+1] = {filename = SpriteSet.hr_version.filenames[1+math.floor(0.5*#SpriteSet.hr_version.filenames)],
+											x = SpriteSet.hr_version.width*((0.5*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%SpriteSet.hr_version.line_length),
+											y = SpriteSet.hr_version.height*math.floor(((0.5*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length),
+											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height},
+											scale = SpriteSet.hr_version.scale,
 											shift = SpriteSet.hr_version.shift}
-						LeftSprites[each+1] = {filename = SpriteSet.hr_version.filenames[1+math.floor(0.75*#SpriteSet.hr_version.filenames)], 
-											x = SpriteSet.hr_version.width*((0.75*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%SpriteSet.hr_version.line_length), 
-											y = SpriteSet.hr_version.height*math.floor(((0.75*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length), 
-											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}, 
-											scale = SpriteSet.hr_version.scale, 
+						LeftSprites[each+1] = {filename = SpriteSet.hr_version.filenames[1+math.floor(0.75*#SpriteSet.hr_version.filenames)],
+											x = SpriteSet.hr_version.width*((0.75*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%SpriteSet.hr_version.line_length),
+											y = SpriteSet.hr_version.height*math.floor(((0.75*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length),
+											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height},
+											scale = SpriteSet.hr_version.scale,
 											shift = SpriteSet.hr_version.shift}
 					else
-						UpSprites[each+1] = {filename = SpriteSet.hr_version.filenames[1+0], 
-											x = SpriteSet.hr_version.width*(0%SpriteSet.hr_version.line_length), 
-											y = SpriteSet.hr_version.height*math.floor((0%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length), 
-											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}, 
-											scale = SpriteSet.hr_version.scale, 
+						UpSprites[each+1] = {filename = SpriteSet.hr_version.filenames[1+0],
+											x = SpriteSet.hr_version.width*(0%SpriteSet.hr_version.line_length),
+											y = SpriteSet.hr_version.height*math.floor((0%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length),
+											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height},
+											scale = SpriteSet.hr_version.scale,
 											shift = SpriteSet.hr_version.shift}
-						RightSprites[each+1] = {filename = SpriteSet.hr_version.filenames[1+math.floor(0.5*#SpriteSet.hr_version.filenames)], 
-											x = SpriteSet.hr_version.width*((0.5*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%SpriteSet.hr_version.line_length), 
-											y = SpriteSet.hr_version.height*math.floor(((0.5*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length), 
-											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}, 
-											scale = SpriteSet.hr_version.scale, 
+						RightSprites[each+1] = {filename = SpriteSet.hr_version.filenames[1+math.floor(0.5*#SpriteSet.hr_version.filenames)],
+											x = SpriteSet.hr_version.width*((0.5*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%SpriteSet.hr_version.line_length),
+											y = SpriteSet.hr_version.height*math.floor(((0.5*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length),
+											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height},
+											scale = SpriteSet.hr_version.scale,
 											shift = SpriteSet.hr_version.shift}
 						DownSprites[each+1] = {filename = UpSprites[each+1].filename, x = UpSprites[each+1].x, y = UpSprites[each+1].y, size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}, scale = SpriteSet.hr_version.scale, shift = SpriteSet.hr_version.shift}
 						LeftSprites[each+1] = {filename = RightSprites[each+1].filename, x = RightSprites[each+1].x, y = RightSprites[each+1].y, size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}, scale = SpriteSet.hr_version.scale, shift = SpriteSet.hr_version.shift}
 					end
-					
+
 				elseif (SpriteSet.filenames and (SpriteSet.line_length*SpriteSet.lines_per_file)%4 == 0) then
 					if (SpriteSet.back_equals_front ~= true) then
-						UpSprites[each+1] = {filename = SpriteSet.filenames[1+0], 
-											x = SpriteSet.width*(0%SpriteSet.line_length), 
-											y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length), 
-											size = {SpriteSet.width, SpriteSet.height}, 
-											scale = SpriteSet.scale, 
+						UpSprites[each+1] = {filename = SpriteSet.filenames[1+0],
+											x = SpriteSet.width*(0%SpriteSet.line_length),
+											y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+											size = {SpriteSet.width, SpriteSet.height},
+											scale = SpriteSet.scale,
 											shift = SpriteSet.shift}
-						RightSprites[each+1] = {filename = SpriteSet.filenames[1+math.floor(0.25*#SpriteSet.filenames)], 
-											x = SpriteSet.width*((0.25*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length), 
-											y = SpriteSet.height*math.floor(((0.25*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length), 
-											size = {SpriteSet.width, SpriteSet.height}, 
-											scale = SpriteSet.scale, 
+						RightSprites[each+1] = {filename = SpriteSet.filenames[1+math.floor(0.25*#SpriteSet.filenames)],
+											x = SpriteSet.width*((0.25*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+											y = SpriteSet.height*math.floor(((0.25*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+											size = {SpriteSet.width, SpriteSet.height},
+											scale = SpriteSet.scale,
 											shift = SpriteSet.shift}
-						DownSprites[each+1] = {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)], 
-											x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length), 
-											y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length), 
-											size = {SpriteSet.width, SpriteSet.height}, 
-											scale = SpriteSet.scale, 
+						DownSprites[each+1] = {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)],
+											x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+											y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+											size = {SpriteSet.width, SpriteSet.height},
+											scale = SpriteSet.scale,
 											shift = SpriteSet.shift}
-						LeftSprites[each+1] = {filename = SpriteSet.filenames[1+math.floor(0.75*#SpriteSet.filenames)], 
-											x = SpriteSet.width*((0.75*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length), 
-											y = SpriteSet.height*math.floor(((0.75*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length), 
-											size = {SpriteSet.width, SpriteSet.height}, 
-											scale = SpriteSet.scale, 
+						LeftSprites[each+1] = {filename = SpriteSet.filenames[1+math.floor(0.75*#SpriteSet.filenames)],
+											x = SpriteSet.width*((0.75*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+											y = SpriteSet.height*math.floor(((0.75*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+											size = {SpriteSet.width, SpriteSet.height},
+											scale = SpriteSet.scale,
 											shift = SpriteSet.shift}
 					else
-						UpSprites[each+1] = {filename = SpriteSet.filenames[1+0], 
-											x = SpriteSet.width*(0%SpriteSet.line_length), 
-											y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length), 
-											size = {SpriteSet.width, SpriteSet.height}, 
-											scale = SpriteSet.scale, 
+						UpSprites[each+1] = {filename = SpriteSet.filenames[1+0],
+											x = SpriteSet.width*(0%SpriteSet.line_length),
+											y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+											size = {SpriteSet.width, SpriteSet.height},
+											scale = SpriteSet.scale,
 											shift = SpriteSet.shift}
-						RightSprites[each+1] = {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)], 
-											x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length), 
-											y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length), 
-											size = {SpriteSet.width, SpriteSet.height}, 
-											scale = SpriteSet.scale, 
+						RightSprites[each+1] = {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)],
+											x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+											y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+											size = {SpriteSet.width, SpriteSet.height},
+											scale = SpriteSet.scale,
 											shift = SpriteSet.shift}
 						DownSprites[each+1] = {filename = UpSprites[each+1].filename, x = UpSprites[each+1].x, y = UpSprites[each+1].y, size = {SpriteSet.width, SpriteSet.height}, scale = SpriteSet.scale, shift = SpriteSet.shift}
 						LeftSprites[each+1] = {filename = RightSprites[each+1].filename, x = RightSprites[each+1].x, y = RightSprites[each+1].y, size = {SpriteSet.width, SpriteSet.height}, scale = SpriteSet.scale, shift = SpriteSet.shift}
 					end
 				end
 
-				
+
 			elseif (SpriteSet.flags and SpriteSet.flags[1] == "mask" and SpriteSet.draw_as_shadow == nil) then	-- carriage mask
 				if (SpriteSet.hr_version and SpriteSet.hr_version.filenames and (SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%4 == 0) then
 					if (SpriteSet.hr_version.back_equals_front ~= true) then
-						MaskUpSprites[each] = {filename = SpriteSet.hr_version.filenames[1+0], 
-											x = SpriteSet.hr_version.width*(0%SpriteSet.hr_version.line_length), 
-											y = SpriteSet.hr_version.height*math.floor((0%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length), 
-											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}, 
-											scale = SpriteSet.hr_version.scale, 
-											shift = SpriteSet.hr_version.shift}
-						MaskRightSprites[each] = {filename = SpriteSet.hr_version.filenames[1+math.floor(0.25*#SpriteSet.hr_version.filenames)], 
-											x = SpriteSet.hr_version.width*((0.25*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%SpriteSet.hr_version.line_length), 
-											y = SpriteSet.hr_version.height*math.floor(((0.25*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length), 
-											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}, 
-											scale = SpriteSet.hr_version.scale, 
-											shift = SpriteSet.hr_version.shift}
-						MaskDownSprites[each] = {filename = SpriteSet.hr_version.filenames[1+math.floor(0.5*#SpriteSet.hr_version.filenames)], 
-											x = SpriteSet.hr_version.width*((0.5*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%SpriteSet.hr_version.line_length), 
-											y = SpriteSet.hr_version.height*math.floor(((0.5*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length), 
-											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}, 
-											scale = SpriteSet.hr_version.scale, 
-											shift = SpriteSet.hr_version.shift}
-						MaskLeftSprites[each] = {filename = SpriteSet.hr_version.filenames[1+math.floor(0.75*#SpriteSet.hr_version.filenames)], 
-											x = SpriteSet.hr_version.width*((0.75*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%SpriteSet.hr_version.line_length), 
-											y = SpriteSet.hr_version.height*math.floor(((0.75*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length), 
-											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}, 
-											scale = SpriteSet.hr_version.scale, 
-											shift = SpriteSet.hr_version.shift}
-					else
-						MaskUpSprites[each] = {filename = SpriteSet.hr_version.filenames[1+0], 
-											x = SpriteSet.hr_version.width*(0%SpriteSet.hr_version.line_length), 
-											y = SpriteSet.hr_version.height*math.floor((0%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length), 
-											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}, 
+						MaskUpSprites[each] = {filename = SpriteSet.hr_version.filenames[1+0],
+											x = SpriteSet.hr_version.width*(0%SpriteSet.hr_version.line_length),
+											y = SpriteSet.hr_version.height*math.floor((0%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length),
+											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height},
 											scale = SpriteSet.hr_version.scale,
 											shift = SpriteSet.hr_version.shift}
-						MaskRightSprites[each] = {filename = SpriteSet.hr_version.filenames[1+math.floor(0.5*#SpriteSet.hr_version.filenames)], 
-											x = SpriteSet.hr_version.width*((0.5*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%SpriteSet.hr_version.line_length), 
-											y = SpriteSet.hr_version.height*math.floor(((0.5*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length), 
-											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}, 
-											scale = SpriteSet.hr_version.scale, 
+						MaskRightSprites[each] = {filename = SpriteSet.hr_version.filenames[1+math.floor(0.25*#SpriteSet.hr_version.filenames)],
+											x = SpriteSet.hr_version.width*((0.25*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%SpriteSet.hr_version.line_length),
+											y = SpriteSet.hr_version.height*math.floor(((0.25*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length),
+											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height},
+											scale = SpriteSet.hr_version.scale,
+											shift = SpriteSet.hr_version.shift}
+						MaskDownSprites[each] = {filename = SpriteSet.hr_version.filenames[1+math.floor(0.5*#SpriteSet.hr_version.filenames)],
+											x = SpriteSet.hr_version.width*((0.5*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%SpriteSet.hr_version.line_length),
+											y = SpriteSet.hr_version.height*math.floor(((0.5*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length),
+											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height},
+											scale = SpriteSet.hr_version.scale,
+											shift = SpriteSet.hr_version.shift}
+						MaskLeftSprites[each] = {filename = SpriteSet.hr_version.filenames[1+math.floor(0.75*#SpriteSet.hr_version.filenames)],
+											x = SpriteSet.hr_version.width*((0.75*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%SpriteSet.hr_version.line_length),
+											y = SpriteSet.hr_version.height*math.floor(((0.75*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length),
+											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height},
+											scale = SpriteSet.hr_version.scale,
+											shift = SpriteSet.hr_version.shift}
+					else
+						MaskUpSprites[each] = {filename = SpriteSet.hr_version.filenames[1+0],
+											x = SpriteSet.hr_version.width*(0%SpriteSet.hr_version.line_length),
+											y = SpriteSet.hr_version.height*math.floor((0%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length),
+											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height},
+											scale = SpriteSet.hr_version.scale,
+											shift = SpriteSet.hr_version.shift}
+						MaskRightSprites[each] = {filename = SpriteSet.hr_version.filenames[1+math.floor(0.5*#SpriteSet.hr_version.filenames)],
+											x = SpriteSet.hr_version.width*((0.5*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%SpriteSet.hr_version.line_length),
+											y = SpriteSet.hr_version.height*math.floor(((0.5*#SpriteSet.hr_version.filenames*SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file)%(SpriteSet.hr_version.line_length*SpriteSet.hr_version.lines_per_file))/SpriteSet.hr_version.line_length),
+											size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height},
+											scale = SpriteSet.hr_version.scale,
 											shift = SpriteSet.hr_version.shift}
 						MaskDownSprites[each] = {filename = MaskUpSprites[each].filename, x = MaskUpSprites[each].x, y = MaskUpSprites[each].y, size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}, scale = SpriteSet.hr_version.scale, shift = SpriteSet.hr_version.shift}
 						MaskLeftSprites[each] = {filename = MaskRightSprites[each].filename, x = MaskRightSprites[each].x, y = MaskRightSprites[each].y, size = {SpriteSet.hr_version.width, SpriteSet.hr_version.height}, scale = SpriteSet.hr_version.scale, shift = SpriteSet.hr_version.shift}
 					end
-					
+
 				elseif (SpriteSet.filenames and (SpriteSet.line_length*SpriteSet.lines_per_file)%4 == 0) then
 					if (SpriteSet.back_equals_front ~= true) then
-						MaskUpSprites[each] = {filename = SpriteSet.filenames[1+0], 
-											x = SpriteSet.width*(0%SpriteSet.line_length), 
-											y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length), 
-											size = {SpriteSet.width, SpriteSet.height}, 
-											scale = SpriteSet.scale, 
+						MaskUpSprites[each] = {filename = SpriteSet.filenames[1+0],
+											x = SpriteSet.width*(0%SpriteSet.line_length),
+											y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+											size = {SpriteSet.width, SpriteSet.height},
+											scale = SpriteSet.scale,
 											shift = SpriteSet.shift}
-						MaskRightSprites[each] = {filename = SpriteSet.filenames[1+math.floor(0.25*#SpriteSet.filenames)], 
-											x = SpriteSet.width*((0.25*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length), 
-											y = SpriteSet.height*math.floor(((0.25*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length), 
-											size = {SpriteSet.width, SpriteSet.height}, 
-											scale = SpriteSet.scale, 
+						MaskRightSprites[each] = {filename = SpriteSet.filenames[1+math.floor(0.25*#SpriteSet.filenames)],
+											x = SpriteSet.width*((0.25*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+											y = SpriteSet.height*math.floor(((0.25*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+											size = {SpriteSet.width, SpriteSet.height},
+											scale = SpriteSet.scale,
 											shift = SpriteSet.shift}
-						MaskDownSprites[each] = {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)], 
-											x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length), 
-											y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length), 
-											size = {SpriteSet.width, SpriteSet.height}, 
-											scale = SpriteSet.scale, 
+						MaskDownSprites[each] = {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)],
+											x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+											y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+											size = {SpriteSet.width, SpriteSet.height},
+											scale = SpriteSet.scale,
 											shift = SpriteSet.shift}
-						MaskLeftSprites[each] = {filename = SpriteSet.filenames[1+math.floor(0.75*#SpriteSet.filenames)], 
-											x = SpriteSet.width*((0.75*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length), 
-											y = SpriteSet.height*math.floor(((0.75*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length), 
-											size = {SpriteSet.width, SpriteSet.height}, 
-											scale = SpriteSet.scale, 
+						MaskLeftSprites[each] = {filename = SpriteSet.filenames[1+math.floor(0.75*#SpriteSet.filenames)],
+											x = SpriteSet.width*((0.75*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+											y = SpriteSet.height*math.floor(((0.75*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+											size = {SpriteSet.width, SpriteSet.height},
+											scale = SpriteSet.scale,
 											shift = SpriteSet.shift}
 					else
-						MaskUpSprites[each] = {filename = SpriteSet.filenames[1+0], 
-											x = SpriteSet.width*(0%SpriteSet.line_length), 
-											y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length), 
-											size = {SpriteSet.width, SpriteSet.height}, 
-											scale = SpriteSet.scale,  
+						MaskUpSprites[each] = {filename = SpriteSet.filenames[1+0],
+											x = SpriteSet.width*(0%SpriteSet.line_length),
+											y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+											size = {SpriteSet.width, SpriteSet.height},
+											scale = SpriteSet.scale,
 											shift = SpriteSet.shift}
-						MaskRightSprites[each] = {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)], 
-											x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length), 
-											y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length), 
-											size = {SpriteSet.width, SpriteSet.height}, 
-											scale = SpriteSet.scale, 
+						MaskRightSprites[each] = {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)],
+											x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+											y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+											size = {SpriteSet.width, SpriteSet.height},
+											scale = SpriteSet.scale,
 											shift = SpriteSet.shift}
 						MaskDownSprites[each] = {filename = MaskUpSprites[each].filename, x = MaskUpSprites[each].x, y = MaskUpSprites[each].y, size = {SpriteSet.width, SpriteSet.height}, scale = SpriteSet.scale, shift = SpriteSet.shift}
 						MaskLeftSprites[each] = {filename = MaskRightSprites[each].filename, x = MaskRightSprites[each].x, y = MaskRightSprites[each].y, size = {SpriteSet.width, SpriteSet.height}, scale = SpriteSet.scale, shift = SpriteSet.shift}
@@ -516,7 +516,7 @@ function MakeCarriageSprites(ThingData)
 				end
 			end
 		end -- for loop end
-		
+
 		if (#UpSprites>1 and #RightSprites>1 and #DownSprites>1 and #LeftSprites>1) then
 			data:extend({
 				{
@@ -538,9 +538,9 @@ function MakeCarriageSprites(ThingData)
 					type = "sprite",
 					name = "RT"..ThingData.name.."left",
 					layers = LeftSprites
-				}				
+				}
 			})
-		end		
+		end
 		if (#MaskUpSprites>0 and #MaskRightSprites>0 and #MaskDownSprites>0 and #MaskLeftSprites>0) then
 			data:extend({
 				{
@@ -562,8 +562,8 @@ function MakeCarriageSprites(ThingData)
 					type = "sprite",
 					name = "RT"..ThingData.name.."Maskleft",
 					layers = MaskLeftSprites
-				}				
-			})		
+				}
+			})
 		end
 	end
 end
@@ -572,44 +572,44 @@ end
 --- loop through data.raw ---------------------------------
 ---- Make thrower variants first so that the projectile generating will work
 
-for ThingID, ThingData in pairs(data.raw.inserter) do	
+for ThingID, ThingData in pairs(data.raw.inserter) do
 	-- lots of requirements to make sure not pick up any "function only" inserters from other mods --
 	if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RTModdedThrowers"].value == true) then
-		if (ThingData.type == "inserter" 
-			and ThingData.energy_source.type ~= "void" 
-			and ThingData.draw_held_item ~= false 
-			and ThingData.selectable_in_game ~= false 
-			and ThingData.minable 
+		if (ThingData.type == "inserter"
+			and ThingData.energy_source.type ~= "void"
+			and ThingData.draw_held_item ~= false
+			and ThingData.selectable_in_game ~= false
+			and ThingData.minable
 			and ThingData.minable.result
 			and ThingData.rotation_speed ~= 0
 			and ThingData.extension_speed ~= 0
 			and data.raw.item[ThingData.minable.result] ~= nil
 			and not string.find(ThingData.name, "RTThrower-")
-			--and (not ThingData.name ~= "thrower-inserter") 
+			--and (not ThingData.name ~= "thrower-inserter")
 		)then
 			MakeThrowerVariant(ThingData)
 		end
 	elseif (settings.startup["RTThrowersSetting"].value == true and settings.startup["RTModdedThrowers"].value == false) then
-		if (ThingData.name == "burner-inserter" 
-		or ThingData.name == "inserter" 
+		if (ThingData.name == "burner-inserter"
+		or ThingData.name == "inserter"
 		or ThingData.name == "fast-inserter"
-		or ThingData.name == "long-handed-inserter"	
+		or ThingData.name == "long-handed-inserter"
 		or ThingData.name == "filter-inserter"
 		or ThingData.name == "stack-filter-inserter"
-		or ThingData.name == "stack-inserter") 
+		or ThingData.name == "stack-inserter")
 		then
 			MakeThrowerVariant(ThingData)
-		end	
+		end
 	end
 end
 
 
 for Category, ThingsTable in pairs(data.raw) do
-	for ThingID, ThingData in pairs(ThingsTable) do	
-		if (ThingData.stack_size ) then
+	for ThingID, ThingData in pairs(ThingsTable) do
+		if (ThingData.stack_size) then
 			log("Creating item projectile for "..ThingData.type..": "..ThingData.name)
-			MakeProjectile(ThingData)
-			
+			-- MakeProjectile(ThingData)
+
 			if (settings.startup["RTBounceSetting"].value == true) then
 				if (ThingData.type == "ammo" -- looking for things like rockets, tank shells, missles, etc
 					and ThingData.ammo_type.action --if this ammo does something
@@ -618,12 +618,12 @@ for Category, ThingsTable in pairs(data.raw) do
 						 or ThingData.ammo_type.action.action_delivery.type == "artillery") --artillery gets its own projectile catagory
 					) then
 					MakePrimedProjectile(ThingData)
-				elseif 
+				elseif
 					(
 						(
 							Category == "capsule" --if its a capsule
 							and ThingData.capsule_action.type == "throw" --with a thrown action
-							and 
+							and
 							(
 								( -- 0.18.36+ capsule action notation
 								ThingData.capsule_action.attack_parameters.ammo_type.action
@@ -633,7 +633,7 @@ for Category, ThingsTable in pairs(data.raw) do
 								and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile]--that has an associated projectile
 								and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile].action --that does something
 								)
-								or	
+								or
 								( -- old capsule action notation
 								ThingData.capsule_action.attack_parameters.ammo_type.action
 								and ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery
@@ -642,7 +642,7 @@ for Category, ThingsTable in pairs(data.raw) do
 								and data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile].action --that does something
 								)
 							)
-						) 
+						)
 						or data.raw["land-mine"][ThingData.place_result]
 					) then
 					MakePrimedProjectile(ThingData)
@@ -650,7 +650,7 @@ for Category, ThingsTable in pairs(data.raw) do
 			end
 		end
 
-		
+
 		if (settings.startup["RTZiplineSetting"].value == true) then
 			if (ThingData.type == "electric-pole") then
 				if (ThingData.connection_points.wire and ThingData.connection_points.wire.copper) then
@@ -673,7 +673,7 @@ for Category, ThingsTable in pairs(data.raw) do
 							enabled = false,
 							hidden = true,
 							emissions_multiplier = Points[1],
-							ingredients = 
+							ingredients =
 								{
 									{"infinity-chest", 360}
 								},
@@ -685,7 +685,7 @@ for Category, ThingsTable in pairs(data.raw) do
 							enabled = false,
 							hidden = true,
 							emissions_multiplier = Points[2],
-							ingredients = 
+							ingredients =
 								{
 									{"infinity-chest", 360}
 								},
@@ -695,26 +695,48 @@ for Category, ThingsTable in pairs(data.raw) do
 				end
 			end
 		end
-		
+
 		if (Category == "locomotive" or Category == "cargo-wagon" or Category == "fluid-wagon") then
 			MakeCarriageSprites(ThingData)
 		end
-		
+
+		if (Category == "character" and not string.find(ThingID, "RTGhost")) then
+			local casper = table.deepcopy(ThingData)
+			casper.name = casper.name.."RTGhost"
+			casper.collision_mask = {}
+			if (casper.resistances) then
+				table.insert(casper.resistances,
+					{
+				     type = "fire",
+				     percent = 100
+				   }
+				)
+			else
+				casper.resistances =
+				{
+				  {
+				    type = "fire",
+				    percent = 99
+				  }
+				}
+			end
+			data:extend({casper})
+		end
 	end
 end
 
-MakeProjectile(
-	{
-		name = "test",
-		icon = "__RenaiTransportation__/graphics/nothing.png",
-		icon_size = 32
-	}
-)
-
-MakeProjectile(
-	{
-		name = "MaybeIllBeTracer",
-		icon = "__RenaiTransportation__/graphics/nothing.png",
-		icon_size = 32
-	}
-)
+-- MakeProjectile(
+-- 	{
+-- 		name = "test",
+-- 		icon = "__RenaiTransportation__/graphics/nothing.png",
+-- 		icon_size = 32
+-- 	}
+-- )
+--
+-- MakeProjectile(
+-- 	{
+-- 		name = "MaybeIllBeTracer",
+-- 		icon = "__RenaiTransportation__/graphics/nothing.png",
+-- 		icon_size = 32
+-- 	}
+-- )
