@@ -4,7 +4,7 @@ Quite possibly the jankest Factorio mod ever made
 
 but at least the memes are good
 
-# Renai Transportation
+
 ![Alt Text](https://i.imgur.com/o64mapM.gif)
 
 Check out this spotlight on the mod by Xterminator (v0.4.0)
@@ -59,11 +59,11 @@ Slam this cargo wagon into a reinforced concrete block to instantly unload its e
 
 See the FAQ for some specific details
 
-###Possible Future Additions
+##Possible Future Additions
 - ~~Mid air train collisions (maybe, that seems like a lot of work)~~ Yeah it's a lot of work
 - A bounce pad that lets you redirect different items in different directions
 
-###~~Bugs~~ Special Features
+##~~Bugs~~ Special Features
 - Mods that allow you to walk on water make it so that items don't splash and disappear.
 - Changing a thrower's pickup/drop location using another mod, like Bob's adjustable inserters, may cause strange behavior depending on the change
 - Mods that use train IDs, like Logistics Train Network, probably won't work right with train jumps because trains will have a different train ID before and after jumping. Vehicle Wagons 2 being an exception because compatibility was specifically programmed in for it
