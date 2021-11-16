@@ -313,7 +313,8 @@ local function entity_damaged(event)
 		and event.cause
 		and (event.cause.type == "locomotive" or event.cause.type == "cargo-wagon" or event.cause.type == "fluid-wagon" or event.cause.type == "artillery-wagon")
 		) then
-		if (event.cause.train and event.cause.train.cargo_wagons) then
+		if (event.cause.train and event.cause.train.cargo_wagons and math.abs(event.cause.train.speed) > 0.125) then
+			wagons = #event.cause.train.cargo_wagons
 			for each, wagon in pairs(event.cause.train.cargo_wagons) do
 				if (wagon.name == "RTImpactWagon") then
 					local LaunchedPortion = math.abs(wagon.speed)/0.75
@@ -323,7 +324,7 @@ local function entity_damaged(event)
 					for ItemName, amount in pairs(wagon.get_inventory(defines.inventory.cargo_wagon).get_contents()) do
 						local LaunchedAmount = math.floor(amount*LaunchedPortion)
 						if (LaunchedAmount > 0) then
-							local GroupSize = settings.global["RTItemGrouping"].value
+							local GroupSize = math.ceil((LaunchedAmount*wagons)/settings.global["RTImpactGrouping"].value)
 							for i = 1, math.floor(LaunchedAmount/GroupSize) do
 								local sprite = rendering.draw_sprite
 									{
@@ -344,12 +345,12 @@ local function entity_damaged(event)
 									}
 								local xUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation+0.25)))/(0.5*math.pi)) - 1
 								local yUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation)))/(0.5*math.pi)) - 1
-								local ForwardSpread = math.random(100,350)*0.1
-								local HorizontalSpread = math.random(-4,4)*ForwardSpread*0.1
+								local ForwardSpread = math.random(100,400)*0.1
+								local HorizontalSpread = math.random(-40,40)*ForwardSpread*0.01
 								local	x = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
 								local y = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
 								local distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
-								local speed = math.abs(wagon.speed)*0.70
+								local speed = math.abs(wagon.speed) * (distance/(35*math.abs(wagon.speed))) * math.random(45,100)*0.01
 								local arc = -(0.3236*distance^-0.404) -- lower number is higher arc
 								local AirTime = math.floor(distance/speed)
 								local vector = {x=x-wagon.position.x, y=y-wagon.position.y}
@@ -377,12 +378,12 @@ local function entity_damaged(event)
 									}
 								local xUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation+0.25)))/(0.5*math.pi)) - 1
 								local yUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation)))/(0.5*math.pi)) - 1
-								local ForwardSpread = math.random(100,350)*0.1
-								local HorizontalSpread = math.random(-4,4)*ForwardSpread*0.1
+								local ForwardSpread = math.random(100,400)*0.1
+								local HorizontalSpread = math.random(-40,40)*ForwardSpread*0.01
 								local	x = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
 								local y = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
 								local distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
-								local speed = math.abs(wagon.speed)*0.75
+								local speed = math.abs(wagon.speed) * (distance/(35*math.abs(wagon.speed))) * math.random(45,100)*0.01
 								local arc = -(0.3236*distance^-0.404) -- lower number is higher arc
 								local AirTime = math.floor(distance/speed)
 								local vector = {x=x-wagon.position.x, y=y-wagon.position.y}
@@ -405,8 +406,6 @@ local function entity_damaged(event)
 				end
 				event.cause.train.schedule = stor
 			end
-		end
-		if (event.cause.train.speed > 0.15) then
 			event.cause.health = event.cause.health - (event.cause.prototype.max_health/8)
 			if (event.cause.health <= 0) then
 				event.cause.die()

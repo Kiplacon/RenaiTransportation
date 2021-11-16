@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.9.1
+Date: 11/15/2021
+  Changes:
+    - Changed Impact Wagon item spread to be more of an area rather than 9 lines.
+    - Changed Impact Wagon item spread to be more like a rolling wave and less like a perfect arc. In theory this helps space out item landings so there aren't as many grouped together that have to be calculated at once. It also looks cooler.
+    - Changed the setting for item grouping to instead be maximum projectiles created per train, default 1000. This helps limit lag for trains with multiple Impact Wagons.
+    - Targeted the center of tiles that items landed on to better detect Open Chests and other things with small collision boxes or shrunken by Squeak Through.
+    - Things fired from the Ejector Hatch are now faster than normal.
+  Bugfixes:
+    - Fixed that trains wouldn't be damaged by the Impact Unloader if they ran backwards.
+    - Some locale and description fixes.
+---------------------------------------------------------------------------------------------------
 Version: 0.9.0
 Date: 11/12/2021
   Additions:

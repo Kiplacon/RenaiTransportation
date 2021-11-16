@@ -53,7 +53,7 @@ local function on_tick(event)
                      unitx = -1
                      unity = 0
                      traveling = "left"
-                  elseif (FlyingItem.start.x < FlyingItem.target.x 
+                  elseif (FlyingItem.start.x < FlyingItem.target.x
                   and math.abs(FlyingItem.start.y-FlyingItem.target.y) < math.abs(FlyingItem.start.x-FlyingItem.target.x)) then
                      unitx = 1
                      unity = 0
@@ -103,7 +103,7 @@ local function on_tick(event)
                   local	x = ThingLandedOn.position.x  +unitx*(range+RangeBonus)  +unity*(SidewaysShift)
                   local y = ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)
                   local distance = math.sqrt((x-ThingLandedOn.position.x)^2 + (y-ThingLandedOn.position.y)^2)
-                  local speed = 0.18
+                  local speed = FlyingItem.speed
                   local AirTime = math.floor(distance/speed)
                   local vector = {x=x-ThingLandedOn.position.x, y=y-ThingLandedOn.position.y}
                   FlyingItem.target={x=x, y=y}
@@ -168,7 +168,7 @@ local function on_tick(event)
                   else
                      rendering.get_surface(FlyingItem.sprite).spill_item_stack
                         (
-                           rendering.get_surface(FlyingItem.sprite).find_non_colliding_position("item-on-ground", rendering.get_target(FlyingItem.sprite).position, 0, 0.1),
+                           rendering.get_surface(FlyingItem.sprite).find_non_colliding_position("item-on-ground",FlyingItem.target, 0, 0.1),
                            {name=FlyingItem.item, count=FlyingItem.amount}
                         )
 
@@ -200,7 +200,7 @@ local function on_tick(event)
                if (FlyingItem.player == nil) then
                   rendering.get_surface(FlyingItem.sprite).spill_item_stack
                      (
-                        rendering.get_surface(FlyingItem.sprite).find_non_colliding_position("item-on-ground", rendering.get_target(FlyingItem.sprite).position, 0, 0.1),
+                        rendering.get_surface(FlyingItem.sprite).find_non_colliding_position("item-on-ground", FlyingItem.target, 0, 0.1),
                         {name=FlyingItem.item, count=FlyingItem.amount}
                      )
                end

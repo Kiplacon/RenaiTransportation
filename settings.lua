@@ -65,10 +65,10 @@ data:extend({
 },
 {
 	type = "int-setting",
-	name = "RTItemGrouping",
+	name = "RTImpactGrouping",
 	setting_type = "runtime-global",
-	default_value = 1,
-	minimum_value = 1,
+	default_value = 1000,
+	minimum_value = 200, -- minimum fun
 	order = "i"
 }
 })

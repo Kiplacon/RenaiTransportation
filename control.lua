@@ -177,14 +177,15 @@ function(event)
 						local start=catapult.held_stack_position
 						local distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
 						local vector = {x=x-catapult.held_stack_position.x, y=y-catapult.held_stack_position.y}
+						local speed = 0.18
 						if (catapult.name == "RTThrower-EjectorHatchRT") then
 							distance = math.sqrt((x-catapult.position.x)^2 + (y-catapult.position.y)^2)
 							vector = {x=x-catapult.position.x, y=y-catapult.position.y}
 							start=catapult.position
+							speed = 0.25
 							rendering.set_target(sprite, catapult.position)
 							rendering.set_target(shadow, catapult.position)
 						end
-						local speed = 0.18
 						local arc = -(0.3236*distance^-0.404)-- closer to 0 = higher arc
 						local AirTime = math.floor(distance/speed)
 						local spin = math.random(-10,10)*0.01
@@ -335,3 +336,17 @@ function(event)
 		global.OnTheWay = {}
 	end
 end)
+
+-- script.on_event(defines.events.on_player_driving_changed_state,
+-- -- player_index :: uint
+-- -- entity :: LuaEntity (optional): The vehicle if any.
+-- function(event)
+-- 	local player = game.players[event.player_index]
+-- 	if (player.character and player.driving == false) then
+-- 		for each, properties in pairs(global.FlyingTrains) do
+-- 			if (properties.passenger and properties.passenger.unit_number == player.character.unit_number) then
+-- 				properties.GuideCar.set_passenger(player)
+-- 			end
+-- 		end
+-- 	end
+-- end)
