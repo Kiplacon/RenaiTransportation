@@ -117,7 +117,31 @@ data:extend({
 		},
 		time = 20
 	}
-  }
+  },
+   {
+    type = "technology",
+    name = "RTSimonSays",
+    icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/DirectorPlateIcon.png",
+    icon_size = 64,
+    effects =
+    {
+      {
+          type = "unlock-recipe",
+          recipe = "DirectorBouncePlateRecipie"
+      }
+    },
+    prerequisites = {"se~no", "advanced-electronics"},
+    unit =
+    {
+       count = 100,
+       ingredients =
+       {
+         {"automation-science-pack", 1},
+         {"logistic-science-pack", 1}
+       },
+       time = 30
+    }
+   }
 })
 
 else

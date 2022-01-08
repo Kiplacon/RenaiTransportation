@@ -28,6 +28,13 @@ data:extend({
 	order = "d"
 },
 {
+	type = "int-setting",
+	name = "RTMagRampRange",
+	setting_type = "runtime-global",
+	default_value = 100,
+	order = "da"
+},
+{
 	type = "bool-setting",
 	name = "RTTrainBounceSetting",
 	setting_type = "startup",

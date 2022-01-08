@@ -352,10 +352,39 @@ local function entity_damaged(event)
 								local distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
 								local speed = math.abs(wagon.speed) * (distance/(35*math.abs(wagon.speed))) * math.random(45,100)*0.01
 								local arc = -(0.3236*distance^-0.404) -- lower number is higher arc
+								local space = nil
+								if (string.find(wagon.surface.name, " Orbit") or string.find(wagon.surface.name, " Field") or string.find(wagon.surface.name, " Belt")) then
+									arc = -99999999999999
+									x = x + (xUnit*wagon.speed * 500)
+									y = y + (yUnit*wagon.speed * 500)
+									distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
+									space = true
+								end
 								local AirTime = math.floor(distance/speed)
 								local vector = {x=x-wagon.position.x, y=y-wagon.position.y}
 								local spin = math.random(-10,10)*0.01
-								global.FlyingItems[global.FlightNumber] = {sprite=sprite, shadow=shadow, speed=speed, arc=arc, spin=spin, item=ItemName, amount=GroupSize, target={x=x, y=y}, start={x=wagon.position.x+(math.random(-10, 10)*0.1), y=wagon.position.y+(math.random(-10, 10)*0.1)}, AirTime=AirTime, StartTick=game.tick, LandTick=game.tick+AirTime, vector=vector}
+								global.FlyingItems[global.FlightNumber] =
+									{sprite=sprite,
+									shadow=shadow,
+									speed=speed,
+									arc=arc,
+									spin=spin,
+									item=ItemName,
+									amount=GroupSize,
+									target={x=x, y=y},
+									start={x=wagon.position.x+(math.random(-10, 10)*0.1), y=wagon.position.y+(math.random(-10, 10)*0.1)},
+									AirTime=AirTime,
+									StartTick=game.tick,
+									LandTick=game.tick+AirTime,
+									vector=vector,
+									space=space}
+								if (wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack(ItemName).item_number ~= nil) then
+									local CloudStorage = game.create_inventory(1)
+									local item, index = wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack(ItemName)
+									CloudStorage.insert(item)
+									item.clear()
+									global.FlyingItems[global.FlightNumber].CloudStorage = CloudStorage
+								end
 								global.FlightNumber = global.FlightNumber + 1
 							end
 							if (LaunchedAmount%GroupSize ~= 0) then
@@ -385,10 +414,39 @@ local function entity_damaged(event)
 								local distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
 								local speed = math.abs(wagon.speed) * (distance/(35*math.abs(wagon.speed))) * math.random(45,100)*0.01
 								local arc = -(0.3236*distance^-0.404) -- lower number is higher arc
+								local space = nil
+								if (string.find(wagon.surface.name, " Orbit") or string.find(wagon.surface.name, " Field") or string.find(wagon.surface.name, " Belt")) then
+									arc = -99999999999999
+									x = x + (xUnit*wagon.speed * 500)
+									y = y + (yUnit*wagon.speed * 500)
+									distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
+									space = true
+								end
 								local AirTime = math.floor(distance/speed)
 								local vector = {x=x-wagon.position.x, y=y-wagon.position.y}
 								local spin = math.random(-10,10)*0.01
-								global.FlyingItems[global.FlightNumber] = {sprite=sprite, shadow=shadow, speed=speed, arc=arc, spin=spin, item=ItemName, amount=LaunchedAmount%GroupSize, target={x=x, y=y}, start={x=wagon.position.x+(math.random(-10, 10)*0.1), y=wagon.position.y+(math.random(-10, 10)*0.1)}, AirTime=AirTime, StartTick=game.tick, LandTick=game.tick+AirTime, vector=vector}
+								global.FlyingItems[global.FlightNumber] =
+									{sprite=sprite,
+									shadow=shadow,
+									speed=speed,
+									arc=arc,
+									spin=spin,
+									item=ItemName,
+									amount=LaunchedAmount%GroupSize,
+									target={x=x, y=y},
+									start={x=wagon.position.x+(math.random(-10, 10)*0.1), y=wagon.position.y+(math.random(-10, 10)*0.1)},
+									AirTime=AirTime,
+									StartTick=game.tick,
+									LandTick=game.tick+AirTime,
+									vector=vector,
+									space=space}
+								if (wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack(ItemName).item_number ~= nil) then
+									local CloudStorage = game.create_inventory(1)
+									local item, index = wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack(ItemName)
+									CloudStorage.insert(item)
+									item.clear()
+									global.FlyingItems[global.FlightNumber].CloudStorage = CloudStorage
+								end
 								global.FlightNumber = global.FlightNumber + 1
 							end
 							wagon.get_inventory(defines.inventory.cargo_wagon).remove({name = ItemName, count=LaunchedAmount})

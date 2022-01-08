@@ -12,7 +12,7 @@ local function on_tick(event)
          rendering.set_orientation(FlyingItem.sprite, rendering.get_orientation(FlyingItem.sprite)+FlyingItem.spin)
          rendering.set_orientation(FlyingItem.shadow, rendering.get_orientation(FlyingItem.shadow)+FlyingItem.spin)
 
-      elseif (game.tick == FlyingItem.LandTick) then
+      elseif (game.tick == FlyingItem.LandTick and FlyingItem.space == nil) then
          local ThingLandedOn = rendering.get_surface(FlyingItem.sprite).find_entities_filtered
             {
                position = {math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5},
@@ -28,36 +28,73 @@ local function on_tick(event)
             if (string.find(ThingLandedOn.name, "BouncePlate")) then -- if that thing was a bounce plate
                local unitx = 1
                local unity = 1
+               effect = "BouncePlateParticle"
                if (string.find(ThingLandedOn.name, "DirectedBouncePlate")) then
                   unitx = global.OrientationUnitComponents[ThingLandedOn.orientation].x
                   unity = global.OrientationUnitComponents[ThingLandedOn.orientation].y
-                  traveling = global.OrientationUnitComponents[ThingLandedOn.orientation].name
                   if (FlyingItem.player) then
                      global.AllPlayers[FlyingItem.player.index].direction = global.OrientationUnitComponents[ThingLandedOn.orientation].name
                   end
-               else
-                  ---- "From" details ----
-                  ---- I set thrown things to have a range just short of dead center to detect what direction they came from ----
+               elseif (string.find(ThingLandedOn.name, "DirectorBouncePlate")) then
+                  for each, parameter in pairs(ThingLandedOn.get_or_create_control_behavior().parameters) do
+                     if (parameter.signal.type == "item" and parameter.signal.name == FlyingItem.item) then
+                        if (parameter.index >= 1 and parameter.index <= 10) then
+                           unitx = 0
+                           unity = -1
+                           effect = "BouncePlateParticlered"
+                        elseif (parameter.index >= 11 and parameter.index <= 20) then
+                           unitx = 1
+                           unity = 0
+                           effect = "BouncePlateParticlegreen"
+                        elseif (parameter.index >= 21 and parameter.index <= 30) then
+                           unitx = 0
+                           unity = 1
+                           effect = "BouncePlateParticleblue"
+                        elseif (parameter.index >= 31 and parameter.index <= 40) then
+                           unitx = -1
+                           unity = 0
+                           effect = "BouncePlateParticleyellow"
+                        end
+                        break
+                     end
+                  end
+                  if (unitx == 1 and unity == 1) then -- if there is no matching signal
+                     if (FlyingItem.start.y > FlyingItem.target.y
+                     and math.abs(FlyingItem.start.y-FlyingItem.target.y) > math.abs(FlyingItem.start.x-FlyingItem.target.x)) then
+                        unitx = 0
+                        unity = -1
+                     elseif (FlyingItem.start.y < FlyingItem.target.y
+                     and math.abs(FlyingItem.start.y-FlyingItem.target.y) > math.abs(FlyingItem.start.x-FlyingItem.target.x)) then
+                        unitx = 0
+                        unity = 1
+                     elseif (FlyingItem.start.x > FlyingItem.target.x
+                     and math.abs(FlyingItem.start.y-FlyingItem.target.y) < math.abs(FlyingItem.start.x-FlyingItem.target.x)) then
+                        unitx = -1
+                        unity = 0
+                     elseif (FlyingItem.start.x < FlyingItem.target.x
+                     and math.abs(FlyingItem.start.y-FlyingItem.target.y) < math.abs(FlyingItem.start.x-FlyingItem.target.x)) then
+                        unitx = 1
+                        unity = 0
+                     end
+                  end
+               elseif (string.find(ThingLandedOn.name, "BouncePlate")) then
+                  ---- determine "From" direction ----
                   if (FlyingItem.start.y > FlyingItem.target.y
                   and math.abs(FlyingItem.start.y-FlyingItem.target.y) > math.abs(FlyingItem.start.x-FlyingItem.target.x)) then
                      unitx = 0
                      unity = -1
-                     traveling = "up"
                   elseif (FlyingItem.start.y < FlyingItem.target.y
                   and math.abs(FlyingItem.start.y-FlyingItem.target.y) > math.abs(FlyingItem.start.x-FlyingItem.target.x)) then
                      unitx = 0
                      unity = 1
-                     traveling = "down"
                   elseif (FlyingItem.start.x > FlyingItem.target.x
                   and math.abs(FlyingItem.start.y-FlyingItem.target.y) < math.abs(FlyingItem.start.x-FlyingItem.target.x)) then
                      unitx = -1
                      unity = 0
-                     traveling = "left"
                   elseif (FlyingItem.start.x < FlyingItem.target.x
                   and math.abs(FlyingItem.start.y-FlyingItem.target.y) < math.abs(FlyingItem.start.x-FlyingItem.target.x)) then
                      unitx = 1
                      unity = 0
-                     traveling = "right"
                   end
                end
 
@@ -68,7 +105,6 @@ local function on_tick(event)
                RangeBonus = 0
                SidewaysShift = 0
                tunez = "bounce"
-               effect = "BouncePlateParticle"
 
                -- Modifiers --
                if (ThingLandedOn.name == "PrimerBouncePlate" and game.entity_prototypes[FlyingItem.item.."-projectileFromRenaiTransportationPrimed"]) then
@@ -138,7 +174,20 @@ local function on_tick(event)
                   	}
                end
                clear = false
-
+               -- add the bounce pad to the bounce path list if its a tracer
+               if (FlyingItem.tracing) then
+                  if (global.ThrowerPaths[ThingLandedOn.unit_number] == nil) then
+                     global.ThrowerPaths[ThingLandedOn.unit_number] = {}
+                     global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing] = {}
+                     global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing][FlyingItem.item] = true
+                  elseif (global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing] == nil) then
+                     global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing] = {}
+                     global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing][FlyingItem.item] = true
+                  else
+                     global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing][FlyingItem.item] = true
+                  end
+                  script.register_on_entity_destroyed(ThingLandedOn)
+               end
             -- non-tracers falling on something
             elseif (FlyingItem.tracing == nil) then
                -- players falling on something
@@ -154,31 +203,80 @@ local function on_tick(event)
                -- items falling on something
                else
                   if (ThingLandedOn.name == "OpenContainer" and ThingLandedOn.can_insert({name=FlyingItem.item})) then
-                     ThingLandedOn.insert({name=FlyingItem.item, count=FlyingItem.amount})
+                     if (FlyingItem.CloudStorage) then
+                        ThingLandedOn.insert(FlyingItem.CloudStorage[1])
+                        FlyingItem.CloudStorage.destroy()
+                     else
+                        ThingLandedOn.insert({name=FlyingItem.item, count=FlyingItem.amount})
+                     end
 
                   ---- If the thing it landed on has an inventory and a hatch, insert the item ----
                   elseif (ThingLandedOn.surface.find_entity('HatchRT', {math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5}) and ThingLandedOn.can_insert({name=FlyingItem.item})) then
-                     ThingLandedOn.insert({name=FlyingItem.item, count=FlyingItem.amount})
+                     if (FlyingItem.CloudStorage) then
+                        ThingLandedOn.insert(FlyingItem.CloudStorage[1])
+                        FlyingItem.CloudStorage.destroy()
+                     else
+                        ThingLandedOn.insert({name=FlyingItem.item, count=FlyingItem.amount})
+                     end
 
                   ---- If it landed on something but there's also a cargo wagon there
                   elseif (LandedOnCargoWagon ~= nil and LandedOnCargoWagon.can_insert({name=FlyingItem.item})) then
-                     LandedOnCargoWagon.insert({name=FlyingItem.item, count=FlyingItem.amount})
+                     if (FlyingItem.CloudStorage) then
+                        LandedOnCargoWagon.insert(FlyingItem.CloudStorage[1])
+                        FlyingItem.CloudStorage.destroy()
+                     else
+                        LandedOnCargoWagon.insert({name=FlyingItem.item, count=FlyingItem.amount})
+                     end
 
                   ---- otherwise it bounces off whatever it landed on and lands as an item on the nearest empty space within 10 tiles. destroyed if no space ----
                   else
-                     rendering.get_surface(FlyingItem.sprite).spill_item_stack
-                        (
-                           rendering.get_surface(FlyingItem.sprite).find_non_colliding_position("item-on-ground",FlyingItem.target, 0, 0.1),
-                           {name=FlyingItem.item, count=FlyingItem.amount}
-                        )
+                     if (FlyingItem.CloudStorage) then
+                        rendering.get_surface(FlyingItem.sprite).spill_item_stack
+                           (
+                              rendering.get_surface(FlyingItem.sprite).find_non_colliding_position("item-on-ground",FlyingItem.target, 0, 0.1),
+                              FlyingItem.CloudStorage[1]
+                           )
+                        FlyingItem.CloudStorage.destroy()
+                     else
+                        rendering.get_surface(FlyingItem.sprite).spill_item_stack
+                           (
+                              rendering.get_surface(FlyingItem.sprite).find_non_colliding_position("item-on-ground",FlyingItem.target, 0, 0.1),
+                              {name=FlyingItem.item, count=FlyingItem.amount}
+                           )
+                     end
 
                   end
                end
             -- tracers falling on something
             else
                if (global.CatapultList[FlyingItem.tracing]) then
-                  global.CatapultList[FlyingItem.tracing].target = ThingLandedOn
-                  script.register_on_entity_destroyed(ThingLandedOn)
+                  if (LandedOnCargoWagon) then
+                     global.CatapultList[FlyingItem.tracing].targets[FlyingItem.item] = LandedOnCargoWagon
+                     if (global.ThrowerPaths[LandedOnCargoWagon.unit_number] == nil) then
+                        global.ThrowerPaths[LandedOnCargoWagon.unit_number] = {}
+                        global.ThrowerPaths[LandedOnCargoWagon.unit_number][FlyingItem.tracing] = {}
+                        global.ThrowerPaths[LandedOnCargoWagon.unit_number][FlyingItem.tracing][FlyingItem.item] = true
+                     elseif (global.ThrowerPaths[LandedOnCargoWagon.unit_number][FlyingItem.tracing] == nil) then
+                        global.ThrowerPaths[LandedOnCargoWagon.unit_number][FlyingItem.tracing] = {}
+                        global.ThrowerPaths[LandedOnCargoWagon.unit_number][FlyingItem.tracing][FlyingItem.item] = true
+                     else
+                        global.ThrowerPaths[LandedOnCargoWagon.unit_number][FlyingItem.tracing][FlyingItem.item] = true
+                     end
+                     script.register_on_entity_destroyed(LandedOnCargoWagon)
+                  else
+                     global.CatapultList[FlyingItem.tracing].targets[FlyingItem.item] = ThingLandedOn
+                     if (global.ThrowerPaths[ThingLandedOn.unit_number] == nil) then
+                        global.ThrowerPaths[ThingLandedOn.unit_number] = {}
+                        global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing] = {}
+                        global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing][FlyingItem.item] = true
+                     elseif (global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing] == nil) then
+                        global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing] = {}
+                        global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing][FlyingItem.item] = true
+                     else
+                        global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing][FlyingItem.item] = true
+                     end
+                     script.register_on_entity_destroyed(ThingLandedOn)
+                  end
                   global.CatapultList[FlyingItem.tracing].ImAlreadyTracer = "traced"
                end
             end
@@ -195,26 +293,37 @@ local function on_tick(event)
                   FlyingItem.player.character.die()
                else
                   rendering.get_surface(FlyingItem.sprite).pollute(FlyingItem.target, FlyingItem.amount*0.5)
+                  if (FlyingItem.CloudStorage) then
+                     FlyingItem.CloudStorage.destroy()
+                  end
                end
             else
                if (FlyingItem.player == nil) then
-                  rendering.get_surface(FlyingItem.sprite).spill_item_stack
-                     (
-                        rendering.get_surface(FlyingItem.sprite).find_non_colliding_position("item-on-ground", FlyingItem.target, 0, 0.1),
-                        {name=FlyingItem.item, count=FlyingItem.amount}
-                     )
+                  if (FlyingItem.CloudStorage) then
+                     rendering.get_surface(FlyingItem.sprite).spill_item_stack
+                        (
+                           rendering.get_surface(FlyingItem.sprite).find_non_colliding_position("item-on-ground", FlyingItem.target, 0, 0.1),
+                           FlyingItem.CloudStorage[1]
+                        )
+                     FlyingItem.CloudStorage.destroy()
+                  else
+                     rendering.get_surface(FlyingItem.sprite).spill_item_stack
+                        (
+                           rendering.get_surface(FlyingItem.sprite).find_non_colliding_position("item-on-ground", FlyingItem.target, 0, 0.1),
+                           {name=FlyingItem.item, count=FlyingItem.amount}
+                        )
+                  end
                end
             end
          -- tracer
          elseif (FlyingItem.tracing ~= nil and global.CatapultList[FlyingItem.tracing]) then
             --game.print(FlyingItem.tracing)
             global.CatapultList[FlyingItem.tracing].ImAlreadyTracer = "traced"
-            global.CatapultList[FlyingItem.tracing].target = "nothing"
+            global.CatapultList[FlyingItem.tracing].targets[FlyingItem.item] = "nothing"
          end
          if (clear == true) then
             rendering.destroy(FlyingItem.sprite)
             rendering.destroy(FlyingItem.shadow)
-            global.FlyingItems[each] = nil
             if (FlyingItem.destination ~= nil and global.OnTheWay[FlyingItem.destination]) then
                global.OnTheWay[FlyingItem.destination][FlyingItem.item] = global.OnTheWay[FlyingItem.destination][FlyingItem.item] - FlyingItem.amount
             end
@@ -252,7 +361,15 @@ local function on_tick(event)
                   FlyingItem.SwapBack.destroy()
                end
             end
+            global.FlyingItems[each] = nil
          end
+
+      elseif (game.tick > FlyingItem.LandTick) then
+         if (FlyingItem.sprite) then
+            rendering.destroy(FlyingItem.sprite)
+            rendering.destroy(FlyingItem.shadow)
+         end
+         global.FlyingItems[each] = nil
       end
 
    end

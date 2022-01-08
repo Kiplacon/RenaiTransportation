@@ -31,13 +31,13 @@ magnetRamps.setRange = function (ramp, range, player)
 		local centerPosition = math2d.position.add(ramp.entity.position, offset)
 
 		local a, b = makeMagRampSection(centerPosition, ramp.entity.surface, ramp.entity.orientation)
-		table.insert(ramp.tiles, a)		
-		table.insert(ramp.tiles, b)		
+		table.insert(ramp.tiles, a)
+		table.insert(ramp.tiles, b)
 	end
 	ramp.power.electric_buffer_size = 200000 * range
 
 	if player then
-		player.print("Set Range: " .. range .. " tiles. Required power: " .. util.format_number(ramp.power.electric_buffer_size, true) .. "J")
+		player.print({"magnet-ramp-stuff.set", range, util.format_number(ramp.power.electric_buffer_size, true)})
 	end
 end
 

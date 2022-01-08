@@ -1,4 +1,4 @@
-ConnectionPoints = 
+ConnectionPoints =
     {
       shadow =
       {
@@ -20,7 +20,7 @@ data:extend({
 		filename = "__RenaiTransportation__/graphics/testRL.png",
 		size = 640
 	},
-	
+
 	{
 		type = "sprite",
 		name = "RTDirectedRangeOverlayUD",
@@ -29,7 +29,7 @@ data:extend({
 	},
 
 	{ --------- Bounce plate entity --------------
-		type = "constant-combinator",
+		type = "simple-entity-with-owner",
 		name = "DirectedBouncePlate",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateIconn.png",
 		icon_size = 64,
@@ -39,10 +39,10 @@ data:extend({
 	    collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
-		item_slot_count = 18,
-		circuit_wire_max_distance = 9,
-		sprites = 
-			{ 
+		--item_slot_count = 18,
+		--circuit_wire_max_distance = 9,
+		picture =
+			{
 			  sheets =
 			  {
 				{
@@ -87,7 +87,7 @@ data:extend({
 		  },
 		radius_visualisation_specification =
 			{
-				sprite = 
+				sprite =
 					{
 						filename = "__RenaiTransportation__/graphics/testalt.png",
 						size = 640
@@ -96,7 +96,7 @@ data:extend({
 				distance = 10
 			}
 	},
-	
+
 	{ --------- The Bounce plate item -------------
 		type = "item",
 		name = "DirectedBouncePlateItem",
@@ -107,13 +107,13 @@ data:extend({
 		place_result = "DirectedBouncePlate",
 		stack_size = 50
 	},
-	
+
 	{ --------- The Bounce plate recipie ----------
 		type = "recipe",
 		name = "DirectedBouncePlateRecipie",
 		enabled = false,
 		energy_required = 1,
-		ingredients = 
+		ingredients =
 			{
 				{"iron-plate", 5},
 				{"automation-science-pack", 1}

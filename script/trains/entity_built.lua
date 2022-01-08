@@ -33,7 +33,7 @@ local function handleTrainRampPlacerBuilt(entity, player)
 
 	if not ramp then
 		local dst = player or game
-		dst.print('Unable to build ramp here, please try again')
+		dst.print({"magnet-ramp-stuff.unable"})
 	else
 		entity.destroy({raise_destroy = true})
 	end

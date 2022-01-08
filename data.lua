@@ -2,10 +2,12 @@ require("prototypes.technology")
 require("prototypes.sounds")
 require("prototypes.TabSortingStuff")
 require("prototypes.TrainGoBrrrr.PropHunt")
+require("prototypes.DataTracker")
 
 if (settings.startup["RTThrowersSetting"].value == true) then
 	require("prototypes.BouncePlates.BouncePlate")
 	require("prototypes.BouncePlates.DirectedBouncePlate")
+	require("prototypes.BouncePlates.DirectorBouncePlate")
 	require("prototypes.PlayerLauncher")
 	require("prototypes.OpenContainer")
 	require("prototypes.hatch")

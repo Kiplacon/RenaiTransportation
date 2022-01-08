@@ -86,6 +86,14 @@ local function config_changed()
 			cliff_settings = {name = "cliff", cliff_elevation_0 = 0, richness = 0}
 		})
 	end
+
+	if (global.DataTrackerLinks == nil) then
+		global.DataTrackerLinks = {}
+	end
+
+	if (global.ThrowerPaths == nil) then
+		global.ThrowerPaths = {}
+	end
 end
 
 return config_changed

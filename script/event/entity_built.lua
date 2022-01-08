@@ -5,8 +5,6 @@ local function entity_built(event)
 
 	local player = nil
 
-	--game.print(entity.name)
-
 	if event.player_index then
 		player = game.players[event.player_index]
 		if (global.AllPlayers[event.player_index].RangeAdjusting
@@ -27,7 +25,7 @@ local function entity_built(event)
 	end
 
 	if (string.find(entity.name, "RTThrower-")) then
-		global.CatapultList[entity.unit_number] = {entity = entity, target = "nothing"}
+		global.CatapultList[entity.unit_number] = {entity = entity, targets = {}}
 		if (entity.name == "RTThrower-EjectorHatchRT") then
 			global.CatapultList[entity.unit_number].sprite = rendering.draw_animation
 				{
@@ -75,7 +73,7 @@ local function entity_built(event)
 					y_scale = yflip,
 					tint = {r = 0.4, g = 0.4, b = 0.4, a = 0}
 				}
-		elseif (entity.name == "BouncePlate") then
+		elseif (entity.name == "BouncePlate" or entity.name == "SignalBouncePlate" or entity.name == "DirectorBouncePlate") then
 			global.BouncePadList[entity.unit_number].arrow = rendering.draw_sprite
 				{
 					sprite = "RTRangeOverlay",
@@ -84,15 +82,30 @@ local function entity_built(event)
 					only_in_alt_mode = true,
 					tint = {r = 0.4, g = 0.4, b = 0.4, a = 0}
 				}
-		elseif (entity.name == "SignalBouncePlate") then
-			global.BouncePadList[entity.unit_number].arrow = rendering.draw_sprite
-				{
-					sprite = "RTRangeOverlay",
-					surface = entity.surface,
-					target = entity,
-					only_in_alt_mode = true,
-					tint = {r = 0.4, g = 0.4, b = 0.4, a = 0}
-				}
+			-- link trackers with director plates on build or blueprint build
+			if (entity.name == "DirectorBouncePlate") then
+				for i = 1, 10 do
+					if (entity.get_or_create_control_behavior().get_signal(i).signal == nil)then
+						entity.get_or_create_control_behavior().set_signal(i, {signal={type="virtual", name="DirectorBouncePlateUp"}, count=0})
+					end
+				end
+				for i = 11, 20 do
+					if (entity.get_or_create_control_behavior().get_signal(i).signal == nil)then
+						entity.get_or_create_control_behavior().set_signal(i, {signal={type="virtual", name="DirectorBouncePlateRight"}, count=0})
+					end
+				end
+				for i = 21, 30 do
+					if (entity.get_or_create_control_behavior().get_signal(i).signal == nil)then
+						entity.get_or_create_control_behavior().set_signal(i, {signal={type="virtual", name="DirectorBouncePlateDown"}, count=0})
+					end
+				end
+				for i = 31, 40 do
+					if (entity.get_or_create_control_behavior().get_signal(i).signal == nil)then
+						entity.get_or_create_control_behavior().set_signal(i, {signal={type="virtual", name="DirectorBouncePlateLeft"}, count=0})
+					end
+				end
+			end
+
 		elseif (entity.name == "PrimerBouncePlate") then
 			global.BouncePadList[entity.unit_number].arrow = rendering.draw_sprite
 				{
@@ -116,9 +129,10 @@ local function entity_built(event)
 					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0}
 				}
 		end
-
+	------- make train ramp stuff unrotatable just in case
 	elseif (entity.name == "RTTrainRamp" or entity.name == "RTTrainRampNoSkip" or entity.name == "RTMagnetTrainRamp" or entity.name == "RTMagnetTrainRampNoSkip") then
 		entity.rotatable = false
+
 	end
 end
 

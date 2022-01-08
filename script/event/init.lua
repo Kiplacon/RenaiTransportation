@@ -75,7 +75,7 @@ local function on_int()
 	-- thrown item properties and animation
 	global.FlightNumber = 1
 	global.FlyingItems = {}
-	
+
 	if (game.surfaces["RTStasisRealm"] == nil) then
 		game.create_surface("RTStasisRealm",
 		{
@@ -87,6 +87,11 @@ local function on_int()
 			cliff_settings = {name = "cliff", cliff_elevation_0 = 0, richness = 0}
 		})
 	end
+
+	global.DataTrackerLinks = {}
+
+	global.ThrowerPaths = {}
+
 end
 
 return on_int

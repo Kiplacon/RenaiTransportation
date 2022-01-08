@@ -363,14 +363,14 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 							volume = 0.7
 						}
 				else
-					player.print("I need an Electric Zipline Trolley with Controller equipped and selected to ride power lines.")
+					player.print({"zipline-stuff.reqs"})
 				end
 			else
-				player.print("Out of range.")
+				player.print({"zipline-stuff.range"})
 			end
 
 		elseif (player.character and player.character.driving == false and global.AllPlayers[event1.player_index].LetMeGuideYou == nil and ThingHovering.type == "electric-pole" and #ThingHovering.neighbours == 0) then
-			player.print("That pole isn't connected to anything")
+			player.print({"zipline-stuff.NotConnected"})
 
 		end
 	end

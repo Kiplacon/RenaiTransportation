@@ -30,7 +30,7 @@ function Animation.updateOffsets(properties, height)
 	-- Adjust offset of rendered sprites
 	rendering.set_target(properties.TrainImageID, properties.GuideCar, {0, height})
 	rendering.set_target(properties.MaskID, properties.GuideCar, {0, height})
-	rendering.set_target(properties.ShadowID, properties.GuideCar, {-height + 1, 0.5})	
+	rendering.set_target(properties.ShadowID, properties.GuideCar, {-height + 1, 0.5})
 end
 
 function Animation.updateRotation(properties, elapsed)
@@ -59,7 +59,7 @@ function Animation.updateRotation(properties, elapsed)
 end
 
 function Animation.updateScale(properties, height)
-	
+
 	if (properties.RampOrientation == 0 or properties.RampOrientation == 0.50) then
 		-- Going down or up, scale train to make it pop out
 		local scaleDelta = math.abs(height) * 0.05
@@ -75,7 +75,7 @@ function Animation.updateScale(properties, height)
 
 	rendering.set_x_scale(properties.ShadowID, 0.25 + shadowScaleDelta)
 	rendering.set_y_scale(properties.ShadowID, 0.5 + shadowScaleDelta)
-	rendering.set_color(properties.ShadowID, {1, 1, 1, 5/(5-height)})
+	rendering.set_color(properties.ShadowID, {1, 1, 1, 2.5/(5-height)})
 	--rendering.set_color(properties.ShadowID, {1, 1, 1, math.abs(90 - 4*math.abs(math.ceil(height)))})
 end
 

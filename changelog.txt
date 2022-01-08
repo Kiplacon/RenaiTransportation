@@ -1,4 +1,24 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.9.3
+Date: 1/8/2022
+  Additions:
+    - Director Bounce Pads, not to be confused with Directed Bounce Pads. Can bounce different items in different directions based on filters. Probably the closest thing this mod will ever have to "logistics". No I'm not very good at graphics.
+    - Added a setting to change the maximum Magnet Ramp Range cause why not.
+  Changes:
+    - Changed Overflow prevention code because of the Director Bounce Pad to track targets per item per thrower instead of just target per thrower. Also now records the actual bounce path so a new trace only has to happen when the path is altered which might actually be more efficient.
+    - Changed train jump shadows so they're not darker in the air than they are on the ground lmao
+    - Changed Directed Bounce Pads to be simple-entity-with-owner instead of a reskinned constant combinator. At one point I wanted to make them controllable by circuit network to turn them automatically but I don't really think it would be practical/useful anymore and having it be a constant combinator was preventing people from manually repairing it.
+    - Transferred all hard coded descriptions and text to the locale file.
+  Bugfixes:
+    - Fixed that when a thrower threw an item with extra data (like armor/spidertron with grid equipment, blueprints, etc.) it now keeps that data after a throw. It used to just give a fresh version of the item after the throw.
+---------------------------------------------------------------------------------------------------
+Version: 0.9.2
+Date: 11/22/2021
+  Changes:
+    - Added Space Exploration "Integration" where items thrown in space don't arc as if affected by gravity. Strictly speaking, if the surface the thrower is on has " Orbit", " Field", or " Belt" in it, the antigravity throw will occur. I've never actually played Space Exploration buy from what I could find in creative mode, these areas are considered "in space".
+  Bugfixes:
+    - Fixed Cargo Wagon tracking with the new overflow prevention code
+---------------------------------------------------------------------------------------------------
 Version: 0.9.1
 Date: 11/15/2021
   Changes:

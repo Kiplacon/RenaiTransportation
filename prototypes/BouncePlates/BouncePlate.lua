@@ -18,7 +18,7 @@ data:extend({
 	    collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
-		picture = 
+		picture =
 			{
 			layers =
 				{
@@ -42,7 +42,7 @@ data:extend({
 			},
 		radius_visualisation_specification =
 			{
-				sprite = 
+				sprite =
 					{
 						filename = "__RenaiTransportation__/graphics/testalt.png",
 						size = 640
@@ -51,7 +51,7 @@ data:extend({
 				distance = 10
 			}
 	},
-	
+
 	{ --------- The Bounce plate item -------------
 		type = "item",
 		name = "BouncePlateItem",
@@ -62,20 +62,20 @@ data:extend({
 		place_result = "BouncePlate",
 		stack_size = 50
 	},
-	
+
 	{ --------- The Bounce plate recipie ----------
 		type = "recipe",
 		name = "BouncePlateRecipie",
 		enabled = true,
 		energy_required = 1,
-		ingredients = 
+		ingredients =
 			{
 				{"iron-plate", 4},
 				{"automation-science-pack", 1}
 			},
 		result = "BouncePlateItem"
 	},
-	
+
 	{ --------- bounce effect ----------
 		type = "optimized-particle",
 		name = "BouncePlateParticle",
@@ -94,3 +94,31 @@ data:extend({
 			}
 	}
 })
+
+local colors = {
+	red = {255,0,0,255},
+	green = {0,255,0,255},
+	orange = {233,138,22,255},
+	blue = {0,0,255,255},
+	yellow = {255,255,0,255}
+}
+for color, tint in pairs(colors) do
+	data:extend({
+		{ --------- colorless bounce effect ----------
+			type = "optimized-particle",
+			name = "BouncePlateParticle"..color,
+			life_time = 8,
+			render_layer = "higher-object-above",
+			pictures =
+				{
+				  filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Particle2.png",
+				  tint = tint,
+				  size = 32,
+				  priority = "extra-high",
+				  line_length = 4, -- frames per row
+				  frame_count = 4, -- total frames
+				  animation_speed = 0.5
+				}
+		}
+	})
+end

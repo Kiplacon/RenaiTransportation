@@ -8,8 +8,8 @@ local function click(event)
 	--| Start setting range of magenet ramp
 	elseif (game.get_player(event.player_index).selected and (game.get_player(event.player_index).selected.name == "RTMagnetTrainRamp" or game.get_player(event.player_index).selected.name == "RTMagnetTrainRampNoSkip") and global.AllPlayers[event.player_index].SettingRange == nil) then
 		local ramp = game.get_player(event.player_index).selected
-		local MaxRange = 100
-		game.get_player(event.player_index).print("Now click a straight rail in range to set Magnet Ramp jump distance.")
+		local MaxRange = settings.global["RTMagRampRange"].value
+		game.get_player(event.player_index).print({"magnet-ramp-stuff.Step2"})
 		local rektangle = rendering.draw_sprite
 			{
 				sprite = "RTMagnetTrainRampRange",
@@ -66,16 +66,16 @@ local function click(event)
 					game.get_player(event.player_index)
 				)
 			elseif (TheRamp == nil or TheRamp.valid == false) then
-				game.get_player(event.player_index).print("Magnet Ramp is missing. What did you DO?!")
+				game.get_player(event.player_index).print({"magnet-ramp-stuff.missing"})
 
 
 			else
-				game.get_player(event.player_index).print("Out of range, womp")
+				game.get_player(event.player_index).print({"magnet-ramp-stuff.BeyondRange", global.AllPlayers[event.player_index].range})
 
 			end
 
 		else
-			game.get_player(event.player_index).print("That's not a straight rail")
+			game.get_player(event.player_index).print({"magnet-ramp-stuff.StraightRail"})
 
 		end
 
@@ -86,9 +86,7 @@ local function click(event)
 			rendering.destroy(global.MagnetRamps[TheRamp.unit_number].rangeID)
 		end
 		global.AllPlayers[event.player_index] = {}
-	
-	-- elseif (game.get_player(event.player_index).selected and string.find(game.get_player(event.player_index).selected.name, "RTThrower-")) then
-		-- game.print(global.CatapultList[game.get_player(event.player_index).selected.unit_number].target.name)
+
 	end
 end
 

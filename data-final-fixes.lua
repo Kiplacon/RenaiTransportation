@@ -266,9 +266,9 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	end
 
 	if (TheThrower.localised_description) then
-		TheThrower.localised_description = {"test.combo", "This inserter has been re-wired to throw items "..ItsRange.." tiles through the air. Range can be configured once researched using Interact (default F).", TheThrower.localised_description}
+		TheThrower.localised_description = {"thrower-gen.HasDesc", ItsRange, TheThrower.localised_description}
 	else
-		TheThrower.localised_description = "This inserter has been re-wired to throw items "..ItsRange.." tiles through the air. Range can be configured once researched using Interact (default F)."
+		TheThrower.localised_description = {"thrower-gen.DefaultDesc", ItsRange}
 	end
 	TheThrower.hand_size = 0
 	TheThrower.hand_base_picture =

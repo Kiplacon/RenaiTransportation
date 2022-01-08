@@ -9,6 +9,22 @@ local function entity_destroyed(event)
 	elseif (global.OnTheWay[event.unit_number]) then
 		global.OnTheWay[event.unit_number] = nil
 	end
+
+	if (global.DataTrackerLinks[event.unit_number] ~= nil) then
+		global.DataTrackerLinks[event.unit_number].tracker.destroy()
+		global.DataTrackerLinks[event.unit_number] = nil
+	end
+
+	if (global.ThrowerPaths[event.unit_number] ~= nil) then
+		for ThrowerUN, TrackedItems in pairs(global.ThrowerPaths[event.unit_number]) do
+			if (global.CatapultList[ThrowerUN]) then
+				for item, ligma in pairs(TrackedItems) do
+					global.CatapultList[ThrowerUN].targets[item] = nil
+				end
+			end
+		end
+		global.ThrowerPaths[event.unit_number] = nil
+	end
 end
 
 return entity_destroyed

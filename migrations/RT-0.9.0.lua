@@ -7,3 +7,4 @@ end
 for PlayerID, PlayerLuaData in pairs(game.players) do
 	global.AllPlayers[PlayerID] = {}
 end
+settings.global["RTOverflowComp"].value = true
