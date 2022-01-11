@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.9.4
+Date: 1/10/2022
+  Bugfixes:
+    - Added some checks to prevent a crash that I think comes from thrower targets being destroyed at just the right time.
+    - Fixed crashes when throwing items at cliffs or other things that don't have unit_numbers
+---------------------------------------------------------------------------------------------------
 Version: 0.9.3
 Date: 1/8/2022
   Additions:

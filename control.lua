@@ -192,10 +192,15 @@ function(event)
 						end
 						catapult.active = false
 					-- first time throws for an item
-					elseif (global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number] == nil) then
+					elseif (properties.targets[catapult.held_stack.name]
+					and properties.targets[catapult.held_stack.name].valid
+					and global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number] == nil) then
 						global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number] = {}
 						global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] = 0
-					elseif (global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] == nil) then
+					elseif (properties.targets[catapult.held_stack.name]
+					and properties.targets[catapult.held_stack.name].valid
+					and global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number]
+					and global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] == nil) then
 						global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] = 0
 					end
 				-- overflow prevention off
@@ -263,7 +268,7 @@ function(event)
 								else
 									global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] = global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] + catapult.held_stack.count
 								end
-							elseif (properties.targets[catapult.held_stack.name] == "nothing") then
+							elseif (properties.targets[catapult.held_stack.name] == "nothing") then -- recheck pointing at nothing/things without unit_numbers
 								properties.targets[catapult.held_stack.name] = nil
 							end
 						end

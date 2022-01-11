@@ -263,6 +263,8 @@ local function on_tick(event)
                         global.ThrowerPaths[LandedOnCargoWagon.unit_number][FlyingItem.tracing][FlyingItem.item] = true
                      end
                      script.register_on_entity_destroyed(LandedOnCargoWagon)
+                  elseif (ThingLandedOn.unit_number == nil) then -- cliffs/trees/other things without unit_numbers
+                     global.CatapultList[FlyingItem.tracing].targets[FlyingItem.item] = "nothing"
                   else
                      global.CatapultList[FlyingItem.tracing].targets[FlyingItem.item] = ThingLandedOn
                      if (global.ThrowerPaths[ThingLandedOn.unit_number] == nil) then
