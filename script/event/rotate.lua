@@ -36,15 +36,26 @@ local function rotate(event)
 		rendering.set_animation_offset(global.CatapultList[event.entity.unit_number].sprite, global.EjectorPointing[event.entity.direction])
 	end
 
-	if (global.ThrowerPaths[event.entity.unit_number] ~= nil) then
-		for ThrowerUN, TrackedItems in pairs(global.ThrowerPaths[event.entity.unit_number]) do
-			if (global.CatapultList[ThrowerUN]) then
+	if (global.ThrowerPaths[event.entity.unit_number] ~= nil) then -- if the rotated thing is part of a throw path
+		for ThrowerUN, TrackedItems in pairs(global.ThrowerPaths[event.entity.unit_number]) do -- go through all the throwers/item pairs this thing was a part of
+			if (global.CatapultList[ThrowerUN]) then -- valid check
 				for item, sugma in pairs(TrackedItems) do
-					global.CatapultList[ThrowerUN].targets[item] = nil
+					global.CatapultList[ThrowerUN].targets[item] = nil -- reset the thrower/item pair
 				end
 			end
 		end
-		global.ThrowerPaths[event.entity.unit_number] = {}
+		global.ThrowerPaths[event.entity.unit_number] = {} -- reset this thing being part of any thrower paths
+	end
+
+	if (global.CatapultList[event.entity.unit_number]) then
+		global.CatapultList[event.entity.unit_number].targets = {}
+		for componentUN, PathsItsPartOf in pairs(global.ThrowerPaths) do
+			for ThrowerUN, TrackedItems in pairs(PathsItsPartOf) do
+				if (ThrowerUN == event.entity.unit_number) then
+					global.ThrowerPaths[componentUN][ThrowerUN] = {}
+				end
+			end
+		end
 	end
 end
 

@@ -1,4 +1,8 @@
 local function entity_destroyed(event)
+	if (global.CatapultList[event.unit_number]) then
+		global.CatapultList[event.unit_number] = nil
+	end
+
 	if (global.MagnetRamps[event.unit_number]) then
 		for each, tile in pairs(global.MagnetRamps[event.unit_number].tiles) do
 			tile.destroy()

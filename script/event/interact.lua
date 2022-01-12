@@ -149,6 +149,17 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				position=player.position,
 				volume_modifier=1
 				}
+
+			if (global.CatapultList[ThingHovering.unit_number]) then
+				global.CatapultList[ThingHovering.unit_number].targets = {}
+				for componentUN, PathsItsPartOf in pairs(global.ThrowerPaths) do
+					for ThrowerUN, TrackedItems in pairs(PathsItsPartOf) do
+						if (ThrowerUN == ThingHovering.unit_number) then
+							global.ThrowerPaths[componentUN][ThrowerUN] = {}
+						end
+					end
+				end
+			end
 		--|| Swap Primer Modes
 		elseif (ThingHovering.name == "PrimerBouncePlate") then
 			ThingHovering.surface.create_entity

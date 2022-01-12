@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.9.5
+Date: 1/11/2022
+  Bugfixes:
+    - Added a check to clear thrower inserters from global list when they're destroyed. If anything explodes after this update it's probably because of this.
+    - Thrower paths are now recalculated when throwers are rotated or have their range adjusted.
+---------------------------------------------------------------------------------------------------
 Version: 0.9.4
 Date: 1/10/2022
   Bugfixes:
