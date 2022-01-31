@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.9.6
+Date: 1/30/2022
+  Bugfixes:
+    - Fixed a crash when trying to create a thrower variant of an inserter that was bigger than 1x1. Fixing them functionally would take more time than I have at the moment so for now they do not generate so you can still play with mods that add such inserters. Reported by Keysivi.
+    - Fixed thrower name gen to use the proper localised name of the inserter instead of its coded name.
+---------------------------------------------------------------------------------------------------
 Version: 0.9.5
 Date: 1/11/2022
   Bugfixes:

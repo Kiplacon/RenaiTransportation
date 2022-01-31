@@ -248,7 +248,8 @@ TheRecipe =
 TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	TheThrower.name = "RTThrower-"..ThingData.name
 	TheThrower.minable = {mining_time = 0.1, result = TheItem.name}
-	TheThrower.localised_name ="Thrower "..ThingData.name
+	--TheThrower.localised_name ="Thrower "..ThingData.name
+	TheThrower.localised_name = {"thrower-gen.name", {"entity-name."..ThingData.name}}
 	TheThrower.insert_position = {0, 14.9}
 	TheThrower.allow_custom_vectors = true
 	ItsRange = 15
@@ -584,6 +585,10 @@ for ThingID, ThingData in pairs(data.raw.inserter) do
 			and ThingData.rotation_speed ~= 0
 			and ThingData.extension_speed ~= 0
 			and data.raw.item[ThingData.minable.result] ~= nil
+			and ThingData.selection_box[1][1] >= -0.5
+			and ThingData.selection_box[1][2] >= -0.5
+			and ThingData.selection_box[2][1] <= 0.5
+			and ThingData.selection_box[2][2] <= 0.5
 			and not string.find(ThingData.name, "RTThrower-")
 			--and (not ThingData.name ~= "thrower-inserter")
 		)then
