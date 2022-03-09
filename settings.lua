@@ -68,7 +68,14 @@ data:extend({
 	name = "RTOverflowComp",
 	setting_type = "runtime-global",
 	default_value = true,
-	order = "h"
+	order = "aa"
+},
+{
+	type = "bool-setting",
+	name = "RTShowRange",
+	setting_type = "runtime-global",
+	default_value = true,
+	order = "ab"
 },
 {
 	type = "int-setting",

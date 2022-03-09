@@ -224,32 +224,7 @@ local function on_tick(event)
 				--|||| Hit dead end
 				else
 					local player = game.players[ThePlayer]
-					if (player.character) then
-						local OG2 = player.character
-						TheirProperties.SwapBack.teleport(player.position)
-						player.character = TheirProperties.SwapBack
-						TheirProperties.SwapBack.direction = OG2.direction
-						for i = 1, #OG2.get_main_inventory() do
-							player.character.get_main_inventory().insert(OG2.get_main_inventory()[i])
-						end
-						for i = 1, #OG2.get_inventory(defines.inventory.character_guns) do
-							player.character.get_inventory(defines.inventory.character_guns).insert(OG2.get_inventory(defines.inventory.character_guns)[i])
-						end
-						for i = 1, #OG2.get_inventory(defines.inventory.character_ammo) do
-							player.character.get_inventory(defines.inventory.character_ammo).insert(OG2.get_inventory(defines.inventory.character_ammo)[i])
-						end
-						for i = 1, #OG2.get_inventory(defines.inventory.character_armor) do
-							player.character.get_inventory(defines.inventory.character_armor).insert(OG2.get_inventory(defines.inventory.character_armor)[i])
-						end
-						for i = 1, #OG2.get_inventory(defines.inventory.character_trash) do
-							player.character.get_inventory(defines.inventory.character_trash).insert(OG2.get_inventory(defines.inventory.character_trash)[i])
-						end
-						TheirProperties.SwapBack.destructible = true
-						TheirProperties.SwapBack.health = OG2.health
-						TheirProperties.SwapBack.selected_gun_index = OG2.selected_gun_index
-						player.character_running_speed_modifier = 0
-						OG2.destroy()
-					end
+					SwapBackFromGhost(player)
 					TheirProperties.LetMeGuideYou.surface.play_sound
 						{
 							path = "RTZipDettach",
@@ -273,32 +248,7 @@ local function on_tick(event)
 			--||| Break if poles are invalid (destroyed or something)
 			else -- One of the two ends is no longer valid
 				local player = game.players[ThePlayer]
-				if (player.character) then
-					local OG2 = player.character
-					TheirProperties.SwapBack.teleport(player.position)
-					player.character = TheirProperties.SwapBack
-					TheirProperties.SwapBack.direction = OG2.direction
-					for i = 1, #OG2.get_main_inventory() do
-						player.character.get_main_inventory().insert(OG2.get_main_inventory()[i])
-					end
-					for i = 1, #OG2.get_inventory(defines.inventory.character_guns) do
-						player.character.get_inventory(defines.inventory.character_guns).insert(OG2.get_inventory(defines.inventory.character_guns)[i])
-					end
-					for i = 1, #OG2.get_inventory(defines.inventory.character_ammo) do
-						player.character.get_inventory(defines.inventory.character_ammo).insert(OG2.get_inventory(defines.inventory.character_ammo)[i])
-					end
-					for i = 1, #OG2.get_inventory(defines.inventory.character_armor) do
-						player.character.get_inventory(defines.inventory.character_armor).insert(OG2.get_inventory(defines.inventory.character_armor)[i])
-					end
-					for i = 1, #OG2.get_inventory(defines.inventory.character_trash) do
-						player.character.get_inventory(defines.inventory.character_trash).insert(OG2.get_inventory(defines.inventory.character_trash)[i])
-					end
-					TheirProperties.SwapBack.destructible = true
-					TheirProperties.SwapBack.health = OG2.health
-					TheirProperties.SwapBack.selected_gun_index = OG2.selected_gun_index
-					player.character_running_speed_modifier = 0
-					OG2.destroy()
-				end
+				SwapBackFromGhost(player)
 				TheirProperties.LetMeGuideYou.surface.play_sound
 					{
 						path = "RTZipDettach",
@@ -322,32 +272,7 @@ local function on_tick(event)
 		--||| Zipline Failsafe
 		elseif (TheirProperties.sliding == true) then
 			local player = game.players[ThePlayer]
-			if (player.character) then
-				local OG2 = player.character
-				TheirProperties.SwapBack.teleport(player.position)
-				player.character = TheirProperties.SwapBack
-				TheirProperties.SwapBack.direction = OG2.direction
-				for i = 1, #OG2.get_main_inventory() do
-					player.character.get_main_inventory().insert(OG2.get_main_inventory()[i])
-				end
-				for i = 1, #OG2.get_inventory(defines.inventory.character_guns) do
-					player.character.get_inventory(defines.inventory.character_guns).insert(OG2.get_inventory(defines.inventory.character_guns)[i])
-				end
-				for i = 1, #OG2.get_inventory(defines.inventory.character_ammo) do
-					player.character.get_inventory(defines.inventory.character_ammo).insert(OG2.get_inventory(defines.inventory.character_ammo)[i])
-				end
-				for i = 1, #OG2.get_inventory(defines.inventory.character_armor) do
-					player.character.get_inventory(defines.inventory.character_armor).insert(OG2.get_inventory(defines.inventory.character_armor)[i])
-				end
-				for i = 1, #OG2.get_inventory(defines.inventory.character_trash) do
-					player.character.get_inventory(defines.inventory.character_trash).insert(OG2.get_inventory(defines.inventory.character_trash)[i])
-				end
-				TheirProperties.SwapBack.destructible = true
-				TheirProperties.SwapBack.health = OG2.health
-				TheirProperties.SwapBack.selected_gun_index = OG2.selected_gun_index
-				player.character_running_speed_modifier = 0
-				OG2.destroy()
-			end
+			SwapBackFromGhost(player)
 			TheirProperties.LetMeGuideYou.destroy()
 			TheirProperties.ChuggaChugga.destroy()
 			TheirProperties.succ.destroy()

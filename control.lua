@@ -253,8 +253,23 @@ function(event)
 							speed = 0.25
 							rendering.set_target(sprite, catapult.position)
 							rendering.set_target(shadow, catapult.position)
+							-- catapult.surface.play_sound
+	                  -- 	{
+	                  -- 		path = "RTEjector",
+	                  -- 		position = catapult.position,
+	                  -- 		volume = 0.7
+	                  -- 	}
+						else
+							-- catapult.surface.play_sound
+							-- 	{
+							-- 		path = "RTThrow",
+							-- 		position = catapult.position
+							-- 	}
 						end
 						local AirTime = math.floor(distance/speed)
+						if (AirTime == 0) then -- for super fast throwers that move right on top of their target
+							AirTime = 1
+						end
 						local spin = math.random(-10,10)*0.01
 						local destination = nil
 						if (settings.global["RTOverflowComp"].value == true) then
@@ -308,54 +323,6 @@ function(event)
 		end
 	end
 end)
-
--- script.on_nth_tick(120,
--- function(event)
--- 	if (settings.global["RTOverflowComp"].value == true) then
--- 		for catapultID, properties in pairs(global.CatapultList) do
--- 			if (properties.ImAlreadyTracer == nil or properties.ImAlreadyTracer == "traced") then
--- 				properties.ImAlreadyTracer = "tracing"
--- 				local sprite = rendering.draw_sprite
--- 					{
--- 						sprite = "RTBlank",
--- 						target = properties.entity.position,
--- 						surface = properties.entity.surface
--- 					}
--- 				local shadow = rendering.draw_sprite
--- 					{
--- 						sprite = "RTBlank",
--- 						target = properties.entity.position,
--- 						surface = properties.entity.surface
--- 					}
--- 				local	x = properties.entity.drop_position.x
--- 				local y = properties.entity.drop_position.y
--- 				local speed = 999
--- 				local arc = -5 -- lower number is higher arc
--- 				local AirTime = 1
--- 				local vector = {x=x-properties.entity.position.x, y=y-properties.entity.position.y}
--- 				local spin = 0
--- 				global.FlyingItems[global.FlightNumber] =
--- 					{sprite=sprite,
--- 					shadow=shadow,
--- 					speed=speed,
--- 					arc=arc,
--- 					spin=spin,
--- 					item="tracer",
--- 					amount=420,
--- 					target={x=x, y=y},
--- 					start=properties.entity.position,
--- 					AirTime=AirTime,
--- 					StartTick=game.tick,
--- 					LandTick=game.tick+AirTime,
--- 					vector=vector,
--- 					tracing = properties.entity.unit_number}
--- 				global.FlightNumber = global.FlightNumber + 1
--- 			end
--- 		end
--- 	else
--- 	--dont
--- 	end
--- end)
 
 -- Projectile Lands
 -- When a projectile lands and its effect_id is triggered, what to do ----
@@ -441,3 +408,6 @@ function(event)
 		global.ThrowerPaths[event.entity.unit_number] = {}
 	end
 end)
+
+ -- a bunch of functions used in various other places
+require("script.MiscFunctions")

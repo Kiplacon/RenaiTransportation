@@ -26,6 +26,7 @@ local function on_tick(event)
          -- landed on something
          if (ThingLandedOn) then
             if (string.find(ThingLandedOn.name, "BouncePlate")) then -- if that thing was a bounce plate
+               clear = false
                local unitx = 1
                local unity = 1
                effect = "BouncePlateParticle"
@@ -108,55 +109,57 @@ local function on_tick(event)
 
                -- Modifiers --
                if (ThingLandedOn.name == "PrimerBouncePlate" and game.entity_prototypes[FlyingItem.item.."-projectileFromRenaiTransportationPrimed"]) then
-               	primable = "Primed"
-               	RangeBonus = 30
-               	tunez = "PrimeClick"
-               	effect = "PrimerBouncePlateParticle"
+                  primable = "Primed"
+                  RangeBonus = 30
+                  tunez = "PrimeClick"
+                  effect = "PrimerBouncePlateParticle"
                elseif (ThingLandedOn.name == "PrimerSpreadBouncePlate" and game.entity_prototypes[FlyingItem.item.."-projectileFromRenaiTransportationPrimed"]) then
-               	primable = "Primed"
-               	RangeBonus = math.random(270,300)*0.1
-               	SidewaysShift = math.random(-200,200)*0.1
-               	tunez = "PrimeClick"
-               	effect = "PrimerBouncePlateParticle"
+                  primable = "Primed"
+                  tunez = "PrimeClick"
+                  effect = "PrimerBouncePlateParticle"
                elseif (ThingLandedOn.name == "SignalBouncePlate") then
-               	ThingLandedOn.get_control_behavior().enabled = not ThingLandedOn.get_control_behavior().enabled
-               	effect = "SignalBouncePlateParticle"
-               end
-
-               ---- Creating the bounced thing ----
-               if (primable == "Primed") then
-                  ThingLandedOn.surface.create_entity
-                  	({
-                     	name = FlyingItem.item.."-projectileFromRenaiTransportation"..primable,
-                     	position = ThingLandedOn.position, --required setting for rendering, doesn't affect spawn
-                     	source = event.source_entity, --defaults to nil if there was no source_entity and uses source_position instead
-                     	source_position = ThingLandedOn.position,
-                     	target_position = {ThingLandedOn.position.x  +unitx*(range+RangeBonus)  +unity*(SidewaysShift), ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)},
-                     	force = ThingLandedOn.force
-                  	})
-
-               else
-                  local	x = ThingLandedOn.position.x  +unitx*(range+RangeBonus)  +unity*(SidewaysShift)
-                  local y = ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)
-                  local distance = math.sqrt((x-ThingLandedOn.position.x)^2 + (y-ThingLandedOn.position.y)^2)
-                  local speed = FlyingItem.speed
-                  local AirTime = math.floor(distance/speed)
-                  local vector = {x=x-ThingLandedOn.position.x, y=y-ThingLandedOn.position.y}
-                  FlyingItem.target={x=x, y=y}
-                  FlyingItem.start=ThingLandedOn.position
-                  FlyingItem.StartTick=game.tick
-                  if (FlyingItem.tracing == nil) then
-                     FlyingItem.AirTime=AirTime
-                     FlyingItem.arc = -0.1
-                     FlyingItem.LandTick=game.tick+AirTime
-                  else
-                     FlyingItem.AirTime=1
-                     FlyingItem.LandTick=game.tick+1
-                  end
-                  FlyingItem.vector=vector
+                  ThingLandedOn.get_control_behavior().enabled = not ThingLandedOn.get_control_behavior().enabled
+                  effect = "SignalBouncePlateParticle"
                end
 
                if (not FlyingItem.tracing) then
+                  ---- Creating the bounced thing ----
+                  if (primable == "Primed") then
+                     for kidamogus = 1, FlyingItem.amount do
+                        if (ThingLandedOn.name == "PrimerSpreadBouncePlate") then
+                           RangeBonus = math.random(270,300)*0.1
+                           SidewaysShift = math.random(-200,200)*0.1
+                        end
+                        ThingLandedOn.surface.create_entity
+                           ({
+                              name = FlyingItem.item.."-projectileFromRenaiTransportation"..primable,
+                              position = ThingLandedOn.position, --required setting for rendering, doesn't affect spawn
+                              source = event.source_entity, --defaults to nil if there was no source_entity and uses source_position instead
+                              source_position = ThingLandedOn.position,
+                              target_position = {ThingLandedOn.position.x  +unitx*(range+RangeBonus)  +unity*(SidewaysShift), ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)},
+                              force = ThingLandedOn.force
+                           })
+                     end
+                  else
+                     local	x = ThingLandedOn.position.x  +unitx*(range+RangeBonus)  +unity*(SidewaysShift)
+                     local y = ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)
+                     local distance = math.sqrt((x-ThingLandedOn.position.x)^2 + (y-ThingLandedOn.position.y)^2)
+                     local speed = FlyingItem.speed
+                     local AirTime = math.floor(distance/speed)
+                     local vector = {x=x-ThingLandedOn.position.x, y=y-ThingLandedOn.position.y}
+                     FlyingItem.target={x=x, y=y}
+                     FlyingItem.start=ThingLandedOn.position
+                     FlyingItem.StartTick=game.tick
+                     if (FlyingItem.tracing == nil) then
+                        FlyingItem.AirTime=AirTime
+                        FlyingItem.arc = -0.1
+                        FlyingItem.LandTick=game.tick+AirTime
+                     else
+                        FlyingItem.AirTime=1
+                        FlyingItem.LandTick=game.tick+1
+                     end
+                     FlyingItem.vector=vector
+                  end
                   ThingLandedOn.surface.create_particle
                   	({
                   	name = effect,
@@ -172,22 +175,48 @@ local function on_tick(event)
                   		position = ThingLandedOn.position,
                   		volume = 0.7
                   	}
-               end
-               clear = false
+               else --it is a tracer
                -- add the bounce pad to the bounce path list if its a tracer
-               if (FlyingItem.tracing) then
-                  if (global.ThrowerPaths[ThingLandedOn.unit_number] == nil) then
-                     global.ThrowerPaths[ThingLandedOn.unit_number] = {}
-                     global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing] = {}
-                     global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing][FlyingItem.item] = true
-                  elseif (global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing] == nil) then
-                     global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing] = {}
-                     global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing][FlyingItem.item] = true
+                  if (primable ~= "Primed") then
+                     if (global.ThrowerPaths[ThingLandedOn.unit_number] == nil) then
+                        global.ThrowerPaths[ThingLandedOn.unit_number] = {}
+                        global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing] = {}
+                        global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing][FlyingItem.item] = true
+                     elseif (global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing] == nil) then
+                        global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing] = {}
+                        global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing][FlyingItem.item] = true
+                     else
+                        global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing][FlyingItem.item] = true
+                     end
+                     script.register_on_entity_destroyed(ThingLandedOn)
+                     local	x = ThingLandedOn.position.x  +unitx*(range+RangeBonus)  +unity*(SidewaysShift)
+                     local y = ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)
+                     local distance = math.sqrt((x-ThingLandedOn.position.x)^2 + (y-ThingLandedOn.position.y)^2)
+                     local speed = FlyingItem.speed
+                     local AirTime = math.floor(distance/speed)
+                     local vector = {x=x-ThingLandedOn.position.x, y=y-ThingLandedOn.position.y}
+                     FlyingItem.target={x=x, y=y}
+                     FlyingItem.start=ThingLandedOn.position
+                     FlyingItem.StartTick=game.tick
+                     if (FlyingItem.tracing == nil) then
+                        FlyingItem.AirTime=AirTime
+                        FlyingItem.arc = -0.1
+                        FlyingItem.LandTick=game.tick+AirTime
+                     else
+                        FlyingItem.AirTime=1
+                        FlyingItem.LandTick=game.tick+1
+                     end
+                     FlyingItem.vector=vector
                   else
-                     global.ThrowerPaths[ThingLandedOn.unit_number][FlyingItem.tracing][FlyingItem.item] = true
+                     global.CatapultList[FlyingItem.tracing].ImAlreadyTracer = "traced"
+                     global.CatapultList[FlyingItem.tracing].targets[FlyingItem.item] = "nothing"
+                     clear = true
                   end
-                  script.register_on_entity_destroyed(ThingLandedOn)
                end
+
+
+
+
             -- non-tracers falling on something
             elseif (FlyingItem.tracing == nil) then
                -- players falling on something
@@ -209,6 +238,12 @@ local function on_tick(event)
                      else
                         ThingLandedOn.insert({name=FlyingItem.item, count=FlyingItem.amount})
                      end
+                     ThingLandedOn.surface.play_sound
+                        {
+                           path = "RTClunk",
+                           position = ThingLandedOn.position,
+      	                  volume_modifier = 0.9
+                        }
 
                   ---- If the thing it landed on has an inventory and a hatch, insert the item ----
                   elseif (ThingLandedOn.surface.find_entity('HatchRT', {math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5}) and ThingLandedOn.can_insert({name=FlyingItem.item})) then
@@ -218,6 +253,12 @@ local function on_tick(event)
                      else
                         ThingLandedOn.insert({name=FlyingItem.item, count=FlyingItem.amount})
                      end
+                     ThingLandedOn.surface.play_sound
+                        {
+                           path = "RTClunk",
+                           position = ThingLandedOn.position,
+      	                  volume_modifier = 0.7
+                        }
 
                   ---- If it landed on something but there's also a cargo wagon there
                   elseif (LandedOnCargoWagon ~= nil and LandedOnCargoWagon.can_insert({name=FlyingItem.item})) then
@@ -330,38 +371,7 @@ local function on_tick(event)
                global.OnTheWay[FlyingItem.destination][FlyingItem.item] = global.OnTheWay[FlyingItem.destination][FlyingItem.item] - FlyingItem.amount
             end
             if (FlyingItem.player) then
-               global.AllPlayers[FlyingItem.player.index].jumping = nil
-               global.AllPlayers[FlyingItem.player.index] = {}
-               if (FlyingItem.player.character) then
-                  local OG2 = FlyingItem.player.character
-                  FlyingItem.SwapBack.teleport(FlyingItem.player.position)
-                  FlyingItem.player.character = FlyingItem.SwapBack
-                  FlyingItem.SwapBack.direction = OG2.direction
-                  for i = 1, #OG2.get_main_inventory() do
-                     FlyingItem.player.character.get_main_inventory().insert(OG2.get_main_inventory()[i])
-                  end
-                  for i = 1, #OG2.get_inventory(defines.inventory.character_guns) do
-                     FlyingItem.player.character.get_inventory(defines.inventory.character_guns).insert(OG2.get_inventory(defines.inventory.character_guns)[i])
-                  end
-                  for i = 1, #OG2.get_inventory(defines.inventory.character_ammo) do
-                     FlyingItem.player.character.get_inventory(defines.inventory.character_ammo).insert(OG2.get_inventory(defines.inventory.character_ammo)[i])
-                  end
-                  for i = 1, #OG2.get_inventory(defines.inventory.character_armor) do
-                     FlyingItem.player.character.get_inventory(defines.inventory.character_armor).insert(OG2.get_inventory(defines.inventory.character_armor)[i])
-                  end
-                  for i = 1, #OG2.get_inventory(defines.inventory.character_trash) do
-                     FlyingItem.player.character.get_inventory(defines.inventory.character_trash).insert(OG2.get_inventory(defines.inventory.character_trash)[i])
-                  end
-                  FlyingItem.SwapBack.destructible = true
-                  FlyingItem.SwapBack.health = OG2.health
-                  FlyingItem.SwapBack.selected_gun_index = OG2.selected_gun_index
-                  FlyingItem.player.character_running_speed_modifier = 0
-                  OG2.destroy()
-               else
-                  --FlyingItem.SwapBack.teleport(FlyingItem.player.position)
-                  FlyingItem.SwapBack.destructible = true
-                  FlyingItem.SwapBack.destroy()
-               end
+               SwapBackFromGhost(FlyingItem.player, FlyingItem)
             end
             global.FlyingItems[each] = nil
          end
@@ -370,6 +380,12 @@ local function on_tick(event)
          if (FlyingItem.sprite) then
             rendering.destroy(FlyingItem.sprite)
             rendering.destroy(FlyingItem.shadow)
+         end
+         if (FlyingItem.destination ~= nil and global.OnTheWay[FlyingItem.destination]) then
+            global.OnTheWay[FlyingItem.destination][FlyingItem.item] = global.OnTheWay[FlyingItem.destination][FlyingItem.item] - FlyingItem.amount
+         end
+         if (FlyingItem.player) then
+            SwapBackFromGhost(FlyingItem.player, FlyingItem)
          end
          global.FlyingItems[each] = nil
       end

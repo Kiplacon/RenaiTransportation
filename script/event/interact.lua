@@ -11,35 +11,9 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		position = {math.floor(player.position.x)+0.5, math.floor(player.position.y)+0.5}
 	}[1]
 
-	if (SteppingOn ~= nil and global.AllPlayers[event1.player_index].sliding == nil and global.AllPlayers[event1.player_index].jumping == nil) then
-		local OG = player.character
-		player.character = nil
-		OG.destructible = false
-		OG.teleport({1000000,1000000})
-		player.create_character(OG.name.."RTGhost")
-		player.character.health = OG.health
-		player.character.selected_gun_index = OG.selected_gun_index
-		for i = 1, #OG.get_main_inventory() do
-			player.character.get_main_inventory().insert(OG.get_main_inventory()[i])
-		end
-		for i = 1, #OG.get_inventory(defines.inventory.character_guns) do
-			player.character.get_inventory(defines.inventory.character_guns).insert(OG.get_inventory(defines.inventory.character_guns)[i])
-		end
-		for i = 1, #OG.get_inventory(defines.inventory.character_ammo) do
-			player.character.get_inventory(defines.inventory.character_ammo).insert(OG.get_inventory(defines.inventory.character_ammo)[i])
-		end
-		for i = 1, #OG.get_inventory(defines.inventory.character_armor) do
-			player.character.get_inventory(defines.inventory.character_armor).insert(OG.get_inventory(defines.inventory.character_armor)[i])
-		end
-		for i = 1, #OG.get_inventory(defines.inventory.character_trash) do
-			player.character.get_inventory(defines.inventory.character_trash).insert(OG.get_inventory(defines.inventory.character_trash)[i])
-		end
-		OG.get_main_inventory().clear()
-		OG.get_inventory(defines.inventory.character_guns).clear()
-		OG.get_inventory(defines.inventory.character_ammo).clear()
-		OG.get_inventory(defines.inventory.character_armor).clear()
-		OG.get_inventory(defines.inventory.character_trash).clear()
+	if (SteppingOn ~= nil and player.character and global.AllPlayers[event1.player_index].sliding == nil and global.AllPlayers[event1.player_index].jumping == nil) then
 
+		local OG = SwapToGhost(player)
 		player.teleport(SteppingOn.position) -- align player on the launch pad
 		local sprite = rendering.draw_sprite
 			{
@@ -71,33 +45,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	--| Drop from ziplining
 	if (global.AllPlayers[event1.player_index].sliding and global.AllPlayers[event1.player_index].sliding == true) then
 		local player = game.players[event1.player_index]
-		local stuff = global.AllPlayers[event1.player_index]
-		if (player.character) then
-			local OG2 = player.character
-			stuff.SwapBack.teleport(player.position)
-			player.character = stuff.SwapBack
-			stuff.SwapBack.direction = OG2.direction
-			for i = 1, #OG2.get_main_inventory() do
-				player.character.get_main_inventory().insert(OG2.get_main_inventory()[i])
-			end
-			for i = 1, #OG2.get_inventory(defines.inventory.character_guns) do
-				player.character.get_inventory(defines.inventory.character_guns).insert(OG2.get_inventory(defines.inventory.character_guns)[i])
-			end
-			for i = 1, #OG2.get_inventory(defines.inventory.character_ammo) do
-				player.character.get_inventory(defines.inventory.character_ammo).insert(OG2.get_inventory(defines.inventory.character_ammo)[i])
-			end
-			for i = 1, #OG2.get_inventory(defines.inventory.character_armor) do
-				player.character.get_inventory(defines.inventory.character_armor).insert(OG2.get_inventory(defines.inventory.character_armor)[i])
-			end
-			for i = 1, #OG2.get_inventory(defines.inventory.character_trash) do
-				player.character.get_inventory(defines.inventory.character_trash).insert(OG2.get_inventory(defines.inventory.character_trash)[i])
-			end
-			stuff.SwapBack.destructible = true
-			stuff.SwapBack.health = OG2.health
-			stuff.SwapBack.selected_gun_index = OG2.selected_gun_index
-			player.character_running_speed_modifier = 0
-			OG2.destroy()
-		end
+		SwapBackFromGhost(player)
 		global.AllPlayers[event1.player_index].LetMeGuideYou.surface.play_sound
 			{
 				path = "RTZipDettach",
@@ -282,33 +230,8 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				and player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name == "RTZiplineItem"
 				and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read)
 				then
-					local OG = player.character
-					player.character = nil
-					OG.destructible = false
-					OG.teleport({1000000,1000000})
-					player.create_character(OG.name.."RTGhost")
-					player.character.health = OG.health
-					player.character.selected_gun_index = OG.selected_gun_index
-					for i = 1, #OG.get_main_inventory() do
-						player.character.get_main_inventory().insert(OG.get_main_inventory()[i])
-					end
-					for i = 1, #OG.get_inventory(defines.inventory.character_guns) do
-						player.character.get_inventory(defines.inventory.character_guns).insert(OG.get_inventory(defines.inventory.character_guns)[i])
-					end
-					for i = 1, #OG.get_inventory(defines.inventory.character_ammo) do
-						player.character.get_inventory(defines.inventory.character_ammo).insert(OG.get_inventory(defines.inventory.character_ammo)[i])
-					end
-					for i = 1, #OG.get_inventory(defines.inventory.character_armor) do
-						player.character.get_inventory(defines.inventory.character_armor).insert(OG.get_inventory(defines.inventory.character_armor)[i])
-					end
-					for i = 1, #OG.get_inventory(defines.inventory.character_trash) do
-						player.character.get_inventory(defines.inventory.character_trash).insert(OG.get_inventory(defines.inventory.character_trash)[i])
-					end
-					OG.get_main_inventory().clear()
-					OG.get_inventory(defines.inventory.character_guns).clear()
-					OG.get_inventory(defines.inventory.character_ammo).clear()
-					OG.get_inventory(defines.inventory.character_armor).clear()
-					OG.get_inventory(defines.inventory.character_trash).clear()
+					local OG = SwapToGhost(player)
+					---------- get on zipline -----------------
 					local TheGuy = player
 					local FromXWireOffset = game.recipe_prototypes["RTGetTheGoods-"..ThingHovering.name.."X"].emissions_multiplier
 					local FromYWireOffset = game.recipe_prototypes["RTGetTheGoods-"..ThingHovering.name.."Y"].emissions_multiplier

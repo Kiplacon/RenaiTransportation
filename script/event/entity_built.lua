@@ -44,6 +44,7 @@ local function entity_built(event)
 
 	elseif (string.find(entity.name, "BouncePlate") and not string.find(entity.name, "Train")) then
 		global.BouncePadList[entity.unit_number] = {TheEntity = entity}
+		ShowRange = settings.global["RTShowRange"].value
 		if (entity.name == "DirectedBouncePlate") then
 			entity.operable = false
 			if (entity.orientation == 0) then
@@ -71,7 +72,8 @@ local function entity_built(event)
 					only_in_alt_mode = true,
 					x_scale = xflip,
 					y_scale = yflip,
-					tint = {r = 0.4, g = 0.4, b = 0.4, a = 0}
+					tint = {r = 0.4, g = 0.4, b = 0.4, a = 0},
+					visible = ShowRange
 				}
 		elseif (entity.name == "BouncePlate" or entity.name == "SignalBouncePlate" or entity.name == "DirectorBouncePlate") then
 			global.BouncePadList[entity.unit_number].arrow = rendering.draw_sprite
@@ -80,7 +82,8 @@ local function entity_built(event)
 					surface = entity.surface,
 					target = entity,
 					only_in_alt_mode = true,
-					tint = {r = 0.4, g = 0.4, b = 0.4, a = 0}
+					tint = {r = 0.4, g = 0.4, b = 0.4, a = 0},
+					visible = ShowRange
 				}
 			-- link trackers with director plates on build or blueprint build
 			if (entity.name == "DirectorBouncePlate") then
@@ -115,7 +118,8 @@ local function entity_built(event)
 					only_in_alt_mode = true,
 					x_scale = 4,
 					y_scale = 4,
-					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0}
+					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0},
+					visible = ShowRange
 				}
 		elseif (entity.name == "PrimerSpreadBouncePlate") then
 			global.BouncePadList[entity.unit_number].arrow = rendering.draw_sprite
@@ -126,7 +130,8 @@ local function entity_built(event)
 					only_in_alt_mode = true,
 					x_scale = 4,
 					y_scale = 4,
-					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0}
+					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0},
+					visible = ShowRange
 				}
 		end
 	------- make train ramp stuff unrotatable just in case

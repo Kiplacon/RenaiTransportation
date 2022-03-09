@@ -1,4 +1,23 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.9.9
+Date: 3/8/2022
+  Bugfixes:
+    - Using the Zipline and Player Launcher now carries over more things like modifiers, inventory size bonuses, the crafting queue, quick bar blueprints, etc. Issue reported by TornBreeze
+---------------------------------------------------------------------------------------------------
+Version: 0.9.8
+Date: 2/24/2022
+  Additions:
+    - New setting for whether bounce pad range visibility should be on or off when a new one is placed.
+    - Small metallic clunk sound when something lands in a Hatch.
+  Bugfixes:
+    - Fixed that throwers that rotated so fast that the arm would be on top of the target before the throw check happened would cause a travel time calculation of 0 ticks meaning it would never go off causing the item to disappear. Now throws always take minimum 1 tick so it doesn't miss the landing calculation. Reported by TornBreeze.
+    - Added code to clear projectiles passed their calculated landing tick if something went wrong with it at time of landing.
+---------------------------------------------------------------------------------------------------
+Version: 0.9.7
+Date: 2/12/2022
+  Bugfixes:
+    - Fixed Primer bounce pad interaction with the new overflow prevention code. They were deleting the tracing "projectile" used to see where an item will land, and was being modified by the primer bounce pads. Reported by chazz1515.
+---------------------------------------------------------------------------------------------------
 Version: 0.9.6
 Date: 1/30/2022
   Bugfixes:

@@ -24,6 +24,68 @@ data:extend({
 
 {
 	type = "sound",
+	name = "RTThrow",
+	audible_distance_modifier = 0.5,
+	variations=
+		{
+			{
+			filename = "__RenaiTransportation__/sickw0bs/throw1.ogg"
+			},
+			{
+			filename = "__RenaiTransportation__/sickw0bs/throw2.ogg"
+			},
+			{
+			filename = "__RenaiTransportation__/sickw0bs/throw3.ogg"
+			},
+			{
+			filename = "__RenaiTransportation__/sickw0bs/throw4.ogg"
+			},
+			{
+			filename = "__RenaiTransportation__/sickw0bs/throw5.ogg"
+			},
+		}
+},
+
+{
+	type = "sound",
+	name = "RTClunk",
+	audible_distance_modifier = 0.4,
+	allow_random_repeat = true,
+	variations=
+		{
+			{
+			filename = "__RenaiTransportation__/sickw0bs/clunk1.ogg",
+			volume = 0.5,
+			},
+			{
+			filename = "__RenaiTransportation__/sickw0bs/clunk2.ogg",
+			volume = 0.5,
+			},
+			{
+			filename = "__RenaiTransportation__/sickw0bs/clunk3.ogg",
+			volume = 0.5,
+			},
+			{
+			filename = "__RenaiTransportation__/sickw0bs/clunk4.ogg",
+			volume = 0.5,
+			},
+			{
+			filename = "__RenaiTransportation__/sickw0bs/clunk5.ogg",
+			volume = 0.5,
+			}
+		}
+},
+
+{
+	type = "sound",
+	name = "RTEjector",
+	filename = "__RenaiTransportation__/sickw0bs/cannon.ogg",
+	audible_distance_modifier = 0.65,
+	volume = 1
+},
+
+{
+	type = "sound",
 	name = "PrimeClick",
 	filename = "__RenaiTransportation__/sickw0bs/click.ogg",
 	audible_distance_modifier = 0.5,
