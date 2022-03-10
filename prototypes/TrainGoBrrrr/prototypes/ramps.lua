@@ -39,7 +39,7 @@ local function makeRampPlacerEntity(name, icon, pictureFileName, placerItem)
 end
 
 local function makeRampEntity(name, icon, pictureFileName, placerItem)
-	local impact = 50
+	local impact = 100
 	local HP = 500
 	if (name == "RTImpactUnloader") then
 		impact = 95

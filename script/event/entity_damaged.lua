@@ -14,7 +14,7 @@ local function entity_damaged(event)
 			)
 		) then
 
-		event.entity.health = 99999999999
+		--event.entity.health = 99999999999
 
 		SpookyGhost = event.entity.surface.create_entity
 			({
@@ -464,7 +464,7 @@ local function entity_damaged(event)
 				end
 				event.cause.train.schedule = stor
 			end
-			event.cause.health = event.cause.health - (event.cause.prototype.max_health/8)
+			event.cause.health = event.cause.health - (event.cause.prototype.max_health/10)
 			if (event.cause.health <= 0) then
 				event.cause.die()
 			end

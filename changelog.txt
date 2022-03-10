@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.9.10
+Date: 3/9/2022
+  Bugfixes:
+    - Fixed train ramps randomly getting destroyed by trains going SO fast it could still 1 shot the ramp through +99999999999 HP healing. Turns out giving the ramp 100% impact damage resistance was the answer the whole time! Go figure
+---------------------------------------------------------------------------------------------------
 Version: 0.9.9
 Date: 3/8/2022
   Bugfixes:
