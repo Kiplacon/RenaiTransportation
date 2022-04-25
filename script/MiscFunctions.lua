@@ -108,6 +108,7 @@ function SwapToGhost(player)
 	player.set_controller{type=defines.controllers.character, character=NEWHOST}
    zhonyas.set_driver(OG)
    zhonyas.force = "enemy"
+   zhonyas.destructible = false
 	return OG
 end
 
