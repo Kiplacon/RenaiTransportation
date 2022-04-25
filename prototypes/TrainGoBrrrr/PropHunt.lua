@@ -1,10 +1,11 @@
 local MLG = table.deepcopy(data.raw.car["car"])
 MLG.name = "RTPropCar"
+MLG.flags = {"placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "hidden", "not-selectable-in-game"}
 MLG.collision_mask = {}
 MLG.selectable_in_game = false
 MLG.corpse = nil
 MLG.energy_source ={type = "void"}
-MLG.working_sound = 
+MLG.working_sound =
     {
       sound =
       {
@@ -17,7 +18,7 @@ MLG.friction = 1e-99
 MLG.light.intensity = 0
 MLG.light.size = 0
 MLG.turret_animation = nil
-MLG.animation = 
+MLG.animation =
 	{
 	filename = "__RenaiTransportation__/graphics/nothing.png",
 	size = 32,
@@ -28,9 +29,10 @@ MLG.water_reflection = nil
 MLG.has_belt_immunity = true
 MLG.turret_rotation_speed = 0.00000000000001
 MLG.track_particle_triggers = nil
+MLG.minimap_representation = nil
 --MLG.allow_passengers = false   -- cant have this because otherwise players are ejected when a train jumps
 
-data:extend({ 
+data:extend({
 
 MLG,
 
@@ -51,7 +53,7 @@ MLG,
 	name = "RTPropCar",
 	enabled = false,
 	energy_required = 0.5,
-	ingredients = 
+	ingredients =
 		{
 			{"iron-plate", 999}
 		},

@@ -57,6 +57,23 @@ local function rotate(event)
 			end
 		end
 	end
+
+	if (event.entity.name == "RTThrower-PrimerThrower") then
+		local sherlock = event.entity.surface.create_entity
+		{
+			name = "RTPrimerThrowerDetector",
+			position = event.entity.position,
+			direction = global.PrimerThrowerPointing[event.entity.direction],
+			force = event.entity.force,
+			create_build_effect_smoke = false
+		}
+		sherlock.destructible = false
+		global.PrimerThrowerLinks[global.CatapultList[event.entity.unit_number].entangled.detector.unit_number] = nil
+		global.CatapultList[event.entity.unit_number].entangled.detector.destroy()
+		global.CatapultList[event.entity.unit_number].entangled.detector = sherlock
+		global.PrimerThrowerLinks[sherlock.unit_number] = {thrower = event.entity, ready = false}--, box = box}
+		script.register_on_entity_destroyed(sherlock)
+	end
 end
 
 return rotate

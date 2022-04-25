@@ -16,6 +16,9 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 		require("prototypes.BouncePlates.PrimerBouncePlate")
 		require("prototypes.BouncePlates.SignalBouncePlate")
 
+		require("prototypes.PrimerThrower.CheckingTurret")
+		require("prototypes.PrimerThrower.PrimerThrowerInserter")
+
 		if (settings.startup["RTTrainRampSetting"].value == true) then
 			require("prototypes.TrainGoBrrrr.PayloadWagon")
 		end

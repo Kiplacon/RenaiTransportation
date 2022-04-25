@@ -67,21 +67,21 @@ function(event)
 		end
 	end
 
-	for each, world in pairs(game.surfaces) do
-		for every, ZiplinePart in pairs(world.find_entities_filtered{name = {"RTZipline", "RTZiplinePowerDrain"}}) do
-			local owned = false
-			for all, player in pairs(global.AllPlayers) do
-				if ((player.ChuggaChugga and ZiplinePart.unit_number == player.ChuggaChugga.unit_number)
-				or  (player.succ and ZiplinePart.unit_number == player.succ.unit_number)
-				) then
-					owned = true
-				end
-			end
-			if (owned == false) then
-				ZiplinePart.destroy()
-			end
-		end
-	end
+	-- for each, world in pairs(game.surfaces) do
+	-- 	for every, ZiplinePart in pairs(world.find_entities_filtered{name = {"RTZipline", "RTZiplinePowerDrain"}}) do
+	-- 		local owned = false
+	-- 		for all, player in pairs(global.AllPlayers) do
+	-- 			if ((player.ChuggaChugga and ZiplinePart.unit_number == player.ChuggaChugga.unit_number)
+	-- 			or  (player.succ and ZiplinePart.unit_number == player.succ.unit_number)
+	-- 			) then
+	-- 				owned = true
+	-- 			end
+	-- 		end
+	-- 		if (owned == false) then
+	-- 			ZiplinePart.destroy()
+	-- 		end
+	-- 	end
+	-- end
 end)
 
 -- Thrower Check
@@ -97,6 +97,8 @@ function(event)
 			if (catapult.valid and catapult.burner == nil and catapult.fluidbox == nil and catapult.energy/catapult.electric_buffer_size >= 0.9) then
 				catapult.active = true
 				BurnerSelfRefuelCompensation = 0
+			elseif (catapult.valid and catapult.name == "RTThrower-PrimerThrower") then
+				BurnerSelfRefuelCompensation = -0.1
 			elseif (catapult.valid and catapult.burner == nil and catapult.fluidbox == nil) then
 				catapult.active = false
 				rendering.draw_sprite
@@ -111,7 +113,7 @@ function(event)
 			end
 
 			if (catapult.valid and catapult.held_stack.valid_for_read) then
-				if (settings.global["RTOverflowComp"].value == true) then
+				if (catapult.name ~= "RTThrower-PrimerThrower" and settings.global["RTOverflowComp"].value == true) then
 					-- pointing at some entity
 					if (properties.targets[catapult.held_stack.name] ~= nil
 					and properties.targets[catapult.held_stack.name].valid
@@ -214,102 +216,108 @@ function(event)
 					or (catapult.orientation == 0.50 and catapult.held_stack_position.y <= catapult.position.y-BurnerSelfRefuelCompensation)
 					or (catapult.orientation == 0.75 and catapult.held_stack_position.x >= catapult.position.x+BurnerSelfRefuelCompensation)
 					then
-						local sprite = rendering.draw_sprite
-							{
-								sprite = "item/"..catapult.held_stack.name,
-								x_scale = 0.5,
-								y_scale = 0.5,
-								target = catapult.held_stack_position,
-								surface = catapult.surface
-							}
-						local shadow = rendering.draw_sprite
-							{
-								sprite = "item/"..catapult.held_stack.name,
-								tint = {0,0,0,0.5},
-								x_scale = 0.5,
-								y_scale = 0.5,
-								target = catapult.held_stack_position,
-								surface = catapult.surface
-							}
-						local	x = catapult.drop_position.x
-						local y = catapult.drop_position.y
-						local distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
-						local arc = -(0.3236*distance^-0.404)-- closer to 0 = higher arc
-						local space = nil
-						if (string.find(catapult.surface.name, " Orbit") or string.find(catapult.surface.name, " Field") or string.find(catapult.surface.name, " Belt")) then
-							arc = -99999999999999
-							x = x + (-global.OrientationUnitComponents[catapult.orientation].x * 1000)
-							y = y + (-global.OrientationUnitComponents[catapult.orientation].y * 1000)
-							distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
-							space = true
-						end
-						local start=catapult.held_stack_position
-						local vector = {x=x-catapult.held_stack_position.x, y=y-catapult.held_stack_position.y}
-						local speed = 0.18
-						if (catapult.name == "RTThrower-EjectorHatchRT") then
-							distance = math.sqrt((x-catapult.position.x)^2 + (y-catapult.position.y)^2)
-							vector = {x=x-catapult.position.x, y=y-catapult.position.y}
-							start=catapult.position
-							speed = 0.25
-							rendering.set_target(sprite, catapult.position)
-							rendering.set_target(shadow, catapult.position)
-							-- catapult.surface.play_sound
-	                  -- 	{
-	                  -- 		path = "RTEjector",
-	                  -- 		position = catapult.position,
-	                  -- 		volume = 0.7
-	                  -- 	}
+						if (catapult.name == "RTThrower-PrimerThrower" and game.entity_prototypes["RTPrimerThrowerShooter-"..catapult.held_stack.name]) then
+							catapult.inserter_stack_size_override = 1
+							catapult.active = false
+							global.PrimerThrowerLinks[properties.entangled.detector.unit_number].ready = true
 						else
-							-- catapult.surface.play_sound
-							-- 	{
-							-- 		path = "RTThrow",
-							-- 		position = catapult.position
-							-- 	}
-						end
-						local AirTime = math.floor(distance/speed)
-						if (AirTime == 0) then -- for super fast throwers that move right on top of their target
-							AirTime = 1
-						end
-						local spin = math.random(-10,10)*0.01
-						local destination = nil
-						if (settings.global["RTOverflowComp"].value == true) then
-							if (properties.targets[catapult.held_stack.name] ~= nil and properties.targets[catapult.held_stack.name].valid) then
-								destination = properties.targets[catapult.held_stack.name].unit_number
-								if (global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number] == nil) then
-									global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number] = {}
-									global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] = catapult.held_stack.count
-								elseif (global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] == nil) then
-									global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] = catapult.held_stack.count
-								else
-									global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] = global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] + catapult.held_stack.count
-								end
-							elseif (properties.targets[catapult.held_stack.name] == "nothing") then -- recheck pointing at nothing/things without unit_numbers
-								properties.targets[catapult.held_stack.name] = nil
+							local sprite = rendering.draw_sprite
+								{
+									sprite = "item/"..catapult.held_stack.name,
+									x_scale = 0.5,
+									y_scale = 0.5,
+									target = catapult.held_stack_position,
+									surface = catapult.surface
+								}
+							local shadow = rendering.draw_sprite
+								{
+									sprite = "item/"..catapult.held_stack.name,
+									tint = {0,0,0,0.5},
+									x_scale = 0.5,
+									y_scale = 0.5,
+									target = catapult.held_stack_position,
+									surface = catapult.surface
+								}
+							local	x = catapult.drop_position.x
+							local y = catapult.drop_position.y
+							local distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
+							local arc = -(0.3236*distance^-0.404)-- closer to 0 = higher arc
+							local space = nil
+							if (string.find(catapult.surface.name, " Orbit") or string.find(catapult.surface.name, " Field") or string.find(catapult.surface.name, " Belt")) then
+								arc = -99999999999999
+								x = x + (-global.OrientationUnitComponents[catapult.orientation].x * 1000)
+								y = y + (-global.OrientationUnitComponents[catapult.orientation].y * 1000)
+								distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
+								space = true
 							end
+							local start=catapult.held_stack_position
+							local vector = {x=x-catapult.held_stack_position.x, y=y-catapult.held_stack_position.y}
+							local speed = 0.18
+							if (catapult.name == "RTThrower-EjectorHatchRT") then
+								distance = math.sqrt((x-catapult.position.x)^2 + (y-catapult.position.y)^2)
+								vector = {x=x-catapult.position.x, y=y-catapult.position.y}
+								start=catapult.position
+								speed = 0.25
+								rendering.set_target(sprite, catapult.position)
+								rendering.set_target(shadow, catapult.position)
+								-- catapult.surface.play_sound
+		                  -- 	{
+		                  -- 		path = "RTEjector",
+		                  -- 		position = catapult.position,
+		                  -- 		volume = 0.7
+		                  -- 	}
+							else
+								-- catapult.surface.play_sound
+								-- 	{
+								-- 		path = "RTThrow",
+								-- 		position = catapult.position
+								-- 	}
+							end
+							local AirTime = math.floor(distance/speed)
+							if (AirTime == 0) then -- for super fast throwers that move right on top of their target
+								AirTime = 1
+							end
+							local spin = math.random(-10,10)*0.01
+							local destination = nil
+							if (settings.global["RTOverflowComp"].value == true) then
+								if (properties.targets[catapult.held_stack.name] ~= nil and properties.targets[catapult.held_stack.name].valid) then
+									destination = properties.targets[catapult.held_stack.name].unit_number
+									if (global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number] == nil) then
+										global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number] = {}
+										global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] = catapult.held_stack.count
+									elseif (global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] == nil) then
+										global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] = catapult.held_stack.count
+									else
+										global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] = global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] + catapult.held_stack.count
+									end
+								elseif (properties.targets[catapult.held_stack.name] == "nothing") then -- recheck pointing at nothing/things without unit_numbers
+									properties.targets[catapult.held_stack.name] = nil
+								end
+							end
+							global.FlyingItems[global.FlightNumber] =
+								{sprite=sprite,
+								shadow=shadow,
+								speed=speed,
+								arc=arc,
+								spin=spin,
+								item=catapult.held_stack.name,
+								amount=catapult.held_stack.count,
+								target={x=x, y=y},
+								start=start,
+								AirTime=AirTime,
+								StartTick=game.tick,
+								LandTick=game.tick+AirTime,
+								vector=vector,
+								destination=destination,
+								space=space}
+							if (catapult.held_stack.item_number ~= nil) then
+								local CloudStorage = game.create_inventory(1)
+								CloudStorage.insert(catapult.held_stack)
+								global.FlyingItems[global.FlightNumber].CloudStorage = CloudStorage
+							end
+							global.FlightNumber = global.FlightNumber + 1
+							catapult.held_stack.clear()
 						end
-						global.FlyingItems[global.FlightNumber] =
-							{sprite=sprite,
-							shadow=shadow,
-							speed=speed,
-							arc=arc,
-							spin=spin,
-							item=catapult.held_stack.name,
-							amount=catapult.held_stack.count,
-							target={x=x, y=y},
-							start=start,
-							AirTime=AirTime,
-							StartTick=game.tick,
-							LandTick=game.tick+AirTime,
-							vector=vector,
-							destination=destination,
-							space=space}
-						if (catapult.held_stack.item_number ~= nil) then
-							local CloudStorage = game.create_inventory(1)
-							CloudStorage.insert(catapult.held_stack)
-							global.FlyingItems[global.FlightNumber].CloudStorage = CloudStorage
-						end
-						global.FlightNumber = global.FlightNumber + 1
-						catapult.held_stack.clear()
 					end
 				end
 

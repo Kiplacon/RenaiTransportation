@@ -192,30 +192,55 @@ if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RT
 			time = 25
 		}
 	  },
-	  {
-		type = "technology",
-		name = "SignalPlateTech",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlateIconn.png",
-		icon_size = 64,
-		effects =
-		{
-			{
-				type = "unlock-recipe",
-				recipe = "SignalBouncePlateRecipie"
-			}
-		},
-		prerequisites = {"se~no", "circuit-network"},
-		unit =
-		{
-			count = 25,
-			ingredients =
-			{
-			  {"automation-science-pack", 1},
-			  {"logistic-science-pack", 1}
-			},
-			time = 25
-		}
-	  }
+   	{
+   		type = "technology",
+   		name = "SignalPlateTech",
+   		icon = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlateIconn.png",
+   		icon_size = 64,
+   		effects =
+   		{
+   			{
+   				type = "unlock-recipe",
+   				recipe = "SignalBouncePlateRecipie"
+   			}
+   		},
+   		prerequisites = {"se~no", "circuit-network"},
+   		unit =
+   		{
+   			count = 25,
+   			ingredients =
+   			{
+   			  {"automation-science-pack", 1},
+   			  {"logistic-science-pack", 1}
+   			},
+   			time = 25
+   		}
+      },
+      {
+         type = "technology",
+         name = "PrimerThrowerTech",
+         icon = "__RenaiTransportation__/graphics/tech/PrimerThrower.png",
+         icon_size = 128,
+         effects =
+         {
+          {
+             type = "unlock-recipe",
+             recipe = "RTThrower-PrimerThrower-Recipe"
+          }
+         },
+         prerequisites = {"se~no", "PrimerPlateTech", "gun-turret", "military-science-pack"},
+         unit =
+         {
+          count = 50,
+          ingredients =
+          {
+            {"military-science-pack", 1},
+            {"automation-science-pack", 1},
+            {"logistic-science-pack", 1}
+          },
+          time = 30
+         }
+      }
 	})
 
 	if (settings.startup["RTTrainRampSetting"].value == true) then

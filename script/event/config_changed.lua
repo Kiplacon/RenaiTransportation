@@ -27,6 +27,16 @@ local function config_changed()
 	global.EjectorPointing[4] = 0
 	global.EjectorPointing[6] = 1
 
+	global.PrimerThrowerPointing = {}
+	global.PrimerThrowerPointing[0] = 4
+	global.PrimerThrowerPointing[2] = 6
+	global.PrimerThrowerPointing[4] = 0
+	global.PrimerThrowerPointing[6] = 2
+
+	if (global.PrimerThrowerLinks == nil) then
+		global.PrimerThrowerLinks = {}
+	end
+
 	if (global.AllPlayers == nil) then
 		global.AllPlayers = {}
 	end
@@ -94,6 +104,11 @@ local function config_changed()
 	if (global.ThrowerPaths == nil) then
 		global.ThrowerPaths = {}
 	end
+
+	if (global.clock == nil) then
+		global.clock = {}
+	end
+
 end
 
 return config_changed

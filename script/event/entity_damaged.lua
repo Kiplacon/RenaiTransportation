@@ -14,6 +14,7 @@ local function entity_damaged(event)
 			)
 		) then
 
+		--game.print(event.cause.speed)
 		--event.entity.health = 99999999999
 
 		SpookyGhost = event.entity.surface.create_entity

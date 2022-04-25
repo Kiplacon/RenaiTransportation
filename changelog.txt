@@ -1,4 +1,22 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.0
+Date: 4/25/2022
+  Additions:
+    - Primer Thrower Inserter. These thrower/turret hybrids let you use primable items to defend yourself (grenades, capsules, rockets, landmines, etc.). Be aware these items are usually of the more "friendly fire" variety.
+  Changes:
+    - Changed zipline and player launching swapping to "ghost form" to work more efficiently without teleporting the original character a million tiles away.
+    - Bots and spidertrons should now follow onto ziplines and player jumping.
+    - Made the "invisible" car used to guide train jumps and ziplines actually invisible on the map view.
+  Bugfixes:
+    - Fixed that using Interact while dead could cause a crash.
+    - Fixed that players jumping on a primer bounce pad would cause a crash.
+    - Added some checks to hopefully prevent a crash when using the zipline/player launcher, now checks for the correct name of a character. Reported by jeinstei
+---------------------------------------------------------------------------------------------------
+Version: 0.9.11
+Date: 3/19/2022
+  Changes:
+    - Removed the occasional scan and deletion of stray zipline parts since it was causing lag spikes on large saves with lots of worlds, and I've since improved the deletion to hopefully be better at not leaving anything behind. Issue reported by r2d104
+---------------------------------------------------------------------------------------------------
 Version: 0.9.10
 Date: 3/9/2022
   Bugfixes:

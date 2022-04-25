@@ -11,7 +11,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		position = {math.floor(player.position.x)+0.5, math.floor(player.position.y)+0.5}
 	}[1]
 
-	if (SteppingOn ~= nil and player.character and global.AllPlayers[event1.player_index].sliding == nil and global.AllPlayers[event1.player_index].jumping == nil) then
+	if (SteppingOn ~= nil
+	and player.character
+	and (not string.find(player.character.name, "RTGhost"))
+	and global.AllPlayers[event1.player_index].sliding == nil
+	and global.AllPlayers[event1.player_index].jumping == nil) then
 
 		local OG = SwapToGhost(player)
 		player.teleport(SteppingOn.position) -- align player on the launch pad
@@ -71,7 +75,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	--| Hovering something
 	if (ThingHovering) then
 		--|| Adjusting Thrower Range
-		if (string.find(ThingHovering.name, "RTThrower-") and player.force.technologies["RTFocusedFlinging"].researched == true) then
+		if (string.find(ThingHovering.name, "RTThrower-") and ThingHovering.name ~= "RTThrower-PrimerThrower" and player.force.technologies["RTFocusedFlinging"].researched == true) then
 			CurrentRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
 			if ((ThingHovering.name ~= "RTThrower-long-handed-inserter" and CurrentRange >= 15) or CurrentRange >= 25) then
 				ThingHovering.drop_position =
@@ -224,7 +228,13 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				volume_modifier=1
 				}
 		--|| Zipline
-	elseif (player.character and player.character.driving == false and global.AllPlayers[event1.player_index].jumping == nil and global.AllPlayers[event1.player_index].LetMeGuideYou == nil and ThingHovering.type == "electric-pole" and #ThingHovering.neighbours["copper"] ~= 0) then
+	elseif (player.character
+	and player.character.driving == false
+	and (not string.find(player.character.name, "RTGhost"))
+	and global.AllPlayers[event1.player_index].jumping == nil
+	and global.AllPlayers[event1.player_index].LetMeGuideYou == nil
+	and ThingHovering.type == "electric-pole"
+	and #ThingHovering.neighbours["copper"] ~= 0) then
 			if (math.sqrt((player.position.x-ThingHovering.position.x)^2+(player.position.y-ThingHovering.position.y)^2) <= 3 ) then
 				if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
 				and player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name == "RTZiplineItem"
@@ -311,7 +321,8 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 
 
 	--| Adjust thrower range before placing
-	if (player.cursor_stack.valid_for_read
+	if (player.character
+	and player.cursor_stack.valid_for_read
 	and string.find(player.cursor_stack.name, "RTThrower-")
 	and player.cursor_stack.name ~= "RTThrower-EjectorHatchRTItem"
 	and player.force.technologies["RTFocusedFlinging"].researched == true) then

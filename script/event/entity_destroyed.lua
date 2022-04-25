@@ -1,6 +1,15 @@
 local function entity_destroyed(event)
 	if (global.CatapultList[event.unit_number]) then
+		if (global.CatapultList[event.unit_number].entangled) then
+			for each, entity in pairs(global.CatapultList[event.unit_number].entangled) do
+				entity.destroy()
+			end
+		end
 		global.CatapultList[event.unit_number] = nil
+	end
+
+	if (global.PrimerThrowerLinks[event.unit_number]) then
+		global.PrimerThrowerLinks[event.unit_number] = nil
 	end
 
 	if (global.MagnetRamps[event.unit_number]) then

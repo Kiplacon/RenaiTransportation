@@ -108,12 +108,12 @@ local function on_tick(event)
                tunez = "bounce"
 
                -- Modifiers --
-               if (ThingLandedOn.name == "PrimerBouncePlate" and game.entity_prototypes[FlyingItem.item.."-projectileFromRenaiTransportationPrimed"]) then
+               if (ThingLandedOn.name == "PrimerBouncePlate" and FlyingItem.player == nil and game.entity_prototypes[FlyingItem.item.."-projectileFromRenaiTransportationPrimed"]) then
                   primable = "Primed"
                   RangeBonus = 30
                   tunez = "PrimeClick"
                   effect = "PrimerBouncePlateParticle"
-               elseif (ThingLandedOn.name == "PrimerSpreadBouncePlate" and game.entity_prototypes[FlyingItem.item.."-projectileFromRenaiTransportationPrimed"]) then
+               elseif (ThingLandedOn.name == "PrimerSpreadBouncePlate" and FlyingItem.player == nil and game.entity_prototypes[FlyingItem.item.."-projectileFromRenaiTransportationPrimed"]) then
                   primable = "Primed"
                   tunez = "PrimeClick"
                   effect = "PrimerBouncePlateParticle"

@@ -25,6 +25,7 @@ local function entity_built(event)
 	end
 
 	if (string.find(entity.name, "RTThrower-")) then
+		script.register_on_entity_destroyed(entity)
 		global.CatapultList[entity.unit_number] = {entity = entity, targets = {}}
 		if (entity.name == "RTThrower-EjectorHatchRT") then
 			global.CatapultList[entity.unit_number].sprite = rendering.draw_animation
@@ -37,6 +38,22 @@ local function entity_built(event)
 					animation_speed = 0,
 					only_in_alt_mode = false
 				}
+		elseif (entity.name == "RTThrower-PrimerThrower") then
+			--entity.rotatable = false
+			entity.inserter_stack_size_override = 1
+			local sherlock = entity.surface.create_entity
+			{
+				name = "RTPrimerThrowerDetector",
+				position = entity.position,
+				direction = global.PrimerThrowerPointing[entity.direction],
+				force = entity.force,
+				create_build_effect_smoke = false
+			}
+			sherlock.destructible = false
+			global.CatapultList[entity.unit_number].entangled = {}
+			global.CatapultList[entity.unit_number].entangled.detector = sherlock
+			global.PrimerThrowerLinks[sherlock.unit_number] = {thrower = entity, ready = false}--, box = box}
+			script.register_on_entity_destroyed(sherlock)
 		end
 	elseif (entity.name == "PlayerLauncher") then
 		entity.operable = false
@@ -138,6 +155,15 @@ local function entity_built(event)
 	elseif (entity.name == "RTTrainRamp" or entity.name == "RTTrainRampNoSkip" or entity.name == "RTMagnetTrainRamp" or entity.name == "RTMagnetTrainRampNoSkip") then
 		entity.rotatable = false
 
+	elseif (string.find(entity.name, "RTPrimerThrowerShooter-")) then
+		local time = 2
+		if (global.clock[game.tick+time] == nil) then
+			global.clock[game.tick+time] = {}
+		end
+		if (global.clock[game.tick+time].destroy == nil) then
+			global.clock[game.tick+time].destroy = {}
+		end
+		global.clock[game.tick+time].destroy[entity.unit_number] = entity
 	end
 end
 

@@ -37,6 +37,18 @@ local function on_int()
 		global.EjectorPointing[6] = 1
 	end
 
+	if (global.PrimerThrowerPointing == nil) then
+		global.PrimerThrowerPointing = {}
+		global.PrimerThrowerPointing[0] = 4
+		global.PrimerThrowerPointing[2] = 6
+		global.PrimerThrowerPointing[4] = 0
+		global.PrimerThrowerPointing[6] = 2
+	end
+
+	if (global.PrimerThrowerLinks == nil) then
+		global.PrimerThrowerLinks = {}
+	end
+
 	for PlayerID, PlayerLuaData in pairs(game.players) do
 		if (global.AllPlayers[PlayerID] == nil) then
 			global.AllPlayers[PlayerID] = {}
@@ -92,6 +104,7 @@ local function on_int()
 
 	global.ThrowerPaths = {}
 
+	global.clock = {}
 end
 
 return on_int

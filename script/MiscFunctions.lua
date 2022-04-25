@@ -21,12 +21,16 @@ function SwapToGhost(player)
 	local OG = player.character
 	OG.destructible = false
    local NEWHOST = OG.surface.create_entity{
-    name = OG.name.."RTGhost",
-    position = OG.position,
-    force = OG.force,
-    direction = OG.direction,
-  }
-   OG.teleport({1000000,1000000})
+      name = OG.name.."RTGhost",
+      position = OG.position,
+      force = OG.force,
+      direction = OG.direction
+   }
+   local zhonyas = OG.surface.create_entity{
+      name = "RTPropCar",
+      position = OG.position,
+      force = OG.force
+   }
 	NEWHOST.health = OG.health
 	NEWHOST.selected_gun_index = OG.selected_gun_index
 	------ modifiers --------
@@ -86,7 +90,24 @@ function SwapToGhost(player)
 			end
 		end
 	end
+   ---------- move robot ownership ----------
+   for each, bot in pairs(OG.following_robots) do
+      bot.combat_robot_owner = NEWHOST
+   end
+   local spidies = NEWHOST.surface.find_entities_filtered{
+      position = NEWHOST.position,
+      radius = 100,
+      type = "spider-vehicle"
+   }
+   for each, spider in pairs(spidies) do
+      if (spider.follow_target == OG) then
+         spider.follow_target = NEWHOST
+      end
+   end
+   ---------- swap control -----------------
 	player.set_controller{type=defines.controllers.character, character=NEWHOST}
+   zhonyas.set_driver(OG)
+   zhonyas.force = "enemy"
 	return OG
 end
 
@@ -97,6 +118,7 @@ function SwapBackFromGhost(player, FlyingItem)
 		global.AllPlayers[FlyingItem.player.index] = {}
 		if (FlyingItem.player.character) then
 			local OG2 = FlyingItem.player.character
+         FlyingItem.SwapBack.vehicle.destroy()
 			FlyingItem.SwapBack.teleport(FlyingItem.player.position)
 			FlyingItem.player.character = FlyingItem.SwapBack
 			FlyingItem.SwapBack.direction = OG2.direction
@@ -131,13 +153,26 @@ function SwapBackFromGhost(player, FlyingItem)
 					end
 				end
 			end
+         ---------- move robot ownership ----------
+         for each, bot in pairs(OG2.following_robots) do
+            bot.combat_robot_owner = FlyingItem.SwapBack
+         end
+         local spidies = OG2.surface.find_entities_filtered{
+            position = OG2.position,
+            radius = 100,
+            type = "spider-vehicle"
+         }
+         for each, spider in pairs(spidies) do
+            if (spider.follow_target == OG2) then
+               spider.follow_target = FlyingItem.SwapBack
+            end
+         end
 			FlyingItem.SwapBack.destructible = true
 			FlyingItem.SwapBack.health = OG2.health
 			FlyingItem.SwapBack.selected_gun_index = OG2.selected_gun_index
 			FlyingItem.player.character_running_speed_modifier = 0
 			OG2.destroy()
 		else
-			--FlyingItem.SwapBack.teleport(FlyingItem.player.position)
 			FlyingItem.SwapBack.destructible = true
 			FlyingItem.SwapBack.destroy()
 		end
@@ -145,6 +180,7 @@ function SwapBackFromGhost(player, FlyingItem)
 	elseif (player.character) then
 		local stuff = global.AllPlayers[player.index]
 		local OG2 = player.character
+      stuff.SwapBack.vehicle.destroy()
 		stuff.SwapBack.teleport(player.position)
 		player.character = stuff.SwapBack
 		stuff.SwapBack.direction = OG2.direction
@@ -179,6 +215,20 @@ function SwapBackFromGhost(player, FlyingItem)
 				end
 			end
 		end
+      ---------- move robot ownership ----------
+      for each, bot in pairs(OG2.following_robots) do
+         bot.combat_robot_owner = stuff.SwapBack
+      end
+      local spidies = OG2.surface.find_entities_filtered{
+         position = OG2.position,
+         radius = 100,
+         type = "spider-vehicle"
+      }
+      for each, spider in pairs(spidies) do
+         if (spider.follow_target == OG2) then
+            spider.follow_target = stuff.SwapBack
+         end
+      end
 		stuff.SwapBack.destructible = true
 		stuff.SwapBack.health = OG2.health
 		stuff.SwapBack.selected_gun_index = OG2.selected_gun_index

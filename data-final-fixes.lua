@@ -121,6 +121,10 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
     TheProjectile.particle_horizontal_speed_deviation = 0
 	TheProjectile.working_sound = nil
 
+
+	TheProjectile.lead_target_for_projectile_speed = 0.2* 0.75 * 1.5 *1.5
+
+
 	if (ThingData.ammo_type and ThingData.ammo_type.category == "cannon-shell") then -- tank shells
 		TheProjectile.initial_action = data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].final_action
 
@@ -197,7 +201,128 @@ else
 end
 	TheProjectile.spine_animation = nil
 
-	data:extend({TheProjectile})
+	data:extend({
+		TheProjectile,
+		{
+		  type = "turret",
+		  name = "RTPrimerThrowerShooter-"..ThingData.name,
+		  icon = "__base__/graphics/icons/big-worm.png",
+		  icon_size = 64, icon_mipmaps = 4,
+		  flags = {"placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "hidden", "not-selectable-in-game"},
+		  max_health = 750,
+		  alert_when_attacking = false,
+		  resistances =
+		  {
+		    {
+		     type = "physical",
+		     percent = 100
+		    },
+		    {
+		     type = "explosion",
+		     percent = 100
+		    },
+		    {
+		     type = "fire",
+		     percent = 100
+		    }
+		  },
+		  collision_box = nil,
+		  --selection_box = {{-1.4, -1.2}, {1.4, 1.2}},
+		  selection_box = nil,
+		  rotation_speed = 1,
+		  folded_animation = {direction_count=4, filename = "__RenaiTransportation__/graphics/nothing.png", size=1},
+		  -- preparing_speed = 69,
+		  -- preparing_animation = worm_preparing_animation(scale_worm_big, tint_worm_big, "forward"),
+		  -- preparing_sound = sounds.worm_standup(1),
+		  -- prepared_speed = 999,
+		  -- prepared_speed_secondary = 999,
+		  -- prepared_animation = worm_prepared_animation(scale_worm_big, tint_worm_big),
+		  -- prepared_sound = sounds.worm_breath_big(1),
+		  -- prepared_alternative_speed = 0.014,
+		  -- prepared_alternative_speed_secondary = 0.010,
+		  -- prepared_alternative_chance = 0.2,
+		  -- prepared_alternative_animation = worm_prepared_alternative_animation(scale_worm_big, tint_worm_big),
+		  -- prepared_alternative_sound = sounds.worm_roar_alternative_big(0.72),
+		  starting_attack_speed = 1,
+		  -- starting_attack_animation = worm_start_attack_animation(scale_worm_big, tint_worm_big),
+		  -- starting_attack_sound = sounds.worm_roars_big(0.67),
+		  ending_attack_speed = 1,
+		  -- ending_attack_animation = worm_end_attack_animation(scale_worm_big, tint_worm_big),
+		  -- folding_speed = 0.015,
+		  -- folding_animation =  worm_preparing_animation(scale_worm_big, tint_worm_big, "backward"),
+		  -- folding_sound = sounds.worm_fold(1),
+		  -- integration = worm_integration(scale_worm_big),
+		  -- secondary_animation = true,
+		  -- random_animation_offset = true,
+		  -- attack_from_start_frame = true,
+		  -- prepare_range = range_worm_big + prepare_range_worm_big,
+		  allow_turning_when_starting_attack = true,
+		  attack_parameters =
+		  {
+		    type = "stream",
+		    --damage_modifier = damage_modifier_worm_big,--defined in spitter-projectiles.lua
+		    cooldown = 4,
+		    range = 46,--defined in spitter-projectiles.lua
+		    min_range = 4,
+		    turn_range = 0.155,
+		    --projectile_creation_parameters = worm_shoot_shiftings(scale_worm_big, scale_worm_big * scale_worm_stream),
+
+		    --use_shooter_direction = true,
+
+		    lead_target_for_projectile_speed = 0.2* 0.75 * 1.5 * 1.5, -- this is same as particle horizontal speed of flamethrower fire stream
+
+		    ammo_type =
+		    {
+		     category = "biological",
+		     action =
+		     {
+		        type = "direct",
+		        action_delivery =
+		        {
+		          type = "stream",
+		          stream = ThingData.name.."-projectileFromRenaiTransportationPrimed",
+		          source_offset = {0.15, -0.5}
+		        }
+		     }
+		    }
+		  },
+		  --build_base_evolution_requirement = 0.5,
+		  --autoplace = enemy_autoplace.enemy_worm_autoplace(5),
+		  call_for_help_radius = 40,
+		  --spawn_decorations_on_expansion = true,
+		  -- spawn_decoration =
+		  -- {
+		  --   {
+		  --    decorative = "worms-decal",
+		  --    spawn_min = 1,
+		  --    spawn_max = 2,
+		  --    spawn_min_radius = 1,
+		  --    spawn_max_radius = 4
+		  --   },
+		  --   {
+		  --    decorative = "shroom-decal",
+		  --    spawn_min = 1,
+		  --    spawn_max = 2,
+		  --    spawn_min_radius = 1,
+		  --    spawn_max_radius = 2
+		  --   },
+		  --   {
+		  --    decorative = "enemy-decal",
+		  --    spawn_min = 1,
+		  --    spawn_max = 4,
+		  --    spawn_min_radius = 1,
+		  --    spawn_max_radius = 3
+		  --   },
+		  --   {
+		  --    decorative = "enemy-decal-transparent",
+		  --    spawn_min = 3,
+		  --    spawn_max = 5,
+		  --    spawn_min_radius = 1,
+		  --    spawn_max_radius = 4
+		  --   }
+		  -- }
+		}
+	})
 end
 
 ---------------------------------------Thrower----------------------------------------------------------------------
@@ -729,19 +854,3 @@ for Category, ThingsTable in pairs(data.raw) do
 		end
 	end
 end
-
--- MakeProjectile(
--- 	{
--- 		name = "test",
--- 		icon = "__RenaiTransportation__/graphics/nothing.png",
--- 		icon_size = 32
--- 	}
--- )
---
--- MakeProjectile(
--- 	{
--- 		name = "MaybeIllBeTracer",
--- 		icon = "__RenaiTransportation__/graphics/nothing.png",
--- 		icon_size = 32
--- 	}
--- )
