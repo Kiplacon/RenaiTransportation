@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.2
+Date: 7/9/2022
+  Bugfixes:
+    - Fixed a crash when the calculated amount of thrown items to a destination would sometimes be negative. Reported and fix by Nebual
+    - Fixed that trains with more than 1 carriage that would jump between two un-connected rail networks would lose speed momentarily on landing, but for just long enough that the wagons behind it would crash into them. Reported by hongerdonger.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.1
+Date: 6/2/2022
+  Bugfixes:
+    - Fixed that a thrower might not properly detect that a belt was full and keep throwing anyway. Reported by Callaghan_
+    - Added an extra check to make sure the zipline won't try and take wires that lead to ghost power poles. Reported by EricAnderson
+---------------------------------------------------------------------------------------------------
 Version: 1.0.0
 Date: 4/25/2022
   Additions:

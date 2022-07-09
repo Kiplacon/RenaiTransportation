@@ -120,6 +120,9 @@ function(event)
 					and global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number]
 					and global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name]) then
 					 	if (properties.targets[catapult.held_stack.name].type ~= "transport-belt") then
+							if (global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] < 0) then
+								global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] = 0
+							end
 							local total = global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] + catapult.held_stack.count
 							local inserted = properties.targets[catapult.held_stack.name].insert({name=catapult.held_stack.name, count=total})
 							if (inserted < total) then
@@ -131,10 +134,7 @@ function(event)
 								properties.targets[catapult.held_stack.name].remove_item({name=catapult.held_stack.name, count=inserted})
 							end
 
-						elseif (properties.targets[catapult.held_stack.name].type == "transport-belt"
-					 	and (properties.targets[catapult.held_stack.name].get_transport_line(1).can_insert_at_back() == true
-					 		 or properties.targets[catapult.held_stack.name].get_transport_line(2).can_insert_at_back() == true)
-					 	) then
+						elseif (properties.targets[catapult.held_stack.name].type == "transport-belt") then
 					 		local incomming = 0
 							for name, count in pairs(global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number]) do
 								incomming = incomming + count
@@ -182,7 +182,7 @@ function(event)
 								arc=arc,
 								spin=spin,
 								item=catapult.held_stack.name,
-								amount=420,
+								amount=0,
 								target={x=x, y=y},
 								start=properties.entity.position,
 								AirTime=AirTime,

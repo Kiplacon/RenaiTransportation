@@ -12,7 +12,7 @@ local temporaryPathingCondition = {
 
 local function reEnableSchedule(train, schedule, destinationStation)
 	schedule = table.deepcopy(schedule)
-	if (destinationStation and destinationStation.valid and destinationStation.trains_limit and destinationStation.connected_rail) then
+	if (destinationStation and destinationStation.valid and destinationStation.trains_limit ~= 4294967295 and destinationStation.connected_rail) then
 		tempStation = {
 			rail = destinationStation.connected_rail,
 			wait_conditions = { temporaryPathingCondition },
@@ -21,6 +21,7 @@ local function reEnableSchedule(train, schedule, destinationStation)
 
 		table.insert(schedule.records, schedule.current, tempStation)
 		train.schedule = schedule
+		game.print("added temp stop")
 	else
 		-- set the schedule but don't enable it
 		train.schedule = schedule
@@ -54,7 +55,24 @@ local function finalizeLandedTrain(PropUnitNumber, properties)
 				end
 			end
 		end
+
+		if (properties.leader == nil) then
+			if ((properties.ghostLoco ~= nil and properties.ghostLoco.valid == true and properties.RampOrientation == properties.ghostLoco.orientation)
+			or (properties.RampOrientation == properties.orientation))then
+				NewTrain.train.speed = -math.abs(properties.speed)
+			else
+				NewTrain.train.speed = math.abs(properties.speed)
+			end
+		else
+			if (NewTrain.train.speed>=0) then
+				NewTrain.train.speed = math.abs(properties.speed)
+			else
+				NewTrain.train.speed = -math.abs(properties.speed)
+			end
+		end
 	end
+
+
 
 	global.FlyingTrains[PropUnitNumber] = nil
 	--game.print("Train jump complete")
@@ -76,7 +94,7 @@ local function on_tick(event)
 			elseif (properties.follower.train.speed<0) then
 				properties.follower.train.speed = -math.abs(properties.speed)
 			elseif (properties.follower.train.speed==0) then --This could happen if a jumping train gets hit by another train before the rest of it jumps
-				global.FlyingTrains[PropUnitNumber].follower = nil 
+				global.FlyingTrains[PropUnitNumber].follower = nil
 			end
 		-- elseif (properties.follower and not properties.follower.valid) then -- if the following wagon gets destroyed before it jumps or something?
 			-- global.FlyingTrains[PropUnitNumber].follower = nil
@@ -177,7 +195,7 @@ local function on_tick(event)
 					y_scale = 0.4,
 					render_layer = "air-object"
 					}
-				
+
 				if (properties.MagnetComp ~= nil) then
 					properties.MagnetComp = nil
 				end
@@ -213,11 +231,11 @@ local function on_tick(event)
 				global.FlyingTrains[PropUnitNumber].LandedTrain = NewTrain
 				--|||| Success
 				if (NewTrain ~= nil) then
-				
+
 					if (remote.interfaces.VehicleWagon2 and remote.interfaces.VehicleWagon2.set_wagon_data and global.savedVehicleWagons[properties.WagonUnitNumber]) then
 						remote.call("VehicleWagon2", "set_wagon_data", NewTrain, global.savedVehicleWagons[properties.WagonUnitNumber])
 					end
-					
+
 					if (properties.passenger ~= nil) then
 						if (properties.passenger.is_player()) then
 							NewTrain.set_driver(properties.passenger)
@@ -393,11 +411,11 @@ local function on_tick(event)
 					for each, guy in pairs(game.connected_players) do
 						guy.add_alert(rip,defines.alert_type.entity_destroyed)
 					end
-					
+
 					if (remote.interfaces.VehicleWagon2 and global.savedVehicleWagons[properties.WagonUnitNumber] and remote.interfaces.VehicleWagon2.kill_wagon_data) then --Vehicle wagon destroy message
 						remote.call("VehicleWagon2", "kill_wagon_data", global.savedVehicleWagons[properties.WagonUnitNumber])
 					end
-					
+
 					for urmum, lol in pairs(boom.surface.find_entities_filtered({position = boom.position, radius = 7})) do
 						if (lol.valid and lol.train ~= nil) then
 							-- destroy ghost locos just to be safe
@@ -411,7 +429,7 @@ local function on_tick(event)
 							lol.destroy({do_cliff_correction = true,  raise_destroy = true})
 						end
 					end
-					
+
 					if (properties.name == "RTPayloadWagon") then
 						if (properties.cargo["explosives"] ~= nil) then
 							CrashSpread = 100 + 2*properties.cargo["explosives"]
@@ -425,10 +443,10 @@ local function on_tick(event)
 								end
 								if (CrashSpread > 400) then
 									CrashSpread = 400
-								end								
+								end
 								for i = 1, quantity do
 									local xshift = math.random(-CrashSpread,CrashSpread)/10
-									local yshift = math.random(-math.sqrt((CrashSpread^2)-(xshift*10)^2),math.sqrt((CrashSpread^2)-(xshift*10)^2))/10								
+									local yshift = math.random(-math.sqrt((CrashSpread^2)-(xshift*10)^2),math.sqrt((CrashSpread^2)-(xshift*10)^2))/10
 										properties.GuideCar.surface.create_entity
 											({
 											name = ItemName.."-projectileFromRenaiTransportationPrimed",
@@ -436,12 +454,12 @@ local function on_tick(event)
 											source_position = properties.GuideCar.position,
 											target_position = {properties.GuideCar.position.x + xshift, properties.GuideCar.position.y + yshift},
 											force = properties.GuideCar.force
-											})		
+											})
 								end
 							end
-						end					
+						end
 					end
-					
+
 					properties.GuideCar.destroy()
 					--game.print("D")
 					--global.FlyingTrains[PropUnitNumber] = nil
@@ -464,15 +482,15 @@ local function on_tick(event)
 					properties.LandedTrain.train.speed = -math.abs(properties.speed)
 				else
 				end
-				
+
 			-- if there is a following wagon that has landed
 			elseif (properties.follower and properties.followerID and global.FlyingTrains[properties.followerID] and global.FlyingTrains[properties.followerID].LandedTrain ~= nil) then
 				global.FlyingTrains[PropUnitNumber] = nil
-			
+
 			-- if there is not following wagon aka the last wagon of the train
 			elseif (properties.follower == nil) then
 				finalizeLandedTrain(PropUnitNumber, properties)
-			
+
 			-- timed failsafe. Should never happen but who knows
 			elseif (#properties.LandedTrain.train.carriages == properties.length or game.tick > properties.LandTick+300) then
 				--game.print("all here")

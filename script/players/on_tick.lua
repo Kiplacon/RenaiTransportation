@@ -38,7 +38,7 @@ local function on_tick(event)
 				local AngleSorted = {}
 				--|||| Group them by direction
 				for i, pole in pairs(possibilities) do
-					if (pole.type == "electric-pole") then
+					if (pole.type == "electric-pole" and pole.type ~= "entity-ghost") then
 						local ToXWireOffset3 = game.recipe_prototypes["RTGetTheGoods-"..pole.name.."X"].emissions_multiplier
 						local ToYWireOffset3 = game.recipe_prototypes["RTGetTheGoods-"..pole.name.."Y"].emissions_multiplier
 						local WhichWay = (math.deg(math.atan2((TheirProperties.LetMeGuideYou.position.y-(pole.position.y+ToYWireOffset3)),(TheirProperties.LetMeGuideYou.position.x-(pole.position.x+ToXWireOffset3))))/1)-90
