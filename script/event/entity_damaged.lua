@@ -274,6 +274,19 @@ local function entity_damaged(event)
 			for i = 1, #event.cause.get_inventory(defines.inventory.cargo_wagon) do
 				global.FlyingTrains[SpookyGhost.unit_number].filter[i] = event.cause.get_inventory(defines.inventory.cargo_wagon).get_filter(i)
 			end
+			if (remote.interfaces.ArmoredTrains and remote.interfaces.ArmoredTrains.SendTurretList) then
+				local list = remote.call("ArmoredTrains", "SendTurretList")
+				local turret = nil
+				for each, link in pairs(list) do
+					if (link.entity.unit_number == event.cause.unit_number) then
+						turret = link.proxy
+						break
+					end
+				end
+				if (turret ~= nil) then
+					global.FlyingTrains[SpookyGhost.unit_number].ammo = turret.get_inventory(defines.inventory.turret_ammo).get_contents()
+				end
+			end
 		elseif (event.cause.type == "fluid-wagon") then
 			global.FlyingTrains[SpookyGhost.unit_number].fluids = event.cause.get_fluid_contents()
 		elseif (event.cause.type == "artillery-wagon") then

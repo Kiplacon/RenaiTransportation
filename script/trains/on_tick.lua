@@ -370,6 +370,21 @@ local function on_tick(event)
 							for ItemName, quantity in pairs(properties.cargo) do
 								NewTrain.get_inventory(defines.inventory.cargo_wagon).insert({name = ItemName, count = quantity})
 							end
+							if (remote.interfaces.ArmoredTrains and remote.interfaces.ArmoredTrains.SendTurretList and properties.ammo) then
+								local list = remote.call("ArmoredTrains", "SendTurretList")
+								local turret = nil
+								for each, link in pairs(list) do
+									if (link.entity.unit_number == NewTrain.unit_number) then
+										turret = link.proxy
+										break
+									end
+								end
+								if (turret ~= nil) then
+									for item, count in pairs(properties.ammo) do
+										turret.get_inventory(defines.inventory.turret_ammo).insert({name=item, count=count})
+									end
+								end
+							end
 						elseif (NewTrain.type == "fluid-wagon") then
 							for FluidName, quantity in pairs(properties.fluids) do
 								NewTrain.insert_fluid({name = FluidName, amount = quantity})

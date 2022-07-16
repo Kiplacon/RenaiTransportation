@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.3
+Date: 7/15/2022
+  Changes:
+    - Added compatibility with a forked version of Armored Trains to retain the turrets' ammo after a jump. https://mods.factorio.com/mod/Armored-train-renai. Requested by toran.mallow
+---------------------------------------------------------------------------------------------------
 Version: 1.0.2
 Date: 7/9/2022
   Bugfixes:
