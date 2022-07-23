@@ -1,6 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.4
+Date: 7/22/2022
+  Changes:
+    - Better handling of trains jumping and pathing to stations with train limits (particularly stations with train limits of 1) after a jump. Should reduce unexpected train crashes by a lot.
+---------------------------------------------------------------------------------------------------
 Version: 1.0.3
-Date: 7/15/2022
+Date: 7/19/2022
   Changes:
     - Added compatibility with a forked version of Armored Trains to retain the turrets' ammo after a jump. https://mods.factorio.com/mod/Armored-train-renai. Requested by toran.mallow
 ---------------------------------------------------------------------------------------------------

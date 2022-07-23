@@ -10,27 +10,36 @@ local temporaryPathingCondition = {
 	}
 }
 
-local function reEnableSchedule(train, schedule, destinationStation)
+local function reEnableSchedule(train, schedule, destinationStation, properties) -- happens for the first carriage
 	schedule = table.deepcopy(schedule)
-	if (destinationStation and destinationStation.valid and destinationStation.trains_limit ~= 4294967295 and destinationStation.connected_rail) then
+	-- first landed gets new schedule, check stop, if it has a limit, add the temp
+	-- at last carriage to land, if the stop limit was reduced, increase it again. Then delete temp and route to end or vice versa
+	if (destinationStation and destinationStation.valid and destinationStation.trains_limit ~= 4294967295 and destinationStation.connected_rail) then -- NoSkip ramp pathing to a station with a train limit
 		tempStation = {
 			rail = destinationStation.connected_rail,
 			wait_conditions = { temporaryPathingCondition },
 			temporary = true
 		}
-
 		table.insert(schedule.records, schedule.current, tempStation)
 		train.schedule = schedule
-		game.print("added temp stop")
 	else
-		-- set the schedule but don't enable it
 		train.schedule = schedule
+		if (train.path_end_stop and train.path_end_stop.valid and train.path_end_stop.trains_limit ~= 4294967295 and train.path_end_stop.connected_rail) then
+			tempStation = {
+				rail = train.path_end_stop.connected_rail,
+				wait_conditions = { temporaryPathingCondition },
+				temporary = true
+			}
+			local newSchedule = table.deepcopy(train.schedule)
+			table.insert(newSchedule.records, newSchedule.current, tempStation)
+			train.schedule = newSchedule
+		end
 	end
 end
 
-local function finalizeLandedTrain(PropUnitNumber, properties)
-	-- undo station reservation
-	if (properties.adjustDestinationLimit and properties.destinationStation and properties.destinationStation.valid) then
+local function finalizeLandedTrain(PropUnitNumber, properties) -- happens when the last carriage of a train lands
+	if (properties.adjustDestinationLimit and properties.destinationStation and properties.destinationStation.valid) then -- happens after a non-skip jump
+		--game.print("has adjust data")
 		if (properties.destinationStation.trains_limit == 4294967295) then -- train limits not used
 			-- do nothing
 		else
@@ -55,24 +64,7 @@ local function finalizeLandedTrain(PropUnitNumber, properties)
 				end
 			end
 		end
-
-		if (properties.leader == nil) then
-			if ((properties.ghostLoco ~= nil and properties.ghostLoco.valid == true and properties.RampOrientation == properties.ghostLoco.orientation)
-			or (properties.RampOrientation == properties.orientation))then
-				NewTrain.train.speed = -math.abs(properties.speed)
-			else
-				NewTrain.train.speed = math.abs(properties.speed)
-			end
-		else
-			if (NewTrain.train.speed>=0) then
-				NewTrain.train.speed = math.abs(properties.speed)
-			else
-				NewTrain.train.speed = -math.abs(properties.speed)
-			end
-		end
 	end
-
-
 
 	global.FlyingTrains[PropUnitNumber] = nil
 	--game.print("Train jump complete")
@@ -339,7 +331,7 @@ local function on_tick(event)
 						end
 
 						if (NewTrain.train.schedule == nil and properties.schedule ~= nil) then
-							reEnableSchedule(NewTrain.train, properties.schedule, properties.destinationStation)
+							reEnableSchedule(NewTrain.train, properties.schedule, properties.destinationStation, properties)
 						end
 
 						if (properties.gridd ~= nil and NewTrain.grid ~= nil) then
@@ -373,15 +365,17 @@ local function on_tick(event)
 							if (remote.interfaces.ArmoredTrains and remote.interfaces.ArmoredTrains.SendTurretList and properties.ammo) then
 								local list = remote.call("ArmoredTrains", "SendTurretList")
 								local turret = nil
-								for each, link in pairs(list) do
-									if (link.entity.unit_number == NewTrain.unit_number) then
-										turret = link.proxy
-										break
+								if (list ~= nil) then
+									for each, link in pairs(list) do
+										if (link.entity.unit_number == NewTrain.unit_number) then
+											turret = link.proxy
+											break
+										end
 									end
-								end
-								if (turret ~= nil) then
-									for item, count in pairs(properties.ammo) do
-										turret.get_inventory(defines.inventory.turret_ammo).insert({name=item, count=count})
+									if (turret ~= nil) then
+										for item, count in pairs(properties.ammo) do
+											turret.get_inventory(defines.inventory.turret_ammo).insert({name=item, count=count})
+										end
 									end
 								end
 							end

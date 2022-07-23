@@ -126,13 +126,6 @@ local function entity_damaged(event)
 		global.FlyingTrains[SpookyGhost.unit_number].ShadowID = OwTheEdge
 		global.FlyingTrains[SpookyGhost.unit_number].ManualMode = event.cause.train.manual_mode
 		global.FlyingTrains[SpookyGhost.unit_number].length = #event.cause.train.carriages
-		global.FlyingTrains[SpookyGhost.unit_number].destinationStation = event.cause.train.path_end_stop
-		global.FlyingTrains[SpookyGhost.unit_number].adjustDestinationLimit = event.cause.train.path_end_stop -- manual trains don't have this, it will be nill
-
-		if (global.FlyingTrains[SpookyGhost.unit_number].adjustDestinationLimit and event.cause.train.path_end_stop.trains_limit > 0 and event.cause.train.path_end_stop.trains_limit < 4294967295) then -- apparently 4294967295 means train limit is disabled
-			-- Artifically reserve the station by decrementing the available blocks
-			event.cause.train.path_end_stop.trains_limit = event.cause.train.path_end_stop.trains_limit - 1
-		end
 
 		for number, properties in pairs(global.FlyingTrains) do -- carriages jumping before the ends land
 			if (properties.LandedTrain ~= nil and properties.LandedTrain.valid and event.cause.unit_number == properties.LandedTrain.unit_number) then
@@ -187,9 +180,16 @@ local function entity_damaged(event)
 		global.FlyingTrains[SpookyGhost.unit_number].schedule = event.cause.train.schedule
 		if ((event.entity.name == "RTTrainRamp" or event.entity.name == "RTMagnetTrainRamp") and global.FlyingTrains[SpookyGhost.unit_number].schedule ~= nil) then
 			if (global.FlyingTrains[SpookyGhost.unit_number].schedule.current == table_size(global.FlyingTrains[SpookyGhost.unit_number].schedule.records)) then
-			global.FlyingTrains[SpookyGhost.unit_number].schedule.current = 1
+				global.FlyingTrains[SpookyGhost.unit_number].schedule.current = 1
 			else
-			global.FlyingTrains[SpookyGhost.unit_number].schedule.current = global.FlyingTrains[SpookyGhost.unit_number].schedule.current+1
+				global.FlyingTrains[SpookyGhost.unit_number].schedule.current = global.FlyingTrains[SpookyGhost.unit_number].schedule.current+1
+			end
+		elseif ((event.entity.name == "RTTrainRampNoSkip" or event.entity.name == "RTMagnetTrainRampNoSkip") and global.FlyingTrains[SpookyGhost.unit_number].schedule ~= nil) then
+			global.FlyingTrains[SpookyGhost.unit_number].destinationStation = event.cause.train.path_end_stop
+			global.FlyingTrains[SpookyGhost.unit_number].adjustDestinationLimit = event.cause.train.path_end_stop -- manual trains don't have this, it will be nill
+			if (global.FlyingTrains[SpookyGhost.unit_number].adjustDestinationLimit and event.cause.train.path_end_stop.trains_limit > 0 and event.cause.train.path_end_stop.trains_limit < 4294967295) then -- apparently 4294967295 means train limit is disabled
+				-- Artifically reserve the station by decrementing the available blocks
+				event.cause.train.path_end_stop.trains_limit = event.cause.train.path_end_stop.trains_limit - 1
 			end
 		end
 
@@ -200,6 +200,8 @@ local function entity_damaged(event)
 				global.FlyingTrains[number].followerID = SpookyGhost.unit_number
 				global.FlyingTrains[SpookyGhost.unit_number].schedule = global.FlyingTrains[number].schedule
 				global.FlyingTrains[SpookyGhost.unit_number].ManualMode = global.FlyingTrains[number].ManualMode
+				global.FlyingTrains[SpookyGhost.unit_number].destinationStation = global.FlyingTrains[number].destinationStation
+				global.FlyingTrains[SpookyGhost.unit_number].adjustDestinationLimit = global.FlyingTrains[number].adjustDestinationLimit
 				if ((event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") and global.FlyingTrains[number].MagnetComp ~= nil and (global.FlyingTrains[number].MakeFX == "yes" or global.FlyingTrains[number].MakeFX == "followerY")) then
 					global.FlyingTrains[SpookyGhost.unit_number].LandTick = math.ceil(game.tick + math.abs(global.MagnetRamps[event.entity.unit_number].range/(0.8*event.cause.speed)))
 					global.FlyingTrains[SpookyGhost.unit_number].MagnetComp = global.FlyingTrains[number].MagnetComp
@@ -276,15 +278,17 @@ local function entity_damaged(event)
 			end
 			if (remote.interfaces.ArmoredTrains and remote.interfaces.ArmoredTrains.SendTurretList) then
 				local list = remote.call("ArmoredTrains", "SendTurretList")
-				local turret = nil
-				for each, link in pairs(list) do
-					if (link.entity.unit_number == event.cause.unit_number) then
-						turret = link.proxy
-						break
+				if (list ~= nil) then
+					local turret = nil
+					for each, link in pairs(list) do
+						if (link.entity.unit_number == event.cause.unit_number) then
+							turret = link.proxy
+							break
+						end
 					end
-				end
-				if (turret ~= nil) then
-					global.FlyingTrains[SpookyGhost.unit_number].ammo = turret.get_inventory(defines.inventory.turret_ammo).get_contents()
+					if (turret ~= nil) then
+						global.FlyingTrains[SpookyGhost.unit_number].ammo = turret.get_inventory(defines.inventory.turret_ammo).get_contents()
+					end
 				end
 			end
 		elseif (event.cause.type == "fluid-wagon") then
