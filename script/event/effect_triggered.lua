@@ -17,7 +17,7 @@ local function effect_triggered(event)
 	and game.get_player(event.source_entity.player.index).character.get_inventory(defines.inventory.character_ammo)[game.get_player(event.source_entity.player.index).character.selected_gun_index].name == "RTZiplineCrankControlsItem"
 	and game.get_player(event.source_entity.player.index).walking_state.walking == true
 	) then
-		if (global.AllPlayers[event.source_entity.player.index].ForwardDirection[game.get_player(event.source_entity.player.index).walking_state.direction] ~= nil) then
+		if (global.AllPlayers[event.source_entity.player.index].ForwardDirection ~= nil and global.AllPlayers[event.source_entity.player.index].ForwardDirection[game.get_player(event.source_entity.player.index).walking_state.direction] ~= nil) then
 			if (global.AllPlayers[event.source_entity.player.index].LetMeGuideYou.speed <= 0.420) then
 				global.AllPlayers[event.source_entity.player.index].LetMeGuideYou.speed = global.AllPlayers[event.source_entity.player.index].LetMeGuideYou.speed + 0.040 --increments slower than 0.008 don't seem to do anything
 				game.get_player(event.source_entity.player.index).surface.play_sound
@@ -27,7 +27,7 @@ local function effect_triggered(event)
 						volume = 0.7
 					}
 			end
-		elseif (global.AllPlayers[event.source_entity.player.index].BackwardsDirection[game.get_player(event.source_entity.player.index).walking_state.direction] ~= nil) then
+		elseif (global.AllPlayers[event.source_entity.player.index].BackwardsDirection ~= nil and global.AllPlayers[event.source_entity.player.index].BackwardsDirection[game.get_player(event.source_entity.player.index).walking_state.direction] ~= nil) then
 			if (global.AllPlayers[event.source_entity.player.index].LetMeGuideYou.speed >= -0.420) then
 				global.AllPlayers[event.source_entity.player.index].LetMeGuideYou.speed = global.AllPlayers[event.source_entity.player.index].LetMeGuideYou.speed - 0.040
 				game.get_player(event.source_entity.player.index).surface.play_sound
