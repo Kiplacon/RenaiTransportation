@@ -1,9 +1,9 @@
 {
-    "name": "RenaiTransportation",
-    "version": "1.0.4",
-    "title": "Renai Transportation",
+    "name": "FactoryPlanet",
+    "version": "0.1.0",
+    "title": "Factory Planet",
     "author": "Kiplacon",
     "factorio_version": "1.1",
-    "dependencies": ["base >= 1.0"],
-    "description": "Se~no to belts and walking with these ridiculous ways to transport items and yourself around your factory."
+    "dependencies": ["base >= 1.1"],
+    "description": "Have you ever thought that what Factorio REALLY needed was the added Rimworld-like challenge of keeping your idiot crew alive through starvation, hostile aliens, and random events? Then Factory Planet (or FaP for short) might be for you. Call the number on your screen and order a copy today!"
 }
