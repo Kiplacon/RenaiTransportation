@@ -1,4 +1,598 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.5
+Date: 8/16/2022
+  Changes:
+    - Train Bounce Pad and Train Directed Bounce Pad now bounce items and players farther than normal ones 
+  Bugfixes:
+    - Fixed a crash when ziplining that might happen when pathing to a pole that no longer exists. Fix by obfuscatedgenerated on Github
+---------------------------------------------------------------------------------------------------
+Version: 1.0.4
+Date: 7/22/2022
+  Changes:
+    - Better handling of trains jumping and pathing to stations with train limits (particularly stations with train limits of 1) after a jump. Should reduce unexpected train crashes by a lot.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.3
+Date: 7/19/2022
+  Changes:
+    - Added compatibility with a forked version of Armored Trains to retain the turrets' ammo after a jump. https://mods.factorio.com/mod/Armored-train-renai. Requested by toran.mallow
+---------------------------------------------------------------------------------------------------
+Version: 1.0.2
+Date: 7/9/2022
+  Bugfixes:
+    - Fixed a crash when the calculated amount of thrown items to a destination would sometimes be negative. Reported and fix by Nebual
+    - Fixed that trains with more than 1 carriage that would jump between two un-connected rail networks would lose speed momentarily on landing, but for just long enough that the wagons behind it would crash into them. Reported by hongerdonger.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.1
+Date: 6/2/2022
+  Bugfixes:
+    - Fixed that a thrower might not properly detect that a belt was full and keep throwing anyway. Reported by Callaghan_
+    - Added an extra check to make sure the zipline won't try and take wires that lead to ghost power poles. Reported by EricAnderson
+---------------------------------------------------------------------------------------------------
+Version: 1.0.0
+Date: 4/25/2022
+  Additions:
+    - Primer Thrower Inserter. These thrower/turret hybrids let you use primable items to defend yourself (grenades, capsules, rockets, landmines, etc.). Be aware these items are usually of the more "friendly fire" variety.
+  Changes:
+    - Changed zipline and player launching swapping to "ghost form" to work more efficiently without teleporting the original character a million tiles away.
+    - Bots and spidertrons should now follow onto ziplines and player jumping.
+    - Made the "invisible" car used to guide train jumps and ziplines actually invisible on the map view.
+  Bugfixes:
+    - Fixed that using Interact while dead could cause a crash.
+    - Fixed that players jumping on a primer bounce pad would cause a crash.
+    - Added some checks to hopefully prevent a crash when using the zipline/player launcher, now checks for the correct name of a character. Reported by jeinstei
+---------------------------------------------------------------------------------------------------
+Version: 0.9.11
+Date: 3/19/2022
+  Changes:
+    - Removed the occasional scan and deletion of stray zipline parts since it was causing lag spikes on large saves with lots of worlds, and I've since improved the deletion to hopefully be better at not leaving anything behind. Issue reported by r2d104
+---------------------------------------------------------------------------------------------------
+Version: 0.9.10
+Date: 3/9/2022
+  Bugfixes:
+    - Fixed train ramps randomly getting destroyed by trains going SO fast it could still 1 shot the ramp through +99999999999 HP healing. Turns out giving the ramp 100% impact damage resistance was the answer the whole time! Go figure
+---------------------------------------------------------------------------------------------------
+Version: 0.9.9
+Date: 3/8/2022
+  Bugfixes:
+    - Using the Zipline and Player Launcher now carries over more things like modifiers, inventory size bonuses, the crafting queue, quick bar blueprints, etc. Issue reported by TornBreeze
+---------------------------------------------------------------------------------------------------
+Version: 0.9.8
+Date: 2/24/2022
+  Additions:
+    - New setting for whether bounce pad range visibility should be on or off when a new one is placed.
+    - Small metallic clunk sound when something lands in a Hatch.
+  Bugfixes:
+    - Fixed that throwers that rotated so fast that the arm would be on top of the target before the throw check happened would cause a travel time calculation of 0 ticks meaning it would never go off causing the item to disappear. Now throws always take minimum 1 tick so it doesn't miss the landing calculation. Reported by TornBreeze.
+    - Added code to clear projectiles passed their calculated landing tick if something went wrong with it at time of landing.
+---------------------------------------------------------------------------------------------------
+Version: 0.9.7
+Date: 2/12/2022
+  Bugfixes:
+    - Fixed Primer bounce pad interaction with the new overflow prevention code. They were deleting the tracing "projectile" used to see where an item will land, and was being modified by the primer bounce pads. Reported by chazz1515.
+---------------------------------------------------------------------------------------------------
+Version: 0.9.6
+Date: 1/30/2022
+  Bugfixes:
+    - Fixed a crash when trying to create a thrower variant of an inserter that was bigger than 1x1. Fixing them functionally would take more time than I have at the moment so for now they do not generate so you can still play with mods that add such inserters. Reported by Keysivi.
+    - Fixed thrower name gen to use the proper localised name of the inserter instead of its coded name.
+---------------------------------------------------------------------------------------------------
+Version: 0.9.5
+Date: 1/11/2022
+  Bugfixes:
+    - Added a check to clear thrower inserters from global list when they're destroyed. If anything explodes after this update it's probably because of this.
+    - Thrower paths are now recalculated when throwers are rotated or have their range adjusted.
+---------------------------------------------------------------------------------------------------
+Version: 0.9.4
+Date: 1/10/2022
+  Bugfixes:
+    - Added some checks to prevent a crash that I think comes from thrower targets being destroyed at just the right time.
+    - Fixed crashes when throwing items at cliffs or other things that don't have unit_numbers
+---------------------------------------------------------------------------------------------------
+Version: 0.9.3
+Date: 1/8/2022
+  Additions:
+    - Director Bounce Pads, not to be confused with Directed Bounce Pads. Can bounce different items in different directions based on filters. Probably the closest thing this mod will ever have to "logistics". No I'm not very good at graphics.
+    - Added a setting to change the maximum Magnet Ramp Range cause why not.
+  Changes:
+    - Changed Overflow prevention code because of the Director Bounce Pad to track targets per item per thrower instead of just target per thrower. Also now records the actual bounce path so a new trace only has to happen when the path is altered which might actually be more efficient.
+    - Changed train jump shadows so they're not darker in the air than they are on the ground lmao
+    - Changed Directed Bounce Pads to be simple-entity-with-owner instead of a reskinned constant combinator. At one point I wanted to make them controllable by circuit network to turn them automatically but I don't really think it would be practical/useful anymore and having it be a constant combinator was preventing people from manually repairing it.
+    - Transferred all hard coded descriptions and text to the locale file.
+  Bugfixes:
+    - Fixed that when a thrower threw an item with extra data (like armor/spidertron with grid equipment, blueprints, etc.) it now keeps that data after a throw. It used to just give a fresh version of the item after the throw.
+---------------------------------------------------------------------------------------------------
+Version: 0.9.2
+Date: 11/22/2021
+  Changes:
+    - Added Space Exploration "Integration" where items thrown in space don't arc as if affected by gravity. Strictly speaking, if the surface the thrower is on has " Orbit", " Field", or " Belt" in it, the antigravity throw will occur. I've never actually played Space Exploration buy from what I could find in creative mode, these areas are considered "in space".
+  Bugfixes:
+    - Fixed Cargo Wagon tracking with the new overflow prevention code
+---------------------------------------------------------------------------------------------------
+Version: 0.9.1
+Date: 11/15/2021
+  Changes:
+    - Changed Impact Wagon item spread to be more of an area rather than 9 lines.
+    - Changed Impact Wagon item spread to be more like a rolling wave and less like a perfect arc. In theory this helps space out item landings so there aren't as many grouped together that have to be calculated at once. It also looks cooler.
+    - Changed the setting for item grouping to instead be maximum projectiles created per train, default 1000. This helps limit lag for trains with multiple Impact Wagons.
+    - Targeted the center of tiles that items landed on to better detect Open Chests and other things with small collision boxes or shrunken by Squeak Through.
+    - Things fired from the Ejector Hatch are now faster than normal.
+  Bugfixes:
+    - Fixed that trains wouldn't be damaged by the Impact Unloader if they ran backwards.
+    - Some locale and description fixes.
+---------------------------------------------------------------------------------------------------
+Version: 0.9.0
+Date: 11/12/2021
+  Additions:
+    - Impact Wagon and Impact Unloader. Instantly unload an entire cargo wagon with the power of inertia! Just make sure you catch everything.
+  Changes:
+    - When jumping on the player launcher or riding the zipline, the character is swapped with a collision immune copy meaning that while jumping and ziplining the character cant be hit by trains or cars. Can still be hit by enemies though.
+    - Throwing an item into the water now creates 0.5 pollution. For reference that's about how much a stone furnace makes in 15s.
+    - Redid the item projectile code to be animated sprite rather than reskined spitter projectiles. It's probably less laggy, at least it was when testing the Impact Wagon.
+    - This in turn means the overflow prevention code could be improved enough that I feel confident having it on by default should be okay. The option to turn if off is still there in case.
+    - Changed the player launcher code to be more like the item projectile code so it's hopefully less jittery.
+---------------------------------------------------------------------------------------------------
+Version: 0.8.9
+Date: 11/2/2021
+  Bugfixes:
+    - Fixed a crash that would happen with how super fast trains jumping off train ramps would affect the shadow. Reported by X_Man11092006.
+    - Fixed a crash with the overflow protection v2 when the overflow tracker would trigger after it's respective thrower was deleted. Reported by overloader7 and saaadel.
+---------------------------------------------------------------------------------------------------
+Version: 0.8.8
+Date: 9/19/2021
+  Additions:
+    - Ejector Hatch. A varient of the Hatch that ejects the contents of whatever it's placed on out.
+  Changed:
+    - Added "object-layer" to the collision mask for Train Ramp placers because it was conflicting with some mods that add it to train signals like 5Dim's apparently. Reported by Frozenbolt.
+---------------------------------------------------------------------------------------------------
+Version: 0.8.7
+Date: 9/14/2021
+  Bugfixes:
+    - Fixed that I somehow broke the range adjust function. Reported by Callaghan_
+  Changes:
+    - Changed the hatch to use collision mask "layer-51" from "train-layer" for improved compatibility. The mod Hovercrafts was adding "train-layer" to all buildings for its hovercrafts' collision which was causing the hatch to not be placeable on those things. Reported by ridesdragons.
+---------------------------------------------------------------------------------------------------
+Version: 0.8.6
+Date: 6/11/2021
+  Bugfixes:
+    - Fixed a crash with Eradicator's Screenshot Maker Deluxe 3.0. Capsule compatibility overall should be improved even more as a result. Reported by Pi-C
+    - Fixed migration crashes when adding the mod to an existing save, specifically 0.2.0 and 0.2.1 migration files. Reported by MasterBuilder
+---------------------------------------------------------------------------------------------------
+Version: 0.8.5
+Date: 6/3/2021
+  Bugfixes:
+    - Fixed a crash with Combat Robots Overhaul. Capsule compatibility overall should be improved as a result. Reported by Porkchop13
+    - Not really fixing anything but added the invisible cars used for train jumps and ziplines to AAI Vehicles blacklist. Recommended by Pi-C
+---------------------------------------------------------------------------------------------------
+Version: 0.8.4
+Date: 5/31/2021
+  Bugfixes:
+    - Fixed a crash where the stray zipline removal added in 0.7.7 was removing the invisible car guiding train jumps with huge play-of-the-game detective work from Pi-C
+---------------------------------------------------------------------------------------------------
+Version: 0.8.3
+Date: 5/30/2021
+  Bugfixes:
+    - Fixed a crash that would happen if a thrower was removed in the middle of finding its target for overflow prevention. Reported by saaadel.
+---------------------------------------------------------------------------------------------------
+Version: 0.8.2
+Date: 5/30/2021
+  Bugfixes:
+    - Fixed a different but similar crash from saves that had the old overflow prevention transitioning to the new one. Reported by Legowaffles
+---------------------------------------------------------------------------------------------------
+Version: 0.8.1
+Date: 5/29/2021
+  Bugfixes:
+    - Fixed crash from saves that had the old overflow prevention transitioning to the new one. Reported by Legowaffles
+---------------------------------------------------------------------------------------------------
+Version: 0.8.0
+Date: 5/29/2021
+  Changes:
+    - Updated overflow prevention code. Throwers will now freeze if it detects that the item won't fit in to the destination inventory taking into account items in the air and items bouncing through bounce pads. Of note, throwing onto a curved belt is still a bit off, but throwing onto straight belts work quite well.
+---------------------------------------------------------------------------------------------------
+Version: 0.7.7
+Date: 5/3/2021
+  Bugfixes:
+    - Corrected contribution attribution in the changlog last patch
+    - Set the "not-rotatable" flag for the Hatch. Doesn't really matter but it keeps the selection box correct
+    - Added the zipline components to the periodic valid check to delete lingering ziplines that might come up. Reported by davfrs
+    - Fixed that the rail signal tutorial crashed for some reason. Reported by saaadel
+---------------------------------------------------------------------------------------------------
+Version: 0.7.6
+Date: 4/8/2021
+  Bugfixes:
+    - Fixed crash caused by inserters that run on fluids. I didn't even know that was possible. Reported by kewne7768
+    - Made thrower inserters use 1J to stretch so that in times of low energy for burner/fluid thrower inserters, the arm wouldn't stretch out
+    - Incorporated fix by killwort on Github that prevents crashes when an inserter tries to throw an invalid item. These are usually procedurally generated items that happen to be created after my mod is loaded (probably).
+---------------------------------------------------------------------------------------------------
+Version: 0.7.5
+Date: 3/24/2021
+  Bugfixes:
+    - Fixed crash caused when a train's destination station's train limit was changed mid-jump. Reported by DrogiwanCannobi
+    - Fixed some issues with trains disconnecting and driving about wildly if they get inturupted mid-jump
+    - Fixed animations of trains going off a magnet ramp then bouncing onto a directed train bounce pad
+---------------------------------------------------------------------------------------------------
+Version: 0.7.4
+Date: 3/19/2021
+  Changes:
+    - Reactivated the Vehicle Wagons 2 interaction that displays its 'vehicle lost' message when a vehicle wagon crashes from a train jump
+---------------------------------------------------------------------------------------------------
+Version: 0.7.3
+Date: 3/18/2021
+  Bugfixes:
+    - Fixed crash that would happen if Vehicle Wagons 2 was NOT installed. lmao whops
+---------------------------------------------------------------------------------------------------
+Version: 0.7.2
+Date: 3/16/2021
+  Additions:
+    - Official compatability for Vehicle Wagons 2. Vehicles on wagons are now retained after a jump.
+  Changes:
+    - Magnet Train Ramp buffer recharge rate increased from 4MW to 40MW. The slow recharge rate was causing problems when multiple trains tried using the ramps one right after another
+  Bugfixes:
+    - Fixed the dynamic train sprite pulling some more to improve compatability and reduce crashes. Tested with Vehicle Wagons 2 and Schall's Armored Train from report by rEvolutionTU.
+    - Fixed crash when a train's scheduled destination station was removed between jumping and landing. Added valid check for station upon landing. Reported by DrogiwanCannobi.
+---------------------------------------------------------------------------------------------------
+Version: 0.7.1
+Date: 2/21/2021
+  Bugfixes:
+    - Fixed that train ramps didnt work with blueprints and copy/paste. It turns out I left the "non-rotatable" flag in which caused the ramps to always paste in the default orientation. Also adjusted some other things about ramps and magnet ramps to work better with bots, blueprints, etc. You still have to set up magnet ramp ranges after they are built though.
+---------------------------------------------------------------------------------------------------
+Version: 0.7.0
+Date: 2/7/2021
+  Bugfixes:
+    - Now pulls train sprites dynamically for each carriage so that modded carriages should retain their image during a jump rather than using vanilla ones based on their type
+    - Fixed some icon incompatability with some mods, specifically using Industrial Revolution 2 for testing, which should now work.
+    - Adjusted the thrower generation criteria so that some creative type inserters don't make thrower varients
+---------------------------------------------------------------------------------------------------
+Version: 0.6.14
+Date: 2/4/2021
+  Changes:
+    - Changed thrown items to be able to land in cargo wagons
+  Bugfixes:
+    - Fixed that changing surfaces (like when entering a Factorissimo building) while ziplining would cause a crash/softlock. Reported by saaadel.
+    - Fixed some missing locale names
+---------------------------------------------------------------------------------------------------
+Version: 0.6.13
+Date: 1/6/2021
+  Bugfixes:
+    - Fixed crashes related to adjusting thrower range before placing. Based on reports by SoupGuyMan and GeneralTank.
+    - Fixed that adjusting range before placing could be done before the adjusting reasearch was done.
+---------------------------------------------------------------------------------------------------
+Version: 0.6.12
+Date: 12/30/2020
+  Changes:
+    - Changed zipline crank to boost while holding the shoot key rather than on clicking. 100% more usable but 75% less meme. Suggested by Tellingohn.
+---------------------------------------------------------------------------------------------------
+Version: 0.6.11
+Date: 12/26/2020
+  Additions:
+    - You can now adjust thrower inserter range before placing it. Press Interact while it's in your cursor to adjust range like how you would while it's placed. This is done using dynamic custom blueprints so note that by default Interact has the same hotkey as Factorio's new "Flip Blueprint Horizontally" key, and you might want to change one of them so they don't clash
+    - Zipline Crank Controller. Equiping this zipline controller varient allows you to boost your speed by clicking. Suggested by Tellingohn
+---------------------------------------------------------------------------------------------------
+Version: 0.6.10
+Date: 12/19/2020
+  Bugfixes:
+    - Fixed that the saves wouldn't load if the fuel with the fastest speed multiplier was removed.
+---------------------------------------------------------------------------------------------------
+Version: 0.6.9
+Date: 12/3/2020
+  Nice:
+  Ayyy:
+    - lmao
+    - *dabs*
+  Bugfixes:
+    - Fixed some issues with multiplayer and zipline/train jump/player launcher interactions. Disconnecting and reconnecting to a multiplayer game mid-animation should work without problem now. Reported by Galapagon
+    - Fixed that the changelog wasn't working in game for some reason. I don't really know how I even fixed it. Reported by MPeti1
+---------------------------------------------------------------------------------------------------
+Version: 0.6.8
+Date: 12/3/2020
+  Bugfixes:
+    - Fixed that trains with multiple locomotives would sometimes seperate during a jump if the locomotives used fuels with different top speeds
+    - Mooeing-747: Fixed interaction with station limits so that a spot will be reserved for a train during a jump for it to use again when it lands.
+  Changes:
+    - Changed collision mask for the train ramp again to hopefully be more universally compatible with the new signal change in 1.1+
+---------------------------------------------------------------------------------------------------
+Version: 0.6.7
+Date: 11/27/2020
+  Changes:
+    - Compatability fix for Space Exploration because apparently SE changes signal collision boxes and apparently all signals have to have colliding collision masks
+---------------------------------------------------------------------------------------------------
+Version: 0.6.6
+Date: 11/27/2020
+  Changes:
+    - Mooeing-747: Updated for Factorio 1.1 with migrations and prototype updates
+---------------------------------------------------------------------------------------------------
+Version: 0.6.5
+Date: 11/22/2020
+  Bugfixes:
+    - Mooeing-747: Added raise_destroy = true to crashlanding trains
+    - Mooeing-747: Added missing valid check to guide locomotives
+    - Fixed crash from on_entity_cloned
+    - Fixed crash with experimental overflow setting when deleting entity target of a thrower
+  Changes:
+    - Mooeing-747: Reorganized train jump animation code
+    - Mooeing-747: Changed shadows to rotate and train sprites to scale in size during jump.
+    - Made shadows fade with jump height
+---------------------------------------------------------------------------------------------------
+Version: 0.6.4
+Date: 11/8/2020
+  Additions:
+    - Payload Wagon. Designed specifically to weaponize the train ramp. When it crash lands, primable items inside will prime, fly out and activate near the point of impact. Deliver all your explosive weaponry directly to the point of use.
+  Changes:
+    - Changed damage radius of crash landing carriages from 4 to 7 tiles
+    - Code restructuring by Mooeing-747 for easier navigation, control.lua file broken up into a bunch of smaller files
+    - Primed projetiles are now a lighter shade of red
+---------------------------------------------------------------------------------------------------
+Version: 0.6.3
+Date: 11/1/2020
+  Bugfixes:
+    - Fix from Mooeing-747 so cargo wagon filters are set before the items are put back in so that items retain proper order and placement after a jump
+    - Fixed pushed trains going backwards upon landing if the cargo wagon was facing backwards
+    - Changed landing trains to have a positive speed rather than a negative by default in cases where it doesn't know which way to go
+---------------------------------------------------------------------------------------------------
+Version: 0.6.2
+Date: 10/21/2020
+  Bugfixes:
+    - Fixed two issues with train landing thanks to contribution from Mooeing-747. They are:
+    - Fixed train freezing and crashing upon landing for trains that are being pushed from the back rather than pulled from the front.
+    - Fixed that trains didn't take non-default paths for forks in the rail very close to where trains land, ie while the back half of the train is still in mid air.
+---------------------------------------------------------------------------------------------------
+Version: 0.6.1
+Date: 10/19/2020
+  Bugfixes:
+    - Fixed a few issues with the magnet train ramp setting based on crash report from Cobalt6700
+---------------------------------------------------------------------------------------------------
+Version: 0.6.0
+Date: 10/4/2020
+  Additions:
+    - Magnet Train Ramps. Powerful electromagnets let you control the landing point of a ramp regardless of a train's speed. It's like train tunnels but more fun.
+    - Recipe to turn open chests back into regular chests. Recommended by saaadel
+  Bugfixes:
+    - Semi-fixed issue where trains that were landing and then jumpped again before the whole train landed would cause the train to fall apart. Now so long as at least one carriage fully on the ground at all times, chaining jumps should work fine
+---------------------------------------------------------------------------------------------------
+Version: 0.5.5
+Date: 9/12/2020
+  Bugfixes:
+    - Fixed that the game would crash if you died while ziplining. Found by F0x06.
+---------------------------------------------------------------------------------------------------
+Version: 0.5.4
+Date: 9/9/2020
+  Additions:
+    - Added setting to disable the base thrower/hatch/player laucher features of the mod. Slap F in the chat. Requested by Ki-Tan. Tech adjusted accordingly.
+  Bugfixes:
+    - Fixed that the motion guide for the zipline (which is the same as for the train ramp) would be disabled if you disabled the train ramp, causing a crash if the zipline was enabled but not the train ramp. Found by staviq
+---------------------------------------------------------------------------------------------------
+Version: 0.5.3
+Date: 9/7/2020
+  Bugfixes:
+    - Semi-fix preventing players without an associated character from getting on a zipline. This should prevent crashes on a zipline when the character disapears but doesn't cover cases where the controlled character changes or disapears. Found by MPeti1
+    - Fixed that wire connections to things other than power poles (like switches) would crash. Found by MPeti1
+    - Made it so that ramps auto-heal to 99999999999 instead of whatever value it was last hit for in hopes that it prevents some weird cases where the ramps are just vanishing or occasionally left with some damage. Found by Ki-Tan
+---------------------------------------------------------------------------------------------------
+Version: 0.5.2
+Date: 9/6/2020
+  Changes:
+    - Removed some debugging code when clicking on throwers
+  Bugfixes:
+    - Fixed that characters would jump out of a train upon landing due to the change I made so that the jumps would work in sandbox mode
+---------------------------------------------------------------------------------------------------
+Version: 0.5.1
+Date: 9/5/2020
+  Bugfixes:
+    - Fixed code analyzing power poles without a copper cable connection. Found by HairyDave
+---------------------------------------------------------------------------------------------------
+Version: 0.5.0
+Date: 9/5/2020
+  Additions:
+    - Electric Zipline Trolley. Use your existing power grid as a highway! See player settings to adjust zipline camera motion.
+    - Experimental overflow minimization code. Can be enable in Map Settings. Helps particularly with transport belts, a 3x3 "catching grid" should stop most overflow.
+    - Settings to enable/disable different parts of the mod. Modules include: modded inserter throwers, train ramps, train bounce pads, advanced bounce pads (primer&signal), and zipline. Vanilla throwers, player launchers, hatches, and regular/directed bounce pads are always enabled. Recommended by Zuzak.
+  Bugfixes:
+    - Fixed a crash when using a Train Ramp in sandbox mode. The environment was probably too toxic in there. Found by notnotmelon.
+    - Fixed a crazy situation where if two trains were trying to land close to each other and one didn't have a destination and thus stopped immediately to 0 speed while another train or wagon with a netagive speed (backwards) tried to attach to it and make the stationary train move with negative speed, the game would crash because I didn't take a 0 speed train into account. Report and initial investigation by mvolfik and ProkopRandacek on github.
+    - Made the stand in cars that guided the trains jump invincible so it couldn't be destroyed premptively.
+---------------------------------------------------------------------------------------------------
+Version: 0.4.8
+Date: 8/28/2020
+  Additions:
+    - Added an alternate mode for the Train Ramp that does not do the schedule skipping after a jump. Swap between the modes by hovering a ramp and pressing Interact. Requested by many people.
+  Bugfixes:
+    - Fixed that flying trains would be affected by belts transport belts underneath.
+---------------------------------------------------------------------------------------------------
+Version: 0.4.7
+Date: 8/23/2020
+  Bugfixes:
+    - Fixed (I think) a crash related to making thrower varient of an inserter without a minable.result
+---------------------------------------------------------------------------------------------------
+Version: 0.4.6
+Date: 8/22/2020
+  Additions:
+    - Added equipment grids to be carried over after a jump if the train has it. Suggested by MPeti1
+  Changes:
+    - Adjusted the train jump animation so it looks less jank.
+---------------------------------------------------------------------------------------------------
+Version: 0.4.5
+Date: 8/19/2020
+  Changes:
+    - Made it so that trains won't speed up or slow down until either all carriages reconnect, or 4 seconds have passed since it landed. This makes train jumps about 69x more managable to use.
+---------------------------------------------------------------------------------------------------
+Version: 0.4.4
+Date: 8/18/2020
+  Additions:
+    - Clicking on any bounce pad toggles it's range indicator visibility in alt-view.
+    - Primer Bounce Plate compatability with artillery shells.
+  Changes:
+    - Changed all bounce pad range indicators again to be the normal yellow/orange.
+    - Bounce pad range indicator is now more transparent so hopefully it's not as distracting in alt-view while still being helpful.
+  Bugfixes:
+    - Fixed another train crash involving cliffs that I already implemented but it turns out there's another spot in the code I had to integrate the fix lmao
+    - Fixed a crash that would happen if there isn't any room to drop an item on the ground after being thrown. It now searched infinitely for a free spot. Discovered by CaptainSlide.
+    - Fixed Hatch integration with blueprints/copy/paste by adding that it's a player-creation to its flags.
+---------------------------------------------------------------------------------------------------
+Version: 0.4.3
+Date: 8/16/2020
+  Changes:
+    - Specified that trains must hit ramps exactly straight in the ramp description. Recommended by Sparen.
+    - Specified thrower range can be adjusted using Interact in their descriptions.
+    - Adjusted the bounce pad range image to line up better horizontally
+---------------------------------------------------------------------------------------------------
+Version: 0.4.2
+Date: 8/15/2020
+  Additions:
+    - Bounce Pads show their range in alt-mode instead of on hover
+  Changes:
+    - Added train ramp to the thumbnail
+    - Flying trains now shift slightly to better align with train bounce pads. This helps all carriages in a train travel, fly, and bounce together.
+    - Following trains better sync up with the lead train.
+  Bugfixes:
+    - Fixed handling of players jumping on Train bounce pads.
+    - Fixed thrower bunrner inserters not self refueling when facing down or right
+    - Fixed another crash when jumping trains land, explode, and damage surrounding entities which were somehow becoming invalid between being detected and being dealt damage
+    - Fixed Spread Primer Bounce Pad integration with blueprints/copy/paste by adding placeable_by to its prototype
+    - Added raise_built=true when recreating launched trains for better modded train compatability
+---------------------------------------------------------------------------------------------------
+Version: 0.4.1
+Date: 8/8/2020
+  Bugfixes:
+    - Fixed game crash when flying trains were landing on cliffs and other things that didn't strictly have health
+---------------------------------------------------------------------------------------------------
+Version: 0.4.0
+Date: 8/7/2020
+  Additions:
+    - Train Ramps. You knew it had to be
+    - Train Bouce Pad and Train Directed Bounce Pads. Tests to create train bounce routes has proven to be very expensive
+    - Shadows for all the Bounce Pads
+  Bugfixes:
+    - Fixed ordering of final-fixes code so that projectiles for generated thrower are actually created
+---------------------------------------------------------------------------------------------------
+Version: 0.3.7
+Date: 7/18/2020
+  Bugfixes:
+    - Fixed scaling for the particle of thrown items so that icons of different sizes graphically should all show in game at roughly the same size
+    - Remved the need for the placeholder image for items with layered icons
+---------------------------------------------------------------------------------------------------
+Version: 0.3.6
+Date: 7/17/2020
+  Bugfixes:
+    - Fixed compatability with the new capsule action code in Factorio 0.18.36
+    - Fixed primer bounce pad compatability with moded land mines
+    - Fixed migration from saves that never had the hard coded thrower varients probably
+---------------------------------------------------------------------------------------------------
+Version: 0.3.5
+Date: 7/4/2020
+  Bugfixes:
+    - Fixed compatability issues with other mods that added capsules with non-conventional functions. Namely, Tapeline and Vehicle Wagon 2 were tested. Reported by saaadel
+---------------------------------------------------------------------------------------------------
+Version: 0.3.4
+Date: 7/4/2020
+  Bugfixes:
+    - Removed stray character I must have fat-fingered accidentaly causing a crash
+---------------------------------------------------------------------------------------------------
+Version: 0.3.3
+Date: 7/4/2020
+  Bugfixes:
+    - Fixed handling of burner inserters with the anti-long-boi-arm-stretch code that would sometimes cause a crash on the current 0.18 versions for some reason
+    - Workaround fix for the "no power" icon to appear on throwers not connected to electricity.
+---------------------------------------------------------------------------------------------------
+Version: 0.3.2
+Date: 7/3/2020
+  Changes:
+    - Adjusted bounce effects to appear on top of the bounce pads, in the "higher-object-above" render_layer to be exact.
+---------------------------------------------------------------------------------------------------
+Version: 0.3.1
+Date: 7/1/2020
+  Additions:
+    - New research that allows configuring the range of throwers to be between 1-15. Hover and press Interact to adjust range.
+---------------------------------------------------------------------------------------------------
+Version: 0.3.0
+Date: 6/29/2020
+  Additions:
+    - Directed Bounce Pads. I feel like these really round out the functionality.
+    - Hatches. Finally compatability for other things with inventories.
+    - Basic tech tree
+---------------------------------------------------------------------------------------------------
+Version: 0.2.6
+Date: 6/12/2020
+  Bugfixes:
+    - Some compatability issues with the ADAPTIVE thrower generation (icon vs icons, actual vs function, etc)
+  Additions:
+    - Bounce and Priming sound effects
+---------------------------------------------------------------------------------------------------
+Version: 0.2.5
+Date: 6/12/2020
+  Bugfixes:
+    - Script detection of bots and etc. that broke when changing over to procedurally generated throwers
+    - Compatability with Rusty Locale
+---------------------------------------------------------------------------------------------------
+Version: 0.2.4
+Date: 6/12/2020
+  Removed:
+    - Version 0.2.3 because I just felt like it whatcha gonna do
+    - Hard coded throwers (NOOBS)
+  Additions:
+    - Procedurally generated throwers for all inserters including ones added by mods. (EPICO) They are unlocked by default for now, research to come.
+    - Split Primer Bounce Pad into Precise and Spread varients. Swap by pressing "Interact"
+    - Primed land mines. Good with a spread mode Bounce Pad
+  Changes:
+    - Launch key (default F) renamed to Interact so you can use the same key to swap modes
+    - Thrower Inserter slightly slower
+    - Throwers only run when at full power to avoid the wacky arm stretching issue when they run at low power.
+    - Damage taken from landing on something now scales with the size of the thing you landed on.
+---------------------------------------------------------------------------------------------------
+Version: 0.2.2
+Date: 5/26/2020
+  Changes:
+    - Some file name case correction that I'm not sure was even needed but hey it's worth a shot.
+---------------------------------------------------------------------------------------------------
+Version: 0.2.1
+Date: 5/26/2020
+  Additions:
+    - Primer Bounce Pad. Unlocked with Military 2
+    - Signal Bounce Pad. Unlocked with Circuit Network
+---------------------------------------------------------------------------------------------------
+Version: 0.2.0
+Date: 5/17/2020
+  Additions:
+    - Added thrower varients of all the different inserter types. They are unlocked with their respective normal version's research.
+    - Added range indicators to the Bounce Pads
+  Changes:
+    - Changed the Player Launcher so that you don't have to hover it with the mouse in order to use it. Now you just have to stand on it and press the launch key.
+  Bugfixes:
+    - Changed how bounces are calculated so that blueprint ghosts are not longer destroyed when things land on them.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.6
+Date: 5/9/2020
+  Bugfixes:
+    - Improved compatability with other mods that happen to use my same naming convention where a projectile/target based on an item was called the projectile/targets name plus -projectile/-target. Now my projectiles/targets have the suffix -projectile/targetFromRenaiTransportation respectively. Issue pointed out by Drury who noted my mod was incompatible with Krastorio 2.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.5
+Date: 5/7/2020
+  Bugfixes:
+    - Made the same fix in 0.1.4 but applied it to on_configuration_changed too on the off chance that people had the mod installed and kept 0.1.3 while it was still bugged and updated to 0.1.4
+---------------------------------------------------------------------------------------------------
+Version: 0.1.4
+Date: 5/7/2020
+  Bugfixes:
+    - Fixed that the Player Launcher wouldn't work on existing saves because the AllPlayers table wouldn't be set up in those cases. Now fills the table with all players in the save during initialization. Problem source identified by fgcapo.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.3
+Date: 5/4/2020
+  Bugfixes:
+    - Fixed script_raised_built listener problem where I copied the code from the on_built_entity listener not realizing the related entity is reffered to as just .entity instead of .created_entity. Problem identified by darkfrei.
+    - Preemptive bug fix adding on_entity_cloned listener for built thrower inserters. Recommended by AshenSwift.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.2
+Date: 5/3/2020
+  Bugfixes:
+    - Fixed that Thrower Inserters wouldn't work when built by bots by adding on_robot_built_entity and script_raised_built events to listen for. Problem identified by therax.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.1
+Date: 4/26/2020
+  Changes:
+    - Made the Bounce Pad smaller so you can walk between them when they're next to each other.
+  Additions:
+    - The change log lmao.
+  Bugfixes:
+    - Fixed that you could get stuck on a cliff if you launched into it, because apparently it's immune to .die() Now you land at the closest free spot.
+---------------------------------------------------------------------------------------------------
 Version: 0.1.0
 Date: 4/25/2020
   Se~no:

@@ -106,6 +106,9 @@ local function on_tick(event)
                RangeBonus = 0
                SidewaysShift = 0
                tunez = "bounce"
+               if (string.find(ThingLandedOn.name, "Train")) then
+                  range = 39.9
+               end
 
                -- Modifiers --
                if (ThingLandedOn.name == "PrimerBouncePlate" and FlyingItem.player == nil and game.entity_prototypes[FlyingItem.item.."-projectileFromRenaiTransportationPrimed"]) then
@@ -144,6 +147,11 @@ local function on_tick(event)
                      local	x = ThingLandedOn.position.x  +unitx*(range+RangeBonus)  +unity*(SidewaysShift)
                      local y = ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)
                      local distance = math.sqrt((x-ThingLandedOn.position.x)^2 + (y-ThingLandedOn.position.y)^2)
+                     if (string.find(ThingLandedOn.name, "Train")) then
+                        FlyingItem.speed = 0.6
+                     else
+                        FlyingItem.speed = 0.18
+                     end
                      local speed = FlyingItem.speed
                      local AirTime = math.floor(distance/speed)
                      local vector = {x=x-ThingLandedOn.position.x, y=y-ThingLandedOn.position.y}
