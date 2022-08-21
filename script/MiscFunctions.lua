@@ -106,6 +106,9 @@ function SwapToGhost(player)
    end
    ---------- swap control -----------------
 	player.set_controller{type=defines.controllers.character, character=NEWHOST}
+   if (remote.interfaces.jetpack and remote.interfaces.jetpack.block_jetpack) then
+      remote.call("jetpack", "block_jetpack", {character=NEWHOST})
+   end
    zhonyas.set_driver(OG)
    zhonyas.force = "enemy"
    zhonyas.destructible = false

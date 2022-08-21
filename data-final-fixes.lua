@@ -830,7 +830,7 @@ for Category, ThingsTable in pairs(data.raw) do
 			MakeCarriageSprites(ThingData)
 		end
 
-		if (Category == "character" and not string.find(ThingID, "RTGhost")) then
+		if (Category == "character" and (not string.find(ThingID, "RTGhost")) and (not string.find(ThingID, "-jetpack"))) then
 			local casper = table.deepcopy(ThingData)
 			casper.name = casper.name.."RTGhost"
 			casper.collision_mask = {}

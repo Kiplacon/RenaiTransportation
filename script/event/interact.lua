@@ -231,6 +231,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	elseif (player.character
 	and player.character.driving == false
 	and (not string.find(player.character.name, "RTGhost"))
+	and (not string.find(player.character.name, "-jetpack"))
 	and global.AllPlayers[event1.player_index].jumping == nil
 	and global.AllPlayers[event1.player_index].LetMeGuideYou == nil
 	and ThingHovering.type == "electric-pole"
@@ -312,6 +313,9 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			else
 				player.print({"zipline-stuff.range"})
 			end
+
+		elseif (player.character and player.character.driving == false and global.AllPlayers[event1.player_index].LetMeGuideYou == nil and ThingHovering.type == "electric-pole" and string.find(player.character.name, "-jetpack")) then
+			player.print({"zipline-stuff.range"})
 
 		elseif (player.character and player.character.driving == false and global.AllPlayers[event1.player_index].LetMeGuideYou == nil and ThingHovering.type == "electric-pole" and #ThingHovering.neighbours == 0) then
 			player.print({"zipline-stuff.NotConnected"})

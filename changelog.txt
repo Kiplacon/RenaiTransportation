@@ -1,8 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.6
+Date: 8/18/2022
+  Bugfixes:
+    - Fixed a crash when attempting to use the Jetpack mod while ziplining. Reported by Preceti2
+---------------------------------------------------------------------------------------------------
 Version: 1.0.5
 Date: 8/16/2022
   Changes:
-    - Train Bounce Pad and Train Directed Bounce Pad now bounce items and players farther than normal ones 
+    - Train Bounce Pad and Train Directed Bounce Pad now bounce items and players farther than normal ones
   Bugfixes:
     - Fixed a crash when ziplining that might happen when pathing to a pole that no longer exists. Fix by obfuscatedgenerated on Github
 ---------------------------------------------------------------------------------------------------
