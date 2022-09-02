@@ -435,7 +435,7 @@ if (settings.startup["RTZiplineSetting"].value == true) then
             recipe = "RTZiplineTerminalRecipe"
          }
       },
-      prerequisites = {"RTZiplineTech", "electric-energy-distribution-1"},
+      prerequisites = {"RTZiplineTech", "electric-energy-distribution-1", "concrete"},
       unit =
       {
          count = 150,

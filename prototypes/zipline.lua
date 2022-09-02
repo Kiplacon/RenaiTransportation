@@ -331,12 +331,13 @@ local RTZiplineTerminalRecipe =
       type = "recipe",
       name = "RTZiplineTerminalRecipe",
       enabled = false,
-      energy_required = 0.5,
+      energy_required = 3,
       ingredients =
          {
             {"medium-electric-pole", 1},
-            {"steel-plate", 40},
-            {"electronic-circuit", 10}
+            {"electronic-circuit", 10},
+            {"steel-plate", 20},
+            {"concrete", 25}
          },
       result = "RTZiplineTerminalItem"
    }
