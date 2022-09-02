@@ -44,7 +44,7 @@ brrr.working_sound =
     use_doppler_shift = false
     }
 
-data:extend({ 
+data:extend({
 
 brrr,
 
@@ -92,7 +92,7 @@ brrr,
 	name = "RTZiplineControlsRecipe",
 	enabled = false,
 	energy_required = 0.5,
-	ingredients = 
+	ingredients =
 		{
 			{"copper-cable", 10},
 			{"iron-stick", 6},
@@ -134,7 +134,7 @@ brrr,
 				  }
 				}
 			  }
-			}		
+			}
 		}
 	}
 },
@@ -143,13 +143,40 @@ brrr,
 	name = "RTZiplineCrankControlsRecipe",
 	enabled = false,
 	energy_required = 0.5,
-	ingredients = 
+	ingredients =
 		{
 			{"RTZiplineControlsItem", 1},
 			{"iron-stick", 2},
 			{"iron-gear-wheel", 10}
 		},
 	result = "RTZiplineCrankControlsItem"
+},
+
+{ --------- programmabel zipline controls -------------
+	type = "ammo",
+	name = "RTProgrammableZiplineControlsItem",
+	icon = "__RenaiTransportation__/graphics/zipline/autocontrols.png",
+	icon_size = 64,
+	subgroup = "gun",
+	order = "hk",
+	stack_size = 1,
+	ammo_type =
+    {
+      category = "ZiplineMotor"
+
+	}
+},
+{ --------- programmable zipline controls recipie ----------
+	type = "recipe",
+	name = "RTProgrammableZiplineControlsRecipe",
+	enabled = false,
+	energy_required = 0.5,
+	ingredients =
+		{
+         {"RTZiplineControlsItem", 1},
+			{"electronic-circuit", 5}
+		},
+	result = "RTProgrammableZiplineControlsItem"
 },
 
 { ------ zipline over player graphic -----------
@@ -210,13 +237,13 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 			name = "RTZiplineRecipe",
 			enabled = false,
 			energy_required = 0.5,
-			ingredients = 
+			ingredients =
 				{
 					{"copper-cable", 100},
 					{"iron-gear-wheel", 50},
 					{"electronic-circuit", 4},
 					{"PlayerLauncherItem", 1},
-					{"steel-chest", 1}		
+					{"steel-chest", 1}
 				},
 			result = "RTZiplineItem"
 		}
@@ -229,14 +256,92 @@ else
 			name = "RTZiplineRecipe",
 			enabled = false,
 			energy_required = 0.5,
-			ingredients = 
+			ingredients =
 				{
 					{"copper-cable", 100},
 					{"iron-gear-wheel", 50},
 					{"electronic-circuit", 5},
-					{"steel-chest", 1}		
+					{"steel-chest", 1}
 				},
 			result = "RTZiplineItem"
 		}
 	})
 end
+
+local RTZiplineTerminal = table.deepcopy(data.raw["electric-pole"]["medium-electric-pole"])
+   RTZiplineTerminal.icon = "__RenaiTransportation__/graphics/zipline/terminalicon.png"
+   RTZiplineTerminal.icon_size = 64
+   RTZiplineTerminal.icon_mipmaps = 1
+   RTZiplineTerminal.name = "RTZiplineTerminal"
+   RTZiplineTerminal.minable = {mining_time = 0.5, result = "RTZiplineTerminalItem"}
+   RTZiplineTerminal.collision_box = {{-0.9, -0.3}, {0.9, 0.9}}
+   RTZiplineTerminal.selection_box = {{-1, -0.5}, {1, 1}}
+   RTZiplineTerminal.pictures =
+    {
+      layers =
+      {
+        {
+          filename = "__RenaiTransportation__/graphics/zipline/terminal.png",
+          priority = "extra-high",
+          width = 125,
+          height = 250,
+          direction_count = 1,
+          shift = {0, -1},
+          scale = 0.5
+        },
+        {
+          filename = "__RenaiTransportation__/graphics/zipline/OwTheEdge.png",
+          priority = "extra-high",
+          width = 212,
+          height = 48,
+          direction_count = 1,
+          shift = {2.6, 0.6},
+          scale = 0.5,
+          draw_as_shadow = true
+        }
+      }
+    }
+   RTZiplineTerminal.connection_points =
+   {
+     {
+       shadow =
+       {
+         copper = {3.9, 0.5},
+         red = {4.25, 0.7},
+         green = {3.5, 0.65}
+       },
+       wire =
+       {
+         copper = util.by_pixel(0.0, -93),
+         red = util.by_pixel(18, -85.0),
+         green = util.by_pixel(-14, -85.0)
+       }
+     }
+   }
+   RTZiplineTerminal.supply_area_distance = 0
+local RTZiplineTerminalItem = table.deepcopy(data.raw.item["medium-electric-pole"])
+   RTZiplineTerminalItem.name = "RTZiplineTerminalItem"
+   RTZiplineTerminalItem.icon = "__RenaiTransportation__/graphics/zipline/terminalicon.png"
+   RTZiplineTerminalItem.icon_size = 64
+   RTZiplineTerminalItem.icon_mipmaps = 1
+   RTZiplineTerminalItem.place_result = "RTZiplineTerminal"
+   RTZiplineTerminalItem.order = "a[energy]-x[ZiplineTerminal]"
+local RTZiplineTerminalRecipe =
+   {
+      type = "recipe",
+      name = "RTZiplineTerminalRecipe",
+      enabled = false,
+      energy_required = 0.5,
+      ingredients =
+         {
+            {"medium-electric-pole", 1},
+            {"steel-plate", 40},
+            {"electronic-circuit", 10}
+         },
+      result = "RTZiplineTerminalItem"
+   }
+data:extend({
+   RTZiplineTerminal,
+   RTZiplineTerminalItem,
+   RTZiplineTerminalRecipe
+})

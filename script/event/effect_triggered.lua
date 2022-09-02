@@ -9,17 +9,21 @@ local function effect_triggered(event)
 	if (event.effect_id == "RTCrank"
 	and event.source_entity
 	and event.source_entity.player
-	and global.AllPlayers[event.source_entity.player.index].sliding
-	and global.AllPlayers[event.source_entity.player.index].succ.energy ~= 0
+	and global.AllPlayers[event.source_entity.player.index].state == "zipline"
+	and global.AllPlayers[event.source_entity.player.index].zipline.succ.energy ~= 0
+	and global.AllPlayers[event.source_entity.player.index].zipline.path == nil
 	and game.get_player(event.source_entity.player.index).character.get_inventory(defines.inventory.character_guns)[game.get_player(event.source_entity.player.index).character.selected_gun_index].valid_for_read
 	and game.get_player(event.source_entity.player.index).character.get_inventory(defines.inventory.character_guns)[game.get_player(event.source_entity.player.index).character.selected_gun_index].name == "RTZiplineItem"
 	and game.get_player(event.source_entity.player.index).character.get_inventory(defines.inventory.character_ammo)[game.get_player(event.source_entity.player.index).character.selected_gun_index].valid_for_read
 	and game.get_player(event.source_entity.player.index).character.get_inventory(defines.inventory.character_ammo)[game.get_player(event.source_entity.player.index).character.selected_gun_index].name == "RTZiplineCrankControlsItem"
 	and game.get_player(event.source_entity.player.index).walking_state.walking == true
 	) then
-		if (global.AllPlayers[event.source_entity.player.index].ForwardDirection ~= nil and global.AllPlayers[event.source_entity.player.index].ForwardDirection[game.get_player(event.source_entity.player.index).walking_state.direction] ~= nil) then
-			if (global.AllPlayers[event.source_entity.player.index].LetMeGuideYou.speed <= 0.420) then
-				global.AllPlayers[event.source_entity.player.index].LetMeGuideYou.speed = global.AllPlayers[event.source_entity.player.index].LetMeGuideYou.speed + 0.040 --increments slower than 0.008 don't seem to do anything
+		local PlayerProperties = global.AllPlayers[event.source_entity.player.index]
+		local MaxBoostedSpeed = 0.420
+		local BoostAmount = 0.040
+		if (PlayerProperties.zipline.ForwardDirection ~= nil and PlayerProperties.zipline.ForwardDirection[game.get_player(event.source_entity.player.index).walking_state.direction] ~= nil) then
+			if (PlayerProperties.zipline.LetMeGuideYou.speed <= MaxBoostedSpeed) then
+				PlayerProperties.zipline.LetMeGuideYou.speed = PlayerProperties.zipline.LetMeGuideYou.speed + BoostAmount
 				game.get_player(event.source_entity.player.index).surface.play_sound
 					{
 						path = "RTZipAttach",
@@ -27,9 +31,9 @@ local function effect_triggered(event)
 						volume = 0.7
 					}
 			end
-		elseif (global.AllPlayers[event.source_entity.player.index].BackwardsDirection ~= nil and global.AllPlayers[event.source_entity.player.index].BackwardsDirection[game.get_player(event.source_entity.player.index).walking_state.direction] ~= nil) then
-			if (global.AllPlayers[event.source_entity.player.index].LetMeGuideYou.speed >= -0.420) then
-				global.AllPlayers[event.source_entity.player.index].LetMeGuideYou.speed = global.AllPlayers[event.source_entity.player.index].LetMeGuideYou.speed - 0.040
+		elseif (PlayerProperties.zipline.BackwardsDirection ~= nil and PlayerProperties.zipline.BackwardsDirection[game.get_player(event.source_entity.player.index).walking_state.direction] ~= nil) then
+			if (PlayerProperties.zipline.LetMeGuideYou.speed >= -MaxBoostedSpeed) then
+				PlayerProperties.zipline.LetMeGuideYou.speed = PlayerProperties.zipline.LetMeGuideYou.speed - BoostAmount
 				game.get_player(event.source_entity.player.index).surface.play_sound
 					{
 						path = "RTZipAttach",

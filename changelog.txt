@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.0
+Date: 9/1/2022
+  Additions:
+    - Programmable Zipline Controller and Zipline Terminal. These can be used to automatically move you around the powerline highway
+    - Pressing Interact (default F) on Bounce Pads and Directed Bounce Pads will now toggle their bounce ranges between 5, 10, and 15 tiles
+  Changes:
+    - Changed how ziplining, jumping, and such are tracked internally so that they hopefully don't interfere with each other as much and cause crashes.
+---------------------------------------------------------------------------------------------------
 Version: 1.0.6
 Date: 8/18/2022
   Bugfixes:

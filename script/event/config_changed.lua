@@ -43,7 +43,7 @@ local function config_changed()
 
 	for PlayerID, PlayerLuaData in pairs(game.players) do
 		if (global.AllPlayers[PlayerID] == nil) then
-			global.AllPlayers[PlayerID] = {}
+			global.AllPlayers[PlayerID] = {state="default", PlayerLauncher={}, zipline={}, RangeAdjusting=false, SettingRampRange={SettingRange=false}, GUI={}}
 		end
 	end
 
@@ -107,6 +107,10 @@ local function config_changed()
 
 	if (global.clock == nil) then
 		global.clock = {}
+	end
+
+	if (global.ZiplineTerminals == nil) then
+		global.ZiplineTerminals = {}
 	end
 
 end

@@ -7,7 +7,7 @@ local function entity_built(event)
 
 	if event.player_index then
 		player = game.players[event.player_index]
-		if (global.AllPlayers[event.player_index].RangeAdjusting
+		if (global.AllPlayers[event.player_index].RangeAdjusting == true
 		and entity.name == "entity-ghost"
 		and string.find(entity.ghost_prototype.name, "RTThrower-")
 		and player.get_main_inventory().find_item_stack(entity.ghost_prototype.name.."-Item")
@@ -62,7 +62,9 @@ local function entity_built(event)
 	elseif (string.find(entity.name, "BouncePlate") and not string.find(entity.name, "Train")) then
 		global.BouncePadList[entity.unit_number] = {TheEntity = entity}
 		ShowRange = settings.global["RTShowRange"].value
-		if (entity.name == "DirectedBouncePlate") then
+		if (entity.name == "DirectedBouncePlate"
+		or entity.name == "DirectedBouncePlate5"
+		or entity.name == "DirectedBouncePlate15") then
 			entity.operable = false
 			if (entity.orientation == 0) then
 				direction = "UD"
@@ -81,6 +83,13 @@ local function entity_built(event)
 				xflip = -1
 				yflip = 1
 			end
+			if (entity.name == "DirectedBouncePlate5") then
+				xflip = xflip*0.5
+				yflip = yflip*0.5
+			elseif (entity.name == "DirectedBouncePlate15") then
+				xflip = xflip*1.5
+				yflip = yflip*1.5
+			end
 			global.BouncePadList[entity.unit_number].arrow = rendering.draw_sprite
 				{
 					sprite = "RTDirectedRangeOverlay"..direction,
@@ -92,12 +101,27 @@ local function entity_built(event)
 					tint = {r = 0.4, g = 0.4, b = 0.4, a = 0},
 					visible = ShowRange
 				}
-		elseif (entity.name == "BouncePlate" or entity.name == "SignalBouncePlate" or entity.name == "DirectorBouncePlate") then
+		elseif (entity.name == "BouncePlate"
+		or entity.name == "BouncePlate5"
+		or entity.name == "BouncePlate15"
+		or entity.name == "SignalBouncePlate"
+		or entity.name == "DirectorBouncePlate") then
+			local xs = 1
+			local ys = 1
+			if (entity.name == "BouncePlate5") then
+				xs = 0.5
+				ys = 0.5
+			elseif (entity.name == "BouncePlate15") then
+				xs = 1.5
+				ys = 1.5
+			end
 			global.BouncePadList[entity.unit_number].arrow = rendering.draw_sprite
 				{
 					sprite = "RTRangeOverlay",
 					surface = entity.surface,
 					target = entity,
+					x_scale = xs,
+					y_scale = ys,
 					only_in_alt_mode = true,
 					tint = {r = 0.4, g = 0.4, b = 0.4, a = 0},
 					visible = ShowRange
@@ -164,6 +188,9 @@ local function entity_built(event)
 			global.clock[game.tick+time].destroy = {}
 		end
 		global.clock[game.tick+time].destroy[entity.unit_number] = entity
+
+	elseif (entity.name == "RTZiplineTerminal") then
+		global.ZiplineTerminals[entity.unit_number] = {entity=entity, name=game.backer_names[math.random(1, #game.backer_names)]}
 	end
 end
 

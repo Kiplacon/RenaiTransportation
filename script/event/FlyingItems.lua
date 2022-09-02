@@ -34,7 +34,7 @@ local function on_tick(event)
                   unitx = global.OrientationUnitComponents[ThingLandedOn.orientation].x
                   unity = global.OrientationUnitComponents[ThingLandedOn.orientation].y
                   if (FlyingItem.player) then
-                     global.AllPlayers[FlyingItem.player.index].direction = global.OrientationUnitComponents[ThingLandedOn.orientation].name
+                     global.AllPlayers[FlyingItem.player.index].PlayerLauncher.direction = global.OrientationUnitComponents[ThingLandedOn.orientation].name
                   end
                elseif (string.find(ThingLandedOn.name, "DirectorBouncePlate")) then
                   for each, parameter in pairs(ThingLandedOn.get_or_create_control_behavior().parameters) do
@@ -108,6 +108,10 @@ local function on_tick(event)
                tunez = "bounce"
                if (string.find(ThingLandedOn.name, "Train")) then
                   range = 39.9
+               elseif (ThingLandedOn.name == "BouncePlate5" or ThingLandedOn.name == "DirectedBouncePlate5") then
+                  range = 4.9
+               elseif (ThingLandedOn.name == "BouncePlate15" or ThingLandedOn.name == "DirectedBouncePlate15") then
+                  range = 14.9
                end
 
                -- Modifiers --

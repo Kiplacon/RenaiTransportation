@@ -394,6 +394,7 @@ if (settings.startup["RTZiplineSetting"].value == true) then
 			time = 30
 		}
 	  },
+
 	  {
 		type = "technology",
 		name = "RTZiplineControlTech1",
@@ -416,7 +417,36 @@ if (settings.startup["RTZiplineSetting"].value == true) then
 			},
 			time = 30
 		}
-	  }
+   },
+
+     {
+      type = "technology",
+      name = "RTProgrammableZiplineControlTech",
+      icon = "__RenaiTransportation__/graphics/zipline/terminaltech.png",
+      icon_size = 128,
+      effects =
+      {
+         {
+            type = "unlock-recipe",
+            recipe = "RTProgrammableZiplineControlsRecipe"
+         },
+         {
+            type = "unlock-recipe",
+            recipe = "RTZiplineTerminalRecipe"
+         }
+      },
+      prerequisites = {"RTZiplineTech", "electric-energy-distribution-1"},
+      unit =
+      {
+         count = 150,
+         ingredients =
+         {
+           {"automation-science-pack", 1},
+           {"logistic-science-pack", 1}
+         },
+         time = 30
+      }
+     }
 	})
 end
 

@@ -1,4 +1,5 @@
 if script.active_mods["gvv"] then require("__gvv__.gvv")() end
+
 -- Setup tables and stuff for new/existing saves ----
 script.on_init(
 	require("script.event.init")
@@ -43,7 +44,7 @@ script.on_event(
 script.on_event(defines.events.on_player_cursor_stack_changed, -- only has .player_index
 function(event)
 if (global.AllPlayers[event.player_index].RangeAdjusting == true) then
-	global.AllPlayers[event.player_index].RangeAdjusting = nil
+	global.AllPlayers[event.player_index].RangeAdjusting = false
 end
 end)
 
@@ -374,7 +375,8 @@ script.on_event(defines.events.on_player_changed_surface,
 -- .surface_index :: uint: The surface index the player was on
 function(event)
 local player = game.players[event.player_index]
-	if (global.AllPlayers[event.player_index] and global.AllPlayers[event.player_index].sliding and global.AllPlayers[event.player_index].sliding == true and player.surface.name ~= global.AllPlayers[event.player_index].StartingSurface.name) then
+local PlayerProperties = global.AllPlayers[event.player_index]
+	if (PlayerProperties and PlayerProperties.state == "zipline" and player.surface.name ~= PlayerProperties.zipline.StartingSurface.name) then
 		player.teleport(player.position, game.get_surface(event.surface_index))
 	end
 end)
@@ -417,5 +419,10 @@ function(event)
 	end
 end)
 
- -- a bunch of functions used in various other places
+-- a bunch of functions used in various other places
 require("script.MiscFunctions")
+require("script.GUIs")
+
+script.on_event(defines.events.on_gui_click,
+	require("script.event.ClickGUI")
+)

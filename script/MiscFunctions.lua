@@ -118,8 +118,8 @@ end
 ---- swapping back from character ghost copy from using the ziplines or player launcher
 function SwapBackFromGhost(player, FlyingItem)
 	if (FlyingItem) then
-		global.AllPlayers[FlyingItem.player.index].jumping = nil
-		global.AllPlayers[FlyingItem.player.index] = {}
+		global.AllPlayers[FlyingItem.player.index].state = "default"
+      global.AllPlayers[FlyingItem.player.index].PlayerLauncher = {}
 		if (FlyingItem.player.character) then
 			local OG2 = FlyingItem.player.character
          FlyingItem.SwapBack.vehicle.destroy()
@@ -182,12 +182,12 @@ function SwapBackFromGhost(player, FlyingItem)
 		end
 
 	elseif (player.character) then
-		local stuff = global.AllPlayers[player.index]
+		local PlayerProperties = global.AllPlayers[player.index]
 		local OG2 = player.character
-      stuff.SwapBack.vehicle.destroy()
-		stuff.SwapBack.teleport(player.position)
-		player.character = stuff.SwapBack
-		stuff.SwapBack.direction = OG2.direction
+      PlayerProperties.SwapBack.vehicle.destroy()
+		PlayerProperties.SwapBack.teleport(player.position)
+		player.character = PlayerProperties.SwapBack
+		PlayerProperties.SwapBack.direction = OG2.direction
 		------ undo crafting queue -------
 		local TheList = nil
 		if (OG2.crafting_queue) then
@@ -200,10 +200,10 @@ function SwapBackFromGhost(player, FlyingItem)
 			end
 		end
 		------ swap inventories ---------
-		util.swap_entity_inventories(OG2, stuff.SwapBack, defines.inventory.character_main)
-		util.swap_entity_inventories(OG2, stuff.SwapBack, defines.inventory.character_guns)
-		util.swap_entity_inventories(OG2, stuff.SwapBack, defines.inventory.character_ammo)
-		util.swap_entity_inventories(OG2, stuff.SwapBack, defines.inventory.character_trash)
+		util.swap_entity_inventories(OG2, PlayerProperties.SwapBack, defines.inventory.character_main)
+		util.swap_entity_inventories(OG2, PlayerProperties.SwapBack, defines.inventory.character_guns)
+		util.swap_entity_inventories(OG2, PlayerProperties.SwapBack, defines.inventory.character_ammo)
+		util.swap_entity_inventories(OG2, PlayerProperties.SwapBack, defines.inventory.character_trash)
 		for i = 1, #OG2.get_inventory(defines.inventory.character_armor) do
 			player.character.get_inventory(defines.inventory.character_armor).insert(OG2.get_inventory(defines.inventory.character_armor)[i])
 		end
@@ -221,7 +221,7 @@ function SwapBackFromGhost(player, FlyingItem)
 		end
       ---------- move robot ownership ----------
       for each, bot in pairs(OG2.following_robots) do
-         bot.combat_robot_owner = stuff.SwapBack
+         bot.combat_robot_owner = PlayerProperties.SwapBack
       end
       local spidies = OG2.surface.find_entities_filtered{
          position = OG2.position,
@@ -230,14 +230,15 @@ function SwapBackFromGhost(player, FlyingItem)
       }
       for each, spider in pairs(spidies) do
          if (spider.follow_target == OG2) then
-            spider.follow_target = stuff.SwapBack
+            spider.follow_target = PlayerProperties.SwapBack
          end
       end
-		stuff.SwapBack.destructible = true
-		stuff.SwapBack.health = OG2.health
-		stuff.SwapBack.selected_gun_index = OG2.selected_gun_index
+		PlayerProperties.SwapBack.destructible = true
+		PlayerProperties.SwapBack.health = OG2.health
+		PlayerProperties.SwapBack.selected_gun_index = OG2.selected_gun_index
 		player.character_running_speed_modifier = 0
 		OG2.destroy()
+      PlayerProperties.SwapBack = nil
 	end
 end
 
@@ -260,4 +261,104 @@ function copy(object)
     return setmetatable(new_table, getmetatable(object))
   end
   return _copy(object)
+end
+
+function DistanceBetween(p1, p2)
+   return math.sqrt((p1.x-p2.x)^2+(p1.y-p2.y)^2)
+end
+
+function GetOnZipline(player, PlayerProperties, pole)
+   local OG = SwapToGhost(player)
+   ---------- get on zipline -----------------
+   local TheGuy = player
+   local FromXWireOffset = game.recipe_prototypes["RTGetTheGoods-"..pole.name.."X"].emissions_multiplier
+   local FromYWireOffset = game.recipe_prototypes["RTGetTheGoods-"..pole.name.."Y"].emissions_multiplier
+   local SpookySlideGhost = pole.surface.create_entity
+      ({
+         name = "RTPropCar",
+         position = {pole.position.x+FromXWireOffset, pole.position.y+FromYWireOffset},
+         --force = TheGuy.force,
+         create_build_effect_smoke = false
+      })
+   local trolley = pole.surface.create_entity
+      ({
+         name = "RTZipline",
+         position = {pole.position.x+FromXWireOffset, pole.position.y+FromYWireOffset},
+         force = TheGuy.force,
+         create_build_effect_smoke = false
+      })
+   local drain = pole.surface.create_entity
+      ({
+         name = "RTZiplinePowerDrain",
+         position = pole.position,
+         force = TheGuy.force,
+         create_build_effect_smoke = false
+      })
+   rendering.draw_animation
+      {
+         animation = "RTZiplineOverGFX",
+         surface = TheGuy.surface,
+         target = trolley,
+         target_offset = {0, -0.3},
+         x_scale = 0.5,
+         y_scale = 0.5,
+         render_layer = "wires-above"
+      }
+   rendering.draw_sprite
+      {
+         sprite = "RTZiplineHarnessGFX",
+         surface = TheGuy.surface,
+         target = trolley,
+         target_offset = {0.03, 0.1},
+         x_scale = 0.5,
+         y_scale = 0.5,
+         render_layer = "128"
+      }
+   trolley.destructible = false
+   SpookySlideGhost.destructible = false
+   drain.destructible = false
+   TheGuy.teleport({SpookySlideGhost.position.x, 2+SpookySlideGhost.position.y})
+   trolley.teleport({SpookySlideGhost.position.x, 0.5+SpookySlideGhost.position.y})
+   PlayerProperties.zipline.LetMeGuideYou = SpookySlideGhost
+   PlayerProperties.zipline.ChuggaChugga = trolley
+   PlayerProperties.zipline.WhereDidYouComeFrom = pole
+   PlayerProperties.zipline.AreYouStillThere = true
+   PlayerProperties.zipline.succ = drain
+   --game.print("Attached to track")
+   PlayerProperties.state = "zipline"
+   PlayerProperties.zipline.StartingSurface = TheGuy.surface
+   PlayerProperties.SwapBack = OG
+   pole.surface.play_sound
+      {
+         path = "RTZipAttach",
+         position = pole.position,
+         volume = 0.7
+      }
+end
+
+
+function GetOffZipline(player, PlayerProperties)
+   local ZiplineStuff = PlayerProperties.zipline
+   SwapBackFromGhost(player)
+   ZiplineStuff.LetMeGuideYou.surface.play_sound
+      {
+         path = "RTZipDettach",
+         position = ZiplineStuff.LetMeGuideYou.position,
+         volume = 0.4
+      }
+   ZiplineStuff.LetMeGuideYou.surface.play_sound
+      {
+         path = "RTZipWindDown",
+         position = ZiplineStuff.LetMeGuideYou.position,
+         volume = 0.4
+      }
+   ZiplineStuff.LetMeGuideYou.destroy()
+   ZiplineStuff.ChuggaChugga.destroy()
+   ZiplineStuff.succ.destroy()
+   if (player.character) then
+      player.character_running_speed_modifier = 0
+   end
+   player.teleport(player.surface.find_non_colliding_position("character", {player.position.x, player.position.y+2}, 0, 0.01))
+   PlayerProperties.zipline = {}
+   PlayerProperties.state = "default"
 end

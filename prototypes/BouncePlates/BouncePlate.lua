@@ -122,3 +122,99 @@ for color, tint in pairs(colors) do
 		}
 	})
 end
+
+
+data:extend({
+
+	{ --------- Bounce plate entity 5 --------------
+		type = "simple-entity-with-owner",
+		name = "BouncePlate5",
+		icon = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/PlateIconn.png",
+		icon_size = 64,
+		flags = {"placeable-neutral", "player-creation"},
+		minable = {mining_time = 0.2, result = "BouncePlateItem"},
+		placeable_by = {item="BouncePlateItem", count=1},
+		max_health = 200,
+	   collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
+		fast_replaceable_group = "bouncers",
+		picture =
+			{
+			layers =
+				{
+					{
+						filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/shadow.png",
+						priority = "medium",
+						width = 66,
+						height = 76,
+						shift = util.by_pixel(8, -0.5),
+						scale = 0.5
+					},
+					{
+						filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Plate.png",
+						priority = "medium",
+						width = 66,
+						height = 76,
+						shift = util.by_pixel(-0.5, -0.5),
+						scale = 0.5
+					}
+				}
+			},
+		radius_visualisation_specification =
+			{
+				sprite =
+					{
+						filename = "__RenaiTransportation__/graphics/testalt.png",
+						size = 640
+					},
+				draw_on_selection = true,
+				distance = 5
+			}
+	},
+	{ --------- Bounce plate entity 15 --------------
+		type = "simple-entity-with-owner",
+		name = "BouncePlate15",
+		icon = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/PlateIconn.png",
+		icon_size = 64,
+		flags = {"placeable-neutral", "player-creation"},
+		minable = {mining_time = 0.2, result = "BouncePlateItem"},
+		placeable_by = {item="BouncePlateItem", count=1},
+		max_health = 200,
+		collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
+		fast_replaceable_group = "bouncers",
+		picture =
+			{
+			layers =
+				{
+					{
+						filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/shadow.png",
+						priority = "medium",
+						width = 66,
+						height = 76,
+						shift = util.by_pixel(8, -0.5),
+						scale = 0.5
+					},
+					{
+						filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Plate.png",
+						priority = "medium",
+						width = 66,
+						height = 76,
+						shift = util.by_pixel(-0.5, -0.5),
+						scale = 0.5
+					}
+				}
+			},
+		radius_visualisation_specification =
+			{
+				sprite =
+					{
+						filename = "__RenaiTransportation__/graphics/testalt.png",
+						size = 640
+					},
+				draw_on_selection = true,
+				distance = 15
+			}
+	},
+
+})

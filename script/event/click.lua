@@ -2,11 +2,14 @@ local magnetRamps = require("__RenaiTransportation__/script/trains/magnet_ramps"
 
 local function click(event)
 	--| Toggle range overlay in alt-view
+	local PlayerProperties = global.AllPlayers[event.player_index]
+	local player = game.get_player(event.player_index)
+	local clicked = game.get_player(event.player_index).selected
 	if (game.get_player(event.player_index).selected and global.BouncePadList[game.get_player(event.player_index).selected.unit_number] ~= nil) then
 		rendering.set_visible(global.BouncePadList[game.get_player(event.player_index).selected.unit_number].arrow, not rendering.get_visible(global.BouncePadList[game.get_player(event.player_index).selected.unit_number].arrow))
 
 	--| Start setting range of magenet ramp
-	elseif (game.get_player(event.player_index).selected and (game.get_player(event.player_index).selected.name == "RTMagnetTrainRamp" or game.get_player(event.player_index).selected.name == "RTMagnetTrainRampNoSkip") and global.AllPlayers[event.player_index].SettingRange == nil) then
+	elseif (game.get_player(event.player_index).selected and (game.get_player(event.player_index).selected.name == "RTMagnetTrainRamp" or game.get_player(event.player_index).selected.name == "RTMagnetTrainRampNoSkip") and PlayerProperties.SettingRampRange.SettingRange == false) then
 		local ramp = game.get_player(event.player_index).selected
 		local MaxRange = settings.global["RTMagRampRange"].value
 		game.get_player(event.player_index).print({"magnet-ramp-stuff.Step2"})
@@ -25,24 +28,24 @@ local function click(event)
 				y_scale = 1,
 				tint = {r = 0.5, g = 0, b = 0, a = 0}
 			}
-		global.AllPlayers[event.player_index].SettingRange = true
-		global.AllPlayers[event.player_index].Setting = ramp
-		global.AllPlayers[event.player_index].point = ramp.orientation
-		global.AllPlayers[event.player_index].rekt = rektangle
-		global.AllPlayers[event.player_index].range = MaxRange
+		PlayerProperties.SettingRampRange.SettingRange = true
+		PlayerProperties.SettingRampRange.Setting = ramp
+		PlayerProperties.SettingRampRange.point = ramp.orientation
+		PlayerProperties.SettingRampRange.rekt = rektangle
+		PlayerProperties.SettingRampRange.range = MaxRange
 
 	--| Set magnet ramp range
-	elseif (global.AllPlayers[event.player_index].SettingRange == true and game.get_player(event.player_index).selected) then
+	elseif (PlayerProperties.SettingRampRange.SettingRange == true and game.get_player(event.player_index).selected) then
 		local TheRail = game.get_player(event.player_index).selected
-		local TheRamp = global.AllPlayers[event.player_index].Setting
+		local TheRamp = PlayerProperties.SettingRampRange.Setting
 
 		if (TheRail.name == "straight-rail" or TheRail.name == "RTTrainBouncePlate" or TheRail.name == "RTTrainDirectedBouncePlate") then
 			--|| Vertical ramps
-			if ((global.AllPlayers[event.player_index].point == 0 or global.AllPlayers[event.player_index].point == 0.5)
+			if ((PlayerProperties.SettingRampRange.point == 0 or PlayerProperties.SettingRampRange.point == 0.5)
 				and TheRamp ~= nil
 				and TheRamp.valid == true
 				and TheRail.position.x == TheRamp.position.x+global.OrientationUnitComponents[TheRamp.orientation+0.25].x
-				and math.abs(TheRail.position.y-TheRamp.position.y) <= global.AllPlayers[event.player_index].range
+				and math.abs(TheRail.position.y-TheRamp.position.y) <= PlayerProperties.SettingRampRange.range
 			) then
 				local range = math.abs(TheRail.position.y-TheRamp.position.y)
 				magnetRamps.setRange(
@@ -52,14 +55,17 @@ local function click(event)
 				)
 
 			--|| Horizontal ramps
-			elseif ((global.AllPlayers[event.player_index].point == 0.25 or global.AllPlayers[event.player_index].point == 0.75)
+			elseif ((PlayerProperties.SettingRampRange.point == 0.25 or PlayerProperties.SettingRampRange.point == 0.75)
 				and TheRamp ~= nil
 				and TheRamp.valid == true
-				and TheRail.position.y == TheRamp.position.y+global.OrientationUnitComponents[global.AllPlayers[event.player_index].Setting.orientation+0.25].y
-				and math.abs(TheRail.position.x-TheRamp.position.x) <= global.AllPlayers[event.player_index].range
+				and TheRail.position.y == TheRamp.position.y+global.OrientationUnitComponents[PlayerProperties.SettingRampRange.Setting.orientation+0.25].y
+				and math.abs(TheRail.position.x-TheRamp.position.x) <= PlayerProperties.SettingRampRange.range
 			) then
+				local comp = 0
+				if (TheRail.name == "RTTrainBouncePlate" or TheRail.name == "RTTrainDirectedBouncePlate") then
+					comp = 1
+				end
 				local range = math.abs(TheRail.position.x-TheRamp.position.x)
-
 				magnetRamps.setRange(
 					global.MagnetRamps[TheRamp.unit_number],
 					range,
@@ -70,7 +76,7 @@ local function click(event)
 
 
 			else
-				game.get_player(event.player_index).print({"magnet-ramp-stuff.BeyondRange", global.AllPlayers[event.player_index].range})
+				game.get_player(event.player_index).print({"magnet-ramp-stuff.BeyondRange", PlayerProperties.SettingRampRange.range})
 
 			end
 
@@ -79,14 +85,35 @@ local function click(event)
 
 		end
 
-		if (rendering.is_valid(global.AllPlayers[event.player_index].rekt)) then
-			rendering.destroy(global.AllPlayers[event.player_index].rekt)
+		if (rendering.is_valid(PlayerProperties.SettingRampRange.rekt)) then
+			rendering.destroy(PlayerProperties.SettingRampRange.rekt)
 		end
 		if (TheRamp.valid and global.MagnetRamps[TheRamp.unit_number] and global.MagnetRamps[TheRamp.unit_number].rangeID ~= nil) then
 			rendering.destroy(global.MagnetRamps[TheRamp.unit_number].rangeID)
 		end
-		global.AllPlayers[event.player_index] = {}
+		PlayerProperties.SettingRampRange = {SettingRange=false}
 
+	elseif (PlayerProperties.state == "default"
+	and clicked and clicked.name == "RTZiplineTerminal"
+	and player.character
+	and (not string.find(player.character.name, "-jetpack"))
+	and player.is_cursor_empty() == true) then
+		if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
+		and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "ZiplineItem")
+		and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
+		and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTProgrammableZiplineControlsItem") then
+			if (DistanceBetween(player.character.position, clicked.position) <= 3) then
+				PlayerProperties.GUI.SwapTo = "ZiplineTerminal"
+				PlayerProperties.GUI.terminal = clicked
+				ShowZiplineTerminalGUI(player, clicked)
+			else
+				PlayerProperties.GUI.CloseOut = "bofa"
+				player.print({"zipline-stuff.range"})
+			end
+		else
+			PlayerProperties.GUI.CloseOut = "bofa"
+			player.print({"zipline-stuff.terminalReqs"})
+		end
 	end
 end
 

@@ -1,5 +1,6 @@
 local function rotate(event)
-	if (event.entity.name == "DirectedBouncePlate" and global.BouncePadList[event.entity.unit_number] ~= nil) then
+	if ((event.entity.name == "DirectedBouncePlate" or event.entity.name == "DirectedBouncePlate5" or event.entity.name == "DirectedBouncePlate15")
+	and global.BouncePadList[event.entity.unit_number] ~= nil) then
 		CantSeeMe = rendering.get_visible(global.BouncePadList[event.entity.unit_number].arrow)
 		rendering.destroy(global.BouncePadList[event.entity.unit_number].arrow)
 		if (event.entity.orientation == 0) then
@@ -18,6 +19,13 @@ local function rotate(event)
 			direction = "RL"
 			xflip = -1
 			yflip = 1
+		end
+		if (event.entity.name == "DirectedBouncePlate5") then
+			xflip = xflip*0.5
+			yflip = yflip*0.5
+		elseif (event.entity.name == "DirectedBouncePlate15") then
+			xflip = xflip*1.5
+			yflip = yflip*1.5
 		end
 		global.BouncePadList[event.entity.unit_number].arrow = rendering.draw_sprite
 			{
