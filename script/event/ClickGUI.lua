@@ -25,10 +25,12 @@ local function FindPath(finish, start)
       end
 
       for each, neighbor in pairs(current.entity.neighbours["copper"]) do
-         local FromStart = current.FromStart + DistanceBetween(current.entity.position, neighbor.position)
-         if (analyzed[neighbor.unit_number] == nil and (#neighbor.neighbours["copper"] > 1 or neighbor.unit_number == finish.unit_number) and (possibilities[neighbor.unit_number] == nil or possibilities[neighbor.unit_number].FromStart > FromStart)) then
-            local difficulty = FromStart + DistanceBetween(neighbor.position, finish.position)
-            possibilities[neighbor.unit_number] = {entity=neighbor, FromStart=FromStart, FromFinish=DistanceBetween(neighbor.position, finish.position), difficulty=difficulty, parent=current.entity}
+         if (neighbor.type ~= "entity-ghost" and neighbor.type == "electric-pole") then
+            local FromStart = current.FromStart + DistanceBetween(current.entity.position, neighbor.position)
+            if (analyzed[neighbor.unit_number] == nil and (#neighbor.neighbours["copper"] > 1 or neighbor.unit_number == finish.unit_number) and (possibilities[neighbor.unit_number] == nil or possibilities[neighbor.unit_number].FromStart > FromStart)) then
+               local difficulty = FromStart + DistanceBetween(neighbor.position, finish.position)
+               possibilities[neighbor.unit_number] = {entity=neighbor, FromStart=FromStart, FromFinish=DistanceBetween(neighbor.position, finish.position), difficulty=difficulty, parent=current.entity}
+            end
          end
       end
    end
@@ -92,6 +94,9 @@ ClickableStuff = {
 		local header = event.element.parent
 		local TerminalName = event.element.parent.TerminalName.text
 		global.ZiplineTerminals[event.element.parent.parent.tags.ID].name = TerminalName
+      if (global.ZiplineTerminals[event.element.parent.parent.tags.ID].tag.valid) then
+         global.ZiplineTerminals[event.element.parent.parent.tags.ID].tag.text = TerminalName
+      end
 		event.element.parent.TerminalName.destroy()
 		event.element.destroy()
 		header.add{type="label", name="TerminalName", caption=TerminalName}.style.font = "heading-1"

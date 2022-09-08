@@ -80,6 +80,11 @@ function SwapToGhost(player)
 	OG.get_inventory(defines.inventory.character_armor).clear()
 	OG.get_inventory(defines.inventory.character_trash).clear()
    NEWHOST.cursor_stack.transfer_stack(OG.cursor_stack)
+   for i = 1, OG.request_slot_count do
+      local thing = OG.get_personal_logistic_slot(i)
+      NEWHOST.set_personal_logistic_slot(i, thing)
+      OG.clear_personal_logistic_slot(i)
+   end
 	---------- redo crafting queue -----------
 	if (TheList ~= nil) then
 		for i = #TheList, 1, -1 do
@@ -147,6 +152,11 @@ function SwapBackFromGhost(player, FlyingItem)
 			end
          player.character.cursor_stack.transfer_stack(OG2.cursor_stack)
 			FlyingItem.SwapBack.character_inventory_slots_bonus = FlyingItem.SwapBack.character_inventory_slots_bonus-10000
+         for i = 1, OG2.request_slot_count do
+            local thing = OG2.get_personal_logistic_slot(i)
+            FlyingItem.SwapBack.set_personal_logistic_slot(i, thing)
+            OG2.clear_personal_logistic_slot(i)
+         end
 			---------- redo crafting queue -----------
 			if (TheList ~= nil) then
 				for i = #TheList, 1, -1 do
@@ -209,6 +219,11 @@ function SwapBackFromGhost(player, FlyingItem)
 		end
       player.character.cursor_stack.transfer_stack(OG2.cursor_stack)
 		player.character.character_inventory_slots_bonus = player.character.character_inventory_slots_bonus-10000
+      for i = 1, OG2.request_slot_count do
+         local thing = OG2.get_personal_logistic_slot(i)
+         PlayerProperties.SwapBack.set_personal_logistic_slot(i, thing)
+         OG2.clear_personal_logistic_slot(i)
+      end
 		---------- redo crafting queue -----------
 		if (TheList ~= nil) then
 			for i = #TheList, 1, -1 do

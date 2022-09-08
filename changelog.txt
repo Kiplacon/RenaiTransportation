@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.2
+Date: 9/7/2022
+  Changes:
+    - Placing a Zipline Terminal now adds a marker on the map for it. Recommended by obfuscatedgenerated
+  Bugfixes:
+    - Fixed crash when the automatic zipline path finder tried to path through an electric pole ghost
+    - Fixed that logistics requests/trash wouldn't carry over when getting on/off ziplines. Reported by obfuscatedgenerated
+---------------------------------------------------------------------------------------------------
 Version: 1.1.1
 Date: 9/2/2022
   Additions:
