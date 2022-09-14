@@ -288,6 +288,7 @@ function GetOnZipline(player, PlayerProperties, pole)
    local TheGuy = player
    local FromXWireOffset = game.recipe_prototypes["RTGetTheGoods-"..pole.name.."X"].emissions_multiplier
    local FromYWireOffset = game.recipe_prototypes["RTGetTheGoods-"..pole.name.."Y"].emissions_multiplier
+   local EquippedTrolley = player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name
    local SpookySlideGhost = pole.surface.create_entity
       ({
          name = "RTPropCar",
@@ -302,17 +303,61 @@ function GetOnZipline(player, PlayerProperties, pole)
          force = TheGuy.force,
          create_build_effect_smoke = false
       })
-   local drain = pole.surface.create_entity
-      ({
-         name = "RTZiplinePowerDrain",
-         position = pole.position,
-         force = TheGuy.force,
-         create_build_effect_smoke = false
-      })
+
+   local drain
+   local shade
+   if (EquippedTrolley == "RTZiplineItem") then
+      drain = pole.surface.create_entity
+         ({
+            name = "RTZiplinePowerDrain",
+            position = pole.position,
+            force = TheGuy.force,
+            create_build_effect_smoke = false
+         })
+      shade = {1,1,1}
+   elseif (EquippedTrolley == "RTZiplineItem2") then
+      drain = pole.surface.create_entity
+         ({
+            name = "RTZiplinePowerDrain2",
+            position = pole.position,
+            force = TheGuy.force,
+            create_build_effect_smoke = false
+         })
+      shade = {1,0.9,0}
+   elseif (EquippedTrolley == "RTZiplineItem3") then
+      drain = pole.surface.create_entity
+         ({
+            name = "RTZiplinePowerDrain3",
+            position = pole.position,
+            force = TheGuy.force,
+            create_build_effect_smoke = false
+         })
+      shade = {255,35,35}
+   elseif (EquippedTrolley == "RTZiplineItem4") then
+      drain = pole.surface.create_entity
+         ({
+            name = "RTZiplinePowerDrain4",
+            position = pole.position,
+            force = TheGuy.force,
+            create_build_effect_smoke = false
+         })
+      shade = {18,201,233}
+   elseif (EquippedTrolley == "RTZiplineItem5") then
+      drain = pole.surface.create_entity
+         ({
+            name = "RTZiplinePowerDrain5",
+            position = pole.position,
+            force = TheGuy.force,
+            create_build_effect_smoke = false
+         })
+      shade = {83,255,26}
+   end
+
    rendering.draw_animation
       {
          animation = "RTZiplineOverGFX",
          surface = TheGuy.surface,
+         tint = shade,
          target = trolley,
          target_offset = {0, -0.3},
          x_scale = 0.5,
@@ -323,6 +368,7 @@ function GetOnZipline(player, PlayerProperties, pole)
       {
          sprite = "RTZiplineHarnessGFX",
          surface = TheGuy.surface,
+         tint = shade,
          target = trolley,
          target_offset = {0.03, 0.1},
          x_scale = 0.5,

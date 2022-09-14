@@ -39,6 +39,18 @@ local function entity_destroyed(event)
 		end
 		global.ThrowerPaths[event.unit_number] = nil
 	end
+
+	if (global.ZiplineTerminals[event.unit_number] ~= nil) then
+		if (global.ZiplineTerminals[event.unit_number].tag.valid) then
+			global.ZiplineTerminals[event.unit_number].tag.destroy()
+		end
+		for each, player in pairs(game.players) do
+			if (player.gui.center.RTZiplineTerminalGUI and player.gui.center.RTZiplineTerminalGUI.tags.ID == event.unit_number) then
+				player.gui.center.RTZiplineTerminalGUI.destroy()
+			end
+		end
+		global.ZiplineTerminals[event.unit_number] = nil
+	end
 end
 
 return entity_destroyed

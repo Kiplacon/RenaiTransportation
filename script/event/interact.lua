@@ -6,7 +6,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	ThingHovering = player.selected
 
 	--| Player Launcher
-	PlayerLauncher = player.surface.find_entity("PlayerLauncher", {math.floor(player.position.x)+0.5, math.floor(player.position.y)+0.5})
+	if (settings.startup["RTThrowersSetting"].value == true) then
+		PlayerLauncher = player.surface.find_entity("PlayerLauncher", {math.floor(player.position.x)+0.5, math.floor(player.position.y)+0.5})
+	else
+		PlayerLauncher = nil
+	end
 
 	if (PlayerLauncher ~= nil
 	and player.character
@@ -328,7 +332,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		and #ThingHovering.neighbours["copper"] ~= 0) then
 			if (math.sqrt((player.position.x-ThingHovering.position.x)^2+(player.position.y-ThingHovering.position.y)^2) <= 3 ) then
 				if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
-				and player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name == "RTZiplineItem"
+				and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineItem")
 				and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read)
 				then
 					GetOnZipline(player, PlayerProperties, ThingHovering)

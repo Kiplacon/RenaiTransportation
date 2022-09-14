@@ -190,6 +190,7 @@ local function entity_built(event)
 		global.clock[game.tick+time].destroy[entity.unit_number] = entity
 
 	elseif (entity.name == "RTZiplineTerminal") then
+		script.register_on_entity_destroyed(entity)
 		global.ZiplineTerminals[entity.unit_number] = {entity=entity, name=game.backer_names[math.random(1, #game.backer_names)]}
 		local tag = entity.force.add_chart_tag(entity.surface, {position=entity.position, text=global.ZiplineTerminals[entity.unit_number].name, icon={type="item", name="RTZiplineTerminalItem"}})
 		global.ZiplineTerminals[entity.unit_number].tag = tag

@@ -13,8 +13,8 @@ for ThePlayer, TheirProperties in pairs(global.AllPlayers) do
 	local player = game.players[ThePlayer]
 	if (player.character and string.find(player.character.name, "RTGhost")) then
 		SwapBackFromGhost(player)
+		player.character_running_speed_modifier = 0
 	end
-	player.character_running_speed_modifier = 0
 	player.teleport(player.surface.find_non_colliding_position("character", {player.position.x, player.position.y+2}, 0, 0.01))
 	global.AllPlayers[ThePlayer] = {state="default", PlayerLauncher={}, zipline={}, RangeAdjusting=false, SettingRampRange={SettingRange=false}, GUI={}}
 end

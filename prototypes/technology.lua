@@ -367,59 +367,59 @@ end
 
 if (settings.startup["RTZiplineSetting"].value == true) then
 	data:extend({
-	  {
-		type = "technology",
-		name = "RTZiplineTech",
-		icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-		icon_size = 64,
-		effects =
-		{
-			{
-				type = "unlock-recipe",
-				recipe = "RTZiplineRecipe"
-			},
-			{
-				type = "unlock-recipe",
-				recipe = "RTZiplineControlsRecipe"
-			}
-		},
-		prerequisites = {"se~no", "steel-processing"},
-		unit =
-		{
-			count = 100,
-			ingredients =
-			{
-			  {"automation-science-pack", 1}
-			},
-			time = 30
-		}
-	  },
-
-	  {
-		type = "technology",
-		name = "RTZiplineControlTech1",
-		icon = "__RenaiTransportation__/graphics/zipline/crankcontrols.png",
-		icon_size = 64,
-		effects =
-		{
-			{
-				type = "unlock-recipe",
-				recipe = "RTZiplineCrankControlsRecipe"
-			}
-		},
-		prerequisites = {"RTZiplineTech"},
-		unit =
-		{
-			count = 50,
-			ingredients =
-			{
-			  {"automation-science-pack", 1}
-			},
-			time = 30
-		}
+   {
+   	type = "technology",
+   	name = "RTZiplineTech",
+   	icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+   	icon_size = 64,
+   	effects =
+   	{
+   		{
+   			type = "unlock-recipe",
+   			recipe = "RTZiplineRecipe"
+   		},
+   		{
+   			type = "unlock-recipe",
+   			recipe = "RTZiplineControlsRecipe"
+   		}
+   	},
+   	prerequisites = {"se~no", "steel-processing"},
+   	unit =
+   	{
+   		count = 100,
+   		ingredients =
+   		{
+   		  {"automation-science-pack", 1}
+   		},
+   		time = 30
+   	}
    },
 
-     {
+   {
+   	type = "technology",
+   	name = "RTZiplineControlTech1",
+   	icon = "__RenaiTransportation__/graphics/zipline/crankcontrols.png",
+   	icon_size = 64,
+   	effects =
+   	{
+   		{
+   			type = "unlock-recipe",
+   			recipe = "RTZiplineCrankControlsRecipe"
+   		}
+   	},
+   	prerequisites = {"RTZiplineTech"},
+   	unit =
+   	{
+   		count = 50,
+   		ingredients =
+   		{
+   		  {"automation-science-pack", 1}
+   		},
+   		time = 30
+   	}
+   },
+
+   {
       type = "technology",
       name = "RTProgrammableZiplineControlTech",
       icon = "__RenaiTransportation__/graphics/zipline/terminaltech.png",
@@ -446,7 +446,132 @@ if (settings.startup["RTZiplineSetting"].value == true) then
          },
          time = 30
       }
-     }
+   },
+
+   {
+      type = "technology",
+      name = "RTZiplineTech2",
+      icons = {
+       {
+       	icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+       	icon_size = 64,
+          tint = {1,0.9,0},
+       }
+      },
+      effects =
+      {
+       {
+          type = "unlock-recipe",
+          recipe = "RTZiplineRecipe2"
+       }
+      },
+      prerequisites = {"RTZiplineTech", "engine"},
+      unit =
+      {
+       count = 100,
+       ingredients =
+       {
+         {"automation-science-pack", 1},
+         {"logistic-science-pack", 1}
+       },
+       time = 15
+      }
+   },
+
+   {
+      type = "technology",
+      name = "RTZiplineTech3",
+      icons = {
+       {
+         icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+         icon_size = 64,
+          tint = {255,35,35},
+       }
+      },
+      effects =
+      {
+       {
+          type = "unlock-recipe",
+          recipe = "RTZiplineRecipe3"
+       }
+      },
+      prerequisites = {"RTZiplineTech2", "electric-engine"},
+      unit =
+      {
+       count = 100,
+       ingredients =
+       {
+         {"automation-science-pack", 1},
+         {"logistic-science-pack", 1},
+         {"chemical-science-pack", 1}
+       },
+       time = 30
+      }
+   },
+
+   {
+      type = "technology",
+      name = "RTZiplineTech4",
+      icons = {
+       {
+         icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+         icon_size = 64,
+          tint = {18,201,233},
+       }
+      },
+      effects =
+      {
+       {
+          type = "unlock-recipe",
+          recipe = "RTZiplineRecipe4"
+       }
+      },
+      prerequisites = {"RTZiplineTech3", "rocket-fuel", "advanced-electronics-2"},
+      unit =
+      {
+       count = 150,
+       ingredients =
+       {
+         {"automation-science-pack", 1},
+         {"logistic-science-pack", 1},
+         {"chemical-science-pack", 1}
+       },
+       time = 30
+      }
+   },
+
+   {
+      type = "technology",
+      name = "RTZiplineTech5",
+      icons = {
+       {
+         icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+         icon_size = 64,
+          tint = {83,255,26},
+       }
+      },
+      effects =
+      {
+       {
+          type = "unlock-recipe",
+          recipe = "RTZiplineRecipe5"
+       }
+      },
+      prerequisites = {"RTZiplineTech4", "kovarex-enrichment-process", "fusion-reactor-equipment"},
+      unit =
+      {
+        count = 200,
+        ingredients =
+        {
+          {"automation-science-pack", 1},
+          {"logistic-science-pack", 1},
+          {"chemical-science-pack", 1},
+          {"production-science-pack", 1},
+          {"utility-science-pack", 1},
+        },
+        time = 30
+      }
+   },
 	})
 end
 

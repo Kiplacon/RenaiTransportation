@@ -267,6 +267,205 @@ else
 		}
 	})
 end
+--============ trolley 2 ==================
+local succ2 = table.deepcopy(data.raw.radar["RTZiplinePowerDrain"])
+succ2.name = "RTZiplinePowerDrain2"
+succ2.icons = {
+   {
+      icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+      icon_size = 64,
+      tint = {1,0.9,0},
+   }
+}
+succ2.energy_usage = "1MW"
+data:extend({ succ2 })
+data:extend({
+   { --------- zipline item -------------
+   	type = "gun",
+   	name = "RTZiplineItem2",
+      icons = {
+         {
+         	icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+         	icon_size = 64,
+            tint = {1,0.9,0},
+         }
+      },
+   	subgroup = "gun",
+   	order = "hha",
+   	stack_size = 1,
+       attack_parameters =
+       {
+         type = "projectile",
+   	  ammo_category = "ZiplineMotor",
+         cooldown = 60,
+         movement_slow_down_factor = 0,
+         range = 0
+       },
+   },
+   { --------- zipline recipie ----------
+      type = "recipe",
+      name = "RTZiplineRecipe2",
+      enabled = true,
+      energy_required = 0.5,
+      ingredients =
+         {
+            {"iron-gear-wheel", 100},
+            {"engine-unit", 10},
+            {"RTZiplineItem", 1},
+         },
+      result = "RTZiplineItem2"
+   }
+})
+--============ trolley 3 ==================
+local succ3 = table.deepcopy(data.raw.radar["RTZiplinePowerDrain"])
+succ3.name = "RTZiplinePowerDrain3"
+succ3.icons = {
+   {
+      icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+      icon_size = 64,
+      tint = {255,35,35},
+   }
+}
+succ3.energy_usage = "5MW"
+data:extend({ succ3 })
+data:extend({
+   { --------- zipline item -------------
+   	type = "gun",
+   	name = "RTZiplineItem3",
+      icons = {
+         {
+         	icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+         	icon_size = 64,
+            tint = {255,35,35},
+         }
+      },
+   	subgroup = "gun",
+   	order = "hhb",
+   	stack_size = 1,
+       attack_parameters =
+       {
+         type = "projectile",
+   	  ammo_category = "ZiplineMotor",
+         cooldown = 60,
+         movement_slow_down_factor = 0,
+         range = 0
+       },
+   },
+   { --------- zipline recipie ----------
+      type = "recipe",
+      name = "RTZiplineRecipe3",
+      enabled = true,
+      energy_required = 0.5,
+      ingredients =
+         {
+            {"iron-gear-wheel", 150},
+            {"electric-engine-unit", 10},
+            {"advanced-circuit", 10},
+            {"RTZiplineItem2", 1},
+         },
+      result = "RTZiplineItem3"
+   }
+})
+--============ trolley 4 ==================
+local succ4 = table.deepcopy(data.raw.radar["RTZiplinePowerDrain"])
+succ4.name = "RTZiplinePowerDrain4"
+succ4.icons = {
+   {
+      icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+      icon_size = 64,
+      tint = {18,201,233},
+   }
+}
+succ4.energy_usage = "10MW"
+data:extend({ succ4 })
+data:extend({
+   { --------- zipline item -------------
+   	type = "gun",
+   	name = "RTZiplineItem4",
+      icons = {
+         {
+         	icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+         	icon_size = 64,
+            tint = {18,201,233},
+         }
+      },
+   	subgroup = "gun",
+   	order = "hhc",
+   	stack_size = 1,
+       attack_parameters =
+       {
+         type = "projectile",
+   	  ammo_category = "ZiplineMotor",
+         cooldown = 60,
+         movement_slow_down_factor = 0,
+         range = 0
+       },
+   },
+   { --------- zipline recipie ----------
+      type = "recipe",
+      name = "RTZiplineRecipe4",
+      enabled = true,
+      energy_required = 0.5,
+      ingredients =
+         {
+            {"iron-gear-wheel", 200},
+            {"rocket-fuel", 25},
+            {"processing-unit", 5},
+            {"RTZiplineItem3", 1},
+         },
+      result = "RTZiplineItem4"
+   }
+})
+--============ trolley 5 ==================
+local succ5 = table.deepcopy(data.raw.radar["RTZiplinePowerDrain"])
+succ5.name = "RTZiplinePowerDrain5"
+succ5.icons = {
+   {
+      icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+      icon_size = 64,
+      tint = {83,255,26},
+   }
+}
+succ5.energy_usage = "50MW"
+data:extend({ succ5 })
+data:extend({
+   { --------- zipline item -------------
+   	type = "gun",
+   	name = "RTZiplineItem5",
+      icons = {
+         {
+         	icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+         	icon_size = 64,
+            tint = {83,255,26},
+         }
+      },
+   	subgroup = "gun",
+   	order = "hhd",
+   	stack_size = 1,
+       attack_parameters =
+       {
+         type = "projectile",
+   	  ammo_category = "ZiplineMotor",
+         cooldown = 60,
+         movement_slow_down_factor = 0,
+         range = 0
+       },
+   },
+   { --------- zipline recipie ----------
+      type = "recipe",
+      name = "RTZiplineRecipe5",
+      enabled = true,
+      energy_required = 0.5,
+      ingredients =
+         {
+            {"iron-gear-wheel", 300},
+            {"nuclear-fuel", 5},
+            {"fusion-reactor-equipment", 1},
+            {"RTZiplineItem4", 1},
+         },
+      result = "RTZiplineItem5"
+   }
+})
 
 local RTZiplineTerminal = table.deepcopy(data.raw["electric-pole"]["medium-electric-pole"])
    RTZiplineTerminal.icon = "__RenaiTransportation__/graphics/zipline/terminalicon.png"

@@ -45,7 +45,7 @@ local function on_tick(event)
 						if (pole.type == "electric-pole" and pole.type ~= "entity-ghost") then
 							local ToXWireOffset3 = game.recipe_prototypes["RTGetTheGoods-"..pole.name.."X"].emissions_multiplier
 							local ToYWireOffset3 = game.recipe_prototypes["RTGetTheGoods-"..pole.name.."Y"].emissions_multiplier
-							local WhichWay = (math.deg(math.atan2((ZiplineStuff.LetMeGuideYou.position.y-(pole.position.y+ToYWireOffset3)),(ZiplineStuff.LetMeGuideYou.position.x-(pole.position.x+ToXWireOffset3))))/1)-90
+							local WhichWay = (math.deg(math.atan2((ZiplineStuff.WhereDidYouComeFrom.position.y-(pole.position.y+ToYWireOffset3)),(ZiplineStuff.WhereDidYouComeFrom.position.x-(pole.position.x+ToXWireOffset3))))/1)-90
 
 							if (WhichWay < 0) then -- converts all results to 0 -> +1 orientation notation
 								WhichWay = 360+WhichWay
@@ -235,24 +235,43 @@ local function on_tick(event)
 							0.5+ZiplineStuff.LetMeGuideYou.position.y-(3*(FromStart^2-FromStart*ZiplineStuff.distance)/ZiplineStuff.distance^2)
 						})
 					ZiplineStuff.LetMeGuideYou.orientation = ZiplineStuff.DaWhey
-					local MaxSpeed = 0.3
-					if (ZiplineStuff.path) then
-						MaxSpeed = 0.15
-					end
+
 					if (game.get_player(ThePlayer).character.get_inventory(defines.inventory.character_guns)[game.get_player(ThePlayer).character.selected_gun_index].valid_for_read
-					and game.get_player(ThePlayer).character.get_inventory(defines.inventory.character_guns)[game.get_player(ThePlayer).character.selected_gun_index].name == "RTZiplineItem"
+					and string.find(game.get_player(ThePlayer).character.get_inventory(defines.inventory.character_guns)[game.get_player(ThePlayer).character.selected_gun_index].name, "RTZiplineItem")
 					and game.get_player(ThePlayer).character.get_inventory(defines.inventory.character_ammo)[game.get_player(ThePlayer).character.selected_gun_index].valid_for_read
 					and (game.get_player(ThePlayer).walking_state.walking == true or ZiplineStuff.path)
 					and ZiplineStuff.succ.energy ~= 0
-					and math.abs(ZiplineStuff.LetMeGuideYou.speed) <= MaxSpeed)
-					then
+					--and math.abs(ZiplineStuff.LetMeGuideYou.speed) <= MaxSpeed)
+					)then
+						local EquippedTrolley = game.get_player(ThePlayer).character.get_inventory(defines.inventory.character_guns)[game.get_player(ThePlayer).character.selected_gun_index].name
+						local MaxSpeed = 0.3
+						local accel = 0.004
+						if (EquippedTrolley == "RTZiplineItem") then
+							MaxSpeed = 0.3
+							accel = 0.004
+						elseif (EquippedTrolley == "RTZiplineItem2") then
+							MaxSpeed = 0.6
+							accel = 0.008
+						elseif (EquippedTrolley == "RTZiplineItem3") then
+							MaxSpeed = 1.5
+							accel = 0.012
+						elseif (EquippedTrolley == "RTZiplineItem4") then
+							MaxSpeed = 4
+							accel = 0.016
+						elseif (EquippedTrolley == "RTZiplineItem5") then
+							MaxSpeed = 10
+							accel = 0.05
+						end
+						if (ZiplineStuff.path) then
+							MaxSpeed = (2/3)*MaxSpeed
+						end
 						if (game.tick%2 == 0 and (ZiplineStuff.ForwardDirection[game.get_player(ThePlayer).walking_state.direction] ~= nil or ZiplineStuff.path)) then
 							if (ZiplineStuff.LetMeGuideYou.speed <= MaxSpeed) then
-								ZiplineStuff.LetMeGuideYou.speed = ZiplineStuff.LetMeGuideYou.speed + 0.008 --increments slower than 0.008 don't seem to do anything
+								ZiplineStuff.LetMeGuideYou.speed = ZiplineStuff.LetMeGuideYou.speed + (accel*2) --increments slower than 0.008 don't seem to do anything
 							end
 						elseif (ZiplineStuff.path == nil and game.tick%2 == 0 and ZiplineStuff.BackwardsDirection[game.get_player(ThePlayer).walking_state.direction] ~= nil) then
 							if (ZiplineStuff.LetMeGuideYou.speed >= -MaxSpeed) then
-								ZiplineStuff.LetMeGuideYou.speed = ZiplineStuff.LetMeGuideYou.speed - 0.008
+								ZiplineStuff.LetMeGuideYou.speed = ZiplineStuff.LetMeGuideYou.speed - (accel*2)
 							end
 						end
 					elseif (game.tick%2 == 0) then

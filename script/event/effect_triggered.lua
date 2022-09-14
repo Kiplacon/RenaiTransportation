@@ -13,14 +13,41 @@ local function effect_triggered(event)
 	and global.AllPlayers[event.source_entity.player.index].zipline.succ.energy ~= 0
 	and global.AllPlayers[event.source_entity.player.index].zipline.path == nil
 	and game.get_player(event.source_entity.player.index).character.get_inventory(defines.inventory.character_guns)[game.get_player(event.source_entity.player.index).character.selected_gun_index].valid_for_read
-	and game.get_player(event.source_entity.player.index).character.get_inventory(defines.inventory.character_guns)[game.get_player(event.source_entity.player.index).character.selected_gun_index].name == "RTZiplineItem"
+	and string.find(game.get_player(event.source_entity.player.index).character.get_inventory(defines.inventory.character_guns)[game.get_player(event.source_entity.player.index).character.selected_gun_index].name, "RTZiplineItem")
 	and game.get_player(event.source_entity.player.index).character.get_inventory(defines.inventory.character_ammo)[game.get_player(event.source_entity.player.index).character.selected_gun_index].valid_for_read
 	and game.get_player(event.source_entity.player.index).character.get_inventory(defines.inventory.character_ammo)[game.get_player(event.source_entity.player.index).character.selected_gun_index].name == "RTZiplineCrankControlsItem"
 	and game.get_player(event.source_entity.player.index).walking_state.walking == true
 	) then
+		local EquippedTrolley = game.get_player(event.source_entity.player.index).character.get_inventory(defines.inventory.character_guns)[game.get_player(event.source_entity.player.index).character.selected_gun_index].name
 		local PlayerProperties = global.AllPlayers[event.source_entity.player.index]
 		local MaxBoostedSpeed = 0.420
 		local BoostAmount = 0.040
+		if (EquippedTrolley == "RTZiplineItem") then
+			-- MaxSpeed = 0.3
+			-- accel = 0.004
+			MaxBoostedSpeed = 0.420
+			BoostAmount = 0.040
+		elseif (EquippedTrolley == "RTZiplineItem2") then
+			-- MaxSpeed = 0.6
+			-- accel = 0.008
+			MaxBoostedSpeed = 0.8
+			BoostAmount = 0.080
+		elseif (EquippedTrolley == "RTZiplineItem3") then
+			-- MaxSpeed = 1.5
+			-- accel = 0.012
+			MaxBoostedSpeed = 2
+			BoostAmount = 0.120
+		elseif (EquippedTrolley == "RTZiplineItem4") then
+			-- MaxSpeed = 4
+			-- accel = 0.016
+			MaxBoostedSpeed = 0.6
+			BoostAmount = 0.20
+		elseif (EquippedTrolley == "RTZiplineItem5") then
+			-- MaxSpeed = 10
+			-- accel = 0.05
+			MaxBoostedSpeed = 15
+			BoostAmount = 1
+		end
 		if (PlayerProperties.zipline.ForwardDirection ~= nil and PlayerProperties.zipline.ForwardDirection[game.get_player(event.source_entity.player.index).walking_state.direction] ~= nil) then
 			if (PlayerProperties.zipline.LetMeGuideYou.speed <= MaxBoostedSpeed) then
 				PlayerProperties.zipline.LetMeGuideYou.speed = PlayerProperties.zipline.LetMeGuideYou.speed + BoostAmount
