@@ -51,7 +51,7 @@ local function on_int()
 
 	for PlayerID, PlayerLuaData in pairs(game.players) do
 		if (global.AllPlayers[PlayerID] == nil) then
-			global.AllPlayers[PlayerID] = {state="default", PlayerLauncher={}, zipline={}, RangeAdjusting=false, SettingRampRange={SettingRange=false}, GUI={}}
+			global.AllPlayers[PlayerID] = {state="default", PlayerLauncher={}, zipline={}, RangeAdjusting=false, SettingRampRange={SettingRange=false}, GUI={}, preferences={}}
 		end
 	end
 

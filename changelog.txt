@@ -1,4 +1,31 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.8
+Date: 10/22/2022
+  Bugfixes:
+    - Fixed a startup crash when disabling certain parts of the mod because I had arranged them wrong in the code. Reported by modo_lv
+    - Fixed a crash when using the Zipline Terminal when joining an existing save or updating from certain past versions because I had an AND check instead of an OR check. Reported by Marc-Harony
+---------------------------------------------------------------------------------------------------
+Version: 1.1.7
+Date: 10/1/2022
+  Bugfixes:
+    - Fixed a crash when using the zipline terminal on a new save because I missed creating a certain value for new players. Reported by JJQ
+---------------------------------------------------------------------------------------------------
+Version: 1.1.6
+Date: 9/19/2022
+  Bugfixes:
+    - Fixed that whether the personal roboport was on or off was not transferred between getting on/off zipines. Reported by Roy192
+---------------------------------------------------------------------------------------------------
+Version: 1.1.5
+Date: 9/17/2022
+  Changes:
+    - Added options for the Zipline Terminal selection list to show camera, minimap or none.
+    - Removed the fixed width of the Zipline Terminal GUI
+  Bugfixes:
+    - Hopefully fixed a crash with the 1.1.2 migration. Reported by arkenstone007
+    - Changed the zipline trolley recipes to actually be locked until researched
+    - Fixed locale for Bounce Pads of 5 and 15 tile bounce range
+    - Fixed that whether logistics request was on or off was not transferred between getting on/off zipines
+---------------------------------------------------------------------------------------------------
 Version: 1.1.4
 Date: 9/13/2022
   Bugfixes:

@@ -328,7 +328,39 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 			}
 		}
 	})
-
+   
+   if (settings.startup["RTImpactSetting"].value == true) then
+   	data:extend({
+   	  {
+   		type = "technology",
+   		name = "RTImpactTech",
+   		icon = "__RenaiTransportation__/graphics/tech/Impact.png",
+   		icon_size = 128,
+   		effects =
+   		{
+   			{
+   				type = "unlock-recipe",
+   				recipe = "RTImpactWagonRecipe"
+   			},
+   			{
+   				type = "unlock-recipe",
+   				recipe = "RTImpactUnloaderRecipe"
+   			}
+   		},
+   		prerequisites = {"se~no", "railway", "concrete", "advanced-electronics"},
+   		unit =
+   		{
+   			count = 200,
+   			ingredients =
+   			{
+               {"automation-science-pack", 1},
+               {"logistic-science-pack", 1}
+   			},
+   			time = 45
+   		}
+   	  }
+   	})
+   end
 
 	if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RTTrainBounceSetting"].value == true) then
 		data:extend({
@@ -572,38 +604,5 @@ if (settings.startup["RTZiplineSetting"].value == true) then
         time = 30
       }
    },
-	})
-end
-
-if (settings.startup["RTImpactSetting"].value == true) then
-	data:extend({
-	  {
-		type = "technology",
-		name = "RTImpactTech",
-		icon = "__RenaiTransportation__/graphics/tech/Impact.png",
-		icon_size = 128,
-		effects =
-		{
-			{
-				type = "unlock-recipe",
-				recipe = "RTImpactWagonRecipe"
-			},
-			{
-				type = "unlock-recipe",
-				recipe = "RTImpactUnloaderRecipe"
-			}
-		},
-		prerequisites = {"se~no", "railway", "concrete", "advanced-electronics"},
-		unit =
-		{
-			count = 200,
-			ingredients =
-			{
-            {"automation-science-pack", 1},
-            {"logistic-science-pack", 1}
-			},
-			time = 45
-		}
-	  }
 	})
 end

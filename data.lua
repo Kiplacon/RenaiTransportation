@@ -34,14 +34,13 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 	require("prototypes.TrainGoBrrrr.prototypes.ramps")
 	require("prototypes.TrainGoBrrrr.sprites.base")
 	require("prototypes.TrainGoBrrrr.GhostLoco")
+	if (settings.startup["RTImpactSetting"].value == true) then
+		require("prototypes.TrainGoBrrrr.ImpactWagon")
+	end
 end
 
 if (settings.startup["RTZiplineSetting"].value == true) then
 	require("prototypes.zipline")
-end
-
-if (settings.startup["RTImpactSetting"].value == true) then
-	require("prototypes.TrainGoBrrrr.ImpactWagon")
 end
 
 

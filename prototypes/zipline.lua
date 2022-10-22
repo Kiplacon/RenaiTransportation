@@ -305,7 +305,7 @@ data:extend({
    { --------- zipline recipie ----------
       type = "recipe",
       name = "RTZiplineRecipe2",
-      enabled = true,
+      enabled = false,
       energy_required = 0.5,
       ingredients =
          {
@@ -354,7 +354,7 @@ data:extend({
    { --------- zipline recipie ----------
       type = "recipe",
       name = "RTZiplineRecipe3",
-      enabled = true,
+      enabled = false,
       energy_required = 0.5,
       ingredients =
          {
@@ -404,7 +404,7 @@ data:extend({
    { --------- zipline recipie ----------
       type = "recipe",
       name = "RTZiplineRecipe4",
-      enabled = true,
+      enabled = false,
       energy_required = 0.5,
       ingredients =
          {
@@ -454,7 +454,7 @@ data:extend({
    { --------- zipline recipie ----------
       type = "recipe",
       name = "RTZiplineRecipe5",
-      enabled = true,
+      enabled = false,
       energy_required = 0.5,
       ingredients =
          {

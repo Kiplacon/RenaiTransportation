@@ -114,6 +114,28 @@ local function click(event)
 			PlayerProperties.GUI.CloseOut = "bofa"
 			player.print({"zipline-stuff.terminalReqs"})
 		end
+
+	-- elseif (PlayerProperties.state == "default"
+	-- and clicked and clicked.type == "electric-pole"
+	-- and player.character
+	-- and (not string.find(player.character.name, "-jetpack"))
+	-- and player.is_cursor_empty() == true) then
+	-- 	if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
+	-- 	and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "ZiplineItem")
+	-- 	and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
+	-- 	and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTZiplineCrankControlsItem") then
+	-- 		if (DistanceBetween(player.character.position, clicked.position) <= 3) then
+	-- 			PlayerProperties.GUI.SwapTo = "ZiplineTerminal"
+	-- 			PlayerProperties.GUI.terminal = clicked
+	-- 			ShowZiplineTerminalGUI(player, clicked)
+	-- 		else
+	-- 			PlayerProperties.GUI.CloseOut = "bofa"
+	-- 			player.print({"zipline-stuff.range"})
+	-- 		end
+	-- 	else
+	-- 		PlayerProperties.GUI.CloseOut = "bofa"
+	-- 		player.print({"zipline-stuff.terminalReqs"})
+	-- 	end
 	end
 end
 

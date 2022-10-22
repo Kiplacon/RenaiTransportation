@@ -109,7 +109,111 @@ ClickableStuff = {
 			tooltip = {"zipline-stuff.rename"},
 			tags = {RTEffect="RTStartRenameTerminal"}
 		}
-	end
+	end,
+   ZiplineCamera = function(event, player)
+      local PlayerProperties = global.AllPlayers[player.index]
+      PlayerProperties.preferences.ZiplineTerminalPreview = "camera"
+      event.element.parent.parent.scroller.layout.clear()
+      local layout = event.element.parent.parent.scroller.layout
+      local clicked = global.ZiplineTerminals[event.element.parent.parent.tags.ID].entity
+      local a = {}
+      for each, terminal in pairs(global.ZiplineTerminals) do
+         table.insert(a, string.lower(copy(terminal.name)))
+      end
+      table.sort(a)
+      local sorted = {}
+      for each, name in pairs(a) do
+         for each, terminal in pairs(global.ZiplineTerminals) do
+            if (string.lower(copy(terminal.name)) == name) then
+               table.insert(sorted, terminal)
+               break
+            end
+         end
+      end
+      for each, terminal in pairs(sorted) do
+         local entity = terminal.entity
+         if (entity.valid == true and entity.electric_network_id == clicked.electric_network_id and entity.unit_number ~= clicked.unit_number) then
+            local TerminalButton = layout.add{type="button", name=each, caption=terminal.name, tags={RTEffect="ZiplineAutoPath", start=clicked.unit_number, finish=entity.unit_number}}
+               TerminalButton.style.font = "heading-1"
+               TerminalButton.style.horizontally_stretchable = true
+            local cam = layout.add{type="camera", caption="caption", position=entity.position, zoom=0.4}
+               cam.style.width = 175
+               cam.style.height = 175
+            layout.add{type="line"}
+            layout.add{type="line"}
+         elseif (entity.valid == false) then
+            global.ZiplineTerminals[each] = nil
+         end
+      end
+   end,
+   ZiplineMinimap = function(event, player)
+      local PlayerProperties = global.AllPlayers[player.index]
+      PlayerProperties.preferences.ZiplineTerminalPreview = "minimap"
+      event.element.parent.parent.scroller.layout.clear()
+      local layout = event.element.parent.parent.scroller.layout
+      local clicked = global.ZiplineTerminals[event.element.parent.parent.tags.ID].entity
+      local a = {}
+      for each, terminal in pairs(global.ZiplineTerminals) do
+         table.insert(a, string.lower(copy(terminal.name)))
+      end
+      table.sort(a)
+      local sorted = {}
+      for each, name in pairs(a) do
+         for each, terminal in pairs(global.ZiplineTerminals) do
+            if (string.lower(copy(terminal.name)) == name) then
+               table.insert(sorted, terminal)
+               break
+            end
+         end
+      end
+      for each, terminal in pairs(sorted) do
+         local entity = terminal.entity
+         if (entity.valid == true and entity.electric_network_id == clicked.electric_network_id and entity.unit_number ~= clicked.unit_number) then
+            local TerminalButton = layout.add{type="button", name=each, caption=terminal.name, tags={RTEffect="ZiplineAutoPath", start=clicked.unit_number, finish=entity.unit_number}}
+               TerminalButton.style.font = "heading-1"
+               TerminalButton.style.horizontally_stretchable = true
+            local cam = layout.add{type="minimap", caption="caption", position=entity.position, zoom=1}
+               cam.style.width = 175
+               cam.style.height = 175
+            layout.add{type="line"}
+            layout.add{type="line"}
+         elseif (entity.valid == false) then
+            global.ZiplineTerminals[each] = nil
+         end
+      end
+   end,
+   ZiplineNone = function(event, player)
+      local PlayerProperties = global.AllPlayers[player.index]
+      PlayerProperties.preferences.ZiplineTerminalPreview = "none"
+      event.element.parent.parent.scroller.layout.clear()
+      local layout = event.element.parent.parent.scroller.layout
+      local clicked = global.ZiplineTerminals[event.element.parent.parent.tags.ID].entity
+      local a = {}
+      for each, terminal in pairs(global.ZiplineTerminals) do
+         table.insert(a, string.lower(copy(terminal.name)))
+      end
+      table.sort(a)
+      local sorted = {}
+      for each, name in pairs(a) do
+         for each, terminal in pairs(global.ZiplineTerminals) do
+            if (string.lower(copy(terminal.name)) == name) then
+               table.insert(sorted, terminal)
+               break
+            end
+         end
+      end
+      for each, terminal in pairs(sorted) do
+         local entity = terminal.entity
+         if (entity.valid == true and entity.electric_network_id == clicked.electric_network_id and entity.unit_number ~= clicked.unit_number) then
+            local TerminalButton = layout.add{type="button", name=each, caption=terminal.name, tags={RTEffect="ZiplineAutoPath", start=clicked.unit_number, finish=entity.unit_number}}
+               TerminalButton.style.font = "heading-1"
+               TerminalButton.style.horizontally_stretchable = true
+            layout.add{type="label", caption=""}
+         elseif (entity.valid == false) then
+            global.ZiplineTerminals[each] = nil
+         end
+      end
+   end,
 }
 
 -- element :: LuaGuiElement: The clicked element.

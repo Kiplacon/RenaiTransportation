@@ -48,7 +48,9 @@ function SwapToGhost(player)
 		"character_loot_pickup_distance_bonus",
 		"character_trash_slot_count_bonus",
 		"character_maximum_following_robot_count_bonus",
-		"character_health_bonus"
+		"character_health_bonus",
+      "character_personal_logistic_requests_enabled",
+      "allow_dispatching_robots"
 	}
 	for each, modifier in pairs(CharacterModifiers) do
 		NEWHOST[modifier] = OG[modifier]
