@@ -116,6 +116,9 @@ function SwapToGhost(player)
    if (remote.interfaces.jetpack and remote.interfaces.jetpack.block_jetpack) then
       remote.call("jetpack", "block_jetpack", {character=NEWHOST})
    end
+   if (remote.interfaces["space-exploration"] and remote.interfaces["space-exploration"].on_character_swapped) then
+      remote.call("space-exploration", "on_character_swapped", {new_character=NEWHOST,old_character=OG})
+   end
    zhonyas.set_driver(OG)
    zhonyas.force = "enemy"
    zhonyas.destructible = false
@@ -187,6 +190,10 @@ function SwapBackFromGhost(player, FlyingItem)
 			FlyingItem.SwapBack.health = OG2.health
 			FlyingItem.SwapBack.selected_gun_index = OG2.selected_gun_index
 			FlyingItem.player.character_running_speed_modifier = 0
+         
+         if (remote.interfaces["space-exploration"] and remote.interfaces["space-exploration"].on_character_swapped) then
+            remote.call("space-exploration", "on_character_swapped", {new_character=FlyingItem.SwapBack,old_character=OG2})
+         end
 			OG2.destroy()
 		else
 			FlyingItem.SwapBack.destructible = true
@@ -250,13 +257,16 @@ function SwapBackFromGhost(player, FlyingItem)
             spider.follow_target = PlayerProperties.SwapBack
          end
       end
-		PlayerProperties.SwapBack.destructible = true
-		PlayerProperties.SwapBack.health = OG2.health
-		PlayerProperties.SwapBack.selected_gun_index = OG2.selected_gun_index
-		player.character_running_speed_modifier = 0
-		OG2.destroy()
+      PlayerProperties.SwapBack.destructible = true
+      PlayerProperties.SwapBack.health = OG2.health
+      PlayerProperties.SwapBack.selected_gun_index = OG2.selected_gun_index
+      player.character_running_speed_modifier = 0
+      if (remote.interfaces["space-exploration"] and remote.interfaces["space-exploration"].on_character_swapped) then
+            remote.call("space-exploration", "on_character_swapped", {new_character=PlayerProperties.SwapBack,old_character=OG2})
+      end
+      OG2.destroy()
       PlayerProperties.SwapBack = nil
-	end
+      end
 end
 
 function copy(object)
