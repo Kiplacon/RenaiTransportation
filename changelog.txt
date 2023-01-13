@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.9
+Date: 1/12/2023
+  Bugfixes:
+    - Added integration for Space Exploration to keep life support buffer when jumping on/off ziplines. Fix by mhansen718 on github.
+    - Fixed crash caused by deleting a surface with flying items on it, such as jumping planets in Warptorio. Reported by sinewavey.
+  Changes:
+    - Throwing a stack of at least 5 fish into the water spawns a live fish, because catching a fish give you 5 fish items. Recommended by toran.mallow
+---------------------------------------------------------------------------------------------------
 Version: 1.1.8
 Date: 10/22/2022
   Bugfixes:
