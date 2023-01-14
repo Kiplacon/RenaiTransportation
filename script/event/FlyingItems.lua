@@ -238,9 +238,6 @@ local function on_tick(event)
                      end
                   end
 
-
-
-
                -- non-tracers falling on something
                elseif (FlyingItem.tracing == nil) then
                   -- players falling on something
@@ -295,19 +292,45 @@ local function on_tick(event)
 
                      ---- otherwise it bounces off whatever it landed on and lands as an item on the nearest empty space within 10 tiles. destroyed if no space ----
                      else
-                        if (FlyingItem.CloudStorage) then
+                        if (FlyingItem.CloudStorage) then -- for things with data/tags or whatever
+                           if (ThingLandedOn.type == "transport-belt") then
+                              for l = 1, 2 do
+                                 for i = 0, 1, 0.1 do
+                                    if (FlyingItem.CloudStorage[1].count > 0 and ThingLandedOn.get_transport_line(l).can_insert_at(i) == true) then
+                                       ThingLandedOn.get_transport_line(l).insert_at(i, {name=FlyingItem.CloudStorage[1].name, count=1})
+                                       FlyingItem.CloudStorage[1].count = FlyingItem.CloudStorage[1].count - 1
+                                    end
+                                 end
+                              end
+                           end
+                           if (FlyingItem.CloudStorage[1].count > 0) then
                            rendering.get_surface(FlyingItem.sprite).spill_item_stack
                               (
                                  rendering.get_surface(FlyingItem.sprite).find_non_colliding_position("item-on-ground",FlyingItem.target, 0, 0.1),
                                  FlyingItem.CloudStorage[1]
                               )
+                           end
                            FlyingItem.CloudStorage.destroy()
-                        else
+                        else -- depreciated drop method from old item tracking system
+                           local total = FlyingItem.amount
+                           if (ThingLandedOn.type == "transport-belt") then
+                              for l = 1, 2 do
+                                 for i = 0, 1, 0.1 do
+                                    if (total > 0 and ThingLandedOn.get_transport_line(l).can_insert_at(i) == true) then
+                                       ThingLandedOn.get_transport_line(l).insert_at(i, {name=FlyingItem.item, count=1})
+                                       total = total - 1
+                                    end
+                                 end
+                              end
+                           end
+                           if (total > 0) then
                            rendering.get_surface(FlyingItem.sprite).spill_item_stack
                               (
                                  rendering.get_surface(FlyingItem.sprite).find_non_colliding_position("item-on-ground",FlyingItem.target, 0, 0.1),
-                                 {name=FlyingItem.item, count=FlyingItem.amount}
+                                 {name=FlyingItem.item, count=total}
                               )
+                           end
+                           
                         end
 
                      end
