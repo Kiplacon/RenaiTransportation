@@ -5,6 +5,9 @@ local function entity_destroyed(event)
 				entity.destroy()
 			end
 		end
+		if (global.HoverGFX[event.unit_number]) then
+			global.HoverGFX[event.unit_number] = nil
+		end
 		global.CatapultList[event.unit_number] = nil
 	end
 

@@ -107,6 +107,8 @@ local function on_int()
 	global.clock = {}
 
 	global.ZiplineTerminals = {}
+
+	global.HoverGFX = {}
 end
 
 return on_int

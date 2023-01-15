@@ -67,22 +67,6 @@ function(event)
 			global.MagnetRamps[unitID] = nil
 		end
 	end
-
-	-- for each, world in pairs(game.surfaces) do
-	-- 	for every, ZiplinePart in pairs(world.find_entities_filtered{name = {"RTZipline", "RTZiplinePowerDrain"}}) do
-	-- 		local owned = false
-	-- 		for all, player in pairs(global.AllPlayers) do
-	-- 			if ((player.ChuggaChugga and ZiplinePart.unit_number == player.ChuggaChugga.unit_number)
-	-- 			or  (player.succ and ZiplinePart.unit_number == player.succ.unit_number)
-	-- 			) then
-	-- 				owned = true
-	-- 			end
-	-- 		end
-	-- 		if (owned == false) then
-	-- 			ZiplinePart.destroy()
-	-- 		end
-	-- 	end
-	-- end
 end)
 
 -- Thrower Check
@@ -140,11 +124,39 @@ function(event)
 							for name, count in pairs(global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number]) do
 								incomming = incomming + count
 							end
-					 		local total = incomming + properties.targets[catapult.held_stack.name].get_transport_line(1).get_item_count() + properties.targets[catapult.held_stack.name].get_transport_line(2).get_item_count()
-					 		if (total <= 6) then
+					 		local total = incomming + properties.targets[catapult.held_stack.name].get_transport_line(1).get_item_count() + properties.targets[catapult.held_stack.name].get_transport_line(2).get_item_count() + catapult.held_stack.count
+					 		if (total <= 8) then
 					 			catapult.active = true
+								if (global.HoverGFX[catapult.unit_number]) then
+									for playerID, graphic in pairs(global.HoverGFX[catapult.unit_number]) do
+										rendering.destroy(graphic)
+									end
+									global.HoverGFX[catapult.unit_number] = {}
+								end
 					 		else
 					 			catapult.active = false
+								if (global.HoverGFX[catapult.unit_number] == nil) then
+									global.HoverGFX[catapult.unit_number] = {}
+								end
+								for ID, player in pairs(game.players) do
+									if (global.HoverGFX[catapult.unit_number][ID] == nil) then
+										local hovering = false
+										if (player.selected and player.selected.unit_number == catapult.unit_number) then
+											hovering = true
+										end
+										global.HoverGFX[catapult.unit_number][ID] = rendering.draw_text
+										{
+											text = {"RTmisc.EightMax"},
+											surface = catapult.surface,
+											target = catapult,
+											alignment = "center",
+											scale = 0.5,
+											color = {1,1,1},
+											players = {player},
+											visible = hovering
+										}
+									end
+								end
 					 		end
 					 	end
 
@@ -262,11 +274,11 @@ function(event)
 								rendering.set_target(sprite, catapult.position)
 								rendering.set_target(shadow, catapult.position)
 								-- catapult.surface.play_sound
-		                  -- 	{
-		                  -- 		path = "RTEjector",
-		                  -- 		position = catapult.position,
-		                  -- 		volume = 0.7
-		                  -- 	}
+								-- 	{
+								-- 		path = "RTEjector",
+								-- 		position = catapult.position,
+								-- 		volume = 0.7
+								-- 	}
 							else
 								-- catapult.surface.play_sound
 								-- 	{
@@ -426,3 +438,21 @@ require("script.GUIs")
 script.on_event(defines.events.on_gui_click,
 	require("script.event.ClickGUI")
 )
+
+-- displaying things on hover
+script.on_event(defines.events.on_selected_entity_changed,
+--player_index	:: uint			The player whose selected entity changed.
+--last_entity	:: LuaEntity?	The last selected entity if it still exists and there was one.
+function(event)
+	local player = game.players[event.player_index]
+	if (event.last_entity
+	and event.last_entity.unit_number
+	and global.HoverGFX[event.last_entity.unit_number]
+	and global.HoverGFX[event.last_entity.unit_number][event.player_index]) then
+		rendering.set_visible(global.HoverGFX[event.last_entity.unit_number][event.player_index], false)
+	end
+	if (player.selected and player.selected.unit_number and global.HoverGFX[player.selected.unit_number] and global.HoverGFX[player.selected.unit_number][event.player_index]) then
+		rendering.set_visible(global.HoverGFX[player.selected.unit_number][event.player_index], true)
+	end
+end)
+

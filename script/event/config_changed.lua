@@ -113,6 +113,10 @@ local function config_changed()
 		global.ZiplineTerminals = {}
 	end
 
+	if (global.HoverGFX == nil) then
+		global.HoverGFX = {}
+	end
+	
 end
 
 return config_changed

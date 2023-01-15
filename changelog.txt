@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.10
+Date: 1/14/2023
+  Changes:
+    - Items thrown on belts now use the proper item insert command instead of spawning the item on the floor and hoping it sticks to the belt.
+    - Added the number of items a thrower is holding into consideration when calculating overflow for throwing onto a transport belt. I probably should have had this to begin with.
+    - Added a message on hovering a thrower if it will overflow the belt it's targeting.
+---------------------------------------------------------------------------------------------------
 Version: 1.1.9
 Date: 1/12/2023
   Bugfixes:
