@@ -75,9 +75,7 @@ script.on_nth_tick(3,
 function(event)
 	if (global.CatapultList ~= {}) then
 		for catapultID, properties in pairs(global.CatapultList) do
-
 			local catapult = properties.entity
-
 			BurnerSelfRefuelCompensation = 0.2
 			if (catapult.valid and catapult.burner == nil and catapult.fluidbox == nil and catapult.energy/catapult.electric_buffer_size >= 0.9) then
 				catapult.active = true
@@ -456,3 +454,22 @@ function(event)
 	end
 end)
 
+script.on_event(defines.events.on_pre_surface_deleted,
+--surface_index :: uint
+--name :: defines.events	Identifier of the event
+--tick :: uint				Tick the event was generated.
+function(event)
+	for each, FlyingItem in pairs(global.FlyingItems) do
+		if (rendering.get_surface(FlyingItem.sprite).index == event.surface_index) then
+			rendering.destroy(FlyingItem.sprite)
+			rendering.destroy(FlyingItem.shadow)
+			if (FlyingItem.destination ~= nil and global.OnTheWay[FlyingItem.destination]) then
+				global.OnTheWay[FlyingItem.destination][FlyingItem.item] = global.OnTheWay[FlyingItem.destination][FlyingItem.item] - FlyingItem.amount
+			end
+			if (FlyingItem.player) then
+				SwapBackFromGhost(FlyingItem.player, FlyingItem)
+			end
+			global.FlyingItems[each] = nil
+		end
+	end
+end)

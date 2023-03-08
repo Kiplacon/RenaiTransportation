@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.11
+Date: 3/7/2023
+  Changes:
+    - Changed a valid check for thrown items to occur only when a surface is deleted instead of during the item's flight. Should help with lag. The check was originally added to fix a crash when a surface with thrown items on it was deleted (like warptorio). Having the check only happen on surface deletion is less comprehensive but I've seen more comments about lag recently so I think it's worth a try
+---------------------------------------------------------------------------------------------------
 Version: 1.1.10
 Date: 1/14/2023
   Changes:
