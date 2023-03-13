@@ -7,8 +7,8 @@
         }
     ],
     "Lua.workspace.library": [
-        "d:\\Steam\\steamapps\\common\\Factorio\\data",
-        "c:/Users/xiaox/AppData/Roaming/Code/User/workspaceStorage/f34a32745aa52066e3ffde1bd64d08ef/justarandomgeek.factoriomod-debug/sumneko-3rd/factorio/library"
+        "c:/Users/xiaox/AppData/Roaming/Code/User/workspaceStorage/f34a32745aa52066e3ffde1bd64d08ef/justarandomgeek.factoriomod-debug/sumneko-3rd/factorio/library",
+        "d:\\Steam\\steamapps\\common\\Factorio\\data"
     ],
     "Lua.workspace.userThirdParty": [
         "c:\\Users\\xiaox\\AppData\\Roaming\\Code\\User\\workspaceStorage\\f34a32745aa52066e3ffde1bd64d08ef\\justarandomgeek.factoriomod-debug\\sumneko-3rd"
