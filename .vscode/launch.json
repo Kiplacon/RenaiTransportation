@@ -7,20 +7,24 @@
         {
             "type": "factoriomod",
             "request": "launch",
-            "name": "Factorio Mod Debug"
+            "name": "Factorio Mod Debug",
+            "hookControl": ["RenaiTransportation"],
         },
         {
             "type": "factoriomod",
             "request": "launch",
             "name": "Factorio Mod Debug (Settings & Data)",
             "hookSettings": true,
-            "hookData": true
+            "hookData": true,
+            "hookControl": ["RenaiTransportation"],
         },
         {
             "type": "factoriomod",
             "request": "launch",
             "name": "Factorio Mod Debug (Profile)",
-            "hookMode": "profile"
+            "hookMode": "profile",
+            "hookControl": ["RenaiTransportation"],
+            "profileUpdateRate": 100,
         }
     ]
 }

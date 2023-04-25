@@ -3,16 +3,19 @@ local function on_tick(event)
 
    for each, FlyingItem in pairs(global.FlyingItems) do
       local clear = true
-      if (game.tick < FlyingItem.LandTick and FlyingItem.player == nil) then
-         local duration = game.tick-FlyingItem.StartTick
+      if (event.tick < FlyingItem.LandTick and FlyingItem.player == nil) then
+         local duration = event.tick-FlyingItem.StartTick
          local progress = duration/FlyingItem.AirTime
-         local height = (duration/(FlyingItem.arc*FlyingItem.AirTime))-(duration^2/(FlyingItem.arc*FlyingItem.AirTime^2))
-         rendering.set_target(FlyingItem.sprite, {FlyingItem.start.x+(progress*FlyingItem.vector.x), FlyingItem.start.y+(progress*FlyingItem.vector.y)+height})
-         rendering.set_target(FlyingItem.shadow, {FlyingItem.start.x+(progress*FlyingItem.vector.x)-height, FlyingItem.start.y+(progress*FlyingItem.vector.y)})
-         rendering.set_orientation(FlyingItem.sprite, rendering.get_orientation(FlyingItem.sprite)+FlyingItem.spin)
-         rendering.set_orientation(FlyingItem.shadow, rendering.get_orientation(FlyingItem.shadow)+FlyingItem.spin)
+         local height = progress * (1-progress) / FlyingItem.arc
+         local x_coord = FlyingItem.start.x+(progress*FlyingItem.vector.x)
+         local y_coord = FlyingItem.start.y+(progress*FlyingItem.vector.y)
+         local orientation = rendering.get_orientation(FlyingItem.sprite)+FlyingItem.spin
+         rendering.set_target(FlyingItem.sprite, {x_coord, y_coord + height})
+         rendering.set_target(FlyingItem.shadow, {x_coord - height, y_coord})
+         rendering.set_orientation(FlyingItem.sprite, orientation)
+         rendering.set_orientation(FlyingItem.shadow, orientation)
 
-      elseif (game.tick == FlyingItem.LandTick and FlyingItem.space == nil) then
+      elseif (event.tick == FlyingItem.LandTick and FlyingItem.space == nil) then
          local ThingLandedOn = rendering.get_surface(FlyingItem.sprite).find_entities_filtered
             {
                position = {math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5},
