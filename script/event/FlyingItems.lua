@@ -4,12 +4,17 @@ local function on_tick(event)
    for each, FlyingItem in pairs(global.FlyingItems) do
       local clear = true
       if (event.tick < FlyingItem.LandTick and FlyingItem.player == nil) then
-         local duration = event.tick-FlyingItem.StartTick
+--[[          local duration = event.tick-FlyingItem.StartTick
          local progress = duration/FlyingItem.AirTime
          local height = progress * (1-progress) / FlyingItem.arc
          local x_coord = FlyingItem.start.x+(progress*FlyingItem.vector.x)
          local y_coord = FlyingItem.start.y+(progress*FlyingItem.vector.y)
-         local orientation = rendering.get_orientation(FlyingItem.sprite)+FlyingItem.spin
+         local orientation = rendering.get_orientation(FlyingItem.sprite)+FlyingItem.spin ]]
+         local duration = event.tick-FlyingItem.StartTick
+         local x_coord = FlyingItem.path[duration].x
+         local y_coord = FlyingItem.path[duration].y
+         local height = FlyingItem.path[duration].height
+         local orientation = FlyingItem.spin*duration
          rendering.set_target(FlyingItem.sprite, {x_coord, y_coord + height})
          rendering.set_target(FlyingItem.shadow, {x_coord - height, y_coord})
          rendering.set_orientation(FlyingItem.sprite, orientation)

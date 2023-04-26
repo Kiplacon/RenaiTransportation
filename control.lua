@@ -102,7 +102,7 @@ function(event)
 					and properties.targets[catapult.held_stack.name].valid
 					and global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number]
 					and global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name]) then
-					 	if (properties.targets[catapult.held_stack.name].type ~= "transport-belt") then
+						if (properties.targets[catapult.held_stack.name].type ~= "transport-belt") then
 							if (global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] < 0) then
 								global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] = 0
 							end
@@ -118,21 +118,21 @@ function(event)
 							end
 
 						elseif (properties.targets[catapult.held_stack.name].type == "transport-belt") then
-					 		local incomming = 0
+							local incomming = 0
 							for name, count in pairs(global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number]) do
 								incomming = incomming + count
 							end
-					 		local total = incomming + properties.targets[catapult.held_stack.name].get_transport_line(1).get_item_count() + properties.targets[catapult.held_stack.name].get_transport_line(2).get_item_count() + catapult.held_stack.count
-					 		if (total <= 8) then
-					 			catapult.active = true
+							local total = incomming + properties.targets[catapult.held_stack.name].get_transport_line(1).get_item_count() + properties.targets[catapult.held_stack.name].get_transport_line(2).get_item_count() + catapult.held_stack.count
+							if (total <= 8) then
+								catapult.active = true
 								if (global.HoverGFX[catapult.unit_number]) then
 									for playerID, graphic in pairs(global.HoverGFX[catapult.unit_number]) do
 										rendering.destroy(graphic)
 									end
 									global.HoverGFX[catapult.unit_number] = {}
 								end
-					 		else
-					 			catapult.active = false
+							else
+								catapult.active = false
 								if (global.HoverGFX[catapult.unit_number] == nil) then
 									global.HoverGFX[catapult.unit_number] = {}
 								end
@@ -155,12 +155,12 @@ function(event)
 										}
 									end
 								end
-					 		end
-					 	end
+							end
+						end
 
 					-- pointing at nothing/the ground
 					elseif (properties.targets[catapult.held_stack.name] == "nothing") then
-					 	catapult.active = true
+						catapult.active = true
 
 					-- item needs path validation/is currently tracking path
 					elseif (properties.targets[catapult.held_stack.name] == nil) then
@@ -179,13 +179,26 @@ function(event)
 									target = properties.entity.position,
 									surface = properties.entity.surface
 								}
-							local	x = properties.entity.drop_position.x
+							local x = properties.entity.drop_position.x
 							local y = properties.entity.drop_position.y
 							local speed = 999
 							local arc = -5 -- lower number is higher arc
 							local AirTime = 1
 							local vector = {x=x-properties.entity.position.x, y=y-properties.entity.position.y}
 							local spin = 0
+							if (properties.TracePath == nil) then
+								local path = {}
+								for i = 1, AirTime do
+									local progress = i/AirTime
+									path[i] =
+									{
+										x = x+(progress*vector.x),
+										y = y+(progress*vector.y),
+										height = progress * (1-progress) / arc
+									}
+								end
+								properties.TracePath = path
+							end
 							global.FlyingItems[global.FlightNumber] =
 								{sprite=sprite,
 								shadow=shadow,
@@ -200,7 +213,8 @@ function(event)
 								StartTick=game.tick,
 								LandTick=game.tick+AirTime,
 								vector=vector,
-								tracing = properties.entity.unit_number}
+								tracing = properties.entity.unit_number,
+								path = properties.TracePath}
 							global.FlightNumber = global.FlightNumber + 1
 						end
 						catapult.active = false
@@ -249,7 +263,7 @@ function(event)
 									target = catapult.held_stack_position,
 									surface = catapult.surface
 								}
-							local	x = catapult.drop_position.x
+							local x = catapult.drop_position.x
 							local y = catapult.drop_position.y
 							local distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
 							local arc = -(0.3236*distance^-0.404)-- closer to 0 = higher arc
@@ -305,6 +319,19 @@ function(event)
 									properties.targets[catapult.held_stack.name] = nil
 								end
 							end
+							if (properties.path == nil) then
+								local path = {}
+								for i = 1, AirTime do
+									local progress = i/AirTime
+									path[i] =
+									{
+										x = start.x+(progress*vector.x),
+										y = start.y+(progress*vector.y),
+										height = progress * (1-progress) / arc
+									}
+								end
+								properties.path = path
+							end
 							global.FlyingItems[global.FlightNumber] =
 								{sprite=sprite,
 								shadow=shadow,
@@ -320,7 +347,8 @@ function(event)
 								LandTick=game.tick+AirTime,
 								vector=vector,
 								destination=destination,
-								space=space}
+								space=space,
+								path=properties.path}
 							if (catapult.held_stack.item_number ~= nil) then
 								local CloudStorage = game.create_inventory(1)
 								CloudStorage.insert(catapult.held_stack)
