@@ -27,17 +27,26 @@ local PikachuFace = table.deepcopy(data.raw.inserter["inserter"])
 	PikachuFace.hand_base_picture = nothing
 	PikachuFace.hand_closed_picture = nothing
 	PikachuFace.hand_open_picture = nothing
-	PikachuFace.hand_base_shadow.hr_version= nothing
-	PikachuFace.hand_closed_shadow.hr_version= nothing
-	PikachuFace.hand_open_shadow.hr_version= nothing
-	PikachuFace.platform_picture.sheet.hr_version =
+	PikachuFace.hand_base_shadow = nothing
+	PikachuFace.hand_closed_shadow = nothing
+	PikachuFace.hand_open_shadow = nothing
+	PikachuFace.platform_picture.sheet =
 		{
-		  filename = "__RenaiTransportation__/graphics/PlayerLauncher/PlayerLauncher.png",
-		  priority = "extra-high",
-		  width = 105,
-		  height = 79,
-		  shift = nil, -- originally util.by_pixel(1.5, 7.5-1),
-		  scale = 0.5
+			filename = "__RenaiTransportation__/graphics/PlayerLauncher/PlayerLauncher.png",
+			priority = "extra-high",
+			width = 105,
+			height = 79,
+			shift = nil, -- originally util.by_pixel(1.5, 7.5-1),
+			scale = 0.5,
+--[[ 			hr_version =
+			{
+				filename = "__RenaiTransportation__/graphics/PlayerLauncher/PlayerLauncher.png",
+				priority = "extra-high",
+				width = 105,
+				height = 79,
+				shift = nil, -- originally util.by_pixel(1.5, 7.5-1),
+				scale = 0.5
+			} ]]
 		}
 
 data:extend({ 	

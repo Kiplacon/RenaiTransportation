@@ -92,7 +92,11 @@ platform_picture =
 		height = 64,
 		scale = 0.75
 	}
-}
+},
+circuit_wire_connection_points = circuit_connector_definitions["inserter"].points,
+circuit_connector_sprites = circuit_connector_definitions["inserter"].sprites,
+circuit_wire_max_distance = inserter_circuit_wire_max_distance,
+default_stack_control_input_signal = inserter_default_stack_control_input_signal
 },
 
 { --------- The ejector hatch item -------------

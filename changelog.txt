@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.0
+Date: 4/25/2023
+  Changes:
+    - Throwing an Ironclad ship from the "AAI Vehicles: Ironclad" mod into the water now builds one on landing. Maybe one day I can generalize this to work for all vehicles. Specifically requested by toran.mallow
+  Bugfixes:
+    - Fixed that Ejector Hatches couldn't be connected to circuit wire. Apparently I just missed adding that part in lol. Reported by ShatteredShadow.
+    - Fixed that the Player Launcher had the wrong sprite in standard graphics mode. Reported by GNeutrality
+---------------------------------------------------------------------------------------------------
 Version: 1.1.11
 Date: 3/7/2023
   Changes:

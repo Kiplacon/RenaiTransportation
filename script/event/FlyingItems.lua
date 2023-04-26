@@ -29,7 +29,7 @@ local function on_tick(event)
                clear = false
                local unitx = 1
                local unity = 1
-               effect = "BouncePlateParticle"
+               local effect = "BouncePlateParticle"
                if (string.find(ThingLandedOn.name, "DirectedBouncePlate")) then
                   unitx = global.OrientationUnitComponents[ThingLandedOn.orientation].x
                   unity = global.OrientationUnitComponents[ThingLandedOn.orientation].y
@@ -101,11 +101,11 @@ local function on_tick(event)
 
                ---- Bounce modifiers ----
                -- Defaults --
-               primable = ""
-               range = 9.9
-               RangeBonus = 0
-               SidewaysShift = 0
-               tunez = "bounce"
+               local primable = ""
+               local range = 9.9
+               local RangeBonus = 0
+               local SidewaysShift = 0
+               local tunez = "bounce"
                if (string.find(ThingLandedOn.name, "Train")) then
                   range = 39.9
                elseif (ThingLandedOn.name == "BouncePlate5" or ThingLandedOn.name == "DirectedBouncePlate5") then
@@ -354,8 +354,9 @@ local function on_tick(event)
          -- didn't land on anything
          -- non-tracers
          elseif (FlyingItem.tracing == nil) then
-            if (rendering.get_surface(FlyingItem.sprite).find_tiles_filtered{position = FlyingItem.target, radius = 1, limit = 1, collision_mask = "player-layer"}[1] ~= nil) then -- in theory, tiles the player cant walk on are some sort of fluid or other non-survivable ground
-               rendering.get_surface(FlyingItem.sprite).create_entity
+            local ProjectileSurface = rendering.get_surface(FlyingItem.sprite)
+            if (ProjectileSurface.find_tiles_filtered{position = FlyingItem.target, radius = 1, limit = 1, collision_mask = "player-layer"}[1] ~= nil) then -- in theory, tiles the player cant walk on are some sort of fluid or other non-survivable ground
+               ProjectileSurface.create_entity
                   ({
                      name = "water-splash",
                      position = FlyingItem.target
@@ -365,14 +366,22 @@ local function on_tick(event)
                else
                   if (FlyingItem.item == "raw-fish") then
                      for i = 1, math.floor(FlyingItem.amount/5) do
-                        rendering.get_surface(FlyingItem.sprite).create_entity
+                        ProjectileSurface.create_entity
                         {
                            name = "fish",
                            position = FlyingItem.target,
                         }
                      end
+                  elseif (FlyingItem.item == "ironclad" and script.active_mods["aai-vehicles-ironclad"] and ProjectileSurface.can_place_entity{name="ironclad", position=FlyingItem.target} == true) then
+                     ProjectileSurface.create_entity
+                     {
+                        name = "ironclad",
+                        position = FlyingItem.target,
+                        force = "player",
+                        raise_built = true
+                     }
                   else
-                     rendering.get_surface(FlyingItem.sprite).pollute(FlyingItem.target, FlyingItem.amount*0.5)
+                     ProjectileSurface.pollute(FlyingItem.target, FlyingItem.amount*0.5)
                   end
 
                   if (FlyingItem.CloudStorage) then
@@ -382,16 +391,16 @@ local function on_tick(event)
             else
                if (FlyingItem.player == nil) then
                   if (FlyingItem.CloudStorage) then
-                     rendering.get_surface(FlyingItem.sprite).spill_item_stack
+                     ProjectileSurface.spill_item_stack
                         (
-                           rendering.get_surface(FlyingItem.sprite).find_non_colliding_position("item-on-ground", FlyingItem.target, 0, 0.1),
+                           ProjectileSurface.find_non_colliding_position("item-on-ground", FlyingItem.target, 0, 0.1),
                            FlyingItem.CloudStorage[1]
                         )
                      FlyingItem.CloudStorage.destroy()
                   else
-                     rendering.get_surface(FlyingItem.sprite).spill_item_stack
+                     ProjectileSurface.spill_item_stack
                         (
-                           rendering.get_surface(FlyingItem.sprite).find_non_colliding_position("item-on-ground", FlyingItem.target, 0, 0.1),
+                           ProjectileSurface.find_non_colliding_position("item-on-ground", FlyingItem.target, 0, 0.1),
                            {name=FlyingItem.item, count=FlyingItem.amount}
                         )
                   end
