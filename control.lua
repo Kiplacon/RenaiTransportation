@@ -197,6 +197,7 @@ function(event)
 										height = progress * (1-progress) / arc
 									}
 								end
+								path.duration = AirTime
 								properties.TracePath = path
 							end
 							global.FlyingItems[global.FlightNumber] =
@@ -209,9 +210,9 @@ function(event)
 								amount=0,
 								target={x=x, y=y},
 								start=properties.entity.position,
-								AirTime=AirTime,
+								AirTime=properties.TracePath.duration,
 								StartTick=game.tick,
-								LandTick=game.tick+AirTime,
+								LandTick=game.tick+properties.TracePath.duration,
 								vector=vector,
 								tracing = properties.entity.unit_number,
 								path = properties.TracePath}
@@ -330,6 +331,7 @@ function(event)
 										height = progress * (1-progress) / arc
 									}
 								end
+								path.duration = AirTime
 								properties.path = path
 							end
 							global.FlyingItems[global.FlightNumber] =
@@ -342,9 +344,9 @@ function(event)
 								amount=catapult.held_stack.count,
 								target={x=x, y=y},
 								start=start,
-								AirTime=AirTime,
+								AirTime=properties.path.duration,
 								StartTick=game.tick,
-								LandTick=game.tick+AirTime,
+								LandTick=game.tick+properties.path.duration,
 								vector=vector,
 								destination=destination,
 								space=space,
