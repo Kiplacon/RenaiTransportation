@@ -197,6 +197,7 @@ function(event)
 										height = progress * (1-progress) / arc
 									}
 								end
+								path.duration = AirTime
 								properties.TracePath = path
 							end
 							global.FlyingItems[global.FlightNumber] =
@@ -209,12 +210,13 @@ function(event)
 								amount=0,
 								target={x=x, y=y},
 								start=properties.entity.position,
-								AirTime=AirTime,
+								AirTime=properties.TracePath.duration,
 								StartTick=game.tick,
-								LandTick=game.tick+AirTime,
+								LandTick=game.tick+properties.TracePath.duration,
 								vector=vector,
 								tracing = properties.entity.unit_number,
-								path = properties.TracePath}
+								path = properties.TracePath,
+								surface = catapult.surface}
 							global.FlightNumber = global.FlightNumber + 1
 						end
 						catapult.active = false
@@ -246,7 +248,7 @@ function(event)
 							catapult.active = false
 							global.PrimerThrowerLinks[properties.entangled.detector.unit_number].ready = true
 						else
-							local sprite = rendering.draw_sprite
+							--[[local sprite = rendering.draw_sprite
 								{
 									sprite = "item/"..catapult.held_stack.name,
 									x_scale = 0.5,
@@ -262,7 +264,7 @@ function(event)
 									y_scale = 0.5,
 									target = catapult.held_stack_position,
 									surface = catapult.surface
-								}
+								} ]]
 							local x = catapult.drop_position.x
 							local y = catapult.drop_position.y
 							local distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
@@ -302,7 +304,7 @@ function(event)
 							if (AirTime == 0) then -- for super fast throwers that move right on top of their target
 								AirTime = 1
 							end
-							local spin = math.random(-10,10)*0.01
+							--local spin = math.random(-10,10)*0.01
 							local destination = nil
 							if (settings.global["RTOverflowComp"].value == true) then
 								if (properties.targets[catapult.held_stack.name] ~= nil and properties.targets[catapult.held_stack.name].valid) then
@@ -319,7 +321,7 @@ function(event)
 									properties.targets[catapult.held_stack.name] = nil
 								end
 							end
-							if (properties.path == nil) then
+--[[ 							if (properties.path == nil) then
 								local path = {}
 								for i = 1, AirTime do
 									local progress = i/AirTime
@@ -330,14 +332,15 @@ function(event)
 										height = progress * (1-progress) / arc
 									}
 								end
+								path.duration = AirTime
 								properties.path = path
-							end
+							end ]]
 							global.FlyingItems[global.FlightNumber] =
-								{sprite=sprite,
-								shadow=shadow,
-								speed=speed,
-								arc=arc,
-								spin=spin,
+								{--sprite=sprite,
+								--shadow=shadow,
+								--speed=speed,
+								--arc=arc,
+								--spin=spin,
 								item=catapult.held_stack.name,
 								amount=catapult.held_stack.count,
 								target={x=x, y=y},
@@ -345,10 +348,19 @@ function(event)
 								AirTime=AirTime,
 								StartTick=game.tick,
 								LandTick=game.tick+AirTime,
-								vector=vector,
+								--vector=vector,
 								destination=destination,
 								space=space,
-								path=properties.path}
+								surface=catapult.surface,
+								--path=properties.path
+								}
+							catapult.surface.create_entity
+							{
+								name="RTTestProjectile",
+								position=catapult.held_stack_position,
+								source_position=catapult.held_stack_position,
+								target_position=catapult.drop_position
+							}
 							if (catapult.held_stack.item_number ~= nil) then
 								local CloudStorage = game.create_inventory(1)
 								CloudStorage.insert(catapult.held_stack)
@@ -500,4 +512,26 @@ function(event)
 			global.FlyingItems[each] = nil
 		end
 	end
+end)
+
+
+script.on_event(
+"DebugAdvanceActionProcess",
+function(event)
+	local player = game.players[event.player_index]
+	local test = player.surface.create_entity
+	{
+		name="RTTestProjectile",
+		position=player.position,
+		source_position=player.position,
+		target_position={10,10}
+	}
+	rendering.draw_text
+	{
+		text = "Hi",
+		surface = player.surface,
+		target = test,
+		color = {1,1,1}
+
+	}
 end)
