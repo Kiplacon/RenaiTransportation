@@ -2,6 +2,7 @@
 Version: 1.2.0
 Date: 4/25/2023
   Changes:
+    - Reverted the item throwing system back to using reskinned spitter projectiles just for the animations. RIP random tumbling but this is less laggy now that I figured out how to "pack" multiple items into one spitter projectile. Thanks to everyone on Reddit who commented on my thread: https://www.reddit.com/r/factorio/comments/12yj35v/codingwise_how_can_i_reduce_lag_from_my_mod/
     - Throwing an Ironclad ship from the "AAI Vehicles: Ironclad" mod into the water now builds one on landing. Maybe one day I can generalize this to work for all vehicles. Specifically requested by toran.mallow
   Bugfixes:
     - Fixed that Ejector Hatches couldn't be connected to circuit wire. Apparently I just missed adding that part in lol. Reported by ShatteredShadow.

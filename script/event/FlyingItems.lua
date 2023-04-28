@@ -3,7 +3,7 @@ local function on_tick(event)
 
    for each, FlyingItem in pairs(global.FlyingItems) do
       local clear = true
-      if (event.tick < FlyingItem.LandTick and FlyingItem.player == nil) then
+      --if (event.tick < FlyingItem.LandTick and FlyingItem.player == nil) then
 --[[          local duration = event.tick-FlyingItem.StartTick
          local progress = duration/FlyingItem.AirTime
          local height = progress * (1-progress) / FlyingItem.arc
@@ -21,7 +21,7 @@ local function on_tick(event)
          rendering.set_orientation(FlyingItem.sprite, orientation)
          rendering.set_orientation(FlyingItem.shadow, orientation) ]]
 
-      elseif (event.tick == FlyingItem.LandTick and FlyingItem.space == nil) then
+      if (event.tick == FlyingItem.LandTick and FlyingItem.space == nil) then
          local ThingLandedOn = FlyingItem.surface.find_entities_filtered
             {
                position = {math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5},
@@ -433,7 +433,7 @@ local function on_tick(event)
             global.FlyingItems[each] = nil
          end
 
-      elseif (game.tick > FlyingItem.LandTick) then
+--[[       elseif (game.tick > FlyingItem.LandTick) then
          if (FlyingItem.sprite) then
             --rendering.destroy(FlyingItem.sprite)
             --rendering.destroy(FlyingItem.shadow)
@@ -444,7 +444,7 @@ local function on_tick(event)
          if (FlyingItem.player) then
             SwapBackFromGhost(FlyingItem.player, FlyingItem)
          end
-         global.FlyingItems[each] = nil
+         global.FlyingItems[each] = nil ]]
       end
 
    end

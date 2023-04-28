@@ -26,7 +26,20 @@ local function entity_built(event)
 
 	if (string.find(entity.name, "RTThrower-")) then
 		script.register_on_entity_destroyed(entity)
-		global.CatapultList[entity.unit_number] = {entity = entity, targets = {}}
+		global.CatapultList[entity.unit_number] = {entity=entity, targets={}, BurnerSelfRefuelCompensation=0.2, IsElectric=false, InSpace=false}
+		local properties = global.CatapultList[entity.unit_number]
+
+		if (string.find(entity.surface.name, " Orbit") or string.find(entity.surface.name, " Field") or string.find(entity.surface.name, " Belt")) then
+			properties.InSpace = true
+		end
+
+		if (entity.burner == nil and #entity.fluidbox == 0) then
+			properties.BurnerSelfRefuelCompensation = 0
+			properties.IsElectric = true
+		elseif (entity.name == "RTThrower-PrimerThrower") then
+			properties.BurnerSelfRefuelCompensation = -0.1
+		end
+
 		if (entity.name == "RTThrower-EjectorHatchRT") then
 			global.CatapultList[entity.unit_number].sprite = rendering.draw_animation
 				{
@@ -55,6 +68,7 @@ local function entity_built(event)
 			global.PrimerThrowerLinks[sherlock.unit_number] = {thrower = entity, ready = false}--, box = box}
 			script.register_on_entity_destroyed(sherlock)
 		end
+
 	elseif (entity.name == "PlayerLauncher") then
 		entity.operable = false
 		entity.active = false

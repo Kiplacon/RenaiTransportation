@@ -67,6 +67,15 @@ data:extend({
 	size = 1
 },
 {
+	type = "animation",
+	name = "RTMOREPOWER",
+	filename = "__RenaiTransportation__/graphics/NoPowerBlink.png",
+	size = {64,64},
+	frame_count = 2,
+	line_length = 2,
+	animation_speed = 1/30
+},
+{
 	type = "custom-input",
 	name = "DebugAdvanceActionProcess",
 	key_sequence = "BACKSLASH",

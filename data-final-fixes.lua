@@ -1,110 +1,135 @@
 function MakeProjectile(ThingData)
-
-TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
-	TheProjectile.name = ThingData.name.."-projectileFromRenaiTransportation"
-	TheProjectile.special_neutral_target_damage = {amount = 0, type = "acid"}
-	--TheProjectile.scale = 5     --does nothing as far as i can tell
-	--TheProjectile.particle_buffer_size = 90
-    TheProjectile.particle_spawn_interval = 0
-    TheProjectile.particle_spawn_timeout = 0
-    TheProjectile.particle_vertical_acceleration = 0.0035 -- gravity, default 0.0045
-	if (ThingData.name == "MaybeIllBeTracer") then
-		TheProjectile.particle_horizontal_speed = 10
-		TheProjectile.shadow = nil
-	else
-	    TheProjectile.particle_horizontal_speed = 0.18 -- speed, default 0.3375
-	end
-
-    TheProjectile.particle_horizontal_speed_deviation = 0
-    --TheProjectile.particle_start_alpha = 0.5
-    --TheProjectile.particle_end_alpha = 1
-    --TheProjectile.particle_alpha_per_part = 0.8
-    --TheProjectile.particle_scale_per_part = 0.8
-    --TheProjectile.particle_loop_frame_count = 15
-    --TheProjectile.particle_fade_out_duration = 2
-    --TheProjectile.particle_loop_exit_threshold = 0.25
-
-	TheProjectile.working_sound = nil
-
-	TheProjectile.initial_action =
-	  {
-		type = "direct",
-		action_delivery =
+	local TheProjectile =
 		{
-		  type = "instant",
-		  target_effects =
-		  {
-			{
-			  type = "script",
-			  effect_id = ThingData.name.."-LandedRT"
-			}
-		  }
+			type = "stream",
+			name = "RTItemProjectile-"..ThingData.name,
+
+			particle_spawn_interval = 0,
+			particle_spawn_timeout = 0,
+			particle_vertical_acceleration = 0.0035,
+			particle_horizontal_speed = 0.18,
+			particle_horizontal_speed_deviation = 0,
+			particle =
+				{
+					layers =
+					{
+						{
+							filename = "__RenaiTransportation__/graphics/icon.png",
+							line_length = 1,
+							frame_count = 1,
+							priority = "high",
+							size = 32,
+							scale = 19.2/32
+						}
+					}
+				},
+			shadow =
+				{
+					layers =
+					{
+						{
+							filename = "__RenaiTransportation__/graphics/icon.png",
+							line_length = 1,
+							frame_count = 1,
+							priority = "high",
+							size = 32,
+							scale = 19.2/32,
+							tint = {0,0,0,0.5}
+						}
+					}
+				},
+			oriented_particle = true,
+			--shadow_scale_enabled = true
 		}
-	  }
 
-if (ThingData.icons) then
-	if (ThingData.icon_size) then
-		TheProjectile.particle.size = ThingData.icon_size
+	if (ThingData.icons) then
+		if (ThingData.icon_size) then
+			TheProjectile.particle.size = ThingData.icon_size
+		else
+			TheProjectile.particle.size = ThingData.icons[1].icon_size
+		end
+
+		TheProjectile.particle.layers = {}
+		TheProjectile.shadow.layers = {}
+		for iconlayer, iconspecs in pairs(ThingData.icons) do
+			local eeee
+			local rrrr
+			if (iconspecs.icon_size) then
+				eeee = iconspecs.icon_size
+			else
+				eeee = TheProjectile.particle.size
+			end
+
+			if (iconspecs.tint) then
+				rrrr = iconspecs.tint
+			else
+				rrrr = nil
+			end
+
+			table.insert(TheProjectile.particle.layers,
+				{
+					filename = iconspecs.icon,
+					line_length = 1,
+					frame_count = 1,
+					priority = "high",
+					scale = 19.2/eeee,
+					size = eeee,
+					tint = rrrr
+				})
+			table.insert(TheProjectile.shadow.layers,
+				{
+					filename = iconspecs.icon,
+					line_length = 1,
+					frame_count = 1,
+					priority = "high",
+					scale = 19.2/eeee,
+					size = eeee,
+					tint = {0,0,0,0.5}
+				})
+		end
+
+	elseif (ThingData.icon) then
+		TheProjectile.particle =
+		{
+			filename = ThingData.icon,
+			line_length = 1,
+			width = ThingData.icon_size,
+			height = ThingData.icon_size,
+			frame_count = 1,
+			--shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
+			--tint = data.tint,
+			priority = "high",
+			scale = 19.2/ThingData.icon_size --0.3 of a tile
+			--animation_speed = 1,
+		}
+		TheProjectile.shadow =
+		{
+			filename = ThingData.icon,
+			line_length = 1,
+			width = ThingData.icon_size,
+			height = ThingData.icon_size,
+			frame_count = 1,
+			--shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
+			tint = {0,0,0,0.5},
+			priority = "high",
+			scale = 19.2/ThingData.icon_size --0.3 of a tile
+			--animation_speed = 1,
+		}
 	else
-		TheProjectile.particle.size = ThingData.icons[1].icon_size
+		TheProjectile.particle =
+		{
+			filename = "__RenaiTransportation__/graphics/icon.png",
+			line_length = 1,
+			width = 32,
+			height = 32,
+			frame_count = 1,
+			--shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
+			--tint = data.tint,
+			priority = "high",
+			scale = 19.2/32 --0.3 of a tile
+			--animation_speed = 1,
+		}
 	end
-
-	TheProjectile.particle.layers = {}
-	for iconlayer, iconspecs in pairs(ThingData.icons) do
-		if (iconspecs.icon_size) then
-			eeee = iconspecs.icon_size
-		else
-			eeee = TheProjectile.particle.size
-		end
-
-		if (iconspecs.tint) then
-			rrrr = iconspecs.tint
-		else
-			rrrr = nil
-		end
-
-		table.insert(TheProjectile.particle.layers,
-			{
-				filename = iconspecs.icon,
-				line_length = 1,
-				frame_count = 1,
-				priority = "high",
-				scale = 19.2/eeee,
-				size = eeee,
-				tint = rrrr
-			})
-	end
-
-elseif (ThingData.icon) then
-	TheProjectile.particle = {
-      filename = ThingData.icon,
-      line_length = 1,
-      width = ThingData.icon_size,
-      height = ThingData.icon_size,
-      frame_count = 1,
-      --shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
-      --tint = data.tint,
-      priority = "high",
-      scale = 19.2/ThingData.icon_size --0.3 of a tile
-      --animation_speed = 1,
-    }
-else
-	TheProjectile.particle = {
-      filename = "__RenaiTransportation__/graphics/icon.png",
-      line_length = 1,
-      width = 32,
-      height = 32,
-      frame_count = 1,
-      --shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
-      --tint = data.tint,
-      priority = "high",
-      scale = 19.2/32 --0.3 of a tile
-      --animation_speed = 1,
-    }
-end
-
-	TheProjectile.spine_animation = nil
-
 	data:extend({TheProjectile})
 end
 
@@ -738,7 +763,7 @@ for Category, ThingsTable in pairs(data.raw) do
 	for ThingID, ThingData in pairs(ThingsTable) do
 		if (ThingData.stack_size) then
 			log("Creating item projectile for "..ThingData.type..": "..ThingData.name)
-			-- MakeProjectile(ThingData)
+			MakeProjectile(ThingData)
 
 			if (settings.startup["RTBounceSetting"].value == true) then
 				if (ThingData.type == "ammo" -- looking for things like rockets, tank shells, missles, etc
