@@ -82,6 +82,12 @@ data:extend({
 	enabled_while_in_cutscene = true
 },
 {
+	type = "virtual-signal",
+	name = "ThrowerRangeSignal",
+	icon = "__RenaiTransportation__/graphics/RangeSignaling.png",
+	icon_size = 64,
+},
+{
 	type = "stream",
 	name = "RTTestProjectile",
 

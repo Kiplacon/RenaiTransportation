@@ -84,7 +84,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	--| Hovering something
 	if (ThingHovering) then
 		--|| Adjusting Thrower Range
-		if (string.find(ThingHovering.name, "RTThrower-") and ThingHovering.name ~= "RTThrower-PrimerThrower" and player.force.technologies["RTFocusedFlinging"].researched == true) then
+		if (string.find(ThingHovering.name, "RTThrower-") and ThingHovering.name ~= "RTThrower-PrimerThrower" and global.CatapultList[ThingHovering.unit_number].RangeAdjustable == true) then
 			CurrentRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
 			if ((ThingHovering.name ~= "RTThrower-long-handed-inserter" and CurrentRange >= 15) or CurrentRange >= 25) then
 				ThingHovering.drop_position =
@@ -99,18 +99,19 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 						ThingHovering.drop_position.y-global.OrientationUnitComponents[ThingHovering.orientation].y
 					}
 			end
+			local NewRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
 			ThingHovering.surface.create_entity
 				({
 					name = "flying-text",
 					position = ThingHovering.drop_position,
-					text = "Range: "..math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
+					text = "Range: "..NewRange
 				})
 			player.play_sound{
 				path="utility/gui_click",
 				position=player.position,
 				volume_modifier=1
 				}
-
+			global.CatapultList[ThingHovering.unit_number].range = NewRange
 			if (global.CatapultList[ThingHovering.unit_number]) then
 				global.CatapultList[ThingHovering.unit_number].targets = {}
 				for componentUN, PathsItsPartOf in pairs(global.ThrowerPaths) do

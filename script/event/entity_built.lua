@@ -26,8 +26,12 @@ local function entity_built(event)
 
 	if (string.find(entity.name, "RTThrower-")) then
 		script.register_on_entity_destroyed(entity)
-		global.CatapultList[entity.unit_number] = {entity=entity, targets={}, BurnerSelfRefuelCompensation=0.2, IsElectric=false, InSpace=false}
+		global.CatapultList[entity.unit_number] = {entity=entity, targets={}, BurnerSelfRefuelCompensation=0.2, IsElectric=false, InSpace=false, RangeAdjustable=false}
 		local properties = global.CatapultList[entity.unit_number]
+
+		if (string.find(entity.name, "RTThrower-") and entity.name ~= "RTThrower-PrimerThrower" and entity.force.technologies["RTFocusedFlinging"].researched == true) then
+			properties.RangeAdjustable = true
+		end
 
 		if (string.find(entity.surface.name, " Orbit") or string.find(entity.surface.name, " Field") or string.find(entity.surface.name, " Belt")) then
 			properties.InSpace = true

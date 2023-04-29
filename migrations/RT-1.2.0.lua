@@ -17,6 +17,11 @@ for each, properties in pairs(global.CatapultList) do
     properties.BurnerSelfRefuelCompensation=0.2
     properties.IsElectric=false
     properties.InSpace=false
+    properties.RangeAdjustable=false
+
+    if (string.find(entity.name, "RTThrower-") and entity.name ~= "RTThrower-PrimerThrower" and entity.force.technologies["RTFocusedFlinging"].researched == true) then
+        properties.RangeAdjustable = true
+    end
 
     if (string.find(entity.surface.name, " Orbit") or string.find(entity.surface.name, " Field") or string.find(entity.surface.name, " Belt")) then
         properties.InSpace = true

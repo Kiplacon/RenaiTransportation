@@ -76,7 +76,6 @@ function(event)
 	for catapultID, properties in pairs(global.CatapultList) do
 		local catapult = properties.entity
 		if (catapult.valid) then
-
 			-- power check. low power makes inserter arms stretch
 			if (properties.IsElectric == true and catapult.energy/catapult.electric_buffer_size >= 0.9) then
 				catapult.active = true
@@ -304,6 +303,31 @@ function(event)
 				catapult.active = true
 			end
 
+			if (properties.RangeAdjustable == true) then
+				local range = catapult.get_merged_signal({type="virtual", name="ThrowerRangeSignal"})
+				if (properties.range==nil or properties.range~=range) then
+					if (catapult.name == "RTThrower-long-handed-inserter" and range > 0 and range <= 25)
+					or (catapult.name ~= "RTThrower-long-handed-inserter" and range > 0 and range <= 15) then
+						catapult.drop_position =
+							{
+								catapult.position.x + -range*global.OrientationUnitComponents[catapult.orientation].x,
+								catapult.position.y + -range*global.OrientationUnitComponents[catapult.orientation].y
+							}
+						properties.range = range
+						if (global.CatapultList[catapult.unit_number]) then
+							global.CatapultList[catapult.unit_number].targets = {}
+							for componentUN, PathsItsPartOf in pairs(global.ThrowerPaths) do
+								for ThrowerUN, TrackedItems in pairs(PathsItsPartOf) do
+									if (ThrowerUN == catapult.unit_number) then
+										global.ThrowerPaths[componentUN][ThrowerUN] = {}
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+
 		elseif (catapult.valid == false) then
 			global.CatapultList[catapultID] = nil
 		end
@@ -441,7 +465,6 @@ function(event)
 	end
 end)
 
-
 script.on_event(
 "DebugAdvanceActionProcess",
 function(event)
@@ -450,11 +473,25 @@ function(event)
 		local item = player.cursor_stack.name
 		player.surface.create_entity
 		{
-			name="RTItemProjectile-"..item,
+			name="RTItemProjectile-"..item..25,
 			position=player.position,
 			source_position=player.position,
 			target_position=event.cursor_position
 		}
 	end
+end)
 
+script.on_event(defines.events.on_research_finished,
+--research	:: LuaTechnology		The researched technology
+--by_script	:: boolean				If the technology was researched by script.
+--name		:: defines.events		Identifier of the event
+--tick		:: uint					Tick the event was generated.
+function(event)
+	if (event.research.name == "RTFocusedFlinging") then
+		for each, properties in pairs(global.CatapultList) do
+			if (string.find(properties.entity.name, "RTThrower-") and properties.entity.name ~= "RTThrower-PrimerThrower") then
+				properties.RangeAdjustable = true
+			end
+		end
+	end
 end)
