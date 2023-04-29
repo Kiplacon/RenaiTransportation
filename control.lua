@@ -73,20 +73,17 @@ end)
 ---- checks if thrower inserters have something in their hands and it's in the throwing position, then creates the approppriate projectile ----
 script.on_nth_tick(3,
 function(event)
-	if (global.CatapultList ~= {}) then
-		for catapultID, properties in pairs(global.CatapultList) do
-			local catapult = properties.entity
-			BurnerSelfRefuelCompensation = 0.2
-			if (catapult.valid and catapult.burner == nil and catapult.fluidbox == nil and catapult.energy/catapult.electric_buffer_size >= 0.9) then
+	for catapultID, properties in pairs(global.CatapultList) do
+		local catapult = properties.entity
+		if (catapult.valid) then
+			-- power check. low power makes inserter arms stretch
+			if (properties.IsElectric == true and catapult.energy/catapult.electric_buffer_size >= 0.9) then
 				catapult.active = true
-				BurnerSelfRefuelCompensation = 0
-			elseif (catapult.valid and catapult.name == "RTThrower-PrimerThrower") then
-				BurnerSelfRefuelCompensation = -0.1
-			elseif (catapult.valid and catapult.burner == nil and catapult.fluidbox == nil) then
+			elseif (properties.IsElectric == true and catapult.is_connected_to_electric_network() == true) then
 				catapult.active = false
-				rendering.draw_sprite
+				rendering.draw_animation
 					{
-						sprite = "utility.electricity_icon_unplugged",
+						animation = "RTMOREPOWER",
 						x_scale = 0.5,
 						y_scale = 0.5,
 						target = catapult,
@@ -95,182 +92,150 @@ function(event)
 					}
 			end
 
-			if (catapult.valid and catapult.held_stack.valid_for_read) then
-				if (catapult.name ~= "RTThrower-PrimerThrower" and settings.global["RTOverflowComp"].value == true) then
-					-- pointing at some entity
-					if (properties.targets[catapult.held_stack.name] ~= nil
-					and properties.targets[catapult.held_stack.name].valid
-					and global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number]
-					and global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name]) then
-					 	if (properties.targets[catapult.held_stack.name].type ~= "transport-belt") then
-							if (global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] < 0) then
-								global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] = 0
-							end
-							local total = global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] + catapult.held_stack.count
-							local inserted = properties.targets[catapult.held_stack.name].insert({name=catapult.held_stack.name, count=total})
-							if (inserted < total) then
-								catapult.active = false
-							else
-								catapult.active = true
-							end
-							if (inserted > 0) then -- when the destination is full. Have to check otherwise there's an error
-								properties.targets[catapult.held_stack.name].remove_item({name=catapult.held_stack.name, count=inserted})
-							end
-
-						elseif (properties.targets[catapult.held_stack.name].type == "transport-belt") then
-					 		local incomming = 0
-							for name, count in pairs(global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number]) do
-								incomming = incomming + count
-							end
-					 		local total = incomming + properties.targets[catapult.held_stack.name].get_transport_line(1).get_item_count() + properties.targets[catapult.held_stack.name].get_transport_line(2).get_item_count() + catapult.held_stack.count
-					 		if (total <= 8) then
-					 			catapult.active = true
-								if (global.HoverGFX[catapult.unit_number]) then
-									for playerID, graphic in pairs(global.HoverGFX[catapult.unit_number]) do
-										rendering.destroy(graphic)
-									end
-									global.HoverGFX[catapult.unit_number] = {}
+			if (catapult.held_stack.valid_for_read) then -- if it has power
+				local HeldItem = catapult.held_stack.name
+				-- if it's passed the "half swing" point
+				if (catapult.orientation == 0    and catapult.held_stack_position.y >= catapult.position.y+properties.BurnerSelfRefuelCompensation)
+				or (catapult.orientation == 0.25 and catapult.held_stack_position.x <= catapult.position.x-properties.BurnerSelfRefuelCompensation)
+				or (catapult.orientation == 0.50 and catapult.held_stack_position.y <= catapult.position.y-properties.BurnerSelfRefuelCompensation)
+				or (catapult.orientation == 0.75 and catapult.held_stack_position.x >= catapult.position.x+properties.BurnerSelfRefuelCompensation)
+				then
+					-- activate/disable thrower based on overflow prevention
+					if (catapult.name ~= "RTThrower-PrimerThrower" and settings.global["RTOverflowComp"].value == true) then
+						-- pointing at some entity
+						if (properties.targets[HeldItem]
+						and properties.targets[HeldItem].valid -- its an entity
+						and global.OnTheWay[properties.targets[HeldItem].unit_number] -- receptions are being tracked for the entity
+						and global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem]) then -- receptions are being tracked for the entity for the particular item
+							if (properties.targets[HeldItem].type ~= "transport-belt") then
+								if (global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] < 0) then
+									global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] = 0  -- correct any miscalculaltions resulting in negative values
 								end
-					 		else
-					 			catapult.active = false
-								if (global.HoverGFX[catapult.unit_number] == nil) then
-									global.HoverGFX[catapult.unit_number] = {}
+								local total = global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] + catapult.held_stack.count
+								local inserted = properties.targets[HeldItem].insert({name=HeldItem, count=total})
+								if (inserted < total) then
+									catapult.active = false
+								else
+									catapult.active = true
 								end
-								for ID, player in pairs(game.players) do
-									if (global.HoverGFX[catapult.unit_number][ID] == nil) then
-										local hovering = false
-										if (player.selected and player.selected.unit_number == catapult.unit_number) then
-											hovering = true
+								if (inserted > 0) then -- when the destination is full. Have to check otherwise there's an error
+									properties.targets[HeldItem].remove_item({name=HeldItem, count=inserted})
+								end
+							elseif (properties.targets[HeldItem].type == "transport-belt") then
+								local incomming = 0
+								for name, count in pairs(global.OnTheWay[properties.targets[HeldItem].unit_number]) do
+									incomming = incomming + count
+								end
+								local total = incomming + properties.targets[HeldItem].get_transport_line(1).get_item_count() + properties.targets[HeldItem].get_transport_line(2).get_item_count() + catapult.held_stack.count
+								if (total <= 8) then
+									catapult.active = true
+									if (global.HoverGFX[catapult.unit_number]) then
+										for playerID, graphic in pairs(global.HoverGFX[catapult.unit_number]) do
+											rendering.destroy(graphic)
 										end
-										global.HoverGFX[catapult.unit_number][ID] = rendering.draw_text
-										{
-											text = {"RTmisc.EightMax"},
-											surface = catapult.surface,
-											target = catapult,
-											alignment = "center",
-											scale = 0.5,
-											color = {1,1,1},
-											players = {player},
-											visible = hovering
-										}
+										global.HoverGFX[catapult.unit_number] = {}
+									end
+								else
+									catapult.active = false
+									if (global.HoverGFX[catapult.unit_number] == nil) then
+										global.HoverGFX[catapult.unit_number] = {}
+									end
+									for ID, player in pairs(game.players) do
+										if (global.HoverGFX[catapult.unit_number][ID] == nil) then
+											local hovering = false
+											if (player.selected and player.selected.unit_number == catapult.unit_number) then
+												hovering = true
+											end
+											global.HoverGFX[catapult.unit_number][ID] = rendering.draw_text
+											{
+												text = {"RTmisc.EightMax"},
+												surface = catapult.surface,
+												target = catapult,
+												alignment = "center",
+												scale = 0.5,
+												color = {1,1,1},
+												players = {player},
+												visible = hovering
+											}
+										end
 									end
 								end
-					 		end
-					 	end
+							end
 
-					-- pointing at nothing/the ground
-					elseif (properties.targets[catapult.held_stack.name] == "nothing") then
-					 	catapult.active = true
+						-- pointing at nothing/the ground
+						elseif (properties.targets[HeldItem] == "nothing") then
+							catapult.active = true
 
-					-- item needs path validation/is currently tracking path
-					elseif (properties.targets[catapult.held_stack.name] == nil) then
-						-- start path tracking
-						if (properties.ImAlreadyTracer == nil or properties.ImAlreadyTracer == "traced") then
-							properties.ImAlreadyTracer = "tracing"
-							local sprite = rendering.draw_sprite
-								{
-									sprite = "RTBlank",
-									target = properties.entity.position,
-									surface = properties.entity.surface
-								}
-							local shadow = rendering.draw_sprite
-								{
-									sprite = "RTBlank",
-									target = properties.entity.position,
-									surface = properties.entity.surface
-								}
-							local	x = properties.entity.drop_position.x
-							local y = properties.entity.drop_position.y
-							local speed = 999
-							local arc = -5 -- lower number is higher arc
-							local AirTime = 1
-							local vector = {x=x-properties.entity.position.x, y=y-properties.entity.position.y}
-							local spin = 0
-							global.FlyingItems[global.FlightNumber] =
-								{sprite=sprite,
-								shadow=shadow,
-								speed=speed,
-								arc=arc,
-								spin=spin,
-								item=catapult.held_stack.name,
-								amount=0,
-								target={x=x, y=y},
-								start=properties.entity.position,
-								AirTime=AirTime,
-								StartTick=game.tick,
-								LandTick=game.tick+AirTime,
-								vector=vector,
-								tracing = properties.entity.unit_number}
-							global.FlightNumber = global.FlightNumber + 1
+						-- item needs path validation/is currently tracking path
+						elseif (properties.targets[HeldItem] == nil) then
+							-- start path tracking, repeatedly stops here until trace ends, setting the target in properties
+							if (properties.ImAlreadyTracer == nil or properties.ImAlreadyTracer == "traced") then
+								properties.ImAlreadyTracer = "tracing"
+								-- set tracer "projectile"
+								local AirTime = 1
+								global.FlyingItems[global.FlightNumber] =
+									{
+									item=HeldItem, --not like it matters
+									amount=0, --not like it matters
+									target=
+									{
+										x=properties.entity.drop_position.x, 
+										y=properties.entity.drop_position.y
+									},
+									start=properties.entity.position,
+									AirTime=AirTime,
+									StartTick=event.tick,
+									LandTick=event.tick+AirTime,
+									tracing = properties.entity.unit_number,
+									surface = catapult.surface,
+									space = false --necessary
+									}
+								global.FlightNumber = global.FlightNumber + 1
+							end
+							catapult.active = false
+						-- first time throws for items to this target
+						elseif (properties.targets[HeldItem]
+						and properties.targets[HeldItem].valid
+						and global.OnTheWay[properties.targets[HeldItem].unit_number] == nil) then
+							global.OnTheWay[properties.targets[HeldItem].unit_number] = {}
+							global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] = 0
+						-- first time throws for this particular item to this target
+						elseif (properties.targets[HeldItem]
+						and properties.targets[HeldItem].valid
+						and global.OnTheWay[properties.targets[HeldItem].unit_number]
+						and global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] == nil) then
+							global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] = 0
 						end
-						catapult.active = false
-					-- first time throws for an item
-					elseif (properties.targets[catapult.held_stack.name]
-					and properties.targets[catapult.held_stack.name].valid
-					and global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number] == nil) then
-						global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number] = {}
-						global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] = 0
-					elseif (properties.targets[catapult.held_stack.name]
-					and properties.targets[catapult.held_stack.name].valid
-					and global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number]
-					and global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] == nil) then
-						global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] = 0
+					-- overflow prevention is set to off
+					else
+						catapult.active = true
 					end
-				-- overflow prevention off
-				else
-					catapult.active = true
-				end
-				-- if the thrower is still active after the checks then:
-				if (catapult.active == true) then
-					if (catapult.orientation == 0    and catapult.held_stack_position.y >= catapult.position.y+BurnerSelfRefuelCompensation)
-					or (catapult.orientation == 0.25 and catapult.held_stack_position.x <= catapult.position.x-BurnerSelfRefuelCompensation)
-					or (catapult.orientation == 0.50 and catapult.held_stack_position.y <= catapult.position.y-BurnerSelfRefuelCompensation)
-					or (catapult.orientation == 0.75 and catapult.held_stack_position.x >= catapult.position.x+BurnerSelfRefuelCompensation)
-					then
-						if (catapult.name == "RTThrower-PrimerThrower" and game.entity_prototypes["RTPrimerThrowerShooter-"..catapult.held_stack.name]) then
+
+					-- if the thrower is still active after the checks then:
+					if (catapult.active == true) then
+						if (catapult.name == "RTThrower-PrimerThrower" and game.entity_prototypes["RTPrimerThrowerShooter-"..HeldItem]) then
 							catapult.inserter_stack_size_override = 1
 							catapult.active = false
 							global.PrimerThrowerLinks[properties.entangled.detector.unit_number].ready = true
 						else
-							local sprite = rendering.draw_sprite
-								{
-									sprite = "item/"..catapult.held_stack.name,
-									x_scale = 0.5,
-									y_scale = 0.5,
-									target = catapult.held_stack_position,
-									surface = catapult.surface
-								}
-							local shadow = rendering.draw_sprite
-								{
-									sprite = "item/"..catapult.held_stack.name,
-									tint = {0,0,0,0.5},
-									x_scale = 0.5,
-									y_scale = 0.5,
-									target = catapult.held_stack_position,
-									surface = catapult.surface
-								}
-							local	x = catapult.drop_position.x
+							-- starting parameters
+							local x = catapult.drop_position.x
 							local y = catapult.drop_position.y
 							local distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
-							local arc = -(0.3236*distance^-0.404)-- closer to 0 = higher arc
-							local space = nil
-							if (string.find(catapult.surface.name, " Orbit") or string.find(catapult.surface.name, " Field") or string.find(catapult.surface.name, " Belt")) then
+							--local arc = -(0.3236*distance^-0.404)-- closer to 0 = higher arc
+							if (properties.InSpace == true) then
 								arc = -99999999999999
 								x = x + (-global.OrientationUnitComponents[catapult.orientation].x * 1000)
 								y = y + (-global.OrientationUnitComponents[catapult.orientation].y * 1000)
 								distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
-								space = true
 							end
+							-- calcaulte projectile parameters
 							local start=catapult.held_stack_position
-							local vector = {x=x-catapult.held_stack_position.x, y=y-catapult.held_stack_position.y}
 							local speed = 0.18
 							if (catapult.name == "RTThrower-EjectorHatchRT") then
 								distance = math.sqrt((x-catapult.position.x)^2 + (y-catapult.position.y)^2)
-								vector = {x=x-catapult.position.x, y=y-catapult.position.y}
 								start=catapult.position
 								speed = 0.25
-								rendering.set_target(sprite, catapult.position)
-								rendering.set_target(shadow, catapult.position)
 								-- catapult.surface.play_sound
 								-- 	{
 								-- 		path = "RTEjector",
@@ -284,43 +249,45 @@ function(event)
 								-- 		position = catapult.position
 								-- 	}
 							end
-							local AirTime = math.floor(distance/speed)
-							if (AirTime == 0) then -- for super fast throwers that move right on top of their target
-								AirTime = 1
-							end
-							local spin = math.random(-10,10)*0.01
+							local AirTime = math.max(1, math.floor(distance/speed)) -- for super fast throwers that move right on top of their target
 							local destination = nil
 							if (settings.global["RTOverflowComp"].value == true) then
-								if (properties.targets[catapult.held_stack.name] ~= nil and properties.targets[catapult.held_stack.name].valid) then
-									destination = properties.targets[catapult.held_stack.name].unit_number
-									if (global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number] == nil) then
-										global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number] = {}
-										global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] = catapult.held_stack.count
-									elseif (global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] == nil) then
-										global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] = catapult.held_stack.count
+								if (properties.targets[HeldItem] ~= nil and properties.targets[HeldItem].valid) then
+									destination = properties.targets[HeldItem].unit_number
+									if (global.OnTheWay[properties.targets[HeldItem].unit_number] == nil) then
+										global.OnTheWay[properties.targets[HeldItem].unit_number] = {}
+										global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] = catapult.held_stack.count
+									elseif (global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] == nil) then
+										global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] = catapult.held_stack.count
 									else
-										global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] = global.OnTheWay[properties.targets[catapult.held_stack.name].unit_number][catapult.held_stack.name] + catapult.held_stack.count
+										global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] = global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] + catapult.held_stack.count
 									end
-								elseif (properties.targets[catapult.held_stack.name] == "nothing") then -- recheck pointing at nothing/things without unit_numbers
-									properties.targets[catapult.held_stack.name] = nil
+								elseif (properties.targets[HeldItem] == "nothing") then -- recheck pointing at nothing/things without unit_numbers
+									properties.targets[HeldItem] = nil
 								end
 							end
 							global.FlyingItems[global.FlightNumber] =
-								{sprite=sprite,
-								shadow=shadow,
-								speed=speed,
-								arc=arc,
-								spin=spin,
-								item=catapult.held_stack.name,
+								{
+								item=HeldItem,
 								amount=catapult.held_stack.count,
 								target={x=x, y=y},
 								start=start,
 								AirTime=AirTime,
 								StartTick=game.tick,
 								LandTick=game.tick+AirTime,
-								vector=vector,
 								destination=destination,
-								space=space}
+								space=properties.InSpace,
+								surface=catapult.surface,
+								}
+							if (properties.InSpace == false) then
+								catapult.surface.create_entity
+								{
+									name="RTItemProjectile-"..HeldItem..speed*100,
+									position=catapult.held_stack_position,
+									source_position=start,
+									target_position=catapult.drop_position
+								}
+							end
 							if (catapult.held_stack.item_number ~= nil) then
 								local CloudStorage = game.create_inventory(1)
 								CloudStorage.insert(catapult.held_stack)
@@ -332,13 +299,37 @@ function(event)
 					end
 				end
 
-			elseif (catapult.valid and catapult.held_stack.valid_for_read == false) then
+			elseif (catapult.active == false and catapult.held_stack.valid_for_read == false) then
 				catapult.active = true
-
-			elseif (catapult.valid == false) then
-				global.CatapultList[catapultID] = nil
-
 			end
+
+			if (properties.RangeAdjustable == true) then
+				local range = catapult.get_merged_signal({type="virtual", name="ThrowerRangeSignal"})
+				if (properties.range==nil or properties.range~=range) then
+					if (catapult.name == "RTThrower-long-handed-inserter" and range > 0 and range <= 25)
+					or (catapult.name ~= "RTThrower-long-handed-inserter" and range > 0 and range <= 15) then
+						catapult.drop_position =
+							{
+								catapult.position.x + -range*global.OrientationUnitComponents[catapult.orientation].x,
+								catapult.position.y + -range*global.OrientationUnitComponents[catapult.orientation].y
+							}
+						properties.range = range
+						if (global.CatapultList[catapult.unit_number]) then
+							global.CatapultList[catapult.unit_number].targets = {}
+							for componentUN, PathsItsPartOf in pairs(global.ThrowerPaths) do
+								for ThrowerUN, TrackedItems in pairs(PathsItsPartOf) do
+									if (ThrowerUN == catapult.unit_number) then
+										global.ThrowerPaths[componentUN][ThrowerUN] = {}
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+
+		elseif (catapult.valid == false) then
+			global.CatapultList[catapultID] = nil
 		end
 	end
 end)
@@ -470,6 +461,37 @@ function(event)
 				SwapBackFromGhost(FlyingItem.player, FlyingItem)
 			end
 			global.FlyingItems[each] = nil
+		end
+	end
+end)
+
+script.on_event(
+"DebugAdvanceActionProcess",
+function(event)
+	local player = game.players[event.player_index]
+	if (player.cursor_stack.valid_for_read == true) then
+		local item = player.cursor_stack.name
+		player.surface.create_entity
+		{
+			name="RTItemProjectile-"..item..25,
+			position=player.position,
+			source_position=player.position,
+			target_position=event.cursor_position
+		}
+	end
+end)
+
+script.on_event(defines.events.on_research_finished,
+--research	:: LuaTechnology		The researched technology
+--by_script	:: boolean				If the technology was researched by script.
+--name		:: defines.events		Identifier of the event
+--tick		:: uint					Tick the event was generated.
+function(event)
+	if (event.research.name == "RTFocusedFlinging") then
+		for each, properties in pairs(global.CatapultList) do
+			if (string.find(properties.entity.name, "RTThrower-") and properties.entity.name ~= "RTThrower-PrimerThrower") then
+				properties.RangeAdjustable = true
+			end
 		end
 	end
 end)

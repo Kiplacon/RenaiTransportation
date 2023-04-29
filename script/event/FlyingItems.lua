@@ -1,27 +1,27 @@
-
 local function on_tick(event)
 
    for each, FlyingItem in pairs(global.FlyingItems) do
       local clear = true
-      if (event.tick < FlyingItem.LandTick and FlyingItem.player == nil) then
+
+      if (FlyingItem.sprite and event.tick < FlyingItem.LandTick) then -- for now only impact unloader items have sprites and need animating like this
          local duration = event.tick-FlyingItem.StartTick
-         local progress = duration/FlyingItem.AirTime
-         local height = progress * (1-progress) / FlyingItem.arc
-         local x_coord = FlyingItem.start.x+(progress*FlyingItem.vector.x)
-         local y_coord = FlyingItem.start.y+(progress*FlyingItem.vector.y)
-         local orientation = rendering.get_orientation(FlyingItem.sprite)+FlyingItem.spin
+         local x_coord = FlyingItem.path[duration].x
+         local y_coord = FlyingItem.path[duration].y
+         local height = FlyingItem.path[duration].height
+         local orientation = FlyingItem.spin*duration
          rendering.set_target(FlyingItem.sprite, {x_coord, y_coord + height})
          rendering.set_target(FlyingItem.shadow, {x_coord - height, y_coord})
          rendering.set_orientation(FlyingItem.sprite, orientation)
          rendering.set_orientation(FlyingItem.shadow, orientation)
 
-      elseif (event.tick == FlyingItem.LandTick and FlyingItem.space == nil) then
-         local ThingLandedOn = rendering.get_surface(FlyingItem.sprite).find_entities_filtered
+      elseif (event.tick == FlyingItem.LandTick and FlyingItem.space == false) then
+         --game.print(each)
+         local ThingLandedOn = FlyingItem.surface.find_entities_filtered
             {
                position = {math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5},
                collision_mask = "object-layer"
             }[1]
-         local LandedOnCargoWagon = rendering.get_surface(FlyingItem.sprite).find_entities_filtered
+         local LandedOnCargoWagon = FlyingItem.surface.find_entities_filtered
                {
                   area = {{FlyingItem.target.x-0.5, FlyingItem.target.y-0.5}, {FlyingItem.target.x+0.5, FlyingItem.target.y+0.5}},
                   type = "cargo-wagon"
@@ -29,6 +29,14 @@ local function on_tick(event)
          -- landed on something
          if (ThingLandedOn) then
             if (string.find(ThingLandedOn.name, "BouncePlate")) then -- if that thing was a bounce plate
+               if (FlyingItem.sprite) then -- from impact unloader
+                  rendering.destroy(FlyingItem.sprite)
+                  FlyingItem.sprite = nil
+               end
+               if (FlyingItem.shadow) then -- from impact unloader
+                  rendering.destroy(FlyingItem.shadow)
+                  FlyingItem.shadow = nil
+               end
                clear = false
                local unitx = 1
                local unity = 1
@@ -132,7 +140,7 @@ local function on_tick(event)
                   effect = "SignalBouncePlateParticle"
                end
 
-               if (not FlyingItem.tracing) then
+               if (not FlyingItem.tracing) then --if its an item and not a tracer
                   ---- Creating the bounced thing ----
                   if (primable == "Primed") then
                      for kidamogus = 1, FlyingItem.amount do
@@ -151,29 +159,32 @@ local function on_tick(event)
                            })
                      end
                   else
-                     local	x = ThingLandedOn.position.x  +unitx*(range+RangeBonus)  +unity*(SidewaysShift)
-                     local y = ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)
-                     local distance = math.sqrt((x-ThingLandedOn.position.x)^2 + (y-ThingLandedOn.position.y)^2)
+                     local	TargetX = ThingLandedOn.position.x  +unitx*(range+RangeBonus)  +unity*(SidewaysShift)
+                     local TargetY = ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)
+                     local distance = math.sqrt((TargetX-ThingLandedOn.position.x)^2 + (TargetY-ThingLandedOn.position.y)^2)
                      if (string.find(ThingLandedOn.name, "Train")) then
                         FlyingItem.speed = 0.6
                      else
                         FlyingItem.speed = 0.18
                      end
-                     local speed = FlyingItem.speed
-                     local AirTime = math.floor(distance/speed)
-                     local vector = {x=x-ThingLandedOn.position.x, y=y-ThingLandedOn.position.y}
-                     FlyingItem.target={x=x, y=y}
+                     local AirTime = math.floor(distance/FlyingItem.speed)
+                     FlyingItem.target={x=TargetX, y=TargetY}
                      FlyingItem.start=ThingLandedOn.position
                      FlyingItem.StartTick=game.tick
-                     if (FlyingItem.tracing == nil) then
-                        FlyingItem.AirTime=AirTime
-                        FlyingItem.arc = -0.1
-                        FlyingItem.LandTick=game.tick+AirTime
-                     else
-                        FlyingItem.AirTime=1
-                        FlyingItem.LandTick=game.tick+1
+                     FlyingItem.AirTime=AirTime
+                     FlyingItem.LandTick=game.tick+AirTime
+                     if (FlyingItem.player == nil) then -- the player doesnt have a projectile sprite
+                        FlyingItem.surface.create_entity
+                        {
+                           name="RTItemProjectile-"..FlyingItem.item..FlyingItem.speed*100,
+                           position=ThingLandedOn.position,
+                           source_position=ThingLandedOn.position,
+                           target_position={TargetX, TargetY}
+                        }
+                     else -- the player does have a vector
+                        FlyingItem.vector = {x=TargetX-ThingLandedOn.position.x, y=TargetY-ThingLandedOn.position.y}
                      end
-                     FlyingItem.vector=vector
+
                   end
                   ThingLandedOn.surface.create_particle
                      ({
@@ -206,22 +217,11 @@ local function on_tick(event)
                      script.register_on_entity_destroyed(ThingLandedOn)
                      local	x = ThingLandedOn.position.x  +unitx*(range+RangeBonus)  +unity*(SidewaysShift)
                      local y = ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)
-                     local distance = math.sqrt((x-ThingLandedOn.position.x)^2 + (y-ThingLandedOn.position.y)^2)
-                     local speed = FlyingItem.speed
-                     local AirTime = math.floor(distance/speed)
-                     local vector = {x=x-ThingLandedOn.position.x, y=y-ThingLandedOn.position.y}
                      FlyingItem.target={x=x, y=y}
                      FlyingItem.start=ThingLandedOn.position
                      FlyingItem.StartTick=game.tick
-                     if (FlyingItem.tracing == nil) then
-                        FlyingItem.AirTime=AirTime
-                        FlyingItem.arc = -0.1
-                        FlyingItem.LandTick=game.tick+AirTime
-                     else
-                        FlyingItem.AirTime=1
-                        FlyingItem.LandTick=game.tick+1
-                     end
-                     FlyingItem.vector=vector
+                     FlyingItem.AirTime=1
+                     FlyingItem.LandTick=game.tick+1
                   else
                      global.CatapultList[FlyingItem.tracing].ImAlreadyTracer = "traced"
                      global.CatapultList[FlyingItem.tracing].targets[FlyingItem.item] = "nothing"
@@ -308,9 +308,9 @@ local function on_tick(event)
                            end
                         end
                         if (total > 0) then
-                        rendering.get_surface(FlyingItem.sprite).spill_item_stack
+                           FlyingItem.surface.spill_item_stack
                            (
-                              rendering.get_surface(FlyingItem.sprite).find_non_colliding_position("item-on-ground",FlyingItem.target, 0, 0.1),
+                              FlyingItem.surface.find_non_colliding_position("item-on-ground",FlyingItem.target, 0, 0.1),
                               {name=FlyingItem.item, count=total}
                            )
                         end
@@ -354,10 +354,10 @@ local function on_tick(event)
                   global.CatapultList[FlyingItem.tracing].ImAlreadyTracer = "traced"
                end
             end
+
          -- didn't land on anything
-         -- non-tracers
-         elseif (FlyingItem.tracing == nil) then
-            local ProjectileSurface = rendering.get_surface(FlyingItem.sprite)
+         elseif (FlyingItem.tracing == nil) then -- thrown items
+            local ProjectileSurface = FlyingItem.surface
             if (ProjectileSurface.find_tiles_filtered{position = FlyingItem.target, radius = 1, limit = 1, collision_mask = "player-layer"}[1] ~= nil) then -- in theory, tiles the player cant walk on are some sort of fluid or other non-survivable ground
                ProjectileSurface.create_entity
                   ({
@@ -409,28 +409,36 @@ local function on_tick(event)
                   end
                end
             end
+
          -- tracer
          elseif (FlyingItem.tracing ~= nil and global.CatapultList[FlyingItem.tracing]) then
             --game.print(FlyingItem.tracing)
             global.CatapultList[FlyingItem.tracing].ImAlreadyTracer = "traced"
             global.CatapultList[FlyingItem.tracing].targets[FlyingItem.item] = "nothing"
+
          end
+
+
          if (clear == true) then
-            rendering.destroy(FlyingItem.sprite)
-            rendering.destroy(FlyingItem.shadow)
-            if (FlyingItem.destination ~= nil and global.OnTheWay[FlyingItem.destination]) then
+            if (FlyingItem.tracing == nil and FlyingItem.destination ~= nil and global.OnTheWay[FlyingItem.destination]) then
                global.OnTheWay[FlyingItem.destination][FlyingItem.item] = global.OnTheWay[FlyingItem.destination][FlyingItem.item] - FlyingItem.amount
             end
             if (FlyingItem.player) then
                SwapBackFromGhost(FlyingItem.player, FlyingItem)
             end
+            if (FlyingItem.sprite) then -- from impact unloader
+               rendering.destroy(FlyingItem.sprite)
+            end
+            if (FlyingItem.shadow) then -- from impact unloader
+               rendering.destroy(FlyingItem.shadow)
+            end
             global.FlyingItems[each] = nil
          end
 
-      elseif (game.tick > FlyingItem.LandTick) then
+--[[       elseif (game.tick > FlyingItem.LandTick) then
          if (FlyingItem.sprite) then
-            rendering.destroy(FlyingItem.sprite)
-            rendering.destroy(FlyingItem.shadow)
+            --rendering.destroy(FlyingItem.sprite)
+            --rendering.destroy(FlyingItem.shadow)
          end
          if (FlyingItem.destination ~= nil and global.OnTheWay[FlyingItem.destination]) then
             global.OnTheWay[FlyingItem.destination][FlyingItem.item] = global.OnTheWay[FlyingItem.destination][FlyingItem.item] - FlyingItem.amount
@@ -438,7 +446,7 @@ local function on_tick(event)
          if (FlyingItem.player) then
             SwapBackFromGhost(FlyingItem.player, FlyingItem)
          end
-         global.FlyingItems[each] = nil
+         global.FlyingItems[each] = nil ]]
       end
 
    end

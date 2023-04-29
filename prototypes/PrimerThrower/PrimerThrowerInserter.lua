@@ -38,7 +38,7 @@ TheThrower = table.deepcopy(data.raw.inserter.inserter)
             },
          draw_on_selection = true,
          draw_in_cursor = true,
-         distance = 45
+         distance = 50
       }
 
 	if (TheThrower.energy_per_rotation) then

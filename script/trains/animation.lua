@@ -68,6 +68,11 @@ function Animation.updateScale(properties, height)
 		rendering.set_y_scale(properties.TrainImageID, scale)
 		rendering.set_x_scale(properties.MaskID, scale)
 		rendering.set_y_scale(properties.MaskID, scale)
+	else
+		rendering.set_x_scale(properties.TrainImageID, 1)
+		rendering.set_y_scale(properties.TrainImageID, 1)
+		rendering.set_x_scale(properties.MaskID, 1)
+		rendering.set_y_scale(properties.MaskID, 1)
 	end
 
 	-- Scale shadow height differently to maintain perspective
