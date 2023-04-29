@@ -113,16 +113,16 @@ local function on_tick(event)
                ---- Bounce modifiers ----
                -- Defaults --
                local primable = ""
-               local range = 10
+               local range = 9.9
                local RangeBonus = 0
                local SidewaysShift = 0
                local tunez = "bounce"
                if (string.find(ThingLandedOn.name, "Train")) then
-                  range = 40
+                  range = 39.9
                elseif (ThingLandedOn.name == "BouncePlate5" or ThingLandedOn.name == "DirectedBouncePlate5") then
-                  range = 5
+                  range = 4.9
                elseif (ThingLandedOn.name == "BouncePlate15" or ThingLandedOn.name == "DirectedBouncePlate15") then
-                  range = 15
+                  range = 14.9
                end
 
                -- Modifiers --
