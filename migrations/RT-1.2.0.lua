@@ -5,6 +5,9 @@ for each, FlyingItem in pairs(global.FlyingItems) do
     if (FlyingItem.shadow) then -- from impact unloader
         rendering.destroy(FlyingItem.shadow)
     end
+    if (FlyingItem.player) then
+        SwapBackFromGhost(FlyingItem.player, FlyingItem)
+    end
     if (FlyingItem.tracing == nil and FlyingItem.destination ~= nil and global.OnTheWay[FlyingItem.destination]) then
         global.OnTheWay[FlyingItem.destination][FlyingItem.item] = global.OnTheWay[FlyingItem.destination][FlyingItem.item] - FlyingItem.amount
     end
