@@ -100,7 +100,7 @@ local function on_tick(event)
 				{
 					name = {"RTTrainBouncePlate", "RTTrainDirectedBouncePlate"},
 					position = properties.GuideCar.position,
-					radius = 1.5,
+					radius = 2.5,
 					collision_mask = "object-layer"
 				}[1] -- in theory only one thing should be detected in the object layer this way
 			if (TrainLandedOn ~= nil and TrainLandedOn.name == "RTTrainBouncePlate") then

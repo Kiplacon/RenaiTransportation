@@ -76,6 +76,7 @@ function(event)
 	for catapultID, properties in pairs(global.CatapultList) do
 		local catapult = properties.entity
 		if (catapult.valid) then
+
 			-- power check. low power makes inserter arms stretch
 			if (properties.IsElectric == true and catapult.energy/catapult.electric_buffer_size >= 0.9) then
 				catapult.active = true
@@ -92,7 +93,7 @@ function(event)
 					}
 			end
 
-			if (catapult.active == true and catapult.held_stack.valid_for_read) then -- if it has power
+			if (catapult.held_stack.valid_for_read) then -- if it has power
 				local HeldItem = catapult.held_stack.name
 				-- if it's passed the "half swing" point
 				if (catapult.orientation == 0    and catapult.held_stack_position.y >= catapult.position.y+properties.BurnerSelfRefuelCompensation)
@@ -187,7 +188,9 @@ function(event)
 									StartTick=event.tick,
 									LandTick=event.tick+AirTime,
 									tracing = properties.entity.unit_number,
-									surface = catapult.surface}
+									surface = catapult.surface,
+									space = false --necessary
+									}
 								global.FlightNumber = global.FlightNumber + 1
 							end
 							catapult.active = false
@@ -221,13 +224,11 @@ function(event)
 							local y = catapult.drop_position.y
 							local distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
 							--local arc = -(0.3236*distance^-0.404)-- closer to 0 = higher arc
-							local space = nil
 							if (properties.InSpace == true) then
 								arc = -99999999999999
 								x = x + (-global.OrientationUnitComponents[catapult.orientation].x * 1000)
 								y = y + (-global.OrientationUnitComponents[catapult.orientation].y * 1000)
 								distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
-								space = true
 							end
 							-- calcaulte projectile parameters
 							local start=catapult.held_stack_position
@@ -276,16 +277,18 @@ function(event)
 								StartTick=game.tick,
 								LandTick=game.tick+AirTime,
 								destination=destination,
-								space=space,
+								space=properties.InSpace,
 								surface=catapult.surface,
 								}
-							catapult.surface.create_entity
-							{
-								name="RTItemProjectile-"..HeldItem,
-								position=catapult.held_stack_position,
-								source_position=catapult.held_stack_position,
-								target_position=catapult.drop_position
-							}
+							if (properties.InSpace == false) then
+								catapult.surface.create_entity
+								{
+									name="RTItemProjectile-"..HeldItem..speed*100,
+									position=catapult.held_stack_position,
+									source_position=start,
+									target_position=catapult.drop_position
+								}
+							end
 							if (catapult.held_stack.item_number ~= nil) then
 								local CloudStorage = game.create_inventory(1)
 								CloudStorage.insert(catapult.held_stack)

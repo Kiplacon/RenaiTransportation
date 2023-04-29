@@ -1,13 +1,13 @@
-function MakeProjectile(ThingData)
+function MakeProjectile(ThingData, speed)
 	local TheProjectile =
 		{
 			type = "stream",
-			name = "RTItemProjectile-"..ThingData.name,
-
+			name = "RTItemProjectile-"..ThingData.name..(speed*100 or 18),
+			flags = {"not-on-map"},
 			particle_spawn_interval = 0,
 			particle_spawn_timeout = 0,
 			particle_vertical_acceleration = 0.0035,
-			particle_horizontal_speed = 0.18,
+			particle_horizontal_speed = speed or 0.18,
 			particle_horizontal_speed_deviation = 0,
 			particle =
 				{
@@ -287,7 +287,7 @@ end
 		    type = "stream",
 		    --damage_modifier = damage_modifier_worm_big,--defined in spitter-projectiles.lua
 		    cooldown = 4,
-		    range = 46,--defined in spitter-projectiles.lua
+		    range = 51,--defined in spitter-projectiles.lua
 		    min_range = 4,
 		    turn_range = 0.155,
 		    --projectile_creation_parameters = worm_shoot_shiftings(scale_worm_big, scale_worm_big * scale_worm_stream),
@@ -763,8 +763,9 @@ for Category, ThingsTable in pairs(data.raw) do
 	for ThingID, ThingData in pairs(ThingsTable) do
 		if (ThingData.stack_size) then
 			log("Creating item projectile for "..ThingData.type..": "..ThingData.name)
-			MakeProjectile(ThingData)
-
+			MakeProjectile(ThingData, 0.18)
+			MakeProjectile(ThingData, 0.25)
+			MakeProjectile(ThingData, 0.6)
 			if (settings.startup["RTBounceSetting"].value == true) then
 				if (ThingData.type == "ammo" -- looking for things like rockets, tank shells, missles, etc
 					and ThingData.ammo_type.action --if this ammo does something

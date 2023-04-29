@@ -1,12 +1,17 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.2.0
-Date: 4/25/2023
+Date: 4/28/2023
   Changes:
-    - Reverted the item throwing system back to using reskinned spitter projectiles just for the animations. RIP random tumbling but this is less laggy now that I figured out how to "pack" multiple items into one spitter projectile. Thanks to everyone on Reddit who commented on my thread: https://www.reddit.com/r/factorio/comments/12yj35v/codingwise_how_can_i_reduce_lag_from_my_mod/
-    - Throwing an Ironclad ship from the "AAI Vehicles: Ironclad" mod into the water now builds one on landing. Maybe one day I can generalize this to work for all vehicles. Specifically requested by toran.mallow
+    - Huge performance improvement when using tons (like thousands) of throwers at a time. My test map with 2000 throwers improved from 27 to 56 fps. Thanks to everyone on Reddit who commented on my thread: https://www.reddit.com/r/factorio/comments/12yj35v/codingwise_how_can_i_reduce_lag_from_my_mod/
+    - Though this also means thrown items don't randomly tumble anymore :(
+    - Changed the Primer Thrower Inserter's minimum range from 5 to 20 to help prevent friendly fire. It can still lead its shots behind its targeting range though, that's just how turrets are coded to work in Factorio. Requested by DoshDoshington
+    - Made the Train Bounce Pad detection radius a bit more generous.
+    - Throwing an Ironclad ship from the "AAI Vehicles: Ironclad" mod into the water now builds one on landing. Maybe one day I can generalize this to work for all vehicles. Oddly specific request by toran.mallow
   Bugfixes:
     - Fixed that Ejector Hatches couldn't be connected to circuit wire. Apparently I just missed adding that part in lol. Reported by ShatteredShadow.
     - Fixed that the Player Launcher had the wrong sprite in standard graphics mode. Reported by GNeutrality
+    - Fixed that locomotive color wasn't carried over to the jumping train sprite
+    - Fixed that jumping train sprites would shrink in scale when bounced left or right
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.11
 Date: 3/7/2023
