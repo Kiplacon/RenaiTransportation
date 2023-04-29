@@ -145,14 +145,10 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
     TheProjectile.particle_horizontal_speed = 0.3 -- speed, default 0.3375
     TheProjectile.particle_horizontal_speed_deviation = 0
 	TheProjectile.working_sound = nil
-
-
 	TheProjectile.lead_target_for_projectile_speed = 0.2* 0.75 * 1.5 *1.5
-
-
+	-- convert respective action to the primed projectile
 	if (ThingData.ammo_type and ThingData.ammo_type.category == "cannon-shell") then -- tank shells
-		TheProjectile.initial_action = data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].final_action
-
+		TheProjectile.initial_action = {data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].action, data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].final_action}
 	elseif (ThingData.capsule_action) then --capsules with thrown actions: grenades, combat robots, poison, slowdown
 		if (ThingData.capsule_action.attack_parameters.ammo_type.action[1]) then
 			TheProjectile.initial_action = data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile].action
@@ -161,27 +157,33 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 		end
 	elseif (data.raw["land-mine"][ThingData.place_result]) then  --landmines
 		TheProjectile.initial_action =
-		  {
-			type = "direct",
-			action_delivery =
+		{
+		type = "direct",
+		action_delivery =
+		{
+			type = "instant",
+			target_effects =
 			{
-			  type = "instant",
-			  target_effects =
-			  {
-				{
-				  type = "create-entity",
-				  entity_name = ThingData.place_result --ThingData.name
-				}
-			  }
+			{
+				type = "create-entity",
+				entity_name = ThingData.place_result --ThingData.name
 			}
-		  }
-
+			}
+		}
+		}
 	elseif (ThingData.ammo_type.action.action_delivery.type == "artillery") then -- artillery
-		TheProjectile.initial_action = data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].action
-
+		TheProjectile.initial_action = {data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].action, data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].final_action}
 	else -- rockets/atomic bombs/other
-		TheProjectile.initial_action = data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].action
-
+		TheProjectile.initial_action = {data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].action, data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].final_action}
+	end
+	-- specific whitelist of single-target projectiles (base rocket/cannon shell) to AOE
+	if (ThingData.name == "rocket" 
+	or ThingData.name == "cannon-shell" 
+	or ThingData.name == "uranium-cannon-shell") then
+		for sbeve, effect in pairs(TheProjectile.initial_action) do
+			effect.type = "area"
+			effect.radius = 3
+		end
 	end
 
 if (ThingData.icons) then
@@ -211,17 +213,18 @@ if (ThingData.icons) then
 			})
 	end
 else
-	TheProjectile.particle = {
-      filename = ThingData.icon,
-      line_length = 1,
-      width = ThingData.icon_size,
-      height = ThingData.icon_size,
-      frame_count = 1,
-	  tint = {255,70,70},
-      --shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
-      priority = "high",
-      scale = 19.2/ThingData.icon_size --0.3
-      --animation_speed = 1,
+	TheProjectile.particle =
+	{
+		filename = ThingData.icon,
+		line_length = 1,
+		width = ThingData.icon_size,
+		height = ThingData.icon_size,
+		frame_count = 1,
+		tint = {255,70,70},
+		--shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
+		priority = "high",
+		scale = 19.2/ThingData.icon_size --0.3
+		--animation_speed = 1,
     }
 end
 	TheProjectile.spine_animation = nil
@@ -771,7 +774,7 @@ for Category, ThingsTable in pairs(data.raw) do
 					and ThingData.ammo_type.action --if this ammo does something
 					and ThingData.ammo_type.action.action_delivery --in the form of
 					and (ThingData.ammo_type.action.action_delivery.type == "projectile" --a projectile
-						 or ThingData.ammo_type.action.action_delivery.type == "artillery") --artillery gets its own projectile catagory
+						 or ThingData.ammo_type.action.action_delivery.type == "artillery") --artillery has its own projectile catagory
 					) then
 					MakePrimedProjectile(ThingData)
 				elseif

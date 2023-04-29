@@ -4,7 +4,7 @@ Date: 4/28/2023
   Changes:
     - Huge performance improvement when using tons (like thousands) of throwers at a time. My test map with 2000 throwers improved from 27 to 56 fps. Thanks to everyone on Reddit who commented on my thread: https://www.reddit.com/r/factorio/comments/12yj35v/codingwise_how_can_i_reduce_lag_from_my_mod/
     - Though this also means thrown items don't randomly tumble anymore :(
-    - Changed the Primer Thrower Inserter's minimum range from 5 to 20 to help prevent friendly fire. It can still lead its shots behind its targeting range though, that's just how turrets are coded to work in Factorio. Requested by DoshDoshington
+    - Changed the Primer Thrower Inserter's minimum range from 5 to 25 to help prevent friendly fire. It can still lead shots that end up behind its targeting range though, that's just how turrets are coded to work. Requested by DoshDoshington
     - Made the Train Bounce Pad detection radius a bit more generous.
     - Throwing an Ironclad ship from the "AAI Vehicles: Ironclad" mod into the water now builds one on landing. Maybe one day I can generalize this to work for all vehicles. Oddly specific request by toran.mallow
   Bugfixes:

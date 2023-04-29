@@ -33,7 +33,7 @@ data:extend({
     type = "projectile",
     cooldown = 3, --matches the thrower hand position check so they feel the same
     range = 50,
-    min_range = 20,
+    min_range = 25,
     turn_range = 0.15,
     ammo_type =
     {
