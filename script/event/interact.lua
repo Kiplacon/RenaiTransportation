@@ -3,7 +3,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	local player = game.get_player(event1.player_index)
 	local PlayerProperties = global.AllPlayers[event1.player_index]
 
-	ThingHovering = player.selected
+	local ThingHovering = player.selected
 
 	--| Player Launcher
 	if (settings.startup["RTThrowersSetting"].value == true) then
@@ -19,12 +19,6 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		PlayerProperties.state = "jumping"
 		local OG = SwapToGhost(player)
 		player.teleport(PlayerLauncher.position) -- align player on the launch pad
-		local sprite = rendering.draw_sprite
-			{
-				sprite = "RTBlank",
-				target = player.position,
-				surface = player.surface
-			}
 		local shadow = rendering.draw_circle
 			{
 				color = {0,0,0,0.5},
@@ -33,14 +27,29 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				target = player.position,
 				surface = player.surface
 			}
-		local	x = PlayerLauncher.drop_position.x
+		local x = PlayerLauncher.drop_position.x
 		local y = PlayerLauncher.drop_position.y
 		local distance = 10
 		local speed = 0.2
 		local arc = -0.13 -- closer to 0 is higher arc
 		local AirTime = math.floor(distance/speed)
 		local vector = {x=x-player.position.x, y=y-player.position.y}
-		global.FlyingItems[global.FlightNumber] = {sprite=sprite, shadow=shadow, speed=speed, arc=arc, player=player, SwapBack=OG, target={x=x, y=y}, start=player.position, AirTime=AirTime, StartTick=game.tick, LandTick=game.tick+AirTime, vector=vector}
+		global.FlyingItems[global.FlightNumber] =
+			{
+				shadow=shadow,
+				speed=speed,
+				arc=arc,
+				player=player,
+				SwapBack=OG,
+				target={x=x, y=y},
+				start=player.position,
+				AirTime=AirTime,
+				StartTick=game.tick,
+				LandTick=game.tick+AirTime,
+				vector=vector,
+				space=false,
+				surface=player.surface
+			}
 		PlayerProperties.PlayerLauncher.tracker = global.FlightNumber
 		PlayerProperties.PlayerLauncher.direction = global.OrientationUnitComponents[PlayerLauncher.orientation].name
 		global.FlightNumber = global.FlightNumber + 1
@@ -75,7 +84,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	--| Hovering something
 	if (ThingHovering) then
 		--|| Adjusting Thrower Range
-		if (string.find(ThingHovering.name, "RTThrower-") and ThingHovering.name ~= "RTThrower-PrimerThrower" and player.force.technologies["RTFocusedFlinging"].researched == true) then
+		if (string.find(ThingHovering.name, "RTThrower-") and ThingHovering.name ~= "RTThrower-PrimerThrower" and global.CatapultList[ThingHovering.unit_number].RangeAdjustable == true) then
 			CurrentRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
 			if ((ThingHovering.name ~= "RTThrower-long-handed-inserter" and CurrentRange >= 15) or CurrentRange >= 25) then
 				ThingHovering.drop_position =
@@ -90,18 +99,19 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 						ThingHovering.drop_position.y-global.OrientationUnitComponents[ThingHovering.orientation].y
 					}
 			end
+			local NewRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
 			ThingHovering.surface.create_entity
 				({
 					name = "flying-text",
 					position = ThingHovering.drop_position,
-					text = "Range: "..math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
+					text = "Range: "..NewRange
 				})
 			player.play_sound{
 				path="utility/gui_click",
 				position=player.position,
 				volume_modifier=1
 				}
-
+			global.CatapultList[ThingHovering.unit_number].range = NewRange
 			if (global.CatapultList[ThingHovering.unit_number]) then
 				global.CatapultList[ThingHovering.unit_number].targets = {}
 				for componentUN, PathsItsPartOf in pairs(global.ThrowerPaths) do

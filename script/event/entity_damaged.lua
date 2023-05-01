@@ -45,7 +45,7 @@ local function entity_damaged(event)
 		end
 
 		if (event.cause.type == "locomotive") then
-			maskhue = {r = 234, g = 17, b = 0, a = 100}
+			maskhue = event.cause.color or {r = 234, g = 17, b = 0, a = 100}
 		else
 			maskhue = event.cause.color
 		end
@@ -365,12 +365,12 @@ local function entity_damaged(event)
 								local yUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation)))/(0.5*math.pi)) - 1
 								local ForwardSpread = math.random(100,400)*0.1
 								local HorizontalSpread = math.random(-40,40)*ForwardSpread*0.01
-								local	x = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
+								local x = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
 								local y = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
 								local distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
 								local speed = math.abs(wagon.speed) * (distance/(35*math.abs(wagon.speed))) * math.random(45,100)*0.01
 								local arc = -(0.3236*distance^-0.404) -- lower number is higher arc
-								local space = nil
+								local space = false
 								if (string.find(wagon.surface.name, " Orbit") or string.find(wagon.surface.name, " Field") or string.find(wagon.surface.name, " Belt")) then
 									arc = -99999999999999
 									x = x + (xUnit*wagon.speed * 500)
@@ -381,21 +381,36 @@ local function entity_damaged(event)
 								local AirTime = math.floor(distance/speed)
 								local vector = {x=x-wagon.position.x, y=y-wagon.position.y}
 								local spin = math.random(-10,10)*0.01
+								local path = {}
+								for i = 1, AirTime do
+									local progress = i/AirTime
+									path[i] =
+									{
+										x = wagon.position.x+(progress*vector.x),
+										y = wagon.position.y+(progress*vector.y),
+										height = progress * (1-progress) / arc
+									}
+								end
+								path.duration = AirTime
 								global.FlyingItems[global.FlightNumber] =
-									{sprite=sprite,
-									shadow=shadow,
-									speed=speed,
-									arc=arc,
-									spin=spin,
-									item=ItemName,
-									amount=GroupSize,
-									target={x=x, y=y},
-									start={x=wagon.position.x+(math.random(-10, 10)*0.1), y=wagon.position.y+(math.random(-10, 10)*0.1)},
-									AirTime=AirTime,
-									StartTick=game.tick,
-									LandTick=game.tick+AirTime,
-									vector=vector,
-									space=space}
+									{
+										sprite=sprite,
+										shadow=shadow,
+										speed=speed,
+										arc=arc,
+										spin=spin,
+										item=ItemName,
+										amount=GroupSize,
+										target={x=x, y=y},
+										start={x=wagon.position.x+(math.random(-10, 10)*0.1), y=wagon.position.y+(math.random(-10, 10)*0.1)},
+										AirTime=AirTime,
+										StartTick=game.tick,
+										LandTick=game.tick+AirTime,
+										vector=vector,
+										space=space,
+										surface=wagon.surface,
+										path=path
+									}
 								if (wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack(ItemName).item_number ~= nil) then
 									local CloudStorage = game.create_inventory(1)
 									local item, index = wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack(ItemName)
@@ -432,7 +447,7 @@ local function entity_damaged(event)
 								local distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
 								local speed = math.abs(wagon.speed) * (distance/(35*math.abs(wagon.speed))) * math.random(45,100)*0.01
 								local arc = -(0.3236*distance^-0.404) -- lower number is higher arc
-								local space = nil
+								local space = false
 								if (string.find(wagon.surface.name, " Orbit") or string.find(wagon.surface.name, " Field") or string.find(wagon.surface.name, " Belt")) then
 									arc = -99999999999999
 									x = x + (xUnit*wagon.speed * 500)
@@ -443,21 +458,36 @@ local function entity_damaged(event)
 								local AirTime = math.floor(distance/speed)
 								local vector = {x=x-wagon.position.x, y=y-wagon.position.y}
 								local spin = math.random(-10,10)*0.01
+								local path = {}
+								for i = 1, AirTime do
+									local progress = i/AirTime
+									path[i] =
+									{
+										x = wagon.position.x+(progress*vector.x),
+										y = wagon.position.y+(progress*vector.y),
+										height = progress * (1-progress) / arc
+									}
+								end
+								path.duration = AirTime
 								global.FlyingItems[global.FlightNumber] =
-									{sprite=sprite,
-									shadow=shadow,
-									speed=speed,
-									arc=arc,
-									spin=spin,
-									item=ItemName,
-									amount=LaunchedAmount%GroupSize,
-									target={x=x, y=y},
-									start={x=wagon.position.x+(math.random(-10, 10)*0.1), y=wagon.position.y+(math.random(-10, 10)*0.1)},
-									AirTime=AirTime,
-									StartTick=game.tick,
-									LandTick=game.tick+AirTime,
-									vector=vector,
-									space=space}
+									{
+										sprite=sprite,
+										shadow=shadow,
+										speed=speed,
+										arc=arc,
+										spin=spin,
+										item=ItemName,
+										amount=GroupSize,
+										target={x=x, y=y},
+										start={x=wagon.position.x+(math.random(-10, 10)*0.1), y=wagon.position.y+(math.random(-10, 10)*0.1)},
+										AirTime=AirTime,
+										StartTick=game.tick,
+										LandTick=game.tick+AirTime,
+										vector=vector,
+										space=space,
+										surface=wagon.surface,
+										path=path
+									}
 								if (wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack(ItemName).item_number ~= nil) then
 									local CloudStorage = game.create_inventory(1)
 									local item, index = wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack(ItemName)

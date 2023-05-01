@@ -1,11 +1,22 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.2.0
-Date: 4/25/2023
+Date: 4/28/2023
+  Additions:
+    - When the Focused Flinging tech is researched, thrower inserters can have their range adjusted via circuit signals with the new "Thrower Range" signal.
   Changes:
-    - Throwing an Ironclad ship from the "AAI Vehicles: Ironclad" mod into the water now builds one on landing. Maybe one day I can generalize this to work for all vehicles. Specifically requested by toran.mallow
+    - Performance improvements when using tons (like thousands) of throwers at a time. My test map with 2000 throwers improved from 26 to 55 fps. Thanks to everyone on Reddit who commented on my thread: https://www.reddit.com/r/factorio/comments/12yj35v/codingwise_how_can_i_reduce_lag_from_my_mod/
+    - Unfortunately this new method means thrown items don't randomly tumble anymore :(
+    - Changed the Primer Thrower Inserter's minimum range from 5 -> 25 to help prevent friendly fire. It can still lead shots that end up behind its targeting range though, that's just how turrets are coded to work. Requested by DoshDoshington
+    - Manual adjustments to the base Rocket, Cannon Shell, and Uranium Cannon Shell primed projectile to be AOE on impact so that they can actually do damage. Requested by DoshDoshington
+    - Changed the way primed projectiles are generated so that I hopefully don't miss as many effects, like the Artillery Shell scortch marks.
+    - Made the Train Bounce Pad detection radius a bit more generous.
+    - Turned on the drop position arrow for the Ejector Hatch. I don't remember turning it off in the first place tbh but apparently I did.
+    - Throwing an Ironclad ship from the "AAI Vehicles: Ironclad" mod into the water now builds one on landing. Maybe one day I can generalize this to work for all vehicles. Oddly specific request by toran.mallow
   Bugfixes:
     - Fixed that Ejector Hatches couldn't be connected to circuit wire. Apparently I just missed adding that part in lol. Reported by ShatteredShadow.
     - Fixed that the Player Launcher had the wrong sprite in standard graphics mode. Reported by GNeutrality
+    - Fixed that locomotive color wasn't carried over to the jumping train sprite
+    - Fixed that jumping train sprites would shrink in scale when bounced left or right
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.11
 Date: 3/7/2023
