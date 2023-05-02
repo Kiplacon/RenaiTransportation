@@ -134,7 +134,7 @@ function MakeProjectile(ThingData, speed)
 end
 
 
-function MakePrimedProjectile(ThingData)-------------------------------------------
+function MakePrimedProjectile(ThingData, ProjectileType)-------------------------------------------
 log("Creating primed projectile for "..ThingData.type..": "..ThingData.name)
 TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 	TheProjectile.name = ThingData.name.."-projectileFromRenaiTransportationPrimed"
@@ -147,35 +147,76 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 	TheProjectile.working_sound = nil
 	TheProjectile.lead_target_for_projectile_speed = 0.2* 0.75 * 1.5 *1.5
 	-- convert respective action to the primed projectile
-	if (ThingData.ammo_type and ThingData.ammo_type.category == "cannon-shell") then -- tank shells
-		TheProjectile.initial_action = {data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].action, data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].final_action}
-	elseif (ThingData.capsule_action) then --capsules with thrown actions: grenades, combat robots, poison, slowdown
+	local ProjectileInitialAction
+	local ProjectileFinalAction
+	if (ThingData.capsule_action) then --capsules with thrown actions: grenades, combat robots, poison, slowdown
 		if (ThingData.capsule_action.attack_parameters.ammo_type.action[1]) then
-			TheProjectile.initial_action = data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile].action
+			ProjectileInitialAction = data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile].action
 		elseif (ThingData.capsule_action.attack_parameters.ammo_type.action) then
-			TheProjectile.initial_action = data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile].action
+			ProjectileInitialAction = data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile].action
 		end
-	elseif (data.raw["land-mine"][ThingData.place_result]) then  --landmines
-		TheProjectile.initial_action =
+	elseif (ThingData.place_result and data.raw["land-mine"][ThingData.place_result]) then  --landmines
+		ProjectileInitialAction =
 		{
-		type = "direct",
-		action_delivery =
-		{
-			type = "instant",
-			target_effects =
+			type = "direct",
+			action_delivery =
 			{
-			{
-				type = "create-entity",
-				entity_name = ThingData.place_result --ThingData.name
-			}
+				type = "instant",
+				target_effects =
+				{
+				{
+					type = "create-entity",
+					entity_name = ThingData.place_result --ThingData.name
+				}
+				}
 			}
 		}
-		}
-	elseif (ThingData.ammo_type.action.action_delivery.type == "artillery") then -- artillery
-		TheProjectile.initial_action = {data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].action, data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].final_action}
+	elseif (ProjectileType == "artillery") then -- artillery
+		if (ThingData.ammo_type.action[1]) then
+			for i, action in pairs(ThingData.ammo_type.action) do
+				if (action.action_delivery.projectile) then
+					ProjectileInitialAction = data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].action
+					ProjectileFinalAction = data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].final_action
+				end
+			end
+		elseif (ThingData.ammo_type.action) then
+			ProjectileInitialAction = data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].action
+		end
 	else -- rockets/atomic bombs/other
-		TheProjectile.initial_action = {data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].action, data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].final_action}
+		if (ThingData.ammo_type.action[1]) then
+			for i, action in pairs(ThingData.ammo_type.action) do
+				if (action.action_delivery.projectile) then
+					ProjectileInitialAction = data.raw.projectile[ThingData.ammo_type.action[i].action_delivery.projectile].action
+					ProjectileFinalAction = data.raw.projectile[ThingData.ammo_type.action[i].action_delivery.projectile].final_action
+				end
+			end
+		elseif (ThingData.ammo_type.action) then
+			ProjectileInitialAction = data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].action
+		end
 	end
+
+	-- build the effect stack
+	local combined = {}
+	if (ProjectileInitialAction) then
+		if (ProjectileInitialAction[1]) then -- multiple effects
+			for all, effect in pairs(ProjectileInitialAction) do
+				table.insert(combined, effect)
+			end
+		else --1 effect
+			table.insert(combined, ProjectileInitialAction)
+		end
+	end
+	if (ProjectileFinalAction) then
+		if (ProjectileFinalAction[1]) then -- multiple effects
+			for all, effect in pairs(ProjectileFinalAction) do
+				table.insert(combined, effect)
+			end
+		else --1 effect
+			table.insert(combined, ProjectileFinalAction)
+		end
+	end
+	TheProjectile.initial_action = combined
+
 	-- specific whitelist of single-target projectiles (base rocket/cannon shell) to AOE
 	if (ThingData.name == "rocket" 
 	or ThingData.name == "cannon-shell" 
@@ -291,7 +332,7 @@ end
 		    --damage_modifier = damage_modifier_worm_big,--defined in spitter-projectiles.lua
 		    cooldown = 4,
 		    range = 51,--defined in spitter-projectiles.lua
-		    min_range = 4,
+		    min_range = 25,
 		    turn_range = 0.155,
 		    --projectile_creation_parameters = worm_shoot_shiftings(scale_worm_big, scale_worm_big * scale_worm_stream),
 
@@ -771,12 +812,17 @@ for Category, ThingsTable in pairs(data.raw) do
 			MakeProjectile(ThingData, 0.6)
 			if (settings.startup["RTBounceSetting"].value == true) then
 				if (ThingData.type == "ammo" -- looking for things like rockets, tank shells, missles, etc
-					and ThingData.ammo_type.action --if this ammo does something
-					and ThingData.ammo_type.action.action_delivery --in the form of
-					and (ThingData.ammo_type.action.action_delivery.type == "projectile" --a projectile
-						 or ThingData.ammo_type.action.action_delivery.type == "artillery") --artillery has its own projectile catagory
-					) then
-					MakePrimedProjectile(ThingData)
+				and ThingData.ammo_type.action --if this ammo does something
+				) then
+					if (ThingData.ammo_type.action[1]) then
+						for i, action in pairs(ThingData.ammo_type.action) do
+							if (action.action_delivery.projectile) then
+								MakePrimedProjectile(ThingData, action.action_delivery.type)
+							end
+						end
+					elseif (ThingData.ammo_type.action and ThingData.ammo_type.action.action_delivery and ThingData.ammo_type.action.action_delivery.projectile) then
+						MakePrimedProjectile(ThingData, ThingData.ammo_type.action.action_delivery.type)
+					end
 				elseif
 					(
 						(
@@ -804,7 +850,7 @@ for Category, ThingsTable in pairs(data.raw) do
 						)
 						or data.raw["land-mine"][ThingData.place_result]
 					) then
-					MakePrimedProjectile(ThingData)
+					MakePrimedProjectile(ThingData, "capsule")
 				end
 			end
 		end

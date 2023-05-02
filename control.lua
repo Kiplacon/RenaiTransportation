@@ -451,9 +451,13 @@ script.on_event(defines.events.on_pre_surface_deleted,
 --tick :: uint				Tick the event was generated.
 function(event)
 	for each, FlyingItem in pairs(global.FlyingItems) do
-		if (rendering.get_surface(FlyingItem.sprite).index == event.surface_index) then
-			rendering.destroy(FlyingItem.sprite)
-			rendering.destroy(FlyingItem.shadow)
+		if (FlyingItem.surface.index == event.surface_index) then
+            if (FlyingItem.sprite) then
+				rendering.destroy(FlyingItem.sprite)
+			end
+			if (FlyingItem.shadow) then
+				rendering.destroy(FlyingItem.shadow)
+			end
 			if (FlyingItem.destination ~= nil and global.OnTheWay[FlyingItem.destination]) then
 				global.OnTheWay[FlyingItem.destination][FlyingItem.item] = global.OnTheWay[FlyingItem.destination][FlyingItem.item] - FlyingItem.amount
 			end

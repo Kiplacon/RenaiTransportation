@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.1
+Date: 5/1/2023
+  Bugfixes:
+    - Forgot to apply the minimum range change to the checking part of the Primer Thrower Inserter which still allowed it to throw things at targets behind the targeting range. Should be correct now.
+    - Fixed a crash when deleting surfaces cause I didnt adjust it for the new projectile system. Reported by AmonKurath
+    - Fixed a crash when generating a primed projectile for projectiles with multiple effects. Tested with Light Artillery and Rampant Arsenal. Reported by DaCyclops and HairyDave
+---------------------------------------------------------------------------------------------------
 Version: 1.2.0
 Date: 4/28/2023
   Additions:
