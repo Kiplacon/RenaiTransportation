@@ -375,10 +375,10 @@ local function on_tick(event)
                            position = FlyingItem.target,
                         }
                      end
-                  elseif (FlyingItem.item == "ironclad" and script.active_mods["aai-vehicles-ironclad"] and ProjectileSurface.can_place_entity{name="ironclad", position=FlyingItem.target} == true) then
+                  elseif ((FlyingItem.item == "ironclad" or FlyingItem.item == "ironclad-ironclad-mortar" or FlyingItem.item == "ironclad-ironclad-cannon") and script.active_mods["aai-vehicles-ironclad"] and ProjectileSurface.can_place_entity{name="ironclad", position=FlyingItem.target} == true) then
                      ProjectileSurface.create_entity
                      {
-                        name = "ironclad",
+                        name = FlyingItem.item,
                         position = FlyingItem.target,
                         force = "player",
                         raise_built = true
