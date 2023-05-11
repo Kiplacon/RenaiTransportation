@@ -135,7 +135,7 @@ end
 
 
 function MakePrimedProjectile(ThingData, ProjectileType)-------------------------------------------
-log("Creating primed projectile for "..ThingData.type..": "..ThingData.name)
+log("--------Creating primed projectile for "..ThingData.type..": "..ThingData.name.."-----------")
 TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 	TheProjectile.name = ThingData.name.."-projectileFromRenaiTransportationPrimed"
 	TheProjectile.special_neutral_target_damage = {amount = 0, type = "acid"}
@@ -147,15 +147,18 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 	TheProjectile.working_sound = nil
 	TheProjectile.lead_target_for_projectile_speed = 0.2* 0.75 * 1.5 *1.5
 	-- convert respective action to the primed projectile
-	local ProjectileInitialAction
-	local ProjectileFinalAction
+	local ProjectileInitialAction = nil
+	local ProjectileFinalAction = nil
 	if (ThingData.capsule_action) then --capsules with thrown actions: grenades, combat robots, poison, slowdown
 		if (ThingData.capsule_action.attack_parameters.ammo_type.action[1]) then
+			log(ThingData.type..": "..ThingData.name.." has multiple actions.")
 			ProjectileInitialAction = data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile].action
 		elseif (ThingData.capsule_action.attack_parameters.ammo_type.action) then
+			log(ThingData.type..": "..ThingData.name.." has 1 action.")
 			ProjectileInitialAction = data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile].action
 		end
 	elseif (ThingData.place_result and data.raw["land-mine"][ThingData.place_result]) then  --landmines
+		log(ThingData.type..": "..ThingData.name.." places "..ThingData.place_result)
 		ProjectileInitialAction =
 		{
 			type = "direct",
@@ -173,17 +176,21 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 		}
 	elseif (ProjectileType == "artillery") then -- artillery
 		if (ThingData.ammo_type.action[1]) then
+			log(ThingData.type..": "..ThingData.name.." has multiple actions.")
 			for i, action in pairs(ThingData.ammo_type.action) do
 				if (action.action_delivery.projectile) then
-					ProjectileInitialAction = data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].action
-					ProjectileFinalAction = data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].final_action
+					ProjectileInitialAction = data.raw["artillery-projectile"][ThingData.ammo_type.action[1].action_delivery.projectile].action
+					ProjectileFinalAction = data.raw["artillery-projectile"][ThingData.ammo_type.action[1].action_delivery.projectile].final_action
 				end
 			end
 		elseif (ThingData.ammo_type.action) then
+			log(ThingData.type..": "..ThingData.name.." has 1 action.")
 			ProjectileInitialAction = data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].action
+			ProjectileFinalAction = data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].final_action
 		end
 	else -- rockets/atomic bombs/other
 		if (ThingData.ammo_type.action[1]) then
+			log(ThingData.type..": "..ThingData.name.." has multiple actions.")
 			for i, action in pairs(ThingData.ammo_type.action) do
 				if (action.action_delivery.projectile) then
 					ProjectileInitialAction = data.raw.projectile[ThingData.ammo_type.action[i].action_delivery.projectile].action
@@ -191,41 +198,52 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 				end
 			end
 		elseif (ThingData.ammo_type.action) then
+			log(ThingData.type..": "..ThingData.name.." has 1 action.")
 			ProjectileInitialAction = data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].action
+			ProjectileFinalAction = data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].final_action
 		end
+	end
+	if (ProjectileInitialAction) then
+		log("an initial action.")
+	end
+	if (ProjectileFinalAction) then
+		log("a final action.")
 	end
 
 	-- build the effect stack
 	local combined = {}
 	if (ProjectileInitialAction) then
-		if (ProjectileInitialAction[1]) then -- multiple effects
+		if (ProjectileInitialAction.type == nil) then -- multiple effects
+			log("adding initial actionS to combined list")
 			for all, effect in pairs(ProjectileInitialAction) do
 				table.insert(combined, effect)
 			end
 		else --1 effect
+			log("adding initial action to combined list")
 			table.insert(combined, ProjectileInitialAction)
 		end
 	end
 	if (ProjectileFinalAction) then
-		if (ProjectileFinalAction[1]) then -- multiple effects
+		if (ProjectileFinalAction.type == nil) then -- multiple effects
+			log("adding final actionS to combined list")
 			for all, effect in pairs(ProjectileFinalAction) do
 				table.insert(combined, effect)
 			end
 		else --1 effect
+			log("adding final action to combined list")
 			table.insert(combined, ProjectileFinalAction)
 		end
 	end
-	TheProjectile.initial_action = combined
-
 	-- specific whitelist of single-target projectiles (base rocket/cannon shell) to AOE
 	if (ThingData.name == "rocket" 
 	or ThingData.name == "cannon-shell" 
 	or ThingData.name == "uranium-cannon-shell") then
-		for sbeve, effect in pairs(TheProjectile.initial_action) do
+		for sbeve, effect in pairs(combined) do
 			effect.type = "area"
 			effect.radius = 3
 		end
 	end
+	TheProjectile.initial_action = combined
 
 if (ThingData.icons) then
 	if (ThingData.icon_size) then
@@ -270,128 +288,69 @@ else
 end
 	TheProjectile.spine_animation = nil
 
-	data:extend({
-		TheProjectile,
-		{
-		  type = "turret",
-		  name = "RTPrimerThrowerShooter-"..ThingData.name,
-		  icon = "__base__/graphics/icons/big-worm.png",
-		  icon_size = 64, icon_mipmaps = 4,
-		  flags = {"placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "hidden", "not-selectable-in-game"},
-		  max_health = 750,
-		  alert_when_attacking = false,
-		  resistances =
-		  {
-		    {
-		     type = "physical",
-		     percent = 100
-		    },
-		    {
-		     type = "explosion",
-		     percent = 100
-		    },
-		    {
-		     type = "fire",
-		     percent = 100
-		    }
-		  },
-		  collision_box = nil,
-		  --selection_box = {{-1.4, -1.2}, {1.4, 1.2}},
-		  selection_box = nil,
-		  rotation_speed = 1,
-		  folded_animation = {direction_count=4, filename = "__RenaiTransportation__/graphics/nothing.png", size=1},
-		  -- preparing_speed = 69,
-		  -- preparing_animation = worm_preparing_animation(scale_worm_big, tint_worm_big, "forward"),
-		  -- preparing_sound = sounds.worm_standup(1),
-		  -- prepared_speed = 999,
-		  -- prepared_speed_secondary = 999,
-		  -- prepared_animation = worm_prepared_animation(scale_worm_big, tint_worm_big),
-		  -- prepared_sound = sounds.worm_breath_big(1),
-		  -- prepared_alternative_speed = 0.014,
-		  -- prepared_alternative_speed_secondary = 0.010,
-		  -- prepared_alternative_chance = 0.2,
-		  -- prepared_alternative_animation = worm_prepared_alternative_animation(scale_worm_big, tint_worm_big),
-		  -- prepared_alternative_sound = sounds.worm_roar_alternative_big(0.72),
-		  starting_attack_speed = 1,
-		  -- starting_attack_animation = worm_start_attack_animation(scale_worm_big, tint_worm_big),
-		  -- starting_attack_sound = sounds.worm_roars_big(0.67),
-		  ending_attack_speed = 1,
-		  -- ending_attack_animation = worm_end_attack_animation(scale_worm_big, tint_worm_big),
-		  -- folding_speed = 0.015,
-		  -- folding_animation =  worm_preparing_animation(scale_worm_big, tint_worm_big, "backward"),
-		  -- folding_sound = sounds.worm_fold(1),
-		  -- integration = worm_integration(scale_worm_big),
-		  -- secondary_animation = true,
-		  -- random_animation_offset = true,
-		  -- attack_from_start_frame = true,
-		  -- prepare_range = range_worm_big + prepare_range_worm_big,
-		  allow_turning_when_starting_attack = true,
-		  attack_parameters =
-		  {
-		    type = "stream",
-		    --damage_modifier = damage_modifier_worm_big,--defined in spitter-projectiles.lua
-		    cooldown = 4,
-		    range = 51,--defined in spitter-projectiles.lua
-		    min_range = 25,
-		    turn_range = 0.155,
-		    --projectile_creation_parameters = worm_shoot_shiftings(scale_worm_big, scale_worm_big * scale_worm_stream),
-
-		    --use_shooter_direction = true,
-
-		    lead_target_for_projectile_speed = 0.2* 0.75 * 1.5 * 1.5, -- this is same as particle horizontal speed of flamethrower fire stream
-
-		    ammo_type =
-		    {
-		     category = "biological",
-		     action =
-		     {
-		        type = "direct",
-		        action_delivery =
-		        {
-		          type = "stream",
-		          stream = ThingData.name.."-projectileFromRenaiTransportationPrimed",
-		          source_offset = {0.15, -0.5}
-		        }
-		     }
-		    }
-		  },
-		  --build_base_evolution_requirement = 0.5,
-		  --autoplace = enemy_autoplace.enemy_worm_autoplace(5),
-		  call_for_help_radius = 40,
-		  --spawn_decorations_on_expansion = true,
-		  -- spawn_decoration =
-		  -- {
-		  --   {
-		  --    decorative = "worms-decal",
-		  --    spawn_min = 1,
-		  --    spawn_max = 2,
-		  --    spawn_min_radius = 1,
-		  --    spawn_max_radius = 4
-		  --   },
-		  --   {
-		  --    decorative = "shroom-decal",
-		  --    spawn_min = 1,
-		  --    spawn_max = 2,
-		  --    spawn_min_radius = 1,
-		  --    spawn_max_radius = 2
-		  --   },
-		  --   {
-		  --    decorative = "enemy-decal",
-		  --    spawn_min = 1,
-		  --    spawn_max = 4,
-		  --    spawn_min_radius = 1,
-		  --    spawn_max_radius = 3
-		  --   },
-		  --   {
-		  --    decorative = "enemy-decal-transparent",
-		  --    spawn_min = 3,
-		  --    spawn_max = 5,
-		  --    spawn_min_radius = 1,
-		  --    spawn_max_radius = 4
-		  --   }
-		  -- }
-		}
-	})
+	if (TheProjectile.initial_action.type or (TheProjectile.initial_action[1] and TheProjectile.initial_action[1].type and TheProjectile.initial_action[1].action_delivery)) then
+		data:extend({
+			TheProjectile,
+			{
+				type = "turret",
+				name = "RTPrimerThrowerShooter-"..ThingData.name,
+				icon = "__base__/graphics/icons/big-worm.png",
+				icon_size = 64, icon_mipmaps = 4,
+				flags = {"placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "hidden", "not-selectable-in-game"},
+				max_health = 750,
+				alert_when_attacking = false,
+				resistances =
+				{
+					{
+					type = "physical",
+					percent = 100
+					},
+					{
+					type = "explosion",
+					percent = 100
+					},
+					{
+					type = "fire",
+					percent = 100
+					}
+				},
+				collision_box = nil,
+				--selection_box = {{-1.4, -1.2}, {1.4, 1.2}},
+				selection_box = nil,
+				rotation_speed = 1,
+				folded_animation = {direction_count=4, filename = "__RenaiTransportation__/graphics/nothing.png", size=1},
+				starting_attack_speed = 1,
+				ending_attack_speed = 1,
+				allow_turning_when_starting_attack = true,
+				attack_parameters =
+				{
+					type = "stream",
+					cooldown = 4,
+					range = 51,
+					min_range = 25,
+					turn_range = 0.155,
+					lead_target_for_projectile_speed = 0.2* 0.75 * 1.5 * 1.5, -- this is same as particle horizontal speed of flamethrower fire stream
+					ammo_type =
+					{
+					category = "biological",
+					action =
+					{
+						type = "direct",
+						action_delivery =
+						{
+						type = "stream",
+						stream = ThingData.name.."-projectileFromRenaiTransportationPrimed",
+						source_offset = {0.15, -0.5}
+						}
+					}
+					}
+				},
+				call_for_help_radius = 40,
+			}
+		})
+	else
+		log("Failed making "..ThingData.name.."-projectileFromRenaiTransportationPrimed.")
+	end
 end
 
 ---------------------------------------Thrower----------------------------------------------------------------------
@@ -806,7 +765,7 @@ end
 for Category, ThingsTable in pairs(data.raw) do
 	for ThingID, ThingData in pairs(ThingsTable) do
 		if (ThingData.stack_size) then
-			log("Creating item projectile for "..ThingData.type..": "..ThingData.name)
+			log("==========Creating item projectile for "..ThingData.type..": "..ThingData.name.."===========")
 			MakeProjectile(ThingData, 0.18)
 			MakeProjectile(ThingData, 0.25)
 			MakeProjectile(ThingData, 0.6)
@@ -816,11 +775,11 @@ for Category, ThingsTable in pairs(data.raw) do
 				) then
 					if (ThingData.ammo_type.action[1]) then
 						for i, action in pairs(ThingData.ammo_type.action) do
-							if (action.action_delivery.projectile) then
+							if (action.action_delivery.type ~= "stream" and action.action_delivery.projectile) then
 								MakePrimedProjectile(ThingData, action.action_delivery.type)
 							end
 						end
-					elseif (ThingData.ammo_type.action and ThingData.ammo_type.action.action_delivery and ThingData.ammo_type.action.action_delivery.projectile) then
+					elseif (ThingData.ammo_type.action and ThingData.ammo_type.action.action_delivery and ThingData.ammo_type.action.action_delivery.type ~= "stream" and ThingData.ammo_type.action.action_delivery.projectile) then
 						MakePrimedProjectile(ThingData, ThingData.ammo_type.action.action_delivery.type)
 					end
 				elseif

@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.2
+Date: 5/1/2023
+  Bugfixes:
+    - Fixed a loading crash with certain modded rocket and cannon shells. Tested with True Nukes and Bob's Warefare. Reported by Arcthuruss, laszlogasd, and MaxMahem.
+    - Fixed a crash when using a Player Launcher onto a Bounce Pad. Reported by BobsUncleBob and Alkumist.
+---------------------------------------------------------------------------------------------------
 Version: 1.2.1
 Date: 5/1/2023
   Bugfixes:

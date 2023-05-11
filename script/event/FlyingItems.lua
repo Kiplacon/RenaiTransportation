@@ -33,7 +33,7 @@ local function on_tick(event)
                   rendering.destroy(FlyingItem.sprite)
                   FlyingItem.sprite = nil
                end
-               if (FlyingItem.shadow) then -- from impact unloader
+               if (FlyingItem.shadow and FlyingItem.player == nil) then -- from impact unloader
                   rendering.destroy(FlyingItem.shadow)
                   FlyingItem.shadow = nil
                end
