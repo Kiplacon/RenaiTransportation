@@ -1,6 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.2.2
-Date: 5/1/2023
+Date: 5/11/2023
+  Changes:
+    - Throwing the other Ironclad programmable ship variants into the water now builds one on landing. Change by toran.mallow
   Bugfixes:
     - Fixed a loading crash with certain modded rocket and cannon shells. Tested with True Nukes and Bob's Warefare. Reported by Arcthuruss, laszlogasd, and MaxMahem.
     - Fixed a crash when using a Player Launcher onto a Bounce Pad. Reported by BobsUncleBob and Alkumist.
