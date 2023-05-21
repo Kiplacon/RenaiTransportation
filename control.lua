@@ -101,7 +101,7 @@ function(event)
 				or (catapult.orientation == 0.75 and catapult.held_stack_position.x >= catapult.position.x+properties.BurnerSelfRefuelCompensation)
 				then
 					-- activate/disable thrower based on overflow prevention
-					if (catapult.name ~= "RTThrower-PrimerThrower" and settings.global["RTOverflowComp"].value == true) then
+					if (catapult.name ~= "RTThrower-PrimerThrower" and settings.global["RTOverflowComp"].value == true and properties.InSpace == false) then
 						-- pointing at some entity
 						if (properties.targets[HeldItem]
 						and properties.targets[HeldItem].valid -- its an entity
@@ -222,13 +222,6 @@ function(event)
 							local x = catapult.drop_position.x
 							local y = catapult.drop_position.y
 							local distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
-							--local arc = -(0.3236*distance^-0.404)-- closer to 0 = higher arc
-							if (properties.InSpace == true) then
-								arc = -99999999999999
-								x = x + (-global.OrientationUnitComponents[catapult.orientation].x * 1000)
-								y = y + (-global.OrientationUnitComponents[catapult.orientation].y * 1000)
-								distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
-							end
 							-- calcaulte projectile parameters
 							local start=catapult.held_stack_position
 							local speed = 0.18
@@ -251,7 +244,7 @@ function(event)
 							end
 							local AirTime = math.max(1, math.floor(distance/speed)) -- for super fast throwers that move right on top of their target
 							local destination = nil
-							if (settings.global["RTOverflowComp"].value == true) then
+							if (settings.global["RTOverflowComp"].value == true and properties.InSpace == false) then
 								if (properties.targets[HeldItem] ~= nil and properties.targets[HeldItem].valid) then
 									destination = properties.targets[HeldItem].unit_number
 									if (global.OnTheWay[properties.targets[HeldItem].unit_number] == nil) then
@@ -268,25 +261,64 @@ function(event)
 							end
 							global.FlyingItems[global.FlightNumber] =
 								{
-								item=HeldItem,
-								amount=catapult.held_stack.count,
-								target={x=x, y=y},
-								start=start,
-								AirTime=AirTime,
-								StartTick=game.tick,
-								LandTick=game.tick+AirTime,
-								destination=destination,
-								space=properties.InSpace,
-								surface=catapult.surface,
+									item=HeldItem,
+									amount=catapult.held_stack.count,
+									target={x=x, y=y},
+									start=start,
+									AirTime=AirTime,
+									StartTick=game.tick,
+									LandTick=game.tick+AirTime,
+									destination=destination,
+									space=properties.InSpace,
+									surface=catapult.surface,
 								}
 							if (properties.InSpace == false) then
-								catapult.surface.create_entity
-								{
-									name="RTItemProjectile-"..HeldItem..speed*100,
-									position=catapult.held_stack_position,
-									source_position=start,
-									target_position=catapult.drop_position
-								}
+								if (game.entity_prototypes["RTItemProjectile-"..HeldItem..speed*100]) then
+									catapult.surface.create_entity
+									{
+										name="RTItemProjectile-"..HeldItem..speed*100,
+										position=catapult.held_stack_position,
+										source_position=start,
+										target_position=catapult.drop_position
+									}
+								else
+									catapult.surface.create_entity
+									{
+										name="RTTestProjectile"..speed*100,
+										position=catapult.held_stack_position,
+										source_position=start,
+										target_position=catapult.drop_position
+									}
+								end
+							else
+								x = x + (-global.OrientationUnitComponents[catapult.orientation].x * 100)
+								y = y + (-global.OrientationUnitComponents[catapult.orientation].y * 100)
+								distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
+								AirTime = math.max(1, math.floor(distance/speed))
+								local vector = {x=x-catapult.held_stack_position.x, y=y-catapult.held_stack_position.y}
+								local path = {}
+								for i = 1, AirTime do
+									local progress = i/AirTime
+									path[i] =
+									{
+										x = catapult.held_stack_position.x+(progress*vector.x),
+										y = catapult.held_stack_position.y+(progress*vector.y),
+										height = 0
+									}
+								end
+								path.duration = AirTime
+								global.FlyingItems[global.FlightNumber].path = path
+								global.FlyingItems[global.FlightNumber].space = true
+								global.FlyingItems[global.FlightNumber].LandTick = game.tick+AirTime
+								global.FlyingItems[global.FlightNumber].sprite = rendering.draw_sprite
+									{
+										sprite = "item/"..HeldItem,
+										x_scale = 0.5,
+										y_scale = 0.5,
+										target = catapult.held_stack_position,
+										surface = catapult.surface
+									}
+								global.FlyingItems[global.FlightNumber].spin = math.random(-10,10)*0.01
 							end
 							if (catapult.held_stack.item_number ~= nil) then
 								local CloudStorage = game.create_inventory(1)
@@ -475,13 +507,23 @@ function(event)
 	local player = game.players[event.player_index]
 	if (player.cursor_stack.valid_for_read == true) then
 		local item = player.cursor_stack.name
-		player.surface.create_entity
-		{
-			name="RTItemProjectile-"..item..25,
-			position=player.position,
-			source_position=player.position,
-			target_position=event.cursor_position
-		}
+		if (game.entity_prototypes["RTItemProjectile-"..item..25]) then
+			player.surface.create_entity
+			{
+				name="RTItemProjectile-"..item..25,
+				position=player.position,
+				source_position=player.position,
+				target_position=event.cursor_position
+			}
+		else
+			player.surface.create_entity
+			{
+				name="RTTestProjectile"..25,
+				position=player.position,
+				source_position=player.position,
+				target_position=event.cursor_position
+			}
+		end
 	end
 end)
 

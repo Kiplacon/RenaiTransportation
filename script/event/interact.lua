@@ -73,7 +73,6 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		PlayerProperties.zipline.LetMeGuideYou.destroy()
 		PlayerProperties.zipline.ChuggaChugga.destroy()
 		PlayerProperties.zipline.succ.destroy()
-		player.character_running_speed_modifier = 0
 		player.teleport(player.surface.find_non_colliding_position("character", {player.position.x, player.position.y+2}, 0, 0.01))
 		PlayerProperties.zipline = {}
 		PlayerProperties.state = "default"

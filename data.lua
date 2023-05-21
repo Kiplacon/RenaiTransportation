@@ -89,8 +89,7 @@ data:extend({
 },
 {
 	type = "stream",
-	name = "RTTestProjectile",
-
+	name = "RTTestProjectile18",
 	particle_spawn_interval = 0,
 	particle_spawn_timeout = 0,
 	particle_vertical_acceleration = 0.0035,
@@ -107,6 +106,99 @@ data:extend({
 					priority = "high",
 					size = 32,
 					scale = 19.2/32
+				}
+			}
+		},
+	shadow =
+		{
+			layers =
+			{
+				{
+					filename = "__RenaiTransportation__/graphics/icon.png",
+					line_length = 1,
+					frame_count = 1,
+					priority = "high",
+					size = 32,
+					scale = 19.2/32,
+					tint = {0,0,0,0.5}
+				}
+			}
+		},
+	oriented_particle = true
+},
+{
+	type = "stream",
+	name = "RTTestProjectile25",
+	particle_spawn_interval = 0,
+	particle_spawn_timeout = 0,
+	particle_vertical_acceleration = 0.0035,
+	particle_horizontal_speed = 0.25,
+	particle_horizontal_speed_deviation = 0,
+	particle =
+		{
+			layers =
+			{
+				{
+					filename = "__RenaiTransportation__/graphics/icon.png",
+					line_length = 1,
+					frame_count = 1,
+					priority = "high",
+					size = 32,
+					scale = 19.2/32
+				}
+			}
+		},
+	shadow =
+		{
+			layers =
+			{
+				{
+					filename = "__RenaiTransportation__/graphics/icon.png",
+					line_length = 1,
+					frame_count = 1,
+					priority = "high",
+					size = 32,
+					scale = 19.2/32,
+					tint = {0,0,0,0.5}
+				}
+			}
+		},
+	oriented_particle = true
+},
+{
+	type = "stream",
+	name = "RTTestProjectile60",
+	particle_spawn_interval = 0,
+	particle_spawn_timeout = 0,
+	particle_vertical_acceleration = 0.0035,
+	particle_horizontal_speed = 0.6,
+	particle_horizontal_speed_deviation = 0,
+	particle =
+		{
+			layers =
+			{
+				{
+					filename = "__RenaiTransportation__/graphics/icon.png",
+					line_length = 1,
+					frame_count = 1,
+					priority = "high",
+					size = 32,
+					scale = 19.2/32
+				}
+			}
+		},
+	shadow =
+		{
+			layers =
+			{
+				{
+					filename = "__RenaiTransportation__/graphics/icon.png",
+					line_length = 1,
+					frame_count = 1,
+					priority = "high",
+					size = 32,
+					scale = 19.2/32,
+					tint = {0,0,0,0.5}
 				}
 			}
 		},

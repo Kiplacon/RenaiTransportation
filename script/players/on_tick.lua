@@ -322,7 +322,7 @@ local function on_tick(event)
 		elseif (PlayerProperties.RangeAdjusting == true) then
 			-- keep it on
 
-		--||| Failsafe failsafe
+		--||| Failsafe failsafe. idk when this would happen but just in case
 		elseif (PlayerProperties.state ~= "default" and game.get_player(ThePlayer).connected and game.get_player(ThePlayer).character) then
 			game.get_player(ThePlayer).character_running_speed_modifier = 0
 			game.get_player(ThePlayer).character.destructible = true

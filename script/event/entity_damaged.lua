@@ -373,21 +373,24 @@ local function entity_damaged(event)
 								local space = false
 								if (string.find(wagon.surface.name, " Orbit") or string.find(wagon.surface.name, " Field") or string.find(wagon.surface.name, " Belt")) then
 									arc = -99999999999999
-									x = x + (xUnit*wagon.speed * 500)
-									y = y + (yUnit*wagon.speed * 500)
+									x = x + (xUnit*wagon.speed * 200)
+									y = y + (yUnit*wagon.speed * 200)
 									distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
 									space = true
+									rendering.destroy(shadow)
 								end
 								local AirTime = math.floor(distance/speed)
 								local vector = {x=x-wagon.position.x, y=y-wagon.position.y}
 								local spin = math.random(-10,10)*0.01
 								local path = {}
+								local random1 = math.random(-10, 10)*0.1
+								local random2 = math.random(-20, 5)*0.1
 								for i = 1, AirTime do
 									local progress = i/AirTime
 									path[i] =
 									{
-										x = wagon.position.x+(progress*vector.x),
-										y = wagon.position.y+(progress*vector.y),
+										x = wagon.position.x+random1+(progress*vector.x),
+										y = wagon.position.y+random2+(progress*vector.y),
 										height = progress * (1-progress) / arc
 									}
 								end
@@ -402,7 +405,7 @@ local function entity_damaged(event)
 										item=ItemName,
 										amount=GroupSize,
 										target={x=x, y=y},
-										start={x=wagon.position.x+(math.random(-10, 10)*0.1), y=wagon.position.y+(math.random(-10, 10)*0.1)},
+										start={x=wagon.position.x+random1, y=wagon.position.y+random2},
 										AirTime=AirTime,
 										StartTick=game.tick,
 										LandTick=game.tick+AirTime,
@@ -450,21 +453,24 @@ local function entity_damaged(event)
 								local space = false
 								if (string.find(wagon.surface.name, " Orbit") or string.find(wagon.surface.name, " Field") or string.find(wagon.surface.name, " Belt")) then
 									arc = -99999999999999
-									x = x + (xUnit*wagon.speed * 500)
-									y = y + (yUnit*wagon.speed * 500)
+									x = x + (xUnit*wagon.speed * 200)
+									y = y + (yUnit*wagon.speed * 200)
 									distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
 									space = true
+									rendering.destroy(shadow)
 								end
 								local AirTime = math.floor(distance/speed)
 								local vector = {x=x-wagon.position.x, y=y-wagon.position.y}
 								local spin = math.random(-10,10)*0.01
 								local path = {}
+								local random1 = math.random(-10, 10)*0.1
+								local random2 = math.random(-20, 5)*0.1
 								for i = 1, AirTime do
 									local progress = i/AirTime
 									path[i] =
 									{
-										x = wagon.position.x+(progress*vector.x),
-										y = wagon.position.y+(progress*vector.y),
+										x = wagon.position.x+random1+(progress*vector.x),
+										y = wagon.position.y+random2+(progress*vector.y),
 										height = progress * (1-progress) / arc
 									}
 								end
@@ -479,7 +485,7 @@ local function entity_damaged(event)
 										item=ItemName,
 										amount=GroupSize,
 										target={x=x, y=y},
-										start={x=wagon.position.x+(math.random(-10, 10)*0.1), y=wagon.position.y+(math.random(-10, 10)*0.1)},
+										start={x=wagon.position.x+random1, y=wagon.position.y+random2},
 										AirTime=AirTime,
 										StartTick=game.tick,
 										LandTick=game.tick+AirTime,

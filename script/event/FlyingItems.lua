@@ -10,9 +10,11 @@ local function on_tick(event)
          local height = FlyingItem.path[duration].height
          local orientation = FlyingItem.spin*duration
          rendering.set_target(FlyingItem.sprite, {x_coord, y_coord + height})
-         rendering.set_target(FlyingItem.shadow, {x_coord - height, y_coord})
          rendering.set_orientation(FlyingItem.sprite, orientation)
-         rendering.set_orientation(FlyingItem.shadow, orientation)
+         if (FlyingItem.space == false) then
+            rendering.set_target(FlyingItem.shadow, {x_coord - height, y_coord})
+            rendering.set_orientation(FlyingItem.shadow, orientation)
+         end
 
       elseif (event.tick == FlyingItem.LandTick and FlyingItem.space == false) then
          --game.print(each)
@@ -174,13 +176,23 @@ local function on_tick(event)
                      FlyingItem.AirTime=AirTime
                      FlyingItem.LandTick=game.tick+AirTime
                      if (FlyingItem.player == nil) then -- the player doesnt have a projectile sprite
-                        FlyingItem.surface.create_entity
-                        {
-                           name="RTItemProjectile-"..FlyingItem.item..FlyingItem.speed*100,
-                           position=ThingLandedOn.position,
-                           source_position=ThingLandedOn.position,
-                           target_position={TargetX, TargetY}
-                        }
+                        if (game.entity_prototypes["RTItemProjectile-"..FlyingItem.item..FlyingItem.speed*100]) then
+                           FlyingItem.surface.create_entity
+                           {
+                              name="RTItemProjectile-"..FlyingItem.item..FlyingItem.speed*100,
+                              position=ThingLandedOn.position,
+                              source_position=ThingLandedOn.position,
+                              target_position={TargetX, TargetY}
+                           }
+                        else
+                           FlyingItem.surface.create_entity
+                           {
+                              name="RTTestProjectile"..FlyingItem.speed*100,
+                              position=ThingLandedOn.position,
+                              source_position=ThingLandedOn.position,
+                              target_position={TargetX, TargetY}
+                           }
+                        end
                      else -- the player does have a vector
                         FlyingItem.vector = {x=TargetX-ThingLandedOn.position.x, y=TargetY-ThingLandedOn.position.y}
                      end
@@ -435,6 +447,14 @@ local function on_tick(event)
             global.FlyingItems[each] = nil
          end
 
+      elseif (event.tick == FlyingItem.LandTick and FlyingItem.space == true) then
+         if (FlyingItem.sprite) then -- from impact unloader/space throw
+            rendering.destroy(FlyingItem.sprite)
+         end
+         if (FlyingItem.shadow) then -- from impact unloader/space throw
+            rendering.destroy(FlyingItem.shadow)
+         end
+         global.FlyingItems[each] = nil
 --[[       elseif (game.tick > FlyingItem.LandTick) then
          if (FlyingItem.sprite) then
             --rendering.destroy(FlyingItem.sprite)

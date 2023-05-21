@@ -39,7 +39,6 @@ function SwapToGhost(player)
 		"character_inventory_slots_bonus",
 		"character_mining_speed_modifier",
 		"character_additional_mining_categories",
-		"character_running_speed_modifier",
 		"character_build_distance_bonus",
 		"character_item_drop_distance_bonus",
 		"character_reach_distance_bonus",
@@ -189,8 +188,27 @@ function SwapBackFromGhost(player, FlyingItem)
 			FlyingItem.SwapBack.destructible = true
 			FlyingItem.SwapBack.health = OG2.health
 			FlyingItem.SwapBack.selected_gun_index = OG2.selected_gun_index
-			FlyingItem.player.character_running_speed_modifier = 0
-         
+         ------ modifiers --------
+         local CharacterModifiers = {
+            "character_crafting_speed_modifier",
+            "character_inventory_slots_bonus",
+            "character_mining_speed_modifier",
+            "character_additional_mining_categories",
+            "character_build_distance_bonus",
+            "character_item_drop_distance_bonus",
+            "character_reach_distance_bonus",
+            "character_resource_reach_distance_bonus",
+            "character_item_pickup_distance_bonus",
+            "character_loot_pickup_distance_bonus",
+            "character_trash_slot_count_bonus",
+            "character_maximum_following_robot_count_bonus",
+            "character_health_bonus",
+            "character_personal_logistic_requests_enabled",
+            "allow_dispatching_robots"
+         }
+         for each, modifier in pairs(CharacterModifiers) do
+            OG2[modifier] = FlyingItem.SwapBack[modifier]
+         end
          if (remote.interfaces["space-exploration"] and remote.interfaces["space-exploration"].on_character_swapped) then
             remote.call("space-exploration", "on_character_swapped", {new_character=FlyingItem.SwapBack,old_character=OG2})
          end
@@ -260,7 +278,6 @@ function SwapBackFromGhost(player, FlyingItem)
       PlayerProperties.SwapBack.destructible = true
       PlayerProperties.SwapBack.health = OG2.health
       PlayerProperties.SwapBack.selected_gun_index = OG2.selected_gun_index
-      player.character_running_speed_modifier = 0
       if (remote.interfaces["space-exploration"] and remote.interfaces["space-exploration"].on_character_swapped) then
             remote.call("space-exploration", "on_character_swapped", {new_character=PlayerProperties.SwapBack,old_character=OG2})
       end
@@ -428,9 +445,6 @@ function GetOffZipline(player, PlayerProperties)
    ZiplineStuff.LetMeGuideYou.destroy()
    ZiplineStuff.ChuggaChugga.destroy()
    ZiplineStuff.succ.destroy()
-   if (player.character) then
-      player.character_running_speed_modifier = 0
-   end
    player.teleport(player.surface.find_non_colliding_position("character", {player.position.x, player.position.y+2}, 0, 0.01))
    PlayerProperties.zipline = {}
    PlayerProperties.state = "default"

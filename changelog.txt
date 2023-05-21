@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.3
+Date: 5/21/2023
+  Bugfixes:
+    - Fixed that throwing an item that was created after my mod was loaded would cause a crash. It now throws a placeholder sprite but functions correctly.
+    - Fixed that movement speed buffs would reset after using the bounce pad or zipline, which caused problems with the RPG system mod. Reported by JackCyber
+    - Fixed the Space Exploration "integration"
+---------------------------------------------------------------------------------------------------
 Version: 1.2.2
 Date: 5/11/2023
   Changes:
