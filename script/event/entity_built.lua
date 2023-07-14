@@ -37,7 +37,7 @@ local function entity_built(event)
 			properties.InSpace = true
 		end
 
-		if (entity.burner == nil and #entity.fluidbox == 0) then
+		if (entity.burner == nil and #entity.fluidbox == 0 and entity.electric_buffer_size > 0) then
 			properties.BurnerSelfRefuelCompensation = 0
 			properties.IsElectric = true
 		elseif (entity.name == "RTThrower-PrimerThrower") then

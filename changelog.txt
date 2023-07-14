@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.4
+Date: 7/14/2023
+  Bugfixes:
+    - Probably fixed a crash with thrower variants of inserters that have an electric buffer of 0. I couldn't recreate the crash with the reported mods but in theory my fix will prevent the crashes lmao
+---------------------------------------------------------------------------------------------------
 Version: 1.2.3
 Date: 5/21/2023
   Bugfixes:
