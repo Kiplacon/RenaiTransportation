@@ -1,5 +1,7 @@
 local brrr = table.deepcopy(data.raw.radar["radar"])
 brrr.name = "RTZipline"
+brrr.next_upgrade = nil
+brrr.not_upgradable = true
 brrr.selectable_in_game = false
 brrr.flags = {"placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-flammable", "no-copy-paste"}
 brrr.collision_mask = {}
