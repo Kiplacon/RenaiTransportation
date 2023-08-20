@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.5
+Date: 8/20/2023
+  Bugfixes:
+    - Fixed crashes with the Open Chest and Zipline Powerdraw related to predefined radar/chest upgrades. Zipline fix by Vortetty on github.
+  Changes:
+    - Added a note on the Thrower Range reserach that the range of thrower inserteres can be adjusted with the circuit signal.
+---------------------------------------------------------------------------------------------------
 Version: 1.2.4
 Date: 7/14/2023
   Bugfixes:
