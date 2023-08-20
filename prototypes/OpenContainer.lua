@@ -4,6 +4,8 @@ local datboi = table.deepcopy(data.raw.container["iron-chest"])
 	datboi.icon = "__RenaiTransportation__/graphics/OpenContainer/icon.png"
 	datboi.picture.layers[1].hr_version.filename = "__RenaiTransportation__/graphics/OpenContainer/hrOpenContainer.png"
 	datboi.minable = {mining_time = 0.2, result = "OpenContainerItem"}
+	datboi.next_upgrade = nil
+	datboi.not_upgradable = true
 	
 data:extend({ 
 	

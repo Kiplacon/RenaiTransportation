@@ -1,4 +1,5 @@
 local function FindPath(finish, start)
+   local ElectricPoleBlackList = {PoleName="windows"}
    local possibilities = {}
          possibilities[start.unit_number] = {entity=start, FromStart=0, FromFinish=DistanceBetween(start.position, finish.position), difficulty=DistanceBetween(start.position, finish.position)}
    local analyzed = {}
@@ -25,7 +26,7 @@ local function FindPath(finish, start)
       end
 
       for each, neighbor in pairs(current.entity.neighbours["copper"]) do
-         if (neighbor.type ~= "entity-ghost" and neighbor.type == "electric-pole") then
+         if (neighbor.type ~= "entity-ghost" and neighbor.type == "electric-pole" and ElectricPoleBlackList[neighbor.name] == nil) then
             local FromStart = current.FromStart + DistanceBetween(current.entity.position, neighbor.position)
             if (analyzed[neighbor.unit_number] == nil and (#neighbor.neighbours["copper"] > 1 or neighbor.unit_number == finish.unit_number) and (possibilities[neighbor.unit_number] == nil or possibilities[neighbor.unit_number].FromStart > FromStart)) then
                local difficulty = FromStart + DistanceBetween(neighbor.position, finish.position)

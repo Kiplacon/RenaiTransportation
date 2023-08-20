@@ -37,6 +37,12 @@ data:extend({
 		{
 			type = "nothing",
 			effect_description = "Thrower Range 1-15 tiles"
+		},
+		{
+			type = "nothing",
+			effect_description = "Thrower Range can be set by this signal",
+			icon = "__RenaiTransportation__/graphics/RangeSignaling.png",
+			icon_size = 64,
 		}
 	},
 	prerequisites = {"RTThrowerTime"},
