@@ -37,6 +37,11 @@ local function on_tick(event)
 				ZiplineStuff.succ.teleport(ZiplineStuff.WhereDidYouComeFrom.position)
 				--|||| Analyze neighbors
 				local possibilities = ZiplineStuff.WhereDidYouComeFrom.neighbours["copper"] -- table of connected pole entities
+				for each, pole in pairs(possibilities) do
+					if (ElectricPoleBlackList[pole.name]) then
+						possibilities[each] = nil
+					end
+				end
 				local AngleSorted = {}
 				local AutoPathHeading
 				if (ZiplineStuff.path == nil) then

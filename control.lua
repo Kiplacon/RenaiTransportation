@@ -541,3 +541,5 @@ function(event)
 		end
 	end
 end)
+
+ElectricPoleBlackList = {PoleName="windows", ["factory-power-connection"]=true, ["factory-power-pole"]=true, ["factory-overflow-pole"]=true}

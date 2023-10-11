@@ -42,7 +42,7 @@ local function makeRampEntity(name, icon, pictureFileName, placerItem)
 	local impact = 100
 	local HP = 500
 	if (name == "RTImpactUnloader") then
-		impact = 95
+		--impact = 95
 		HP = 1500
 	end
 	local resists =

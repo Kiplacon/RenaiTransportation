@@ -24,7 +24,7 @@ local function entity_built(event)
 		return
 	end
 
-	if (string.find(entity.name, "RTThrower-")) then
+	if (entity.type == "inserter" and string.find(entity.name, "RTThrower-")) then
 		script.register_on_entity_destroyed(entity)
 		global.CatapultList[entity.unit_number] = {entity=entity, targets={}, BurnerSelfRefuelCompensation=0.2, IsElectric=false, InSpace=false, RangeAdjustable=false}
 		local properties = global.CatapultList[entity.unit_number]

@@ -83,7 +83,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	--| Hovering something
 	if (ThingHovering) then
 		--|| Adjusting Thrower Range
-		if (string.find(ThingHovering.name, "RTThrower-") and ThingHovering.name ~= "RTThrower-PrimerThrower" and global.CatapultList[ThingHovering.unit_number].RangeAdjustable == true) then
+		if (ThingHovering.type == "inserter" and string.find(ThingHovering.name, "RTThrower-") and ThingHovering.name ~= "RTThrower-PrimerThrower" and global.CatapultList[ThingHovering.unit_number].RangeAdjustable == true) then
 			CurrentRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
 			if ((ThingHovering.name ~= "RTThrower-long-handed-inserter" and CurrentRange >= 15) or CurrentRange >= 25) then
 				ThingHovering.drop_position =
@@ -338,6 +338,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		and (not string.find(player.character.name, "-jetpack"))
 		and PlayerProperties.state == "default"
 		and ThingHovering.type == "electric-pole"
+		and ElectricPoleBlackList[ThingHovering.name] == nil
 		and #ThingHovering.neighbours["copper"] ~= 0) then
 			if (math.sqrt((player.position.x-ThingHovering.position.x)^2+(player.position.y-ThingHovering.position.y)^2) <= 3 ) then
 				if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read

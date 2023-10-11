@@ -320,11 +320,25 @@ local function on_tick(event)
                            end
                         end
                         if (total > 0) then
-                           FlyingItem.surface.spill_item_stack
-                           (
-                              FlyingItem.surface.find_non_colliding_position("item-on-ground",FlyingItem.target, 0, 0.1),
-                              {name=FlyingItem.item, count=total}
-                           )
+                           if (settings.global["RTSpillSetting"].value == "Destroy") then
+                              FlyingItem.surface.pollute(FlyingItem.target, total*0.5)
+                              FlyingItem.surface.create_entity
+                              ({
+                                 name = "water-splash",
+                                 position = FlyingItem.target
+                              })
+                           else
+                              local spilt = FlyingItem.surface.spill_item_stack
+                              (
+                                 FlyingItem.surface.find_non_colliding_position("item-on-ground",FlyingItem.target, 0, 0.1),
+                                 {name=FlyingItem.item, count=total}
+                              )
+                              if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
+                                 for every, thing in pairs(spilt) do
+                                    thing.order_deconstruction("player")
+                                 end
+                              end
+                           end
                         end
                         
                      end
@@ -406,18 +420,28 @@ local function on_tick(event)
             else
                if (FlyingItem.player == nil) then
                   if (FlyingItem.CloudStorage) then
-                     ProjectileSurface.spill_item_stack
+                     local spilt = ProjectileSurface.spill_item_stack
                         (
                            ProjectileSurface.find_non_colliding_position("item-on-ground", FlyingItem.target, 0, 0.1),
                            FlyingItem.CloudStorage[1]
                         )
+                     if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
+                        for every, thing in pairs(spilt) do
+                           thing.order_deconstruction("player")
+                        end
+                     end
                      FlyingItem.CloudStorage.destroy()
                   else
-                     ProjectileSurface.spill_item_stack
+                     local spilt = ProjectileSurface.spill_item_stack
                         (
                            ProjectileSurface.find_non_colliding_position("item-on-ground", FlyingItem.target, 0, 0.1),
                            {name=FlyingItem.item, count=FlyingItem.amount}
                         )
+                     if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
+                        for every, thing in pairs(spilt) do
+                           thing.order_deconstruction("player")
+                        end
+                     end
                   end
                end
             end

@@ -1,5 +1,4 @@
 local function FindPath(finish, start)
-   local ElectricPoleBlackList = {PoleName="windows"}
    local possibilities = {}
          possibilities[start.unit_number] = {entity=start, FromStart=0, FromFinish=DistanceBetween(start.position, finish.position), difficulty=DistanceBetween(start.position, finish.position)}
    local analyzed = {}

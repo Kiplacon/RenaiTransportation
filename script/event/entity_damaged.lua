@@ -518,10 +518,10 @@ local function entity_damaged(event)
 				end
 				event.cause.train.schedule = stor
 			end
-			event.cause.health = event.cause.health - (event.cause.prototype.max_health/10)
+--[[ 			event.cause.health = event.cause.health - (event.cause.prototype.max_health/10)
 			if (event.cause.health <= 0) then
 				event.cause.die()
-			end
+			end ]]
 		end
 	end
 end

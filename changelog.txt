@@ -1,4 +1,18 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.7
+Date: 10/7/2023
+  Changes:
+    - Applied the power pole black list to work on manual zipline driving. The way I had it before it only applied to which power poles you could attach to, and which poles were used in calculating automatic driving paths. I just forgot about manual driving lmao. 
+---------------------------------------------------------------------------------------------------
+Version: 1.2.6
+Date: 10/3/2023
+  Additions:
+    - Added a setting for what happens when thrown items can't fit in the inventory they land on. Options are: drop it on the floor (current behavior), drop it on the floor and mark for bots to pickup, and destroy the item.
+  Bugfixes:
+    - Fixed a crash that could potentially happen if you tried adjusting the range on something that had "RTThrower-" in it's name but wasn't actually an inserter. At least I think that's the problem. Reported by plexpt.
+  Changes:
+    - Added a blacklist for power poles that ziplines should ignore like ones that are used behind the scenes for utility reasonds. Currently only includes the ones from "Factorissimo notnotmelon fork". Recommended by saaadel.
+---------------------------------------------------------------------------------------------------
 Version: 1.2.5
 Date: 8/20/2023
   Bugfixes:

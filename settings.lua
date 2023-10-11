@@ -71,11 +71,19 @@ data:extend({
 	order = "aa"
 },
 {
+	type = "string-setting",
+	name = "RTSpillSetting",
+	setting_type = "runtime-global",
+	default_value = "Spill",
+    allowed_values = {"Spill", "Spill and Mark", "Destroy"},
+	order = "ab"
+},
+{
 	type = "bool-setting",
 	name = "RTShowRange",
 	setting_type = "runtime-global",
 	default_value = true,
-	order = "ab"
+	order = "ac"
 },
 {
 	type = "int-setting",
