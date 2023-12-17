@@ -127,7 +127,8 @@ function(event)
 									incomming = incomming + count
 								end
 								local total = incomming + properties.targets[HeldItem].get_transport_line(1).get_item_count() + properties.targets[HeldItem].get_transport_line(2).get_item_count() + catapult.held_stack.count
-								if (total <= 8) then
+								if (properties.targets[HeldItem].belt_shape == "straight" and total <= 8)
+								or (properties.targets[HeldItem].belt_shape ~= "straight" and total <= 7) then
 									catapult.active = true
 									if (global.HoverGFX[catapult.unit_number]) then
 										for playerID, graphic in pairs(global.HoverGFX[catapult.unit_number]) do

@@ -1,6 +1,18 @@
 local function config_changed()
 	if (global.CatapultList == nil) then
 		global.CatapultList = {}
+	else
+		for catapultID, properties in pairs(global.CatapultList) do
+			if (properties.entity.valid) then
+				if (properties.entity.electric_buffer_size == nil) then
+					properties.IsElectric = false
+				else
+					properties.IsElectric = true
+				end
+			else
+				global.CatapultList[catapultID] = nil
+			end
+		end
 	end
 
 	if (global.savedVehicleWagons == nil) then -- used for Vehicle Wagons 2 compatability
@@ -85,7 +97,7 @@ local function config_changed()
 		global.FlyingItems = {}
 	end
 
-	if (game.surfaces["RTStasisRealm"] == nil) then
+--[[ 	if (game.surfaces["RTStasisRealm"] == nil) then
 		game.create_surface("RTStasisRealm",
 		{
 			peaceful_mode = true,
@@ -95,7 +107,7 @@ local function config_changed()
 			default_enable_all_autoplace_controls = false,
 			cliff_settings = {name = "cliff", cliff_elevation_0 = 0, richness = 0}
 		})
-	end
+	end ]]
 
 	if (global.DataTrackerLinks == nil) then
 		global.DataTrackerLinks = {}

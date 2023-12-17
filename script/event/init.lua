@@ -88,7 +88,7 @@ local function on_int()
 	global.FlightNumber = 1
 	global.FlyingItems = {}
 
-	if (game.surfaces["RTStasisRealm"] == nil) then
+--[[ 	if (game.surfaces["RTStasisRealm"] == nil) then
 		game.create_surface("RTStasisRealm",
 		{
 			peaceful_mode = true,
@@ -98,7 +98,7 @@ local function on_int()
 			default_enable_all_autoplace_controls = false,
 			cliff_settings = {name = "cliff", cliff_elevation_0 = 0, richness = 0}
 		})
-	end
+	end ]]
 
 	global.DataTrackerLinks = {}
 

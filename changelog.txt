@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.8
+Date: 12/17/2023
+  Changes:
+    - Set a limit of 500 tiles for thrown items that land on the ground to find space. If there's no space, it will just be destroyed.
+  Bugfixes:
+    - Throwers now check if a belt is curved for deciding if it is full for overflow prevention, because it turns out curved belts only hold 7 items instead of 8. Report and fix (in the actual API) by boskid
+    - Fixed crash for inserters, or mods that adjust the power requirements of inserters, that run without power or a power draw of 0. Reported by Foxy_Boxes
+---------------------------------------------------------------------------------------------------
 Version: 1.2.7
 Date: 10/7/2023
   Changes:

@@ -330,7 +330,7 @@ local function on_tick(event)
                            else
                               local spilt = FlyingItem.surface.spill_item_stack
                               (
-                                 FlyingItem.surface.find_non_colliding_position("item-on-ground",FlyingItem.target, 0, 0.1),
+                                 FlyingItem.surface.find_non_colliding_position("item-on-ground",FlyingItem.target, 500, 0.1),
                                  {name=FlyingItem.item, count=total}
                               )
                               if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
@@ -422,7 +422,7 @@ local function on_tick(event)
                   if (FlyingItem.CloudStorage) then
                      local spilt = ProjectileSurface.spill_item_stack
                         (
-                           ProjectileSurface.find_non_colliding_position("item-on-ground", FlyingItem.target, 0, 0.1),
+                           ProjectileSurface.find_non_colliding_position("item-on-ground", FlyingItem.target, 500, 0.1),
                            FlyingItem.CloudStorage[1]
                         )
                      if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
@@ -434,7 +434,7 @@ local function on_tick(event)
                   else
                      local spilt = ProjectileSurface.spill_item_stack
                         (
-                           ProjectileSurface.find_non_colliding_position("item-on-ground", FlyingItem.target, 0, 0.1),
+                           ProjectileSurface.find_non_colliding_position("item-on-ground", FlyingItem.target, 500, 0.1),
                            {name=FlyingItem.item, count=FlyingItem.amount}
                         )
                      if (settings.global["RTSpillSetting"].value == "Spill and Mark") then

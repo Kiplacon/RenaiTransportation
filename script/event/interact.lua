@@ -94,8 +94,8 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			else
 				ThingHovering.drop_position =
 					{
-						ThingHovering.drop_position.x-global.OrientationUnitComponents[ThingHovering.orientation].x,
-						ThingHovering.drop_position.y-global.OrientationUnitComponents[ThingHovering.orientation].y
+						ThingHovering.drop_position.x - global.OrientationUnitComponents[ThingHovering.orientation].x,
+						ThingHovering.drop_position.y - global.OrientationUnitComponents[ThingHovering.orientation].y
 					}
 			end
 			local NewRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
@@ -478,8 +478,8 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		else
 			WhereWeDroppin =
 				{
-					thrower.drop_position.x-global.OrientationUnitComponents[global.Dir2Ori[thrower.direction]].x,
-					thrower.drop_position.y-global.OrientationUnitComponents[global.Dir2Ori[thrower.direction]].y
+					thrower.drop_position.x - global.OrientationUnitComponents[global.Dir2Ori[thrower.direction]].x,
+					thrower.drop_position.y - global.OrientationUnitComponents[global.Dir2Ori[thrower.direction]].y
 				}
 		end
 
