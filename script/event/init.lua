@@ -109,6 +109,12 @@ local function on_int()
 	global.ZiplineTerminals = {}
 
 	global.HoverGFX = {}
+
+	-- Ultracube=specific globals
+	if game.active_mods["Ultracube"] then
+		local ultracube_globals = require("script.ultracube.globals")
+		ultracube_globals.setup_prototypes()
+	end
 end
 
 return on_int

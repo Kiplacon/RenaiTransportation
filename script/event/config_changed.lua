@@ -129,6 +129,14 @@ local function config_changed()
 		global.HoverGFX = {}
 	end
 	
+	-- Ultracube-specific globals
+	if game.active_mods["Ultracube"] then
+		-- Prototype data should be reset on config change just in case Ultracube has updated to add new types
+		local ultracube_globals = require("script.ultracube.globals")
+		ultracube_globals.setup_prototypes()
+	elseif global.Ultracube then -- Ultracube used to be active before config change
+		global.Ultracube = nil
+	end
 end
 
 return config_changed
