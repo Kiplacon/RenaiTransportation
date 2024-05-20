@@ -15,7 +15,21 @@
     ],
     "Lua.diagnostics.globals": [
         "__DebugAdapter",
-        "__Profiler"
+        "__Profiler",
+		"data",
+		"util",
+		"serpent",
+		"log",
+		"remote",
+		"defines",
+		"script",
+		"global",
+		"game",
+		"pipecoverspictures",
+		"commands",
+		"mods",
+		"rendering",
+		"settings"
     ],
     "Lua.runtime.builtin": {
         "io": "disable",

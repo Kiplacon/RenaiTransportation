@@ -326,6 +326,23 @@ function(event)
 								CloudStorage.insert(catapult.held_stack)
 								global.FlyingItems[global.FlightNumber].CloudStorage = CloudStorage
 							end
+
+							-- Ultracube irreplaceables detection & handling
+							if global.Ultracube and global.Ultracube.prototypes.irreplaceable[HeldItem] then -- Ultracube mod is active, and the held item is an irreplaceable
+								-- Create token and save its id to the FlyingItems entry
+								global.FlyingItems[global.FlightNumber].cube_token_id = remote.call("Ultracube", "create_ownership_token",
+									HeldItem, -- Prototype string
+									AirTime+1, -- Timeout before Ultracube forces recovery. AirTime+1 as that's the exact tick where if there hasn't been an update call something must have gone wrong
+									{
+										surface = catapult.surface,
+										position = catapult.held_stack_position,
+										--TODO: Add velocity parameter? Tricky to calculate here.
+									}
+								)
+								-- if HeldItem is a cube prototype, a hint_entity remote call is required later
+								global.FlyingItems[global.FlightNumber].cube_should_hint = global.Ultracube.prototypes.cube[HeldItem]
+							end
+							
 							global.FlightNumber = global.FlightNumber + 1
 							catapult.held_stack.clear()
 						end

@@ -1,3 +1,5 @@
+local ultracube_globals = require("script.ultracube.cube_global_handling")
+
 local function on_int()
 	if (global.CatapultList == nil) then
 		global.CatapultList = {}
@@ -112,7 +114,6 @@ local function on_int()
 
 	-- Ultracube=specific globals
 	if game.active_mods["Ultracube"] then
-		local ultracube_globals = require("script.ultracube.globals")
 		ultracube_globals.setup_prototypes()
 	end
 end

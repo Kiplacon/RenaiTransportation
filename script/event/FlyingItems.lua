@@ -1,3 +1,5 @@
+local cube_flying_items = require("script.ultracube.cube_flying_items")
+
 local function on_tick(event)
 
    for each, FlyingItem in pairs(global.FlyingItems) do
@@ -193,6 +195,20 @@ local function on_tick(event)
                               target_position={TargetX, TargetY}
                            }
                         end
+
+						-- Ultracube is active, and the flying item has an associated ownership token
+						if global.Ultracube and FlyingItem.cube_token_id then 
+							remote.call("Ultracube", "update_ownership_token",
+								FlyingItem.cube_token_id, -- Token id
+								FlyingItem.AirTime+1, -- Timeout before Ultracube forces recovery. AirTime+1 as that's the exact tick where if there hasn't been an update call something must have gone wrong
+								{
+									surface = FlyingItem.surface,
+									position = ThingLandedOn.position,
+									-- TODO: Velocity parameter?
+								}
+							)
+						end
+
                      else -- the player does have a vector
                         FlyingItem.vector = {x=TargetX-ThingLandedOn.position.x, y=TargetY-ThingLandedOn.position.y}
                      end
@@ -259,6 +275,8 @@ local function on_tick(event)
                      if (FlyingItem.CloudStorage) then
                         ThingLandedOn.insert(FlyingItem.CloudStorage[1])
                         FlyingItem.CloudStorage.destroy()
+					 elseif global.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
+						cube_flying_items.release_and_insert(FlyingItem, ThingLandedOn)
                      else
                         ThingLandedOn.insert({name=FlyingItem.item, count=FlyingItem.amount})
                      end
@@ -274,6 +292,8 @@ local function on_tick(event)
                      if (FlyingItem.CloudStorage) then
                         ThingLandedOn.insert(FlyingItem.CloudStorage[1])
                         FlyingItem.CloudStorage.destroy()
+					 elseif global.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
+						cube_flying_items.release_and_insert(FlyingItem, ThingLandedOn)
                      else
                         ThingLandedOn.insert({name=FlyingItem.item, count=FlyingItem.amount})
                      end
@@ -289,6 +309,8 @@ local function on_tick(event)
                      if (FlyingItem.CloudStorage) then
                         LandedOnCargoWagon.insert(FlyingItem.CloudStorage[1])
                         FlyingItem.CloudStorage.destroy()
+					 elseif global.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
+						cube_flying_items.release_and_insert(FlyingItem, LandedOnCargoWagon)
                      else
                         LandedOnCargoWagon.insert({name=FlyingItem.item, count=FlyingItem.amount})
                      end
@@ -309,6 +331,7 @@ local function on_tick(event)
                         FlyingItem.CloudStorage.destroy()
                      else -- depreciated drop method from old item tracking system
                         local total = FlyingItem.amount
+						--TODO: Somehow allow splitting up of ownership token?
                         if (ThingLandedOn.type == "transport-belt") then
                            for l = 1, 2 do
                               for i = 0, 0.9, 0.1 do
@@ -409,6 +432,8 @@ local function on_tick(event)
                         force = "player",
                         raise_built = true
                      }
+				  elseif global.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
+					cube_flying_items.panic(FlyingItem) -- Purposefully resort to Ultracube forced recovery
                   else
                      ProjectileSurface.pollute(FlyingItem.target, FlyingItem.amount*0.5)
                   end
@@ -437,6 +462,33 @@ local function on_tick(event)
                            ProjectileSurface.find_non_colliding_position("item-on-ground", FlyingItem.target, 500, 0.1),
                            {name=FlyingItem.item, count=FlyingItem.amount}
                         )
+
+					-- Ultracube is active, and the flying item has an associated ownership token
+					if global.Ultracube and FlyingItem.cube_token_id then
+						local need_cleanup = false
+						if #spilt == FlyingItem.amount then -- Spilling was successful
+							-- If token hasn't expired
+							if remote.call("Ultracube", "release_ownership_token", FlyingItem.cube_token_id) then
+								if FlyingItem.cube_should_hint then
+									remote.call("Ultracube", "hint_entity", spilt[1])
+								end
+							else
+								need_cleanup = true
+							end
+						else
+							need_cleanup = true
+						end
+						-- Something has gone wrong
+						if need_cleanup then
+							-- Destroy all the spilled items as they shouldn't have been spilt in the first place
+							for _, entity in pairs(spilt) do
+								entity.destroy()
+							end
+							-- PANIC! (Trigger Ultracube's forced recovery)
+							cube_flying_items.panic(FlyingItem)
+						end
+					 end
+
                      if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
                         for every, thing in pairs(spilt) do
                            thing.order_deconstruction("player")
