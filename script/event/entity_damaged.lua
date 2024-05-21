@@ -272,6 +272,36 @@ local function entity_damaged(event)
 			global.FlyingTrains[SpookyGhost.unit_number].RemainingFuel = event.cause.burner.remaining_burning_fuel
 			global.FlyingTrains[SpookyGhost.unit_number].FuelInventory = event.cause.get_fuel_inventory().get_contents()
 		elseif (event.cause.type == "cargo-wagon") then
+			-- Ultracube irreplaceables handling
+			if global.Ultracube then -- Mod is active
+				local FlyingTrain = global.FlyingTrains[SpookyGhost.unit_number]
+				-- Remove all irreplaceables (if any) from cargo wagon's inventory and create ownership tokens for each
+				local inventory = event.cause.get_inventory(defines.inventory.cargo_wagon)
+				for prototype, _ in pairs(global.Ultracube.prototypes.irreplaceable) do
+					local count = inventory.get_item_count(prototype)
+					if count > 0 then
+						inventory.remove({name=prototype, count=count})
+						if FlyingTrain.Ultracube == nil then
+							FlyingTrain.Ultracube = {tokens={}, do_hint=false}
+						end
+						local token = remote.call("Ultracube", "create_ownership_token",
+							prototype,
+							count,
+							FlyingTrain.AirTime+1,
+							{
+								surface=SpookyGhost.surface,
+								position=SpookyGhost.position
+								-- TODO: Velocity vector?
+							}
+						)
+						local index = #FlyingTrain.Ultracube.tokens+1
+						FlyingTrain.Ultracube.tokens[index] = token
+						if global.Ultracube.prototypes.cube[prototype] then
+							FlyingTrain.Ultracube.do_hint = true
+						end
+					end
+				end
+			end
 			global.FlyingTrains[SpookyGhost.unit_number].cargo = event.cause.get_inventory(defines.inventory.cargo_wagon).get_contents()
 			global.FlyingTrains[SpookyGhost.unit_number].bar = event.cause.get_inventory(defines.inventory.cargo_wagon).get_bar()
 			global.FlyingTrains[SpookyGhost.unit_number].filter = {}

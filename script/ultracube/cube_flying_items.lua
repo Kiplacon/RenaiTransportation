@@ -27,7 +27,7 @@ function cube_flying_items.release_and_insert(FlyingItem, ThingLandedOn)
 	end
 end
 
--- Release ownership token and if it hasn't expired spill the item stack at FlyingItem's target position
+-- Release ownership token and if it hasn't expired and spill the item stack at FlyingItem's target position
 function cube_flying_items.release_and_spill(FlyingItem, ThingLandedOn)
 	local item_stack = remote.call("Ultracube", "release_ownership_token", FlyingItem.cube_token_id)
 	if item_stack then -- Item hasn't been forcibly recovered

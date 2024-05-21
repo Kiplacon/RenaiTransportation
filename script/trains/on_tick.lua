@@ -1,3 +1,5 @@
+if script.active_mods["Ultracube"] then CubeFlyingTrains = require("script.ultracube.cube_flying_trains") end
+
 local Animation = require("animation")
 
 local temporaryPathingCondition = {
@@ -127,6 +129,11 @@ local function on_tick(event)
 						volume = 2
 					}
 
+				-- Ultracube handling: Update position and also newly set/extended AirTime for timeout
+				if global.Ultracube and properties.Ultracube then -- Mod is active and this FlyingTrain is one that contains Ultracube irreplaceables
+					CubeFlyingTrains.position_update(properties)
+				end
+
 			elseif (TrainLandedOn ~= nil and TrainLandedOn.name == "RTTrainDirectedBouncePlate") then
 				properties.GuideCar.teleport(TrainLandedOn.position)
 				properties.RampOrientation = TrainLandedOn.orientation+0.5
@@ -209,6 +216,11 @@ local function on_tick(event)
 						position = TrainLandedOn.position,
 						volume = 2
 					}
+
+				-- Ultracube handling: Update position and also newly set/extended AirTime for timeout
+				if global.Ultracube and properties.Ultracube then -- Mod is active and this FlyingTrain is one that contains Ultracube irreplaceables
+					CubeFlyingTrains.position_update(properties)
+				end
 
 			--||| Try to reform train
 			else
@@ -359,6 +371,23 @@ local function on_tick(event)
 							for i, filter in pairs(properties.filter) do
 								NewTrain.get_inventory(defines.inventory.cargo_wagon).set_filter(i, filter)
 							end
+
+							-- Ultracube handling: insert irreplaceables that were previously in the cargo wagon and release tokens
+							if global.Ultracube and properties.Ultracube then
+								local inventory = NewTrain.get_inventory(defines.inventory.cargo_wagon)
+								local has_hinted = false
+								for _, token in ipairs(properties.Ultracube.tokens) do
+									local item_stack = remote.call("Ultracube", "release_ownership_token", token)
+									if item_stack then -- Item hasn't been forcibly recovered
+										inventory.insert(item_stack)
+										if properties.Ultracube.do_hint and not has_hinted then
+											remote.call("Ultracube", "hint_entity", NewTrain)
+											has_hinted = true
+										end
+									end
+								end
+							end
+
 							for ItemName, quantity in pairs(properties.cargo) do
 								NewTrain.get_inventory(defines.inventory.cargo_wagon).insert({name = ItemName, count = quantity})
 							end
@@ -479,6 +508,11 @@ local function on_tick(event)
 		elseif (game.tick < properties.LandTick) then
 			Animation.updateRendering(properties)
 			--game.print(properties.GuideCar.valid)
+
+			-- Ultracube position handling
+			if global.Ultracube and properties.Ultracube then -- Mod is active and this FlyingTrain is one that contains Ultracube irreplaceables
+				CubeFlyingTrains.position_update(properties)
+			end
 
 		--|| Landing speed control
 		elseif (game.tick > properties.LandTick and properties.LandedTrain and properties.LandedTrain.valid) then
