@@ -1,3 +1,5 @@
+if script.active_mods["Ultracube"] then CubeFlyingItems = require("script.ultracube.cube_flying_items") end
+
 local function entity_damaged(event)
 	--| Detect train hitting ramp
 	if (
@@ -421,6 +423,13 @@ local function entity_damaged(event)
 									item.clear()
 									global.FlyingItems[global.FlightNumber].CloudStorage = CloudStorage
 								end
+
+								-- Ultracube irreplaceables detection & handling
+								if global.Ultracube and global.Ultracube.prototypes.irreplaceable[ItemName] then -- Ultracube mod is active, and item is an irreplaceable
+									-- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
+									CubeFlyingItems.create_token_for(global.FlyingItems[global.FlightNumber])
+								end
+
 								global.FlightNumber = global.FlightNumber + 1
 							end
 							if (LaunchedAmount%GroupSize ~= 0) then
@@ -501,6 +510,21 @@ local function entity_damaged(event)
 									item.clear()
 									global.FlyingItems[global.FlightNumber].CloudStorage = CloudStorage
 								end
+								
+								-- Ultracube irreplaceables detection & handling
+								if global.Ultracube and global.Ultracube.prototypes.irreplaceable[ItemName] then -- Ultracube mod is active, and item is an irreplaceable
+									-- Velocity calculation
+									local velocity = {x=0,y=0}
+									if global.FlyingItems[global.FlightNumber].AirTime >= 2 then
+										local v1 = global.FlyingItems[global.FlightNumber].path[1]
+										local v2 = global.FlyingItems[global.FlightNumber].path[2]
+										velocity.x = v2.x - v1.x
+										velocity.y = v2.y - v1.y
+									end
+									-- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
+									CubeFlyingItems.create_token_for(global.FlyingItems[global.FlightNumber], velocity)
+								end
+
 								global.FlightNumber = global.FlightNumber + 1
 							end
 							wagon.get_inventory(defines.inventory.cargo_wagon).remove({name = ItemName, count=LaunchedAmount})

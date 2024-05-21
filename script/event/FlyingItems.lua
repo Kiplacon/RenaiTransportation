@@ -1,4 +1,4 @@
-local cube_flying_items = require("script.ultracube.cube_flying_items")
+if script.active_mods["Ultracube"] then CubeFlyingItems = require("script.ultracube.cube_flying_items") end
 
 local function on_tick(event)
 
@@ -17,6 +17,17 @@ local function on_tick(event)
             rendering.set_target(FlyingItem.shadow, {x_coord - height, y_coord})
             rendering.set_orientation(FlyingItem.shadow, orientation)
          end
+
+		 if FlyingItem.cube_token_id then
+			remote.call("Ultracube", "update_ownership_token",
+				FlyingItem.cube_token_id,
+				FlyingItem.LandTick - event.tick + 1,
+				{
+					position = FlyingItem.path[duration],
+					height = height
+				}
+			)
+		 end
 
       elseif (event.tick == FlyingItem.LandTick and FlyingItem.space == false) then
          --game.print(each)
@@ -276,7 +287,7 @@ local function on_tick(event)
                         ThingLandedOn.insert(FlyingItem.CloudStorage[1])
                         FlyingItem.CloudStorage.destroy()
 					 elseif global.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
-						cube_flying_items.release_and_insert(FlyingItem, ThingLandedOn)
+						CubeFlyingItems.release_and_insert(FlyingItem, ThingLandedOn)
                      else
                         ThingLandedOn.insert({name=FlyingItem.item, count=FlyingItem.amount})
                      end
@@ -293,7 +304,7 @@ local function on_tick(event)
                         ThingLandedOn.insert(FlyingItem.CloudStorage[1])
                         FlyingItem.CloudStorage.destroy()
 					 elseif global.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
-						cube_flying_items.release_and_insert(FlyingItem, ThingLandedOn)
+						CubeFlyingItems.release_and_insert(FlyingItem, ThingLandedOn)
                      else
                         ThingLandedOn.insert({name=FlyingItem.item, count=FlyingItem.amount})
                      end
@@ -310,14 +321,14 @@ local function on_tick(event)
                         LandedOnCargoWagon.insert(FlyingItem.CloudStorage[1])
                         FlyingItem.CloudStorage.destroy()
 					 elseif global.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
-						cube_flying_items.release_and_insert(FlyingItem, LandedOnCargoWagon)
+						CubeFlyingItems.release_and_insert(FlyingItem, LandedOnCargoWagon)
                      else
                         LandedOnCargoWagon.insert({name=FlyingItem.item, count=FlyingItem.amount})
                      end
 
 				  -- If it's an Ultracube FlyingItem, just spill it near whatever it landed on, potentially onto a belt
 				  elseif global.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
-					cube_flying_items.release_and_spill(FlyingItem, ThingLandedOn)
+					CubeFlyingItems.release_and_spill(FlyingItem, ThingLandedOn)
 
                   ---- otherwise it bounces off whatever it landed on and lands as an item on the nearest empty space within 10 tiles. destroyed if no space ----
                   else
@@ -436,7 +447,7 @@ local function on_tick(event)
                         raise_built = true
                      }
 				  elseif global.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
-					cube_flying_items.panic(FlyingItem) -- Purposefully resort to Ultracube forced recovery
+					CubeFlyingItems.panic(FlyingItem) -- Purposefully resort to Ultracube forced recovery
                   else
                      ProjectileSurface.pollute(FlyingItem.target, FlyingItem.amount*0.5)
                   end
@@ -460,7 +471,7 @@ local function on_tick(event)
                      end
                      FlyingItem.CloudStorage.destroy()
 				  elseif global.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
-					 cube_flying_items.release_and_spill(FlyingItem)
+					 CubeFlyingItems.release_and_spill(FlyingItem)
                   else
                      local spilt = ProjectileSurface.spill_item_stack
                         (

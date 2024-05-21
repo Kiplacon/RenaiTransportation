@@ -1,5 +1,20 @@
 local cube_flying_items = {}
 
+-- Create an ownership token and attach it to the FlyingItem
+function cube_flying_items.create_token_for(FlyingItem, velocity)
+	FlyingItem.cube_token_id = remote.call("Ultracube", "create_ownership_token",
+		FlyingItem.item,
+		FlyingItem.amount,
+		FlyingItem.AirTime+1,
+		{
+			surface = FlyingItem.surface,
+			position = FlyingItem.start,
+			velocity = velocity
+		}
+	)
+	FlyingItem.cube_should_hint = global.Ultracube.prototypes.cube[FlyingItem.item] -- True if in set, otherwise Nil
+end
+
 -- Release ownership token and if it hasn't expired insert the item stack into ThingLandedOn
 function cube_flying_items.release_and_insert(FlyingItem, ThingLandedOn)
 	local item_stack = remote.call("Ultracube", "release_ownership_token", FlyingItem.cube_token_id)

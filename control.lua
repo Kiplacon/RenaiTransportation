@@ -1,4 +1,5 @@
 if script.active_mods["gvv"] then require("__gvv__.gvv")() end
+if script.active_mods["Ultracube"] then CubeFlyingItems = require("script.ultracube.cube_flying_items") end
 
 -- Setup tables and stuff for new/existing saves ----
 script.on_init(
@@ -329,19 +330,8 @@ function(event)
 
 							-- Ultracube irreplaceables detection & handling
 							if global.Ultracube and global.Ultracube.prototypes.irreplaceable[HeldItem] then -- Ultracube mod is active, and the held item is an irreplaceable
-								-- Create token and save its id to the FlyingItems entry
-								global.FlyingItems[global.FlightNumber].cube_token_id = remote.call("Ultracube", "create_ownership_token",
-									HeldItem, -- Prototype string
-									catapult.held_stack.count,
-									AirTime+1, -- Timeout before Ultracube forces recovery. AirTime+1 as that's the exact tick where if there hasn't been an update call something must have gone wrong
-									{
-										surface = catapult.surface,
-										position = catapult.held_stack_position,
-										--TODO: Add velocity parameter? Tricky to calculate here.
-									}
-								)
-								-- if HeldItem is a cube prototype, a hint_entity remote call is required later
-								global.FlyingItems[global.FlightNumber].cube_should_hint = global.Ultracube.prototypes.cube[HeldItem] -- True if in Set
+								-- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
+								CubeFlyingItems.create_token_for(global.FlyingItems[global.FlightNumber])
 							end
 							
 							global.FlightNumber = global.FlightNumber + 1
