@@ -332,6 +332,7 @@ function(event)
 								-- Create token and save its id to the FlyingItems entry
 								global.FlyingItems[global.FlightNumber].cube_token_id = remote.call("Ultracube", "create_ownership_token",
 									HeldItem, -- Prototype string
+									catapult.held_stack.count,
 									AirTime+1, -- Timeout before Ultracube forces recovery. AirTime+1 as that's the exact tick where if there hasn't been an update call something must have gone wrong
 									{
 										surface = catapult.surface,
@@ -340,7 +341,7 @@ function(event)
 									}
 								)
 								-- if HeldItem is a cube prototype, a hint_entity remote call is required later
-								global.FlyingItems[global.FlightNumber].cube_should_hint = global.Ultracube.prototypes.cube[HeldItem]
+								global.FlyingItems[global.FlightNumber].cube_should_hint = global.Ultracube.prototypes.cube[HeldItem] -- True if in Set
 							end
 							
 							global.FlightNumber = global.FlightNumber + 1
