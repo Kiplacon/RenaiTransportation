@@ -18,7 +18,7 @@ function cube_flying_trains.position_update(FlyingTrain)
 		remote.call("Ultracube", "update_ownership_token",
 			token_id,
 			FlyingTrain.LandTick - game.tick + 1,
-			{position = position},
+			{position = position}
 			-- TODO: Velocity?
 		)
 	end
