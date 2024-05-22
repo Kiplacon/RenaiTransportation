@@ -365,6 +365,9 @@ local function on_tick(event)
 								for FuelName, quantity in pairs(properties.FuelInventory) do
 									NewTrain.get_fuel_inventory().insert({name = FuelName, count = quantity})
 								end
+								for BurntName, quantity in pairs(properties.BurntFuelInventory) do
+									NewTrain.get_burnt_result_inventory().insert({name = BurntName, count = quantity})
+								end
 							end
 						elseif (NewTrain.type == "cargo-wagon") then
 							NewTrain.get_inventory(defines.inventory.cargo_wagon).set_bar(properties.bar)

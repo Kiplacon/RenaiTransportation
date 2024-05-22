@@ -273,6 +273,7 @@ local function entity_damaged(event)
 			end
 			global.FlyingTrains[SpookyGhost.unit_number].RemainingFuel = event.cause.burner.remaining_burning_fuel
 			global.FlyingTrains[SpookyGhost.unit_number].FuelInventory = event.cause.get_fuel_inventory().get_contents()
+			global.FlyingTrains[SpookyGhost.unit_number].BurntFuelInventory = event.cause.get_burnt_result_inventory().get_contents()
 		elseif (event.cause.type == "cargo-wagon") then
 			-- Ultracube irreplaceables handling
 			if global.Ultracube then -- Mod is active
