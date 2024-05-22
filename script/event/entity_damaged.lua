@@ -1,4 +1,5 @@
 if script.active_mods["Ultracube"] then CubeFlyingItems = require("script.ultracube.cube_flying_items") end
+if script.active_mods["Ultracube"] then CubeFlyingTrains = require("script.ultracube.cube_flying_trains") end
 
 local function entity_damaged(event)
 	--| Detect train hitting ramp
@@ -263,6 +264,7 @@ local function entity_damaged(event)
 		end
 
 		if (event.cause.type == "locomotive" and event.cause.burner) then
+			-- TODO: Ultracube Fuel Handling
 			if (global.About2Jump[event.cause.unit_number] ~= nil) then
 				global.FlyingTrains[SpookyGhost.unit_number].CurrentlyBurning = global.About2Jump[event.cause.unit_number].BurningFuel
 				global.About2Jump[event.cause.unit_number] = nil
@@ -274,33 +276,11 @@ local function entity_damaged(event)
 		elseif (event.cause.type == "cargo-wagon") then
 			-- Ultracube irreplaceables handling
 			if global.Ultracube then -- Mod is active
-				local FlyingTrain = global.FlyingTrains[SpookyGhost.unit_number]
 				-- Remove all irreplaceables (if any) from cargo wagon's inventory and create ownership tokens for each
+				-- The items must be removed so that they aren't destroyed with the wagon, as Ultracube will spill them if that happens, and in this case 'duplicating' them
+				local FlyingTrain = global.FlyingTrains[SpookyGhost.unit_number]
 				local inventory = event.cause.get_inventory(defines.inventory.cargo_wagon)
-				for prototype, _ in pairs(global.Ultracube.prototypes.irreplaceable) do
-					local count = inventory.get_item_count(prototype)
-					if count > 0 then
-						inventory.remove({name=prototype, count=count})
-						if FlyingTrain.Ultracube == nil then
-							FlyingTrain.Ultracube = {tokens={}, do_hint=false}
-						end
-						local token = remote.call("Ultracube", "create_ownership_token",
-							prototype,
-							count,
-							FlyingTrain.AirTime+1,
-							{
-								surface=SpookyGhost.surface,
-								position=SpookyGhost.position
-								-- TODO: Velocity vector?
-							}
-						)
-						local index = #FlyingTrain.Ultracube.tokens+1
-						FlyingTrain.Ultracube.tokens[index] = token
-						if global.Ultracube.prototypes.cube[prototype] then
-							FlyingTrain.Ultracube.do_hint = true
-						end
-					end
-				end
+				CubeFlyingTrains.create_tokens_for_cargo(FlyingTrain, inventory)
 			end
 			global.FlyingTrains[SpookyGhost.unit_number].cargo = event.cause.get_inventory(defines.inventory.cargo_wagon).get_contents()
 			global.FlyingTrains[SpookyGhost.unit_number].bar = event.cause.get_inventory(defines.inventory.cargo_wagon).get_bar()

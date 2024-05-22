@@ -18,15 +18,8 @@ local function on_tick(event)
             rendering.set_orientation(FlyingItem.shadow, orientation)
          end
 
-		 if FlyingItem.cube_token_id then
-			remote.call("Ultracube", "update_ownership_token",
-				FlyingItem.cube_token_id,
-				FlyingItem.LandTick - event.tick + 1,
-				{
-					position = FlyingItem.path[duration],
-					height = height
-				}
-			)
+		 if global.Ultracube and FlyingItem.cube_token_id then
+			CubeFlyingItems.impact_sprite_update(FlyingItem, duration)
 		 end
 
       elseif (event.tick == FlyingItem.LandTick and FlyingItem.space == false) then
@@ -209,15 +202,7 @@ local function on_tick(event)
 
 						-- (If applicable) Update Ultracube ownership token to keep its timeout set to just after each bounce
 						if global.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
-							remote.call("Ultracube", "update_ownership_token",
-								FlyingItem.cube_token_id, -- Token id
-								FlyingItem.AirTime+1, -- Timeout before Ultracube forces recovery. AirTime+1 as that's the exact tick where if there hasn't been an update call something must have gone wrong
-								{
-									surface = FlyingItem.surface,
-									position = ThingLandedOn.position,
-									-- TODO: Velocity parameter?
-								}
-							)
+							CubeFlyingItems.bounce_update(FlyingItem)
 						end
 
                      else -- the player does have a vector

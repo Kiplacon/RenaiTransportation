@@ -5,14 +5,43 @@ function cube_flying_items.create_token_for(FlyingItem, velocity)
 	FlyingItem.cube_token_id = remote.call("Ultracube", "create_ownership_token",
 		FlyingItem.item,
 		FlyingItem.amount,
-		FlyingItem.AirTime+1,
+		FlyingItem.AirTime+1, -- Timeout before Ultracube forces recovery. AirTime+1 as that's the exact tick where if there hasn't been an update call something must have gone wrong
 		{
 			surface = FlyingItem.surface,
-			position = FlyingItem.start,
-			velocity = velocity
+			position = FlyingItem.start, -- Render position (what the camera follows and where explosions are emitted)
+			spill_position = FlyingItem.start,
+			velocity = velocity -- Vector for altering the explosion animation
 		}
 	)
 	FlyingItem.cube_should_hint = global.Ultracube.prototypes.cube[FlyingItem.item] -- True if in set, otherwise Nil
+end
+
+-- Used to update the ownership token for a FlyingItem that was the result of an impact unloader (or anything in the future that uses FlyingItem.path)
+function cube_flying_items.item_with_sprite_update(FlyingItem, duration)
+	local position = FlyingItem.path[duration] -- Ground position at current tick along its path
+	local height = FlyingItem.path[duration].height -- How high 'above' the ground the sprite is
+	remote.call("Ultracube", "update_ownership_token",
+		FlyingItem.cube_token_id,
+		nil, -- Timeout already set on creation. If the train was somehow going fast enough to fling something into the air longer than Ultracube's timeout limit, it's probably best to just let it be forcibly recovered
+		{
+			position = {x=position.x, y=position.y + height}, -- Render position in-air
+			height = height -- Used for modifying Ultracube explosion animation. Not related to where the camera follows nor the explosion's position
+		}
+	)
+end
+
+-- Used to update the ownership token for a FlyingItem after it lands on a bounce pad of any kind
+function cube_flying_items.bounce_update(FlyingItem)
+	remote.call("Ultracube", "update_ownership_token",
+		FlyingItem.cube_token_id,
+		FlyingItem.AirTime+1, -- Bounce will increase total air time so update the timeout to add the new air time
+		{
+			surface = FlyingItem.surface,
+			position = FlyingItem.start, -- Render position
+			spill_position = FlyingItem.start -- Spill position on forced recovery
+			-- TODO: Velocity parameter?
+		}
+	)
 end
 
 -- Release ownership token and if it hasn't expired insert the item stack into ThingLandedOn
@@ -53,7 +82,7 @@ function cube_flying_items.panic(FlyingItem)
 		0, -- Force a timeout immediately after this update
 		{
 			surface = FlyingItem.surface,
-			position = FlyingItem.start, -- Return to the position the FlyingItem was presumable thrown from
+			spill_position = FlyingItem.start, -- Return to the position the FlyingItem was presumable thrown from
 		}
 	)
 end

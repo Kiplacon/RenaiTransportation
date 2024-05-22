@@ -373,19 +373,9 @@ local function on_tick(event)
 							end
 
 							-- Ultracube handling: insert irreplaceables that were previously in the cargo wagon and release tokens
-							if global.Ultracube and properties.Ultracube then
+							if global.Ultracube and properties.Ultracube then -- Ultracube is active and this cargo wagon has irreplaceables in it
 								local inventory = NewTrain.get_inventory(defines.inventory.cargo_wagon)
-								local has_hinted = false
-								for _, token in ipairs(properties.Ultracube.tokens) do
-									local item_stack = remote.call("Ultracube", "release_ownership_token", token)
-									if item_stack then -- Item hasn't been forcibly recovered
-										inventory.insert(item_stack)
-										if properties.Ultracube.do_hint and not has_hinted then
-											remote.call("Ultracube", "hint_entity", NewTrain)
-											has_hinted = true
-										end
-									end
-								end
+								CubeFlyingTrains.release_and_insert(properties, inventory, NewTrain)
 							end
 
 							for ItemName, quantity in pairs(properties.cargo) do
