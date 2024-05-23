@@ -1,5 +1,17 @@
 local cube_flying_trains = {}
 
+-- Creates data for initial token creation and sets FlyingTrain.Ultracube.prev_pos for velocity calculation
+local function _create_token_init_data(FlyingTrain)
+	local data = {
+		surface=FlyingTrain.GuideCar.surface,
+		position=FlyingTrain.GuideCar.position,
+		spill_position = FlyingTrain.GuideCar.position
+		-- Velocity will be set on second tick in air
+	}
+	FlyingTrain.Ultracube.prev_pos = FlyingTrain.GuideCar.position
+	return data
+end
+
 -- Creates tokens for any FlyingTrain that could have irreplaceables in its inventory (cargo wagons and locomotive fuel)
 --[[
 	All FlyingTrains have their originals destroyed with raise_destroy being true.
@@ -19,12 +31,7 @@ function cube_flying_trains.create_tokens_for_inventory(FlyingTrain, inventory, 
 				prototype,
 				count,
 				FlyingTrain.AirTime+1,
-				{
-					surface=FlyingTrain.GuideCar.surface,
-					position=FlyingTrain.GuideCar.position,
-					spill_position = FlyingTrain.GuideCar.position
-					-- TODO: Velocity vector?
-				}
+				_create_token_init_data(FlyingTrain)
 			)
 			local index = #FlyingTrain.Ultracube.tokens[inv_type]+1
 			FlyingTrain.Ultracube.tokens[inv_type][index] = token
@@ -45,12 +52,7 @@ function cube_flying_trains.create_token_for_burning(FlyingTrain)
 				FlyingTrain.CurrentlyBurning.name,
 				1, -- There can only ever be one item burning,
 				FlyingTrain.AirTime+1,
-				{
-					surface=FlyingTrain.GuideCar.surface,
-					position=FlyingTrain.GuideCar.position,
-					spill_position = FlyingTrain.GuideCar.position
-					-- TODO: Velocity vector?
-				}
+				_create_token_init_data(FlyingTrain)
 			)
 		}
 		if global.Ultracube.prototypes.cube[FlyingTrain.CurrentlyBurning.name] then
@@ -78,16 +80,20 @@ function cube_flying_trains.position_update(FlyingTrain)
 		position.x = position.x + offset.x
 		position.y = position.y + offset.y
 	end
+	local velocity = {x=position.x - FlyingTrain.Ultracube.prev_pos.x, y=position.y - FlyingTrain.Ultracube.prev_pos.y}
 	for inv_type, tokens in pairs(FlyingTrain.Ultracube.tokens) do
 		for _, token_id in ipairs(tokens) do
 			remote.call("Ultracube", "update_ownership_token",
 				token_id,
 				FlyingTrain.LandTick - game.tick + 1, -- Update timeout for bounce pads and any really long jumps that go over Ultracube's normal limit
-				{position = position}
-				-- TODO: Velocity?
+				{
+					position = position, 
+					velocity=velocity
+				}
 			)
 		end
 	end
+	FlyingTrain.Ultracube.prev_pos = position
 end
 
 -- Inserts all irreplaceables associated with the given FlyingTrain into the given inventory, and sends hint_entity to Ultracube if relevant
