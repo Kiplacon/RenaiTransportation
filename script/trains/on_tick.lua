@@ -362,24 +362,30 @@ local function on_tick(event)
 							if (NewTrain.burner) then
 								NewTrain.burner.currently_burning = properties.CurrentlyBurning
 								NewTrain.burner.remaining_burning_fuel = properties.RemainingFuel
-								-- Ultracube irreplaceables handling for fuel/burnt slots & currently burning
-								if global.Ultracube and properties.Ultracube then -- Ultracube is active and this locomotive has irreplaceables in it
-									if properties.Ultracube.tokens[defines.inventory.fuel] then -- There were irreplaceables in the fuel inventory
-										CubeFlyingTrains.release_and_insert(properties, NewTrain.burner.inventory, defines.inventory.fuel, NewTrain)
+								-- Ultracube handling
+								if global.Ultracube then
+									remote.call("Ultracube", "reset_ultralocomotion_fuel", NewTrain) -- If locomotive was burning ultralocomotion fuel before launch, resets it on landing
+									
+									-- Ultracube irreplaceables handling for fuel/burnt slots & currently burning
+									if properties.Ultracube then -- Ultracube is active and this locomotive has irreplaceables in it
+										if properties.Ultracube.tokens[defines.inventory.fuel] then -- There were irreplaceables in the fuel inventory
+											CubeFlyingTrains.release_and_insert(properties, NewTrain.burner.inventory, defines.inventory.fuel, NewTrain)
+										end
+										if properties.Ultracube.tokens[defines.inventory.burnt_result] then -- There were irreplaceables in the fuel inventory
+											CubeFlyingTrains.release_and_insert(properties, NewTrain.burner.burnt_result_inventory, defines.inventory.burnt_result, NewTrain)
+										end
+										if properties.Ultracube.RemainingFuel then -- There was a burning irreplaceable
+											CubeFlyingTrains.release_burning(properties, NewTrain.burner, NewTrain)
+										end
 									end
-									if properties.Ultracube.tokens[defines.inventory.burnt_result] then -- There were irreplaceables in the fuel inventory
-										CubeFlyingTrains.release_and_insert(properties, NewTrain.burner.burnt_result_inventory, defines.inventory.burnt_result, NewTrain)
+									for FuelName, quantity in pairs(properties.FuelInventory) do
+										NewTrain.burner.inventory.insert({name = FuelName, count = quantity})
 									end
-									if properties.Ultracube.RemainingFuel then -- There was a burning irreplaceable
-										CubeFlyingTrains.release_burning(properties, NewTrain.burner, NewTrain)
+									for BurntName, quantity in pairs(properties.BurntFuelInventory) do
+										NewTrain.burner.burnt_result_inventory.insert({name = BurntName, count = quantity})
 									end
 								end
-								for FuelName, quantity in pairs(properties.FuelInventory) do
-									NewTrain.burner.inventory.insert({name = FuelName, count = quantity})
-								end
-								for BurntName, quantity in pairs(properties.BurntFuelInventory) do
-									NewTrain.burner.burnt_result_inventory.insert({name = BurntName, count = quantity})
-								end
+								
 							end
 						elseif (NewTrain.type == "cargo-wagon") then
 							NewTrain.get_inventory(defines.inventory.cargo_wagon).set_bar(properties.bar)
