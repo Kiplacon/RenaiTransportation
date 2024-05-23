@@ -16,7 +16,7 @@ function cube_flying_items.create_token_for(FlyingItem, velocity)
 	FlyingItem.cube_should_hint = global.Ultracube.prototypes.cube[FlyingItem.item] -- True if in set, otherwise Nil
 end
 
--- Used to update the ownership token for a FlyingItem that was the result of an impact unloader (or anything in the future that uses FlyingItem.path)
+-- Used to update the ownership token for a FlyingItem that has a sprite and path
 function cube_flying_items.item_with_sprite_update(FlyingItem, duration)
 	local position = FlyingItem.path[duration] -- Ground position at current tick along its path
 	local height = FlyingItem.path[duration].height -- How high 'above' the ground the sprite is
@@ -26,6 +26,24 @@ function cube_flying_items.item_with_sprite_update(FlyingItem, duration)
 		{
 			position = {x=position.x, y=position.y + height}, -- Render position in-air
 			height = height -- Used for modifying Ultracube explosion animation. Not related to where the camera follows nor the explosion's position
+		}
+	)
+end
+
+-- Used to update token for items using the stream projectile
+function cube_flying_items.item_with_stream_update(FlyingItem)
+	local delta = (game.tick-FlyingItem.StartTick)/FlyingItem.AirTime -- 0-1 float corresponding to how far along the item should be between starting and finishing position
+	-- Vector from start position to end position scaled by delta to get vector for distance traveled, and then added to start position to get a rough 'ground' position
+	-- As far as I can tell figuring out the position of the particle in the stream entity would require calculating the physics for it from scratch, so this is probably the best we can get.
+	local position = {
+		x = delta * (FlyingItem.target.x - FlyingItem.start.x) + FlyingItem.start.x,
+		y = delta * (FlyingItem.target.y - FlyingItem.start.y) + FlyingItem.start.y
+	}
+	remote.call("Ultracube", "update_ownership_token",
+		FlyingItem.cube_token_id,
+		nil, -- Timeout already set on creation or latest bounce
+		{
+			position = position, 
 		}
 	)
 end

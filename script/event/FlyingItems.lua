@@ -519,6 +519,10 @@ local function on_tick(event)
          global.FlyingItems[each] = nil ]]
       end
 
+	  -- Ultracube non-sprite item position updating. Only done for items that require hinting as those are the ones the cube camera follows
+	  if (global.Ultracube and FlyingItem.sprite == nil and FlyingItem.cube_should_hint and event.tick < FlyingItem.LandTick) then
+		CubeFlyingItems.item_with_stream_update(FlyingItem)
+	  end
    end
 end
 
