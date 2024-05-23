@@ -264,7 +264,6 @@ local function entity_damaged(event)
 		end
 
 		if (event.cause.type == "locomotive" and event.cause.burner) then
-			-- TODO: Ultracube Fuel Handling
 			if (global.About2Jump[event.cause.unit_number] ~= nil) then
 				global.FlyingTrains[SpookyGhost.unit_number].CurrentlyBurning = global.About2Jump[event.cause.unit_number].BurningFuel
 				global.About2Jump[event.cause.unit_number] = nil
@@ -272,6 +271,17 @@ local function entity_damaged(event)
 				global.FlyingTrains[SpookyGhost.unit_number].CurrentlyBurning = event.cause.burner.currently_burning
 			end
 			global.FlyingTrains[SpookyGhost.unit_number].RemainingFuel = event.cause.burner.remaining_burning_fuel
+			
+			-- Ultracube irreplaceables handling for burner
+			if global.Ultracube then -- Mod is active
+				-- Remove all irreplaceables (if any) from fuel/burnt inventory + currently_burning and create ownership tokens for each
+				-- The items must be removed so that they aren't destroyed with the locomotive, as Ultracube will spill them if that happens, and in this case 'duplicating' them
+				local FlyingTrain = global.FlyingTrains[SpookyGhost.unit_number]
+				CubeFlyingTrains.create_tokens_for_inventory(FlyingTrain, event.cause.burner.inventory, defines.inventory.fuel)
+				CubeFlyingTrains.create_tokens_for_inventory(FlyingTrain, event.cause.burner.burnt_result_inventory, defines.inventory.burnt_result)
+				CubeFlyingTrains.create_token_for_burning(FlyingTrain) -- Must be called after FlyingTrain.RemainingFuel has been set, see cube_flying_trains.lua
+			end
+			
 			global.FlyingTrains[SpookyGhost.unit_number].FuelInventory = event.cause.burner.inventory.get_contents()
 			global.FlyingTrains[SpookyGhost.unit_number].BurntFuelInventory = event.cause.burner.burnt_result_inventory.get_contents()
 		elseif (event.cause.type == "cargo-wagon") then
@@ -281,7 +291,7 @@ local function entity_damaged(event)
 				-- The items must be removed so that they aren't destroyed with the wagon, as Ultracube will spill them if that happens, and in this case 'duplicating' them
 				local FlyingTrain = global.FlyingTrains[SpookyGhost.unit_number]
 				local inventory = event.cause.get_inventory(defines.inventory.cargo_wagon)
-				CubeFlyingTrains.create_tokens_for_cargo(FlyingTrain, inventory)
+				CubeFlyingTrains.create_tokens_for_inventory(FlyingTrain, inventory, defines.inventory.cargo_wagon)
 			end
 			global.FlyingTrains[SpookyGhost.unit_number].cargo = event.cause.get_inventory(defines.inventory.cargo_wagon).get_contents()
 			global.FlyingTrains[SpookyGhost.unit_number].bar = event.cause.get_inventory(defines.inventory.cargo_wagon).get_bar()

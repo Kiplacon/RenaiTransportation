@@ -362,6 +362,18 @@ local function on_tick(event)
 							if (NewTrain.burner) then
 								NewTrain.burner.currently_burning = properties.CurrentlyBurning
 								NewTrain.burner.remaining_burning_fuel = properties.RemainingFuel
+								-- Ultracube irreplaceables handling for fuel/burnt slots & currently burning
+								if global.Ultracube and properties.Ultracube then -- Ultracube is active and this locomotive has irreplaceables in it
+									if properties.Ultracube.tokens[defines.inventory.fuel] then -- There were irreplaceables in the fuel inventory
+										CubeFlyingTrains.release_and_insert(properties, NewTrain.burner.inventory, defines.inventory.fuel, NewTrain)
+									end
+									if properties.Ultracube.tokens[defines.inventory.burnt_result] then -- There were irreplaceables in the fuel inventory
+										CubeFlyingTrains.release_and_insert(properties, NewTrain.burner.burnt_result_inventory, defines.inventory.burnt_result, NewTrain)
+									end
+									if properties.Ultracube.RemainingFuel then -- There was a burning irreplaceable
+										CubeFlyingTrains.release_burning(properties, NewTrain.burner, NewTrain)
+									end
+								end
 								for FuelName, quantity in pairs(properties.FuelInventory) do
 									NewTrain.burner.inventory.insert({name = FuelName, count = quantity})
 								end
@@ -378,7 +390,7 @@ local function on_tick(event)
 							-- Ultracube handling: insert irreplaceables that were previously in the cargo wagon and release tokens
 							if global.Ultracube and properties.Ultracube then -- Ultracube is active and this cargo wagon has irreplaceables in it
 								local inventory = NewTrain.get_inventory(defines.inventory.cargo_wagon)
-								CubeFlyingTrains.release_and_insert(properties, inventory, NewTrain)
+								CubeFlyingTrains.release_and_insert(properties, inventory, defines.inventory.cargo_wagon, NewTrain)
 							end
 
 							for ItemName, quantity in pairs(properties.cargo) do
