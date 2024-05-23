@@ -19,7 +19,7 @@ local function on_tick(event)
          end
 
 		 if global.Ultracube and FlyingItem.cube_token_id then
-			CubeFlyingItems.impact_sprite_update(FlyingItem, duration)
+			CubeFlyingItems.item_with_sprite_update(FlyingItem, duration)
 		 end
 
       elseif (event.tick == FlyingItem.LandTick and FlyingItem.space == false) then
