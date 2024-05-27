@@ -7,12 +7,15 @@ but at least the memes are good
 ![Alt Text](https://i.imgur.com/dqsE3ko.gif)
 
 Check out this spotlight on the mod by Xterminator (mod version 0.4.0)
+
 [![Video by Xterminator](http://img.youtube.com/vi/hHCDSJsDH74/0.jpg)](https://www.youtube.com/watch?v=hHCDSJsDH74"https://img.youtube.com/vi/hHCDSJsDH74/0.jpg")
 
 Or this highlight video by JD-Plays (mod version 0.4.1)
+
 [![Video by JD](http://img.youtube.com/vi/v5SB9uabXlo/0.jpg)](https://youtu.be/v5SB9uabXlo "https://img.youtube.com/vi/v5SB9uabXlo/0.jpg")
 
 Or this crazy playthrough by DoshDoshington (mod version 1.1.11)
+
 [![Video by Dosh](https://img.youtube.com/vi/kWc9YbyJGYo/0.jpg)](https://www.youtube.com/watch?v=kWc9YbyJGYo "https://img.youtube.com/vi/kWc9YbyJGYo/0.jpg")
 
 ## Details:
