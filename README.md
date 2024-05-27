@@ -4,8 +4,6 @@ Quite possibly the jankest Factorio mod ever made
 
 but at least the memes are good
 
-
-# Renai Transportation
 ![Alt Text](https://i.imgur.com/dqsE3ko.gif)
 
 Check out this spotlight on the mod by Xterminator (mod version 0.4.0)
