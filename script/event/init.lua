@@ -1,3 +1,5 @@
+local ultracube_globals = require("script.ultracube.cube_global_handling")
+
 local function on_int()
 	if (global.CatapultList == nil) then
 		global.CatapultList = {}
@@ -109,6 +111,11 @@ local function on_int()
 	global.ZiplineTerminals = {}
 
 	global.HoverGFX = {}
+
+	-- Ultracube=specific globals
+	if game.active_mods["Ultracube"] then
+		ultracube_globals.setup_prototypes()
+	end
 end
 
 return on_int

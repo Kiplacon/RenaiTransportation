@@ -1,3 +1,6 @@
+if script.active_mods["Ultracube"] then CubeFlyingItems = require("script.ultracube.cube_flying_items") end
+if script.active_mods["Ultracube"] then CubeFlyingTrains = require("script.ultracube.cube_flying_trains") end
+
 local function entity_damaged(event)
 	--| Detect train hitting ramp
 	if (
@@ -268,8 +271,28 @@ local function entity_damaged(event)
 				global.FlyingTrains[SpookyGhost.unit_number].CurrentlyBurning = event.cause.burner.currently_burning
 			end
 			global.FlyingTrains[SpookyGhost.unit_number].RemainingFuel = event.cause.burner.remaining_burning_fuel
-			global.FlyingTrains[SpookyGhost.unit_number].FuelInventory = event.cause.get_fuel_inventory().get_contents()
+			
+			-- Ultracube irreplaceables handling for burner
+			if global.Ultracube then -- Mod is active
+				-- Remove all irreplaceables (if any) from fuel/burnt inventory + currently_burning and create ownership tokens for each
+				-- The items must be removed so that they aren't destroyed with the locomotive, as Ultracube will spill them if that happens, and in this case 'duplicating' them
+				local FlyingTrain = global.FlyingTrains[SpookyGhost.unit_number]
+				CubeFlyingTrains.create_tokens_for_inventory(FlyingTrain, event.cause.burner.inventory, defines.inventory.fuel)
+				CubeFlyingTrains.create_tokens_for_inventory(FlyingTrain, event.cause.burner.burnt_result_inventory, defines.inventory.burnt_result)
+				CubeFlyingTrains.create_token_for_burning(FlyingTrain) -- Must be called after FlyingTrain.RemainingFuel has been set, see cube_flying_trains.lua
+			end
+			
+			global.FlyingTrains[SpookyGhost.unit_number].FuelInventory = event.cause.burner.inventory.get_contents()
+			global.FlyingTrains[SpookyGhost.unit_number].BurntFuelInventory = event.cause.burner.burnt_result_inventory.get_contents()
 		elseif (event.cause.type == "cargo-wagon") then
+			-- Ultracube irreplaceables handling
+			if global.Ultracube then -- Mod is active
+				-- Remove all irreplaceables (if any) from cargo wagon's inventory and create ownership tokens for each
+				-- The items must be removed so that they aren't destroyed with the wagon, as Ultracube will spill them if that happens, and in this case 'duplicating' them
+				local FlyingTrain = global.FlyingTrains[SpookyGhost.unit_number]
+				local inventory = event.cause.get_inventory(defines.inventory.cargo_wagon)
+				CubeFlyingTrains.create_tokens_for_inventory(FlyingTrain, inventory, defines.inventory.cargo_wagon)
+			end
 			global.FlyingTrains[SpookyGhost.unit_number].cargo = event.cause.get_inventory(defines.inventory.cargo_wagon).get_contents()
 			global.FlyingTrains[SpookyGhost.unit_number].bar = event.cause.get_inventory(defines.inventory.cargo_wagon).get_bar()
 			global.FlyingTrains[SpookyGhost.unit_number].filter = {}
@@ -421,6 +444,13 @@ local function entity_damaged(event)
 									item.clear()
 									global.FlyingItems[global.FlightNumber].CloudStorage = CloudStorage
 								end
+
+								-- Ultracube irreplaceables detection & handling
+								if global.Ultracube and global.Ultracube.prototypes.irreplaceable[ItemName] then -- Ultracube mod is active, and item is an irreplaceable
+									-- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
+									CubeFlyingItems.create_token_for(global.FlyingItems[global.FlightNumber])
+								end
+
 								global.FlightNumber = global.FlightNumber + 1
 							end
 							if (LaunchedAmount%GroupSize ~= 0) then
@@ -501,6 +531,21 @@ local function entity_damaged(event)
 									item.clear()
 									global.FlyingItems[global.FlightNumber].CloudStorage = CloudStorage
 								end
+								
+								-- Ultracube irreplaceables detection & handling
+								if global.Ultracube and global.Ultracube.prototypes.irreplaceable[ItemName] then -- Ultracube mod is active, and item is an irreplaceable
+									-- Velocity calculation
+									local velocity = {x=0,y=0}
+									if global.FlyingItems[global.FlightNumber].AirTime >= 2 then
+										local v1 = global.FlyingItems[global.FlightNumber].path[1]
+										local v2 = global.FlyingItems[global.FlightNumber].path[2]
+										velocity.x = v2.x - v1.x
+										velocity.y = v2.y - v1.y
+									end
+									-- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
+									CubeFlyingItems.create_token_for(global.FlyingItems[global.FlightNumber], velocity)
+								end
+
 								global.FlightNumber = global.FlightNumber + 1
 							end
 							wagon.get_inventory(defines.inventory.cargo_wagon).remove({name = ItemName, count=LaunchedAmount})

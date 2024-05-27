@@ -449,9 +449,14 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
         height = 164,
         scale = 0.25
 		}
-data:extend({TheThrower, TheItem, TheRecipe})
-if (isitenabled == false) then
-	table.insert(data.raw["technology"]["RTThrowerTime"].effects,{type="unlock-recipe",recipe=TheRecipe.name})
+
+if mods["Ultracube"] then
+	data:extend({TheThrower, TheItem}) -- Recipes and tech will be handled by Ultracube
+else
+	data:extend({TheThrower, TheItem, TheRecipe})
+	if (isitenabled == false) then
+		table.insert(data.raw["technology"]["RTThrowerTime"].effects,{type="unlock-recipe",recipe=TheRecipe.name})
+	end
 end
 end
 

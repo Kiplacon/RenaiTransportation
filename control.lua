@@ -1,4 +1,5 @@
 if script.active_mods["gvv"] then require("__gvv__.gvv")() end
+if script.active_mods["Ultracube"] then CubeFlyingItems = require("script.ultracube.cube_flying_items") end
 
 -- Setup tables and stuff for new/existing saves ----
 script.on_init(
@@ -326,6 +327,13 @@ function(event)
 								CloudStorage.insert(catapult.held_stack)
 								global.FlyingItems[global.FlightNumber].CloudStorage = CloudStorage
 							end
+
+							-- Ultracube irreplaceables detection & handling
+							if global.Ultracube and global.Ultracube.prototypes.irreplaceable[HeldItem] then -- Ultracube mod is active, and the held item is an irreplaceable
+								-- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
+								CubeFlyingItems.create_token_for(global.FlyingItems[global.FlightNumber])
+							end
+							
 							global.FlightNumber = global.FlightNumber + 1
 							catapult.held_stack.clear()
 						end

@@ -1,3 +1,5 @@
+if script.active_mods["Ultracube"] then CubeFlyingTrains = require("script.ultracube.cube_flying_trains") end
+
 local Animation = require("animation")
 
 local temporaryPathingCondition = {
@@ -127,6 +129,11 @@ local function on_tick(event)
 						volume = 2
 					}
 
+				-- Ultracube handling: Update position and also newly set/extended AirTime for timeout
+				if global.Ultracube and properties.Ultracube then -- Mod is active and this FlyingTrain is one that contains Ultracube irreplaceables
+					CubeFlyingTrains.position_update(properties)
+				end
+
 			elseif (TrainLandedOn ~= nil and TrainLandedOn.name == "RTTrainDirectedBouncePlate") then
 				properties.GuideCar.teleport(TrainLandedOn.position)
 				properties.RampOrientation = TrainLandedOn.orientation+0.5
@@ -209,6 +216,11 @@ local function on_tick(event)
 						position = TrainLandedOn.position,
 						volume = 2
 					}
+
+				-- Ultracube handling: Update position and also newly set/extended AirTime for timeout
+				if global.Ultracube and properties.Ultracube then -- Mod is active and this FlyingTrain is one that contains Ultracube irreplaceables
+					CubeFlyingTrains.position_update(properties)
+				end
 
 			--||| Try to reform train
 			else
@@ -350,15 +362,43 @@ local function on_tick(event)
 							if (NewTrain.burner) then
 								NewTrain.burner.currently_burning = properties.CurrentlyBurning
 								NewTrain.burner.remaining_burning_fuel = properties.RemainingFuel
-								for FuelName, quantity in pairs(properties.FuelInventory) do
-									NewTrain.get_fuel_inventory().insert({name = FuelName, count = quantity})
+								-- Ultracube handling
+								if global.Ultracube then
+									remote.call("Ultracube", "reset_ultralocomotion_fuel", NewTrain) -- If locomotive was burning ultralocomotion fuel before launch, resets it on landing
+									
+									-- Ultracube irreplaceables handling for fuel/burnt slots & currently burning
+									if properties.Ultracube then -- Ultracube is active and this locomotive has irreplaceables in it
+										if properties.Ultracube.tokens[defines.inventory.fuel] then -- There were irreplaceables in the fuel inventory
+											CubeFlyingTrains.release_and_insert(properties, NewTrain.burner.inventory, defines.inventory.fuel, NewTrain)
+										end
+										if properties.Ultracube.tokens[defines.inventory.burnt_result] then -- There were irreplaceables in the fuel inventory
+											CubeFlyingTrains.release_and_insert(properties, NewTrain.burner.burnt_result_inventory, defines.inventory.burnt_result, NewTrain)
+										end
+										if properties.Ultracube.RemainingFuel then -- There was a burning irreplaceable
+											CubeFlyingTrains.release_burning(properties, NewTrain.burner, NewTrain)
+										end
+									end
+									for FuelName, quantity in pairs(properties.FuelInventory) do
+										NewTrain.burner.inventory.insert({name = FuelName, count = quantity})
+									end
+									for BurntName, quantity in pairs(properties.BurntFuelInventory) do
+										NewTrain.burner.burnt_result_inventory.insert({name = BurntName, count = quantity})
+									end
 								end
+								
 							end
 						elseif (NewTrain.type == "cargo-wagon") then
 							NewTrain.get_inventory(defines.inventory.cargo_wagon).set_bar(properties.bar)
 							for i, filter in pairs(properties.filter) do
 								NewTrain.get_inventory(defines.inventory.cargo_wagon).set_filter(i, filter)
 							end
+
+							-- Ultracube handling: insert irreplaceables that were previously in the cargo wagon and release tokens
+							if global.Ultracube and properties.Ultracube then -- Ultracube is active and this cargo wagon has irreplaceables in it
+								local inventory = NewTrain.get_inventory(defines.inventory.cargo_wagon)
+								CubeFlyingTrains.release_and_insert(properties, inventory, defines.inventory.cargo_wagon, NewTrain)
+							end
+
 							for ItemName, quantity in pairs(properties.cargo) do
 								NewTrain.get_inventory(defines.inventory.cargo_wagon).insert({name = ItemName, count = quantity})
 							end
@@ -479,6 +519,11 @@ local function on_tick(event)
 		elseif (game.tick < properties.LandTick) then
 			Animation.updateRendering(properties)
 			--game.print(properties.GuideCar.valid)
+
+			-- Ultracube position handling
+			if global.Ultracube and properties.Ultracube then -- Mod is active and this FlyingTrain is one that contains Ultracube irreplaceables
+				CubeFlyingTrains.position_update(properties)
+			end
 
 		--|| Landing speed control
 		elseif (game.tick > properties.LandTick and properties.LandedTrain and properties.LandedTrain.valid) then
