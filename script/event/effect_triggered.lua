@@ -74,18 +74,20 @@ local function effect_triggered(event)
 		local thrower = global.PrimerThrowerLinks[detector.unit_number].thrower
 		--local box = global.PrimerThrowerLinks[detector.unit_number].box
 		if (global.PrimerThrowerLinks[detector.unit_number].ready == true) then
-			game.surfaces[event.surface_index].create_entity
-			{
-				name = "RTPrimerThrowerShooter-"..thrower.held_stack.name,
-				position = thrower.held_stack_position,
-				direction = detector.direction,
-				target = event.target_entity,
-				force = detector.force,
-				raise_built = true,
-				create_build_effect_smoke = false
-			}.destructible = false
-			thrower.held_stack.clear()
-			--box.insert({name="RTDataTrackerItem"})
+			if (thrower.held_stack.valid_for_read == true) then
+				game.surfaces[event.surface_index].create_entity
+				{
+					name = "RTPrimerThrowerShooter-"..thrower.held_stack.name,
+					position = thrower.held_stack_position,
+					direction = detector.direction,
+					target = event.target_entity,
+					force = detector.force,
+					raise_built = true,
+					create_build_effect_smoke = false
+				}.destructible = false
+				thrower.held_stack.clear()
+				--box.insert({name="RTDataTrackerItem"})
+			end
 			global.PrimerThrowerLinks[detector.unit_number].ready = false
 		else
 			--box.get_output_inventory().clear()

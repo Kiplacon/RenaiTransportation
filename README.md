@@ -86,11 +86,11 @@ Slam this cargo wagon into a reinforced concrete block to instantly unload its e
 
 See the FAQ for some specific details
 
-##Possible Future Additions
+## Possible Future Additions
 
 - School keeps me pretty busy these days and I already made all the dumb things I had in mind, so there's no plans atm to add new stuff, but feel free to leave a suggestion if you'd like, I'd love to hear them
 
-##~~Bugs~~ Special Features
+## ~~Bugs~~ Special Features
 
 - Mods that allow you to walk on water make it so that items don't splash and disappear.
 - Changing a thrower's pickup/drop location using another mod, like Bob's adjustable inserters, may cause strange behavior depending on the change
@@ -99,6 +99,6 @@ See the FAQ for some specific details
 - Magnet ramps don't have their ranges carried over in blueprints and copy/paste. It'll have to be set up manually after being built.
 - Using cut/copy on a thrower and then trying to adjust its range before placement may cause crashes. At the moment I have no idea why this happens or how it differs from using Q to add the thrower ghost to hand, which works just fine with the range adjusting.
 
-##Other
+## Other
 
 Sound effects from https://www.zapsplat.com/

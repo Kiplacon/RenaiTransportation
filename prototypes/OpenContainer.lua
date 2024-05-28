@@ -2,7 +2,13 @@
 local datboi = table.deepcopy(data.raw.container["iron-chest"])
 	datboi.name = "OpenContainer"
 	datboi.icon = "__RenaiTransportation__/graphics/OpenContainer/icon.png"
-	datboi.picture.layers[1].hr_version.filename = "__RenaiTransportation__/graphics/OpenContainer/hrOpenContainer.png"
+	datboi.picture = {
+		filename = "__RenaiTransportation__/graphics/OpenContainer/hrOpenContainer.png",
+		priority = "extra-high",
+		width = 66,
+		height = 76,
+		scale = 0.5
+	}
 	datboi.minable = {mining_time = 0.2, result = "OpenContainerItem"}
 	datboi.next_upgrade = nil
 	datboi.not_upgradable = true

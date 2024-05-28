@@ -16,7 +16,7 @@ collision_box = {{-0.35, -0.3}, {0.35, 0.55}},
 selection_box = {{-0.35, -0.3}, {0.35, 0.55}},
 selection_priority = 255,
 minable = {mining_time = 0.2, result = "HatchRTItem"},
-render_layer = "higher-object-under",
+render_layer = "arrow",
 picture =
 	{
 		filename = "__RenaiTransportation__/graphics/hatch/hatch.png",

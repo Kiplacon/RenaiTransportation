@@ -1,4 +1,17 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.9
+Date: 5/27/2024
+  Changes:
+    - "Ultracube: Age of Cube" support. added by wrothmonk through Github.
+    - Changed the render layer of the Hatch to "arrow" so that it doesn't get covered by some things. Requested by saaadel.
+    - Due to a bug fix below, saving and reloading while ziplining or jumping on a player launcher will now reset the player to the ground as if they landed. This is to prevent a multiplayer issue that would happen if the player was in the air when they disconnect.
+  Bugfixes:
+    - Added action_delivery check to prevent crashes. Reported by Gribanov_Ivan specifically for the mod "Xenos Oppression: SPRA-23".
+    - Fixed a crash with the mod "More UPS, FPS" which removes train corpses I try to spawn when a flying train crashes. Reported by Master_Woof.
+    - Fixed a crash with IR3 where the new texture it gives the Iron Chest was causing a conflict with the way I coded the Open Chest graphic. Reported by Tassarho.
+    - Probably fixed a crash where the item in a Primer Thrower's hand somehow disappears before it's actually thrown. Reported by Nardix.
+    - Fixed a mostly multiplayer bug where someone would be on a zipline or jumping on a player launcher when they leave, either quitting or server shut down. These players would not be properly reset when they reconnect leaving behind random stuff that could cause crashes in rare cases. Reported by a few people over the months.
+---------------------------------------------------------------------------------------------------
 Version: 1.2.8
 Date: 12/17/2023
   Changes:

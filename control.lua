@@ -551,4 +551,26 @@ function(event)
 	end
 end)
 
+script.on_event(defines.events.on_pre_player_left_game,
+function(event)
+	local player = game.players[event.player_index]
+	local PlayerProperties = global.AllPlayers[event.player_index]
+	if (PlayerProperties.state == "zipline") then
+		GetOffZipline(player, PlayerProperties)
+	elseif (PlayerProperties.state == "jumping") then
+		if (PlayerProperties.PlayerLauncher.tracker and global.FlyingItems[PlayerProperties.PlayerLauncher.tracker] ~= nil) then
+			local number = PlayerProperties.PlayerLauncher.tracker
+			local FlyingItem = global.FlyingItems[number]
+			if (FlyingItem.sprite) then
+				rendering.destroy(FlyingItem.sprite)
+			end
+			if (FlyingItem.shadow) then
+				rendering.destroy(FlyingItem.shadow)
+			end
+			SwapBackFromGhost(player, FlyingItem)
+			global.FlyingItems[number] = nil
+		end
+	end
+end)
+
 ElectricPoleBlackList = {PoleName="windows", ["factory-power-connection"]=true, ["factory-power-pole"]=true, ["factory-overflow-pole"]=true}

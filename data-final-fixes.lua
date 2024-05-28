@@ -780,7 +780,7 @@ for Category, ThingsTable in pairs(data.raw) do
 				) then
 					if (ThingData.ammo_type.action[1]) then
 						for i, action in pairs(ThingData.ammo_type.action) do
-							if (action.action_delivery.type ~= "stream" and action.action_delivery.projectile) then
+							if (action.action_delivery and action.action_delivery.type ~= "stream" and action.action_delivery.projectile) then
 								MakePrimedProjectile(ThingData, action.action_delivery.type)
 							end
 						end

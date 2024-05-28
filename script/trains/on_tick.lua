@@ -441,15 +441,17 @@ local function on_tick(event)
 							})
 					end
 
-					local key, value = next(game.entity_prototypes[properties.name].corpses)
-					rip = properties.GuideCar.surface.create_entity
-						({
-							name = key or "locomotive-remnants",
-							position = properties.GuideCar.position,
-							force = properties.GuideCar.force
-						})
-					rip.color = properties.color
-					rip.orientation = properties.orientation
+					if (game.entity_prototypes[properties.name].corpses) then
+						local key, value = next(game.entity_prototypes[properties.name].corpses)
+						rip = properties.GuideCar.surface.create_entity
+							({
+								name = key or "locomotive-remnants",
+								position = properties.GuideCar.position,
+								force = properties.GuideCar.force
+							})
+						rip.color = properties.color
+						rip.orientation = properties.orientation
+					end
 
 					boom = properties.GuideCar.surface.create_entity
 						({
@@ -458,7 +460,7 @@ local function on_tick(event)
 						})
 
 					for each, guy in pairs(game.connected_players) do
-						guy.add_alert(rip,defines.alert_type.entity_destroyed)
+						guy.add_alert(boom, defines.alert_type.entity_destroyed)
 					end
 
 					if (remote.interfaces.VehicleWagon2 and global.savedVehicleWagons[properties.WagonUnitNumber] and remote.interfaces.VehicleWagon2.kill_wagon_data) then --Vehicle wagon destroy message
