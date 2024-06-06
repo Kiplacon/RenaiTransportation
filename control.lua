@@ -347,8 +347,7 @@ function(event)
 			if (properties.RangeAdjustable == true) then
 				local range = catapult.get_merged_signal({type="virtual", name="ThrowerRangeSignal"})
 				if (properties.range==nil or properties.range~=range) then
-					if (catapult.name == "RTThrower-long-handed-inserter" and range > 0 and range <= 25)
-					or (catapult.name ~= "RTThrower-long-handed-inserter" and range > 0 and range <= 15) then
+					if (range > 0 and range <= catapult.prototype.inserter_drop_position[2]+0.1) then
 						catapult.drop_position =
 							{
 								catapult.position.x + -range*global.OrientationUnitComponents[catapult.orientation].x,
