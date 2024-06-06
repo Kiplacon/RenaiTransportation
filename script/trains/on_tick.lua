@@ -96,7 +96,7 @@ local function on_tick(event)
 
 		--|| Landing
 		if (game.tick == properties.LandTick) then
-			--game.print("land")
+			--game.print(game.tick.." land at position "..serpent.block(properties.GuideCar.position))
 			--||| Bounce Pad
 			TrainLandedOn = properties.GuideCar.surface.find_entities_filtered
 				{
@@ -378,12 +378,13 @@ local function on_tick(event)
 											CubeFlyingTrains.release_burning(properties, NewTrain.burner, NewTrain)
 										end
 									end
-									for FuelName, quantity in pairs(properties.FuelInventory) do
-										NewTrain.burner.inventory.insert({name = FuelName, count = quantity})
-									end
-									for BurntName, quantity in pairs(properties.BurntFuelInventory) do
-										NewTrain.burner.burnt_result_inventory.insert({name = BurntName, count = quantity})
-									end
+								end
+								
+								for FuelName, quantity in pairs(properties.FuelInventory) do
+									NewTrain.burner.inventory.insert({name = FuelName, count = quantity})
+								end
+								for BurntName, quantity in pairs(properties.BurntFuelInventory) do
+									NewTrain.burner.burnt_result_inventory.insert({name = BurntName, count = quantity})
 								end
 								
 							end

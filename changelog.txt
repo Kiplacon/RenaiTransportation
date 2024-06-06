@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.10
+Date: 6/5/2024
+  Changes:
+    - Trains and cargo wagons that follow another off a train ramp will be nudged slightly so that they always jump and land at the exact same point as the one in front.
+  Bugfixes:
+    - Fixed that fuel wasn't re-added to locomotives after a jump if Ultracube: Age of Cube was NOT installed. Reported by AwesomeDollars.
+---------------------------------------------------------------------------------------------------
 Version: 1.2.9
 Date: 5/27/2024
   Changes:

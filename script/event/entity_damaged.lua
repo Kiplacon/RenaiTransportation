@@ -217,6 +217,11 @@ local function entity_damaged(event)
 
 				global.FlyingTrains[SpookyGhost.unit_number].AirTime = global.FlyingTrains[number].AirTime
 				global.FlyingTrains[SpookyGhost.unit_number].length = global.FlyingTrains[number].length
+
+				-- Adjust follower's jump position to match leader's, should help with followers landing in the exact same spot as the leader and account for any speed differences after the leader jumps
+				SpookyGhost.teleport(global.FlyingTrains[number].JumpStartPosition)
+
+				---==========================
 				if (global.FlyingTrains[SpookyGhost.unit_number].speed>0) then
 					SpookyGhost.speed = 0.8*math.abs(global.FlyingTrains[number].speed)
 					global.FlyingTrains[SpookyGhost.unit_number].speed = math.abs(global.FlyingTrains[number].speed)
@@ -228,6 +233,11 @@ local function entity_damaged(event)
 			end
 		end
 
+		--| Record jump start position
+		global.FlyingTrains[SpookyGhost.unit_number].JumpStartPosition = SpookyGhost.position
+		--game.print(game.tick.." JumpStartPosition: "..serpent.block(global.FlyingTrains[SpookyGhost.unit_number].JumpStartPosition))
+
+		--| Magnet Ramp GFX
 		if ((event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") and global.MagnetRamps[event.entity.unit_number].range ~= nil and global.FlyingTrains[SpookyGhost.unit_number].MakeFX == "yes") then
 			global.MagnetRamps[event.entity.unit_number].power.energy = 0
 			if (global.FlyingTrains[SpookyGhost.unit_number].MagnetComp < 0) then
