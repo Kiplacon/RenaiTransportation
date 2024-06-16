@@ -85,7 +85,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		--|| Adjusting Thrower Range
 		if (ThingHovering.type == "inserter" and string.find(ThingHovering.name, "RTThrower-") and ThingHovering.name ~= "RTThrower-PrimerThrower" and global.CatapultList[ThingHovering.unit_number].RangeAdjustable == true) then
 			CurrentRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
-			if ((ThingHovering.name ~= "RTThrower-long-handed-inserter" and CurrentRange >= 15) or CurrentRange >= 25) then
+			if (CurrentRange >= ThingHovering.prototype.inserter_drop_position[2] + 0.1) then
 				ThingHovering.drop_position =
 					{
 						ThingHovering.drop_position.x+(CurrentRange-1)*global.OrientationUnitComponents[ThingHovering.orientation].x,
@@ -469,7 +469,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		local thrower = player.get_blueprint_entities()[1]
 		local OneD = player.get_blueprint_entities()[1].direction
 		local CurrentRange = math.ceil(math.abs(thrower.drop_position.x-thrower.position.x + thrower.drop_position.y-thrower.position.y))
-		if ((thrower.name ~= "RTThrower-long-handed-inserter" and CurrentRange >= 16) or CurrentRange >= 26) then
+		if (CurrentRange >= thrower.prototype.inserter_drop_position[2] + 1.1) then
 			WhereWeDroppin =
 				{
 					thrower.drop_position.x+(CurrentRange-2)*global.OrientationUnitComponents[global.Dir2Ori[thrower.direction]].x,
