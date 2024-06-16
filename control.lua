@@ -533,6 +533,17 @@ function(event)
 				target_position=event.cursor_position
 			}
 		end
+	else
+		rendering.draw_animation
+		{
+			animation = "RTHoojinTime",
+			x_scale = 0.5,
+			y_scale = 0.5,
+			target = player.character,
+			surface = player.surface,
+			time_to_live = 120,
+			animation_speed = 0.5
+		}
 	end
 end)
 

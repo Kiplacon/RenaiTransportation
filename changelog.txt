@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.11
+Date: 6/15/2024
+  Bugfixes:
+    - Fixed crash with mods that change rocket fuel to a liquid instead of an item. Tested only with the Lunar Lander mod. Reported by Sassxolotl.
+---------------------------------------------------------------------------------------------------
 Version: 1.2.10
 Date: 6/5/2024
   Changes:

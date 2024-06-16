@@ -893,3 +893,10 @@ for Category, ThingsTable in pairs(data.raw) do
 		end
 	end
 end
+
+for _, ingredient in pairs(data.raw.recipe.RTZiplineRecipe4.ingredients) do
+	if (ingredient.type and ingredient.type == "fluid") then
+		data.raw.recipe.RTZiplineRecipe4.category = "crafting-with-fluid"
+		break
+	end
+end

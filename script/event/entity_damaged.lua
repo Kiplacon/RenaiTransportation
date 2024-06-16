@@ -20,7 +20,7 @@ local function entity_damaged(event)
 		--game.print(event.cause.speed)
 		--event.entity.health = 99999999999
 
-		SpookyGhost = event.entity.surface.create_entity
+		local SpookyGhost = event.entity.surface.create_entity
 			({
 				name = "RTPropCar",
 				position = event.cause.position,
@@ -31,9 +31,9 @@ local function entity_damaged(event)
 		SpookyGhost.speed = 0.8*event.cause.speed
 		SpookyGhost.destructible = false
 
-		base = event.cause.name
+		local base = event.cause.name
 		--mask = "NoMask"
-		way = global.OrientationUnitComponents[event.cause.orientation].name
+		local way = global.OrientationUnitComponents[event.cause.orientation].name
 
 		if (game.is_valid_sprite_path("RT"..base..way)) then
 			image = "RT"..base..way
@@ -58,8 +58,8 @@ local function entity_damaged(event)
 		else
 			huehuehue = nil
 		end
-
-		TrainImage = rendering.draw_sprite
+		
+		local TrainImage = rendering.draw_sprite
 			{
 			sprite = image,
 			target = SpookyGhost,
@@ -69,7 +69,7 @@ local function entity_damaged(event)
 			render_layer = "air-object",
 			tint = huehuehue
 			}
-		Mask = rendering.draw_sprite
+		local Mask = rendering.draw_sprite
 			{
 			sprite = mask,
 			tint =  maskhue,
@@ -79,7 +79,7 @@ local function entity_damaged(event)
 			--y_scale = 0.5,
 			render_layer = "air-object"
 			}
-		OwTheEdge = rendering.draw_sprite
+		local OwTheEdge = rendering.draw_sprite
 			{
 			sprite = "GenericShadow",
 			tint = {a = 90},
@@ -90,6 +90,34 @@ local function entity_damaged(event)
 			y_scale = 0.5,
 			render_layer = "air-object"
 			}
+		if (math.random(1000) == 420) then
+			rendering.destroy(TrainImage)
+			TrainImage = rendering.draw_animation
+				{
+					animation = "RTHoojinTime",
+					target = SpookyGhost,
+					surface = SpookyGhost.surface,
+					animation_speed = 0.5,
+					render_layer = "air-object",
+				}
+			rendering.destroy(Mask)
+			Mask = rendering.draw_sprite
+				{
+					sprite = "RTBlank",
+					tint =  maskhue,
+					target = SpookyGhost,
+					surface = SpookyGhost.surface,
+					--x_scale = 0.5,
+					--y_scale = 0.5,
+					render_layer = "air-object"
+				}
+			SpookyGhost.surface.create_entity
+				{
+					name="RTSaysYourCrosshairIsTooLow",
+					target=SpookyGhost,
+					position={420,69}
+				}
+		end
 
 		global.FlyingTrains[SpookyGhost.unit_number] = {}
 		global.FlyingTrains[SpookyGhost.unit_number].GuideCar = SpookyGhost
