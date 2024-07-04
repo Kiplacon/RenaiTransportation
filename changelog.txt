@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.12
+Date: 7/3/2024
+  Additions:
+    - Filter Ejector Hatch. I'm sure you can figure out what it does. Recommended by LoupAndSnoop
+  Changes:
+    - Made the arrows of the thrower inserters line up with the way their vanilla versions are. https://github.com/Kiplacon/RenaiTransportation/issues/48
+---------------------------------------------------------------------------------------------------
+Version: 1.2.11
+Date: 6/15/2024
+  Bugfixes:
+    - Fixed crash with mods that change rocket fuel to a liquid instead of an item. Tested only with the Lunar Lander mod. Reported by Sassxolotl.
+---------------------------------------------------------------------------------------------------
 Version: 1.2.10
 Date: 6/5/2024
   Changes:

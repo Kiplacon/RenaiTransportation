@@ -227,7 +227,7 @@ function(event)
 							-- calcaulte projectile parameters
 							local start=catapult.held_stack_position
 							local speed = 0.18
-							if (catapult.name == "RTThrower-EjectorHatchRT") then
+							if (catapult.name == "RTThrower-EjectorHatchRT" or catapult.name == "RTThrower-FilterEjectorHatchRT") then
 								distance = math.sqrt((x-catapult.position.x)^2 + (y-catapult.position.y)^2)
 								start=catapult.position
 								speed = 0.25
@@ -265,6 +265,8 @@ function(event)
 								{
 									item=HeldItem,
 									amount=catapult.held_stack.count,
+									thrower=catapult,
+									ThrowerPosition=catapult.position,
 									target={x=x, y=y},
 									start=start,
 									AirTime=AirTime,
@@ -532,6 +534,17 @@ function(event)
 				target_position=event.cursor_position
 			}
 		end
+	else
+		rendering.draw_animation
+		{
+			animation = "RTHoojinTime",
+			x_scale = 0.5,
+			y_scale = 0.5,
+			target = player.character,
+			surface = player.surface,
+			time_to_live = 120,
+			animation_speed = 0.5
+		}
 	end
 end)
 

@@ -88,8 +88,8 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			if (CurrentRange >= ThingHovering.prototype.inserter_drop_position[2] + 0.1) then
 				ThingHovering.drop_position =
 					{
-						ThingHovering.drop_position.x+(CurrentRange-1)*global.OrientationUnitComponents[ThingHovering.orientation].x,
-						ThingHovering.drop_position.y+(CurrentRange-1)*global.OrientationUnitComponents[ThingHovering.orientation].y
+						ThingHovering.drop_position.x+(CurrentRange-2)*global.OrientationUnitComponents[ThingHovering.orientation].x,
+						ThingHovering.drop_position.y+(CurrentRange-2)*global.OrientationUnitComponents[ThingHovering.orientation].y
 					}
 			else
 				ThingHovering.drop_position =
@@ -98,7 +98,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 						ThingHovering.drop_position.y - global.OrientationUnitComponents[ThingHovering.orientation].y
 					}
 			end
-			local NewRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
+			local NewRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))-1
 			ThingHovering.surface.create_entity
 				({
 					name = "flying-text",
@@ -434,6 +434,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	and player.cursor_stack.valid_for_read
 	and string.find(player.cursor_stack.name, "RTThrower-")
 	and player.cursor_stack.name ~= "RTThrower-EjectorHatchRTItem"
+	and player.cursor_stack.name ~= "RTThrower-FilterEjectorHatchRTItem"
 	and player.force.technologies["RTFocusedFlinging"].researched == true) then
 		local thrower = string.gsub(player.cursor_stack.name, "-Item", "")
 		player.activate_paste() -- tests if activating paste brings up a blueprint to cursor
@@ -446,7 +447,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			vvv.insert({name = "blueprint"})
 			vvv.get_inventory(defines.inventory.chest)[1].set_blueprint_entities(
 				{
-					{entity_number = 1, name = thrower, position = {0,0}, direction = 4, drop_position = {0,-.8984} }
+					{entity_number = 1, name = thrower, position = {0,0}, direction = 4, drop_position = {0,-1.201} }
 				})
 			player.add_to_clipboard(vvv.get_inventory(defines.inventory.chest)[1])
 			player.activate_paste()
@@ -454,7 +455,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		else
 			player.cursor_stack.set_blueprint_entities(
 				{
-					{entity_number = 1, name = thrower, position = {0,0}, direction = 4, drop_position = {0,-.8984} }
+					{entity_number = 1, name = thrower, position = {0,0}, direction = 4, drop_position = {0,-1.201} }
 				})
 		end
 		PlayerProperties.RangeAdjusting = true -- seems to immediately reset to false since the cursor stack changes to the blueprint but idk how to have the check go first and then set the global.RangeAdjusting
@@ -464,6 +465,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	and #player.get_blueprint_entities() == 1
 	and string.find(player.get_blueprint_entities()[1].name, "RTThrower-")
 	and player.cursor_stack.name ~= "RTThrower-EjectorHatchRTItem"
+	and player.cursor_stack.name ~= "RTThrower-FilterEjectorHatchRTItem"
 	and player.get_blueprint_entities()[1].drop_position
 	and player.force.technologies["RTFocusedFlinging"].researched == true) then
 		local thrower = player.get_blueprint_entities()[1]
@@ -488,7 +490,6 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				{entity_number = 1, name = thrower.name, position = {0,0}, direction = OneD, drop_position = WhereWeDroppin }
 			})
 		PlayerProperties.RangeAdjusting = true
-
 
 	end
 end

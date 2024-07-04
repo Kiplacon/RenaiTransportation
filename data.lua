@@ -76,6 +76,30 @@ data:extend({
 	animation_speed = 1/30
 },
 {
+	type = "animation",
+	name = "RTHoojinTime",
+	filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WatchHimHooj.png",
+	size = {128,222},
+	frame_count = 7,
+	line_length = 7,
+	shift = {0, -1.5},
+	scale = 0.75,
+},
+{
+	type = "sticker",
+	name = "RTSaysYourCrosshairIsTooLow",
+	duration_in_ticks = math.floor(60*28.13),
+	working_sound =
+	{
+		sound =
+		{
+			filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/Crank dat Hooja Boi.ogg",
+			volume = 0.5,
+		},
+		use_doppler_shift = false,
+	}
+},
+{
 	type = "custom-input",
 	name = "DebugAdvanceActionProcess",
 	key_sequence = "BACKSLASH",
