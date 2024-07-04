@@ -99,20 +99,21 @@ local function on_tick(event)
                   end
                elseif (string.find(ThingLandedOn.name, "BouncePlate")) then
                   ---- determine "From" direction ----
-                  if (FlyingItem.start.y > FlyingItem.target.y
-                  and math.abs(FlyingItem.start.y-FlyingItem.target.y) > math.abs(FlyingItem.start.x-FlyingItem.target.x)) then
+                  local origin = FlyingItem.ThrowerPosition or FlyingItem.start
+                  if (origin.y > FlyingItem.target.y
+                  and math.abs(origin.y-FlyingItem.target.y) > math.abs(origin.x-FlyingItem.target.x)) then
                      unitx = 0
                      unity = -1
-                  elseif (FlyingItem.start.y < FlyingItem.target.y
-                  and math.abs(FlyingItem.start.y-FlyingItem.target.y) > math.abs(FlyingItem.start.x-FlyingItem.target.x)) then
+                  elseif (origin.y < FlyingItem.target.y
+                  and math.abs(origin.y-FlyingItem.target.y) > math.abs(origin.x-FlyingItem.target.x)) then
                      unitx = 0
                      unity = 1
-                  elseif (FlyingItem.start.x > FlyingItem.target.x
-                  and math.abs(FlyingItem.start.y-FlyingItem.target.y) < math.abs(FlyingItem.start.x-FlyingItem.target.x)) then
+                  elseif (origin.x > FlyingItem.target.x
+                  and math.abs(origin.y-FlyingItem.target.y) < math.abs(origin.x-FlyingItem.target.x)) then
                      unitx = -1
                      unity = 0
-                  elseif (FlyingItem.start.x < FlyingItem.target.x
-                  and math.abs(FlyingItem.start.y-FlyingItem.target.y) < math.abs(FlyingItem.start.x-FlyingItem.target.x)) then
+                  elseif (origin.x < FlyingItem.target.x
+                  and math.abs(origin.y-FlyingItem.target.y) < math.abs(origin.x-FlyingItem.target.x)) then
                      unitx = 1
                      unity = 0
                   end

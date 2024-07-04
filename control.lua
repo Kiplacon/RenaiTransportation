@@ -265,6 +265,8 @@ function(event)
 								{
 									item=HeldItem,
 									amount=catapult.held_stack.count,
+									thrower=catapult,
+									ThrowerPosition=catapult.position,
 									target={x=x, y=y},
 									start=start,
 									AirTime=AirTime,

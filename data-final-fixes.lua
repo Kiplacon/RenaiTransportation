@@ -403,7 +403,7 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	TheThrower.minable = {mining_time = 0.1, result = TheItem.name}
 	--TheThrower.localised_name ="Thrower "..ThingData.name
 	TheThrower.localised_name = {"thrower-gen.name", {"entity-name."..ThingData.name}}
-	TheThrower.insert_position = {0, 14.9}
+	TheThrower.insert_position = {0, 15.2}
 	TheThrower.allow_custom_vectors = true
 	ItsRange = 15
 
@@ -415,7 +415,7 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	    TheThrower.extension_speed = 0.027 -- default 0.03, needs to be a but slower so we don't get LongB0is
 		TheThrower.rotation_speed = 0.020 -- default 0.014
 	elseif (TheThrower.name == "RTThrower-long-handed-inserter") then
-		TheThrower.insert_position = {0, 24.9}
+		TheThrower.insert_position = {0, 25.2}
 		ItsRange = 25
 	end
 
