@@ -419,6 +419,12 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 		ItsRange = 25
 	end
 
+	if settings.startup["RTThrowersDynamicRange"].value == true then
+		local original_inserter = data.raw.inserter[ThingData.name]
+		ItsRange = math.floor(math.sqrt(original_inserter.insert_position[1]^2 + original_inserter.insert_position[2]^2)) * 10 + 5
+		TheThrower.insert_position = {0, ItsRange - 0.1}
+	end
+
 	if (TheThrower.localised_description) then
 		TheThrower.localised_description = {"thrower-gen.HasDesc", ItsRange, TheThrower.localised_description}
 	else
