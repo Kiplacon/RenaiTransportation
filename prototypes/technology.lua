@@ -90,6 +90,10 @@ data:extend({
 		{
 			type = "unlock-recipe",
 			recipe = "RTThrower-EjectorHatchRTRecipe"
+		},
+		{
+			type = "unlock-recipe",
+			recipe = "RTThrower-FilterEjectorHatchRTRecipe"
 		}
 	},
 	prerequisites = {"HatchRTTech"},

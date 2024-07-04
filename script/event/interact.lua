@@ -434,6 +434,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	and player.cursor_stack.valid_for_read
 	and string.find(player.cursor_stack.name, "RTThrower-")
 	and player.cursor_stack.name ~= "RTThrower-EjectorHatchRTItem"
+	and player.cursor_stack.name ~= "RTThrower-FilterEjectorHatchRTItem"
 	and player.force.technologies["RTFocusedFlinging"].researched == true) then
 		local thrower = string.gsub(player.cursor_stack.name, "-Item", "")
 		player.activate_paste() -- tests if activating paste brings up a blueprint to cursor
@@ -464,6 +465,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	and #player.get_blueprint_entities() == 1
 	and string.find(player.get_blueprint_entities()[1].name, "RTThrower-")
 	and player.cursor_stack.name ~= "RTThrower-EjectorHatchRTItem"
+	and player.cursor_stack.name ~= "RTThrower-FilterEjectorHatchRTItem"
 	and player.get_blueprint_entities()[1].drop_position
 	and player.force.technologies["RTFocusedFlinging"].researched == true) then
 		local thrower = player.get_blueprint_entities()[1]

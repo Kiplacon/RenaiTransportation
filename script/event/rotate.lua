@@ -40,7 +40,7 @@ local function rotate(event)
 				tint = {r = 0.4, g = 0.4, b = 0.4, a = 0}
 			}
 
-	elseif (event.entity.name == "RTThrower-EjectorHatchRT" and global.CatapultList[event.entity.unit_number] ~= nil) then
+	elseif ((event.entity.name == "RTThrower-EjectorHatchRT" or event.entity.name == "RTThrower-FilterEjectorHatchRT") and global.CatapultList[event.entity.unit_number] ~= nil) then
 		rendering.set_animation_offset(global.CatapultList[event.entity.unit_number].sprite, global.EjectorPointing[event.entity.direction])
 	end
 

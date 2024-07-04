@@ -55,6 +55,17 @@ local function entity_built(event)
 					animation_speed = 0,
 					only_in_alt_mode = false
 				}
+		elseif (entity.name == "RTThrower-FilterEjectorHatchRT") then
+			global.CatapultList[entity.unit_number].sprite = rendering.draw_animation
+				{
+					animation = "FilterEjectorHatchFrames",
+					surface = entity.surface,
+					target = entity,
+					animation_offset = global.EjectorPointing[entity.direction],
+					render_layer = 131,
+					animation_speed = 0,
+					only_in_alt_mode = false
+				}
 		elseif (entity.name == "RTThrower-PrimerThrower") then
 			--entity.rotatable = false
 			entity.inserter_stack_size_override = 1

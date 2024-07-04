@@ -227,7 +227,7 @@ function(event)
 							-- calcaulte projectile parameters
 							local start=catapult.held_stack_position
 							local speed = 0.18
-							if (catapult.name == "RTThrower-EjectorHatchRT") then
+							if (catapult.name == "RTThrower-EjectorHatchRT" or catapult.name == "RTThrower-FilterEjectorHatchRT") then
 								distance = math.sqrt((x-catapult.position.x)^2 + (y-catapult.position.y)^2)
 								start=catapult.position
 								speed = 0.25
