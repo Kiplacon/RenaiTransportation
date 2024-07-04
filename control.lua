@@ -231,18 +231,19 @@ function(event)
 								distance = math.sqrt((x-catapult.position.x)^2 + (y-catapult.position.y)^2)
 								start=catapult.position
 								speed = 0.25
-								-- catapult.surface.play_sound
-								-- 	{
-								-- 		path = "RTEjector",
-								-- 		position = catapult.position,
-								-- 		volume = 0.7
-								-- 	}
+								--[[ catapult.surface.play_sound
+								{
+									path = "RTEjector",
+									position = catapult.position,
+									volume_modifier = 0.1
+								} ]]
 							else
-								-- catapult.surface.play_sound
-								-- 	{
-								-- 		path = "RTThrow",
-								-- 		position = catapult.position
-								-- 	}
+								catapult.surface.play_sound
+								{
+									path = "RTThrow",
+									position = catapult.position,
+									volume_modifier = 0.2
+								}
 							end
 							local AirTime = math.max(1, math.floor(distance/speed)) -- for super fast throwers that move right on top of their target
 							local destination = nil

@@ -58,7 +58,8 @@ data:extend({
 {
 	type = "custom-input",
 	name = "RTClick",
-	key_sequence = "mouse-button-1"
+	key_sequence = "",
+	linked_game_control = "open-gui"
 },
 {
 	type = "sprite",

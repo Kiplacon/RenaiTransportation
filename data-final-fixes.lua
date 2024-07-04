@@ -422,7 +422,7 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	if settings.startup["RTThrowersDynamicRange"].value == true then
 		local original_inserter = data.raw.inserter[ThingData.name]
 		ItsRange = math.floor(math.sqrt(original_inserter.insert_position[1]^2 + original_inserter.insert_position[2]^2)) * 10 + 5
-		TheThrower.insert_position = {0, ItsRange - 0.1}
+		TheThrower.insert_position = {0, ItsRange+0.2}
 	end
 
 	if (TheThrower.localised_description) then

@@ -1,10 +1,11 @@
 ---------------------------------------------------------------------------------------------------
-Version: 1.2.12
+Version: 1.3
 Date: 7/3/2024
   Additions:
     - Filter Ejector Hatch. I'm sure you can figure out what it does. Recommended by LoupAndSnoop
+    - Added a setting to have thrower inserter ranges calculated based on the original inserter's range. Normally thrower range is set by whether the inserter is or isn't the vanilla long inserter. Added by wrothmonk
   Changes:
-    - Made the arrows of the thrower inserters line up with the way their vanilla versions are. https://github.com/Kiplacon/RenaiTransportation/issues/48
+    - Made the arrows of the thrower inserters line up with the way their base versions are. At last the game is playable. See https://github.com/Kiplacon/RenaiTransportation/issues/48
 ---------------------------------------------------------------------------------------------------
 Version: 1.2.11
 Date: 6/15/2024

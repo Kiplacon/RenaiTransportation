@@ -84,8 +84,8 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	if (ThingHovering) then
 		--|| Adjusting Thrower Range
 		if (ThingHovering.type == "inserter" and string.find(ThingHovering.name, "RTThrower-") and ThingHovering.name ~= "RTThrower-PrimerThrower" and global.CatapultList[ThingHovering.unit_number].RangeAdjustable == true) then
-			CurrentRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
-			if (CurrentRange >= ThingHovering.prototype.inserter_drop_position[2] + 0.1) then
+			local CurrentRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
+			if (CurrentRange >= ThingHovering.prototype.inserter_drop_position[2]) then
 				ThingHovering.drop_position =
 					{
 						ThingHovering.drop_position.x+(CurrentRange-2)*global.OrientationUnitComponents[ThingHovering.orientation].x,
@@ -98,12 +98,12 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 						ThingHovering.drop_position.y - global.OrientationUnitComponents[ThingHovering.orientation].y
 					}
 			end
-			local NewRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))-1
+			local NewRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
 			ThingHovering.surface.create_entity
 				({
 					name = "flying-text",
 					position = ThingHovering.drop_position,
-					text = "Range: "..NewRange
+					text = "Range: "..NewRange-1
 				})
 			player.play_sound{
 				path="utility/gui_click",
@@ -458,6 +458,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					{entity_number = 1, name = thrower, position = {0,0}, direction = 4, drop_position = {0,-1.201} }
 				})
 		end
+		player.play_sound{
+			path="utility/gui_click",
+			position=player.position,
+			volume_modifier=1
+			}
 		PlayerProperties.RangeAdjusting = true -- seems to immediately reset to false since the cursor stack changes to the blueprint but idk how to have the check go first and then set the global.RangeAdjusting
 
 	elseif (player.is_cursor_blueprint()
@@ -471,11 +476,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		local thrower = player.get_blueprint_entities()[1]
 		local OneD = player.get_blueprint_entities()[1].direction
 		local CurrentRange = math.ceil(math.abs(thrower.drop_position.x-thrower.position.x + thrower.drop_position.y-thrower.position.y))
-		if (CurrentRange >= thrower.prototype.inserter_drop_position[2] + 1.1) then
+		if (CurrentRange >= game.entity_prototypes[thrower.name].inserter_drop_position[2]+1) then
 			WhereWeDroppin =
 				{
-					thrower.drop_position.x+(CurrentRange-2)*global.OrientationUnitComponents[global.Dir2Ori[thrower.direction]].x,
-					thrower.drop_position.y+(CurrentRange-2)*global.OrientationUnitComponents[global.Dir2Ori[thrower.direction]].y
+					thrower.drop_position.x+(CurrentRange-3)*global.OrientationUnitComponents[global.Dir2Ori[thrower.direction]].x,
+					thrower.drop_position.y+(CurrentRange-3)*global.OrientationUnitComponents[global.Dir2Ori[thrower.direction]].y
 				}
 		else
 			WhereWeDroppin =
@@ -489,6 +494,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			{
 				{entity_number = 1, name = thrower.name, position = {0,0}, direction = OneD, drop_position = WhereWeDroppin }
 			})
+		player.play_sound{
+			path="utility/gui_click",
+			position=player.position,
+			volume_modifier=1
+			}
 		PlayerProperties.RangeAdjusting = true
 
 	end
