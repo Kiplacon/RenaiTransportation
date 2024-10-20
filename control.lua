@@ -44,8 +44,10 @@ script.on_event(
 -- Thrower Range blueprint auto build cancel
 script.on_event(defines.events.on_player_cursor_stack_changed, -- only has .player_index
 function(event)
-if (global.AllPlayers[event.player_index].RangeAdjusting == true) then
-	global.AllPlayers[event.player_index].RangeAdjusting = false
+if (storage.AllPlayers[event.player_index].RangeAdjusting == true and game.players[event.player_index].is_cursor_empty() == true) then
+	storage.AllPlayers[event.player_index].RangeAdjusting = false
+	storage.AllPlayers[event.player_index].RangeAdjustingDirection = nil
+	storage.AllPlayers[event.player_index].RangeAdjustingRange = nil
 end
 end)
 
@@ -53,19 +55,19 @@ end)
 -- Clear invalid things
 script.on_nth_tick(300,
 function(event)
-	for unitID, ItsStuff in pairs(global.BouncePadList) do
+	for unitID, ItsStuff in pairs(storage.BouncePadList) do
 		if (ItsStuff.TheEntity and ItsStuff.TheEntity.valid) then
 			-- it's good
 		else
-			global.BouncePadList[unitID] = nil
+			storage.BouncePadList[unitID] = nil
 		end
 	end
 
-	for unitID, ItsStuff in pairs(global.MagnetRamps) do
+	for unitID, ItsStuff in pairs(storage.MagnetRamps) do
 		if (ItsStuff.entity and ItsStuff.entity.valid) then
 			-- it's good
 		else
-			global.MagnetRamps[unitID] = nil
+			storage.MagnetRamps[unitID] = nil
 		end
 	end
 end)
@@ -74,9 +76,10 @@ end)
 ---- checks if thrower inserters have something in their hands and it's in the throwing position, then creates the approppriate projectile ----
 script.on_nth_tick(3,
 function(event)
-	for catapultID, properties in pairs(global.CatapultList) do
+	for catapultID, properties in pairs(storage.CatapultList) do
 		local catapult = properties.entity
 		if (catapult.valid) then
+			local CatapulyDestroyNumber = script.register_on_object_destroyed(catapult)
 			-- power check. low power makes inserter arms stretch
 			if (properties.IsElectric == true and catapult.energy/catapult.electric_buffer_size >= 0.9) then
 				catapult.active = true
@@ -106,49 +109,50 @@ function(event)
 						-- pointing at some entity
 						if (properties.targets[HeldItem]
 						and properties.targets[HeldItem].valid -- its an entity
-						and global.OnTheWay[properties.targets[HeldItem].unit_number] -- receptions are being tracked for the entity
-						and global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem]) then -- receptions are being tracked for the entity for the particular item
+						and storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])] -- receptions are being tracked for the entity
+						and storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])][HeldItem]) then -- receptions are being tracked for the entity for the particular item
+							local TargetDestroyNumber = script.register_on_object_destroyed(properties.targets[HeldItem])
 							if (properties.targets[HeldItem].type ~= "transport-belt") then
-								if (global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] < 0) then
-									global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] = 0  -- correct any miscalculaltions resulting in negative values
+								if (storage.OnTheWay[TargetDestroyNumber][HeldItem] < 0) then
+									storage.OnTheWay[TargetDestroyNumber][HeldItem] = 0  -- correct any miscalculaltions resulting in negative values
 								end
-								local total = global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] + catapult.held_stack.count
-								local inserted = properties.targets[HeldItem].insert({name=HeldItem, count=total})
+								local total = storage.OnTheWay[TargetDestroyNumber][HeldItem] + catapult.held_stack.count
+								local inserted = properties.targets[HeldItem].insert({name=HeldItem, count=total, quality=catapult.held_stack.quality.name})
 								if (inserted < total) then
 									catapult.active = false
 								else
 									catapult.active = true
 								end
 								if (inserted > 0) then -- when the destination is full. Have to check otherwise there's an error
-									properties.targets[HeldItem].remove_item({name=HeldItem, count=inserted})
+									properties.targets[HeldItem].remove_item({name=HeldItem, count=inserted, quality=catapult.held_stack.quality.name})
 								end
 							elseif (properties.targets[HeldItem].type == "transport-belt") then
 								local incomming = 0
-								for name, count in pairs(global.OnTheWay[properties.targets[HeldItem].unit_number]) do
+								for name, count in pairs(storage.OnTheWay[TargetDestroyNumber]) do
 									incomming = incomming + count
 								end
 								local total = incomming + properties.targets[HeldItem].get_transport_line(1).get_item_count() + properties.targets[HeldItem].get_transport_line(2).get_item_count() + catapult.held_stack.count
 								if (properties.targets[HeldItem].belt_shape == "straight" and total <= 8)
 								or (properties.targets[HeldItem].belt_shape ~= "straight" and total <= 7) then
 									catapult.active = true
-									if (global.HoverGFX[catapult.unit_number]) then
-										for playerID, graphic in pairs(global.HoverGFX[catapult.unit_number]) do
-											rendering.destroy(graphic)
+									if (storage.HoverGFX[CatapulyDestroyNumber]) then
+										for playerID, graphic in pairs(storage.HoverGFX[CatapulyDestroyNumber]) do
+											graphic.destroy()
 										end
-										global.HoverGFX[catapult.unit_number] = {}
+										storage.HoverGFX[CatapulyDestroyNumber] = {}
 									end
 								else
 									catapult.active = false
-									if (global.HoverGFX[catapult.unit_number] == nil) then
-										global.HoverGFX[catapult.unit_number] = {}
+									if (storage.HoverGFX[CatapulyDestroyNumber] == nil) then
+										storage.HoverGFX[CatapulyDestroyNumber] = {}
 									end
 									for ID, player in pairs(game.players) do
-										if (global.HoverGFX[catapult.unit_number][ID] == nil) then
+										if (storage.HoverGFX[CatapulyDestroyNumber][ID] == nil) then
 											local hovering = false
 											if (player.selected and player.selected.unit_number == catapult.unit_number) then
 												hovering = true
 											end
-											global.HoverGFX[catapult.unit_number][ID] = rendering.draw_text
+											storage.HoverGFX[CatapulyDestroyNumber][ID] = rendering.draw_text
 											{
 												text = {"RTmisc.EightMax"},
 												surface = catapult.surface,
@@ -175,7 +179,7 @@ function(event)
 								properties.ImAlreadyTracer = "tracing"
 								-- set tracer "projectile"
 								local AirTime = 1
-								global.FlyingItems[global.FlightNumber] =
+								storage.FlyingItems[storage.FlightNumber] =
 									{
 									item=HeldItem, --not like it matters
 									amount=0, --not like it matters
@@ -188,25 +192,27 @@ function(event)
 									AirTime=AirTime,
 									StartTick=event.tick,
 									LandTick=event.tick+AirTime,
-									tracing = properties.entity.unit_number,
+									tracing = catapultID,
 									surface = catapult.surface,
 									space = false --necessary
 									}
-								global.FlightNumber = global.FlightNumber + 1
+								storage.FlightNumber = storage.FlightNumber + 1
 							end
 							catapult.active = false
+
 						-- first time throws for items to this target
 						elseif (properties.targets[HeldItem]
 						and properties.targets[HeldItem].valid
-						and global.OnTheWay[properties.targets[HeldItem].unit_number] == nil) then
-							global.OnTheWay[properties.targets[HeldItem].unit_number] = {}
-							global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] = 0
+						and storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])] == nil) then
+							storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])] = {}
+							storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])][HeldItem] = 0
+
 						-- first time throws for this particular item to this target
 						elseif (properties.targets[HeldItem]
 						and properties.targets[HeldItem].valid
-						and global.OnTheWay[properties.targets[HeldItem].unit_number]
-						and global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] == nil) then
-							global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] = 0
+						and storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])]
+						and storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])][HeldItem] == nil) then
+							storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])][HeldItem] = 0
 						end
 					-- overflow prevention is set to off
 					else
@@ -215,10 +221,10 @@ function(event)
 
 					-- if the thrower is still active after the checks then:
 					if (catapult.active == true) then
-						if (catapult.name == "RTThrower-PrimerThrower" and game.entity_prototypes["RTPrimerThrowerShooter-"..HeldItem]) then
+						if (catapult.name == "RTThrower-PrimerThrower" and prototypes.entity["RTPrimerThrowerShooter-"..HeldItem]) then
 							catapult.inserter_stack_size_override = 1
 							catapult.active = false
-							global.PrimerThrowerLinks[properties.entangled.detector.unit_number].ready = true
+							storage.PrimerThrowerLinks[script.register_on_object_destroyed(properties.entangled.detector)].ready = true
 						else
 							-- starting parameters
 							local x = catapult.drop_position.x
@@ -246,26 +252,27 @@ function(event)
 								}
 							end
 							local AirTime = math.max(1, math.floor(distance/speed)) -- for super fast throwers that move right on top of their target
-							local destination = nil
+							local DestinationDestroyNumber
 							if (settings.global["RTOverflowComp"].value == true and properties.InSpace == false) then
 								if (properties.targets[HeldItem] ~= nil and properties.targets[HeldItem].valid) then
-									destination = properties.targets[HeldItem].unit_number
-									if (global.OnTheWay[properties.targets[HeldItem].unit_number] == nil) then
-										global.OnTheWay[properties.targets[HeldItem].unit_number] = {}
-										global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] = catapult.held_stack.count
-									elseif (global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] == nil) then
-										global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] = catapult.held_stack.count
+									DestinationDestroyNumber = script.register_on_object_destroyed(properties.targets[HeldItem])
+									if (storage.OnTheWay[DestinationDestroyNumber] == nil) then
+										storage.OnTheWay[DestinationDestroyNumber] = {}
+										storage.OnTheWay[DestinationDestroyNumber][HeldItem] = catapult.held_stack.count
+									elseif (storage.OnTheWay[DestinationDestroyNumber][HeldItem] == nil) then
+										storage.OnTheWay[DestinationDestroyNumber][HeldItem] = catapult.held_stack.count
 									else
-										global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] = global.OnTheWay[properties.targets[HeldItem].unit_number][HeldItem] + catapult.held_stack.count
+										storage.OnTheWay[DestinationDestroyNumber][HeldItem] = storage.OnTheWay[DestinationDestroyNumber][HeldItem] + catapult.held_stack.count
 									end
 								elseif (properties.targets[HeldItem] == "nothing") then -- recheck pointing at nothing/things without unit_numbers
 									properties.targets[HeldItem] = nil
 								end
 							end
-							global.FlyingItems[global.FlightNumber] =
+							storage.FlyingItems[storage.FlightNumber] =
 								{
 									item=HeldItem,
 									amount=catapult.held_stack.count,
+									quality=catapult.held_stack.quality.name,
 									thrower=catapult,
 									ThrowerPosition=catapult.position,
 									target={x=x, y=y},
@@ -273,12 +280,12 @@ function(event)
 									AirTime=AirTime,
 									StartTick=game.tick,
 									LandTick=game.tick+AirTime,
-									destination=destination,
+									destination=DestinationDestroyNumber,
 									space=properties.InSpace,
 									surface=catapult.surface,
 								}
 							if (properties.InSpace == false) then
-								if (game.entity_prototypes["RTItemProjectile-"..HeldItem..speed*100]) then
+								if (prototypes.entity["RTItemProjectile-"..HeldItem..speed*100]) then
 									catapult.surface.create_entity
 									{
 										name="RTItemProjectile-"..HeldItem..speed*100,
@@ -296,8 +303,8 @@ function(event)
 									}
 								end
 							else
-								x = x + (-global.OrientationUnitComponents[catapult.orientation].x * 100)
-								y = y + (-global.OrientationUnitComponents[catapult.orientation].y * 100)
+								x = x + (-storage.OrientationUnitComponents[catapult.orientation].x * 100)
+								y = y + (-storage.OrientationUnitComponents[catapult.orientation].y * 100)
 								distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
 								AirTime = math.max(1, math.floor(distance/speed))
 								local vector = {x=x-catapult.held_stack_position.x, y=y-catapult.held_stack_position.y}
@@ -312,10 +319,10 @@ function(event)
 									}
 								end
 								path.duration = AirTime
-								global.FlyingItems[global.FlightNumber].path = path
-								global.FlyingItems[global.FlightNumber].space = true
-								global.FlyingItems[global.FlightNumber].LandTick = game.tick+AirTime
-								global.FlyingItems[global.FlightNumber].sprite = rendering.draw_sprite
+								storage.FlyingItems[storage.FlightNumber].path = path
+								storage.FlyingItems[storage.FlightNumber].space = true
+								storage.FlyingItems[storage.FlightNumber].LandTick = game.tick+AirTime
+								storage.FlyingItems[storage.FlightNumber].sprite = rendering.draw_sprite
 									{
 										sprite = "item/"..HeldItem,
 										x_scale = 0.5,
@@ -323,21 +330,21 @@ function(event)
 										target = catapult.held_stack_position,
 										surface = catapult.surface
 									}
-								global.FlyingItems[global.FlightNumber].spin = math.random(-10,10)*0.01
+								storage.FlyingItems[storage.FlightNumber].spin = math.random(-10,10)*0.01
 							end
 							if (catapult.held_stack.item_number ~= nil) then
 								local CloudStorage = game.create_inventory(1)
 								CloudStorage.insert(catapult.held_stack)
-								global.FlyingItems[global.FlightNumber].CloudStorage = CloudStorage
+								storage.FlyingItems[storage.FlightNumber].CloudStorage = CloudStorage
 							end
 
 							-- Ultracube irreplaceables detection & handling
-							if global.Ultracube and global.Ultracube.prototypes.irreplaceable[HeldItem] then -- Ultracube mod is active, and the held item is an irreplaceable
+							if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[HeldItem] then -- Ultracube mod is active, and the held item is an irreplaceable
 								-- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
-								CubeFlyingItems.create_token_for(global.FlyingItems[global.FlightNumber])
+								CubeFlyingItems.create_token_for(storage.FlyingItems[storage.FlightNumber])
 							end
 							
-							global.FlightNumber = global.FlightNumber + 1
+							storage.FlightNumber = storage.FlightNumber + 1
 							catapult.held_stack.clear()
 						end
 					end
@@ -348,21 +355,21 @@ function(event)
 			end
 
 			if (properties.RangeAdjustable == true) then
-				local range = catapult.get_merged_signal({type="virtual", name="ThrowerRangeSignal"})
+				local range = catapult.get_signal({type="virtual", name="ThrowerRangeSignal"}, defines.wire_connector_id.circuit_red)
 				if (properties.range==nil or properties.range~=range) then
 					if (range > 0 and range <= catapult.prototype.inserter_drop_position[2]+0.1) then
 						catapult.drop_position =
 							{
-								catapult.position.x + -range*global.OrientationUnitComponents[catapult.orientation].x,
-								catapult.position.y + -range*global.OrientationUnitComponents[catapult.orientation].y
+								catapult.position.x + -range*storage.OrientationUnitComponents[catapult.orientation].x,
+								catapult.position.y + -range*storage.OrientationUnitComponents[catapult.orientation].y
 							}
 						properties.range = range
-						if (global.CatapultList[catapult.unit_number]) then
-							global.CatapultList[catapult.unit_number].targets = {}
-							for componentUN, PathsItsPartOf in pairs(global.ThrowerPaths) do
+						if (storage.CatapultList[CatapulyDestroyNumber]) then
+							storage.CatapultList[CatapulyDestroyNumber].targets = {}
+							for componentUN, PathsItsPartOf in pairs(storage.ThrowerPaths) do
 								for ThrowerUN, TrackedItems in pairs(PathsItsPartOf) do
-									if (ThrowerUN == catapult.unit_number) then
-										global.ThrowerPaths[componentUN][ThrowerUN] = {}
+									if (ThrowerUN == CatapulyDestroyNumber) then
+										storage.ThrowerPaths[componentUN][ThrowerUN] = {}
 									end
 								end
 							end
@@ -372,7 +379,7 @@ function(event)
 			end
 
 		elseif (catapult.valid == false) then
-			global.CatapultList[catapultID] = nil
+			storage.CatapultList[catapultID] = nil
 		end
 	end
 end)
@@ -409,7 +416,7 @@ script.on_event(
 )
 
 script.on_event(
-	defines.events.on_entity_destroyed,
+	defines.events.on_object_destroyed,
 	require("script.event.entity_destroyed")
 )
 
@@ -419,7 +426,7 @@ script.on_event(defines.events.on_player_changed_surface,
 -- .surface_index :: uint: The surface index the player was on
 function(event)
 local player = game.players[event.player_index]
-local PlayerProperties = global.AllPlayers[event.player_index]
+local PlayerProperties = storage.AllPlayers[event.player_index]
 	if (PlayerProperties and PlayerProperties.state == "zipline" and player.surface.name ~= PlayerProperties.zipline.StartingSurface.name) then
 		player.teleport(player.position, game.get_surface(event.surface_index))
 	end
@@ -431,35 +438,25 @@ script.on_event(defines.events.on_runtime_mod_setting_changed,
 -- setting_type :: string: The setting type: "runtime-per-user", or "runtime-global".
 function(event)
 	if (event.setting == "RTOverflowComp" and settings.global["RTOverflowComp"].value == false) then
-		global.OnTheWay = {}
+		storage.OnTheWay = {}
 	end
 end)
 
--- script.on_event(defines.events.on_player_driving_changed_state,
--- -- player_index :: uint
--- -- entity :: LuaEntity (optional): The vehicle if any.
--- function(event)
--- 	local player = game.players[event.player_index]
--- 	if (player.character and player.driving == false) then
--- 		for each, properties in pairs(global.FlyingTrains) do
--- 			if (properties.passenger and properties.passenger.unit_number == player.character.unit_number) then
--- 				properties.GuideCar.set_passenger(player)
--- 			end
--- 		end
--- 	end
--- end)
-
 script.on_event(defines.events.on_gui_closed,
 function(event)
-	if (event.entity and event.entity.name == "DirectorBouncePlate" and global.ThrowerPaths[event.entity.unit_number] ~= nil) then
-		for ThrowerUN, TrackedItems in pairs(global.ThrowerPaths[event.entity.unit_number]) do
-			if (global.CatapultList[ThrowerUN]) then
+	local player = game.players[event.player_index]
+	if (event.entity and event.entity.name == "DirectorBouncePlate" and storage.ThrowerPaths[script.register_on_object_destroyed(event.entity)] ~= nil) then
+		for ThrowerUN, TrackedItems in pairs(storage.ThrowerPaths[script.register_on_object_destroyed(event.entity)]) do
+			if (storage.CatapultList[ThrowerUN]) then
 				for item, asthma in pairs(TrackedItems) do
-					global.CatapultList[ThrowerUN].targets[item] = nil
+					storage.CatapultList[ThrowerUN].targets[item] = nil
 				end
 			end
 		end
-		global.ThrowerPaths[event.entity.unit_number] = {}
+		storage.ThrowerPaths[script.register_on_object_destroyed(event.entity)] = {}
+	end
+	if (player.gui.screen.RTZiplineTerminalGUI) then
+		player.gui.screen.RTZiplineTerminalGUI.destroy()
 	end
 end)
 
@@ -477,14 +474,17 @@ script.on_event(defines.events.on_selected_entity_changed,
 --last_entity	:: LuaEntity?	The last selected entity if it still exists and there was one.
 function(event)
 	local player = game.players[event.player_index]
+	--hide the old one
 	if (event.last_entity
-	and event.last_entity.unit_number
-	and global.HoverGFX[event.last_entity.unit_number]
-	and global.HoverGFX[event.last_entity.unit_number][event.player_index]) then
-		rendering.set_visible(global.HoverGFX[event.last_entity.unit_number][event.player_index], false)
+	and storage.HoverGFX[script.register_on_object_destroyed(event.last_entity)]
+	and storage.HoverGFX[script.register_on_object_destroyed(event.last_entity)][event.player_index]) then
+		storage.HoverGFX[script.register_on_object_destroyed(event.last_entity)][event.player_index].visible = false
 	end
-	if (player.selected and player.selected.unit_number and global.HoverGFX[player.selected.unit_number] and global.HoverGFX[player.selected.unit_number][event.player_index]) then
-		rendering.set_visible(global.HoverGFX[player.selected.unit_number][event.player_index], true)
+	-- show the new one
+	if (player.selected
+	and storage.HoverGFX[script.register_on_object_destroyed(player.selected)]
+	and storage.HoverGFX[script.register_on_object_destroyed(player.selected)][event.player_index]) then
+		storage.HoverGFX[script.register_on_object_destroyed(player.selected)][event.player_index].visible = true
 	end
 end)
 
@@ -493,21 +493,21 @@ script.on_event(defines.events.on_pre_surface_deleted,
 --name :: defines.events	Identifier of the event
 --tick :: uint				Tick the event was generated.
 function(event)
-	for each, FlyingItem in pairs(global.FlyingItems) do
+	for each, FlyingItem in pairs(storage.FlyingItems) do
 		if (FlyingItem.surface.index == event.surface_index) then
             if (FlyingItem.sprite) then
-				rendering.destroy(FlyingItem.sprite)
+				FlyingItem.sprite.destroy()
 			end
 			if (FlyingItem.shadow) then
-				rendering.destroy(FlyingItem.shadow)
+				FlyingItem.shadow.destroy()
 			end
-			if (FlyingItem.destination ~= nil and global.OnTheWay[FlyingItem.destination]) then
-				global.OnTheWay[FlyingItem.destination][FlyingItem.item] = global.OnTheWay[FlyingItem.destination][FlyingItem.item] - FlyingItem.amount
+			if (FlyingItem.destination ~= nil and storage.OnTheWay[FlyingItem.destination]) then
+				storage.OnTheWay[FlyingItem.destination][FlyingItem.item] = storage.OnTheWay[FlyingItem.destination][FlyingItem.item] - FlyingItem.amount
 			end
 			if (FlyingItem.player) then
 				SwapBackFromGhost(FlyingItem.player, FlyingItem)
 			end
-			global.FlyingItems[each] = nil
+			storage.FlyingItems[each] = nil
 		end
 	end
 end)
@@ -518,7 +518,7 @@ function(event)
 	local player = game.players[event.player_index]
 	if (player.cursor_stack.valid_for_read == true) then
 		local item = player.cursor_stack.name
-		if (game.entity_prototypes["RTItemProjectile-"..item..25]) then
+		if (prototypes.entity["RTItemProjectile-"..item..25]) then
 			player.surface.create_entity
 			{
 				name="RTItemProjectile-"..item..25,
@@ -536,7 +536,14 @@ function(event)
 			}
 		end
 	else
-		rendering.draw_animation
+		rendering.draw_sprite
+		{
+		sprite = "RTlocomotiveleft",
+		target = {player.selected.position.x, player.selected.position.y-3.0},
+		surface = player.surface,
+		render_layer = "air-object",
+		}
+		--[[ rendering.draw_animation
 		{
 			animation = "RTHoojinTime",
 			x_scale = 0.5,
@@ -545,7 +552,7 @@ function(event)
 			surface = player.surface,
 			time_to_live = 120,
 			animation_speed = 0.5
-		}
+		} ]]
 	end
 end)
 
@@ -556,7 +563,7 @@ script.on_event(defines.events.on_research_finished,
 --tick		:: uint					Tick the event was generated.
 function(event)
 	if (event.research.name == "RTFocusedFlinging") then
-		for each, properties in pairs(global.CatapultList) do
+		for each, properties in pairs(storage.CatapultList) do
 			if (string.find(properties.entity.name, "RTThrower-") and properties.entity.name ~= "RTThrower-PrimerThrower") then
 				properties.RangeAdjustable = true
 			end
@@ -567,21 +574,89 @@ end)
 script.on_event(defines.events.on_pre_player_left_game,
 function(event)
 	local player = game.players[event.player_index]
-	local PlayerProperties = global.AllPlayers[event.player_index]
+	local PlayerProperties = storage.AllPlayers[event.player_index]
 	if (PlayerProperties.state == "zipline") then
 		GetOffZipline(player, PlayerProperties)
 	elseif (PlayerProperties.state == "jumping") then
-		if (PlayerProperties.PlayerLauncher.tracker and global.FlyingItems[PlayerProperties.PlayerLauncher.tracker] ~= nil) then
+		if (PlayerProperties.PlayerLauncher.tracker and storage.FlyingItems[PlayerProperties.PlayerLauncher.tracker] ~= nil) then
 			local number = PlayerProperties.PlayerLauncher.tracker
-			local FlyingItem = global.FlyingItems[number]
+			local FlyingItem = storage.FlyingItems[number]
 			if (FlyingItem.sprite) then
-				rendering.destroy(FlyingItem.sprite)
+				FlyingItem.sprite.destroy()
 			end
 			if (FlyingItem.shadow) then
-				rendering.destroy(FlyingItem.shadow)
+				FlyingItem.shadow.destroy()
 			end
 			SwapBackFromGhost(player, FlyingItem)
-			global.FlyingItems[number] = nil
+			storage.FlyingItems[number] = nil
+		end
+	end
+end)
+
+script.on_event(
+defines.events.on_gui_opened,
+function(event)
+    local player = game.players[event.player_index]
+    local selected = player.selected
+    if (selected and selected.valid and event.gui_type == 1) then
+		if (selected.name == "RTZiplineTerminal") then
+			if (storage.AllPlayers[event.player_index].state == "default"
+			and player.character
+			and (not string.find(player.character.name, "-jetpack"))
+			and player.is_cursor_empty() == true) then
+				if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
+				and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "ZiplineItem")
+				and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
+				and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTProgrammableZiplineControlsItem") then
+					player.opened = nil
+					if (DistanceBetween(player.character.position, selected.position) <= 7) then
+						ShowZiplineTerminalGUI(player, selected)
+					else
+						player.print({"zipline-stuff.range"})
+					end
+				else
+					player.print({"zipline-stuff.terminalReqs"})
+				end
+			end
+
+		elseif (selected.name == "RTTrainRamp"
+			or selected.name == "RTTrainRampNoSkip"
+			or selected.name == "RTMagnetTrainRamp"
+			or selected.name == "RTMagnetTrainRampNoSkip"
+			or selected.name == "RTMagnetRampDrain") then
+			player.opened = nil
+
+		elseif (selected.name == "DirectorBouncePlate") then
+			player.opened = nil
+			ShowDirectorGUI(player, selected)
+		end
+    end
+end)
+
+script.on_event(
+defines.events.on_gui_closed,
+function(event)
+    local player = game.players[event.player_index]
+	if (player.gui.screen.RTZiplineTerminalGUI) then
+		player.gui.screen.RTZiplineTerminalGUI.destroy()
+	end
+	if (player.gui.screen.RTDirectorPadGUI) then
+		player.gui.screen.RTDirectorPadGUI.destroy()
+	end
+end)
+
+script.on_event(
+defines.events.on_gui_elem_changed,
+function(event)
+	local element = event.element
+	if (element.parent and element.parent.parent and element.parent.parent.name == "RTDirectorPadGUI") then
+		local director = storage.BouncePadList[element.parent.parent.tags.ID].TheEntity
+		local section = element.tags.section
+		local slot = element.tags.slot
+		if (element.elem_value) then
+			director.get_or_create_control_behavior().get_section(section).set_slot(slot, {value={name=element.elem_value}})
+		else
+			director.get_or_create_control_behavior().get_section(section).clear_slot(slot)
 		end
 	end
 end)

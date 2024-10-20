@@ -13,7 +13,7 @@ function cube_flying_items.create_token_for(FlyingItem, velocity)
 			velocity = velocity -- Vector for altering the explosion animation
 		}
 	)
-	FlyingItem.cube_should_hint = global.Ultracube.prototypes.cube[FlyingItem.item] -- True if in set, otherwise Nil
+	FlyingItem.cube_should_hint = storage.Ultracube.prototypes.cube[FlyingItem.item] -- True if in set, otherwise Nil
 end
 
 -- Used to update the ownership token for a FlyingItem that has a sprite and path
@@ -82,7 +82,12 @@ function cube_flying_items.release_and_spill(FlyingItem, ThingLandedOn)
 		if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
 			force_name = "player"
 		end
-		local spilt = FlyingItem.surface.spill_item_stack(FlyingItem.target, item_stack, nil, force_name, true)
+		local spilt = FlyingItem.surface.spill_item_stack
+			{
+				position = FlyingItem.target,
+				stack = item_stack,
+				force = force_name
+			}
 		if FlyingItem.cube_should_hint then
 			if #spilt >= 1 then
 				remote.call("Ultracube", "hint_entity", spilt[1])

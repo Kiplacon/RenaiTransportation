@@ -1,7 +1,8 @@
 local MLG = table.deepcopy(data.raw.car["car"])
 MLG.name = "RTPropCar"
-MLG.flags = {"placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "hidden", "not-selectable-in-game"}
-MLG.collision_mask = {}
+MLG.flags = {"placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-selectable-in-game"}
+hidden = true
+MLG.collision_mask = {layers={}}
 MLG.selectable_in_game = false
 MLG.corpse = nil
 MLG.energy_source ={type = "void"}
@@ -41,7 +42,7 @@ MLG,
 	name = "RTPropCarItem",
 	icon = "__RenaiTransportation__/graphics/Untitled.png",
 	icon_size = 32,
-	flags = {"hidden"},
+	hidden = true,
 	subgroup = "RT",
 	order = "c",
 	place_result = "RTPropCar",
@@ -55,9 +56,11 @@ MLG,
 	energy_required = 0.5,
 	ingredients =
 		{
-			{"iron-plate", 999}
+			{type="item", name="iron-plate", amount=999}
 		},
-	result = "RTPropCarItem"
+	results = {
+		{type="item", name="RTPropCarItem", amount=1}
+	}
 }
 
 })

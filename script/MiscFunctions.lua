@@ -48,12 +48,13 @@ function SwapToGhost(player)
 		"character_trash_slot_count_bonus",
 		"character_maximum_following_robot_count_bonus",
 		"character_health_bonus",
-      "character_personal_logistic_requests_enabled",
       "allow_dispatching_robots"
 	}
 	for each, modifier in pairs(CharacterModifiers) do
 		NEWHOST[modifier] = OG[modifier]
 	end
+   NEWHOST.get_requester_point().enabled = OG.get_requester_point().enabled
+   NEWHOST.get_requester_point().trash_not_requested = OG.get_requester_point().trash_not_requested
 	------ undo crafting queue -------
 	local TheList = nil
 	if (OG.crafting_queue) then
@@ -81,11 +82,11 @@ function SwapToGhost(player)
 	OG.get_inventory(defines.inventory.character_armor).clear()
 	OG.get_inventory(defines.inventory.character_trash).clear()
    NEWHOST.cursor_stack.transfer_stack(OG.cursor_stack)
-   for i = 1, OG.request_slot_count do
+   --[[ for i = 1, OG.request_slot_count do
       local thing = OG.get_personal_logistic_slot(i)
       NEWHOST.set_personal_logistic_slot(i, thing)
       OG.clear_personal_logistic_slot(i)
-   end
+   end ]]
 	---------- redo crafting queue -----------
 	if (TheList ~= nil) then
 		for i = #TheList, 1, -1 do
@@ -127,8 +128,8 @@ end
 ---- swapping back from character ghost copy from using the ziplines or player launcher
 function SwapBackFromGhost(player, FlyingItem)
 	if (FlyingItem) then
-		global.AllPlayers[FlyingItem.player.index].state = "default"
-      global.AllPlayers[FlyingItem.player.index].PlayerLauncher = {}
+		storage.AllPlayers[FlyingItem.player.index].state = "default"
+      storage.AllPlayers[FlyingItem.player.index].PlayerLauncher = {}
 		if (FlyingItem.player.character) then
 			local OG2 = FlyingItem.player.character
          FlyingItem.SwapBack.vehicle.destroy()
@@ -156,11 +157,11 @@ function SwapBackFromGhost(player, FlyingItem)
 			end
          player.character.cursor_stack.transfer_stack(OG2.cursor_stack)
 			FlyingItem.SwapBack.character_inventory_slots_bonus = FlyingItem.SwapBack.character_inventory_slots_bonus-10000
-         for i = 1, OG2.request_slot_count do
+         --[[ for i = 1, OG2.request_slot_count do
             local thing = OG2.get_personal_logistic_slot(i)
             FlyingItem.SwapBack.set_personal_logistic_slot(i, thing)
             OG2.clear_personal_logistic_slot(i)
-         end
+         end ]]
 			---------- redo crafting queue -----------
 			if (TheList ~= nil) then
 				for i = #TheList, 1, -1 do
@@ -203,12 +204,13 @@ function SwapBackFromGhost(player, FlyingItem)
             "character_trash_slot_count_bonus",
             "character_maximum_following_robot_count_bonus",
             "character_health_bonus",
-            "character_personal_logistic_requests_enabled",
             "allow_dispatching_robots"
          }
          for each, modifier in pairs(CharacterModifiers) do
             OG2[modifier] = FlyingItem.SwapBack[modifier]
          end
+         FlyingItem.SwapBack.get_requester_point().enabled = OG2.get_requester_point().enabled
+         FlyingItem.SwapBack.get_requester_point().trash_not_requested = OG2.get_requester_point().trash_not_requested
          if (remote.interfaces["space-exploration"] and remote.interfaces["space-exploration"].on_character_swapped) then
             remote.call("space-exploration", "on_character_swapped", {new_character=FlyingItem.SwapBack,old_character=OG2})
          end
@@ -219,7 +221,7 @@ function SwapBackFromGhost(player, FlyingItem)
 		end
 
 	elseif (player.character) then
-		local PlayerProperties = global.AllPlayers[player.index]
+		local PlayerProperties = storage.AllPlayers[player.index]
 		local OG2 = player.character
       PlayerProperties.SwapBack.vehicle.destroy()
 		PlayerProperties.SwapBack.teleport(player.position)
@@ -312,11 +314,10 @@ function DistanceBetween(p1, p2)
 end
 
 function GetOnZipline(player, PlayerProperties, pole)
-   local OG = SwapToGhost(player)
    ---------- get on zipline -----------------
    local TheGuy = player
-   local FromXWireOffset = game.recipe_prototypes["RTGetTheGoods-"..pole.name.."X"].emissions_multiplier
-   local FromYWireOffset = game.recipe_prototypes["RTGetTheGoods-"..pole.name.."Y"].emissions_multiplier
+   local FromXWireOffset = prototypes.recipe["RTGetTheGoods-"..pole.name.."X"].emissions_multiplier
+   local FromYWireOffset = prototypes.recipe["RTGetTheGoods-"..pole.name.."Y"].emissions_multiplier
    local EquippedTrolley = player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name
    local SpookySlideGhost = pole.surface.create_entity
       ({
@@ -417,7 +418,7 @@ function GetOnZipline(player, PlayerProperties, pole)
    --game.print("Attached to track")
    PlayerProperties.state = "zipline"
    PlayerProperties.zipline.StartingSurface = TheGuy.surface
-   PlayerProperties.SwapBack = OG
+   PlayerProperties.OGSpeed = player.character.character_running_speed_modifier
    pole.surface.play_sound
       {
          path = "RTZipAttach",
@@ -429,7 +430,6 @@ end
 
 function GetOffZipline(player, PlayerProperties)
    local ZiplineStuff = PlayerProperties.zipline
-   SwapBackFromGhost(player)
    ZiplineStuff.LetMeGuideYou.surface.play_sound
       {
          path = "RTZipDettach",
@@ -448,4 +448,6 @@ function GetOffZipline(player, PlayerProperties)
    player.teleport(player.surface.find_non_colliding_position("character", {player.position.x, player.position.y+2}, 0, 0.01))
    PlayerProperties.zipline = {}
    PlayerProperties.state = "default"
+   player.character.character_running_speed_modifier = PlayerProperties.OGSpeed
+   PlayerProperties.OGSpeed = nil
 end

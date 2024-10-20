@@ -63,11 +63,13 @@ data:extend({
 		energy_required = 1,
 		ingredients = 
 			{
-				{"iron-plate", 40},
-				{"steel-plate", 20},
-				{"automation-science-pack", 10}
+				{type="item", name="iron-plate", amount=40},
+				{type="item", name="steel-plate", amount=20},
+				{type="item", name="automation-science-pack", amount=10}
 			},
-		result = "RTTrainBouncePlateItem"
+		results = {
+			{type="item", name="RTTrainBouncePlateItem", amount=1}
+		}
 	},
 	
 	{ --------- bounce effect ----------

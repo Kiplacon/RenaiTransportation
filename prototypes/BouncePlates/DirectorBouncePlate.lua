@@ -95,10 +95,12 @@ data:extend({
 		energy_required = 1,
 		ingredients =
 			{
-				{"BouncePlateItem", 1},
-				{"advanced-circuit", 2}
+				{type="item", name="BouncePlateItem", amount=1},
+				{type="item", name="advanced-circuit", amount=2}
 			},
-		result = "DirectorBouncePlateItem"
+		results = {
+			{type="item", name="DirectorBouncePlateItem", amount=1}
+		}
 	},
 	---------- default guide icons
 	{

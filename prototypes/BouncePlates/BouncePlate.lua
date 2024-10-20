@@ -70,10 +70,12 @@ data:extend({
 		energy_required = 1,
 		ingredients =
 			{
-				{"iron-plate", 4},
-				{"automation-science-pack", 1}
+				{type="item", name="iron-plate", amount=4},
+				{type="item", name="automation-science-pack", amount=1}
 			},
-		result = "BouncePlateItem"
+		results = {
+			{type="item", name="BouncePlateItem", amount=1}
+		}
 	},
 
 	{ --------- bounce effect ----------

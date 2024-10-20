@@ -4,7 +4,8 @@ data:extend({
   name = "RTPrimerThrowerDetector",
   icon = "__base__/graphics/icons/big-worm.png",
   icon_size = 64, icon_mipmaps = 4,
-  flags = {"placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "hidden", "not-selectable-in-game"},
+  flags = {"placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-selectable-in-game"},
+  hidden = true,
   max_health = 750,
   alert_when_attacking = false,
   resistances =
@@ -24,6 +25,7 @@ data:extend({
   },
   --selection_box = {{-0.4, -0.4}, {0.4, 0.4}},
   rotation_speed = 1,
+  graphics_set = {},
   folded_animation = {direction_count=4, filename = "__RenaiTransportation__/graphics/nothing.png", size=1},
   starting_attack_speed = 0.5,
   ending_attack_speed = 0.5,
@@ -35,6 +37,7 @@ data:extend({
     range = 50,
     min_range = 25,
     turn_range = 0.15,
+    ammo_category="melee",
     ammo_type =
     {
      category = "biological",

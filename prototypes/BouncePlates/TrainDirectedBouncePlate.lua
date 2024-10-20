@@ -15,7 +15,7 @@ ConnectionPoints =
 data:extend({
 
 	{ --------- Bounce plate entity --------------
-		type = "constant-combinator",
+		type = "simple-entity-with-owner",
 		name = "RTTrainDirectedBouncePlate",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/TrainBouncePlate/DirectedTrainPlate.png",
 		icon_size = 64,
@@ -25,9 +25,7 @@ data:extend({
 	    collision_box = {{-1.75, -1.75}, {1.75, 1.75}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-2, -2}, {2, 2}},
 		fast_replaceable_group = "TrainBouncers",
-		item_slot_count = 18,
-		circuit_wire_max_distance = 9,
-		sprites = 
+		picture = 
 			{ 
 			  sheets =
 			  {
@@ -48,29 +46,6 @@ data:extend({
 				}
 			  }
 			},
-		activity_led_sprites =
-			{
-				filename = "__RenaiTransportation__/graphics/nothing.png",
-				priority = "medium",
-				width = 32,
-				height = 32,
-				shift = util.by_pixel(-0.5, -0.5),
-				scale = 0.5
-			},
-		activity_led_light_offsets =
-			{
-			  {0.296875, -0.40625},
-			  {0.25, -0.03125},
-			  {-0.296875, -0.078125},
-			  {-0.21875, -0.46875}
-			},
-		circuit_wire_connection_points =
-		  {
-			ConnectionPoints,
-			ConnectionPoints,
-			ConnectionPoints,
-			ConnectionPoints
-		  },
 		radius_visualisation_specification =
 			{
 				sprite = 
@@ -101,10 +76,12 @@ data:extend({
 		energy_required = 1,
 		ingredients = 
 			{
-				{"iron-plate", 50},
-				{"steel-plate", 30},
-				{"automation-science-pack", 10}
+				{type="item", name="iron-plate", amount=50},
+				{type="item", name="steel-plate", amount=30},
+				{type="item", name="automation-science-pack", amount=10}
 			},
-		result = "RTTrainDirectedBouncePlateItem"
+		results = {
+			{type="item", name="RTTrainDirectedBouncePlateItem", amount=1}
+		}
 	}
 })

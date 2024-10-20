@@ -9,9 +9,9 @@ local function effect_triggered(event)
 	if (event.effect_id == "RTCrank"
 	and event.source_entity
 	and event.source_entity.player
-	and global.AllPlayers[event.source_entity.player.index].state == "zipline"
-	and global.AllPlayers[event.source_entity.player.index].zipline.succ.energy ~= 0
-	and global.AllPlayers[event.source_entity.player.index].zipline.path == nil
+	and storage.AllPlayers[event.source_entity.player.index].state == "zipline"
+	and storage.AllPlayers[event.source_entity.player.index].zipline.succ.energy ~= 0
+	and storage.AllPlayers[event.source_entity.player.index].zipline.path == nil
 	and game.get_player(event.source_entity.player.index).character.get_inventory(defines.inventory.character_guns)[game.get_player(event.source_entity.player.index).character.selected_gun_index].valid_for_read
 	and string.find(game.get_player(event.source_entity.player.index).character.get_inventory(defines.inventory.character_guns)[game.get_player(event.source_entity.player.index).character.selected_gun_index].name, "RTZiplineItem")
 	and game.get_player(event.source_entity.player.index).character.get_inventory(defines.inventory.character_ammo)[game.get_player(event.source_entity.player.index).character.selected_gun_index].valid_for_read
@@ -19,7 +19,7 @@ local function effect_triggered(event)
 	and game.get_player(event.source_entity.player.index).walking_state.walking == true
 	) then
 		local EquippedTrolley = game.get_player(event.source_entity.player.index).character.get_inventory(defines.inventory.character_guns)[game.get_player(event.source_entity.player.index).character.selected_gun_index].name
-		local PlayerProperties = global.AllPlayers[event.source_entity.player.index]
+		local PlayerProperties = storage.AllPlayers[event.source_entity.player.index]
 		local MaxBoostedSpeed = 0.420
 		local BoostAmount = 0.040
 		if (EquippedTrolley == "RTZiplineItem") then
@@ -71,9 +71,9 @@ local function effect_triggered(event)
 		end
 	elseif (event.effect_id == "PrimerThrowerCheck") then
 		local detector = event.source_entity
-		local thrower = global.PrimerThrowerLinks[detector.unit_number].thrower
-		--local box = global.PrimerThrowerLinks[detector.unit_number].box
-		if (global.PrimerThrowerLinks[detector.unit_number].ready == true) then
+		local DetectorNumber = script.register_on_object_destroyed(detector)
+		local thrower = storage.PrimerThrowerLinks[DetectorNumber].thrower
+		if (storage.PrimerThrowerLinks[DetectorNumber].ready == true) then
 			if (thrower.held_stack.valid_for_read == true) then
 				game.surfaces[event.surface_index].create_entity
 				{
@@ -86,9 +86,8 @@ local function effect_triggered(event)
 					create_build_effect_smoke = false
 				}.destructible = false
 				thrower.held_stack.clear()
-				--box.insert({name="RTDataTrackerItem"})
 			end
-			global.PrimerThrowerLinks[detector.unit_number].ready = false
+			storage.PrimerThrowerLinks[DetectorNumber].ready = false
 		else
 			--box.get_output_inventory().clear()
 		end

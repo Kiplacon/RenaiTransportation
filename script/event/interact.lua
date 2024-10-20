@@ -1,8 +1,10 @@
+---@diagnostic disable: need-check-nil
+local magnetRamps = require("__RenaiTransportation__/script/trains/magnet_ramps")
 local function interact(event1) -- has .name = event ID number, .tick = tick number, .player_index, and .input_name = custom input name
 
 	local player = game.get_player(event1.player_index)
-	local PlayerProperties = global.AllPlayers[event1.player_index]
-
+	local PlayerProperties = storage.AllPlayers[event1.player_index]
+	local CursorPosition = event1.cursor_position
 	local ThingHovering = player.selected
 
 	--| Player Launcher
@@ -17,7 +19,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	and (not string.find(player.character.name, "RTGhost"))
 	and PlayerProperties.state == "default") then
 		PlayerProperties.state = "jumping"
-		local OG = SwapToGhost(player)
+		--local OG = SwapToGhost(player)
 		player.teleport(PlayerLauncher.position) -- align player on the launch pad
 		local shadow = rendering.draw_circle
 			{
@@ -34,13 +36,14 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		local arc = -0.13 -- closer to 0 is higher arc
 		local AirTime = math.floor(distance/speed)
 		local vector = {x=x-player.position.x, y=y-player.position.y}
-		global.FlyingItems[global.FlightNumber] =
+		storage.FlyingItems[storage.FlightNumber] =
 			{
 				shadow=shadow,
 				speed=speed,
 				arc=arc,
 				player=player,
-				SwapBack=OG,
+				IAmSpeed=player.character.character_running_speed_modifier,
+				--SwapBack=OG,
 				target={x=x, y=y},
 				start=player.position,
 				AirTime=AirTime,
@@ -50,73 +53,55 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				space=false,
 				surface=player.surface
 			}
-		PlayerProperties.PlayerLauncher.tracker = global.FlightNumber
-		PlayerProperties.PlayerLauncher.direction = global.OrientationUnitComponents[PlayerLauncher.orientation].name
-		global.FlightNumber = global.FlightNumber + 1
+		PlayerProperties.PlayerLauncher.tracker = storage.FlightNumber
+		PlayerProperties.PlayerLauncher.direction = storage.OrientationUnitComponents[PlayerLauncher.orientation].name
+		storage.FlightNumber = storage.FlightNumber + 1
 	end
 
 	--| Drop from ziplining
 	if (PlayerProperties.state == "zipline") then
-		SwapBackFromGhost(player)
-		PlayerProperties.zipline.LetMeGuideYou.surface.play_sound
-			{
-				path = "RTZipDettach",
-				position = PlayerProperties.zipline.LetMeGuideYou.position,
-				volume = 0.4
-			}
-		PlayerProperties.zipline.LetMeGuideYou.surface.play_sound
-			{
-				path = "RTZipWindDown",
-				position = PlayerProperties.zipline.LetMeGuideYou.position,
-				volume = 0.4
-			}
-		PlayerProperties.zipline.LetMeGuideYou.destroy()
-		PlayerProperties.zipline.ChuggaChugga.destroy()
-		PlayerProperties.zipline.succ.destroy()
-		player.teleport(player.surface.find_non_colliding_position("character", {player.position.x, player.position.y+2}, 0, 0.01))
-		PlayerProperties.zipline = {}
-		PlayerProperties.state = "default"
+		GetOffZipline(player, PlayerProperties)
 
 		--game.print("manually detached")
 	end
 
 	--| Hovering something
 	if (ThingHovering) then
+		local DestroyNumber = script.register_on_object_destroyed(ThingHovering)
 		--|| Adjusting Thrower Range
-		if (ThingHovering.type == "inserter" and string.find(ThingHovering.name, "RTThrower-") and ThingHovering.name ~= "RTThrower-PrimerThrower" and global.CatapultList[ThingHovering.unit_number].RangeAdjustable == true) then
+		if (ThingHovering.type == "inserter" and string.find(ThingHovering.name, "RTThrower-") and ThingHovering.name ~= "RTThrower-PrimerThrower" and storage.CatapultList[DestroyNumber].RangeAdjustable == true) then
 			local CurrentRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
 			if (CurrentRange >= ThingHovering.prototype.inserter_drop_position[2]) then
 				ThingHovering.drop_position =
 					{
-						ThingHovering.drop_position.x+(CurrentRange-2)*global.OrientationUnitComponents[ThingHovering.orientation].x,
-						ThingHovering.drop_position.y+(CurrentRange-2)*global.OrientationUnitComponents[ThingHovering.orientation].y
+						ThingHovering.drop_position.x+(CurrentRange-2)*storage.OrientationUnitComponents[ThingHovering.orientation].x,
+						ThingHovering.drop_position.y+(CurrentRange-2)*storage.OrientationUnitComponents[ThingHovering.orientation].y
 					}
 			else
 				ThingHovering.drop_position =
 					{
-						ThingHovering.drop_position.x - global.OrientationUnitComponents[ThingHovering.orientation].x,
-						ThingHovering.drop_position.y - global.OrientationUnitComponents[ThingHovering.orientation].y
+						ThingHovering.drop_position.x - storage.OrientationUnitComponents[ThingHovering.orientation].x,
+						ThingHovering.drop_position.y - storage.OrientationUnitComponents[ThingHovering.orientation].y
 					}
 			end
 			local NewRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
-			ThingHovering.surface.create_entity
-				({
-					name = "flying-text",
-					position = ThingHovering.drop_position,
+			player.create_local_flying_text
+				{
+					position = ThingHovering.position,
 					text = "Range: "..NewRange-1
-				})
+				}
 			player.play_sound{
 				path="utility/gui_click",
 				position=player.position,
 				volume_modifier=1
 				}
-			global.CatapultList[ThingHovering.unit_number].range = NewRange
-			if (global.CatapultList[ThingHovering.unit_number]) then
-				global.CatapultList[ThingHovering.unit_number].targets = {}
-				for componentUN, PathsItsPartOf in pairs(global.ThrowerPaths) do
+			storage.CatapultList[DestroyNumber].range = NewRange
+			if (storage.CatapultList[DestroyNumber]) then
+				storage.CatapultList[DestroyNumber].targets = {}
+				for componentUN, PathsItsPartOf in pairs(storage.ThrowerPaths) do
 					for ThrowerUN, TrackedItems in pairs(PathsItsPartOf) do
-						if (ThrowerUN == ThingHovering.unit_number) then
-							global.ThrowerPaths[componentUN][ThrowerUN] = {}
+						if (ThrowerUN == DestroyNumber) then
+							storage.ThrowerPaths[componentUN][ThrowerUN] = {}
 						end
 					end
 				end
@@ -152,55 +137,75 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				volume_modifier=1
 				}
 			ThingHovering.destroy()
+
 		--|| Swap Ramp Modes
 		elseif (ThingHovering.name == "RTTrainRamp") then
-			ElPosition = ThingHovering.position
-			ElForce = player.force
-			ElDirection = ThingHovering.direction
-			ElSurface = ThingHovering.surface
+			local ElPosition = ThingHovering.position
+			local ElForce = player.force
+			local ElDirection = ThingHovering.direction
+			local ElSurface = ThingHovering.surface
+			local OldRange = storage.MagnetRamps[script.register_on_object_destroyed(ThingHovering)].range-3
 			ThingHovering.destroy()
-			ElSurface.create_entity
+			local NewKid = ElSurface.create_entity
 				({
-				name = "RTTrainRampNoSkip",
-				position = ElPosition,
-				direction = ElDirection,
-				force = ElForce,
-				raise_built = true,
-				create_build_effect_smoke = false
+					name = "RTTrainRampNoSkip",
+					position = ElPosition,
+					direction = ElDirection,
+					force = ElForce,
+					raise_built = true,
+					create_build_effect_smoke = false
 				})
-			player.play_sound{
-				path="utility/rotated_big",
-				position=player.position,
-				volume_modifier=1
+			player.play_sound
+				{
+					path="utility/rotated_large",
+					position=player.position,
+					volume_modifier=1
 				}
+			local RampDestroyNumber = script.register_on_object_destroyed(NewKid)
+			local RampProperties = storage.MagnetRamps[RampDestroyNumber]
+			magnetRamps.setRange(
+					RampProperties,
+					OldRange,
+					player
+				)
 		elseif (ThingHovering.name == "RTTrainRampNoSkip") then
-			ElPosition = ThingHovering.position
-			ElForce = player.force
-			ElDirection = ThingHovering.direction
-			ElSurface = ThingHovering.surface
+			local ElPosition = ThingHovering.position
+			local ElForce = player.force
+			local ElDirection = ThingHovering.direction
+			local ElSurface = ThingHovering.surface
+			local OldRange = storage.MagnetRamps[script.register_on_object_destroyed(ThingHovering)].range-3
 			ThingHovering.destroy()
-			ElSurface.create_entity
+			local NewKid = ElSurface.create_entity
 				({
-				name = "RTTrainRamp",
-				position = ElPosition,
-				direction = ElDirection,
-				force = ElForce,
-				raise_built = true,
-				create_build_effect_smoke = false
+					name = "RTTrainRamp",
+					position = ElPosition,
+					direction = ElDirection,
+					force = ElForce,
+					raise_built = true,
+					create_build_effect_smoke = false
 				})
-			player.play_sound{
-				path="utility/rotated_big",
-				position=player.position,
-				volume_modifier=1
+			player.play_sound
+				{
+					path="utility/rotated_large",
+					position=player.position,
+					volume_modifier=1
 				}
+			local RampDestroyNumber = script.register_on_object_destroyed(NewKid)
+			local RampProperties = storage.MagnetRamps[RampDestroyNumber]
+			magnetRamps.setRange(
+					RampProperties,
+					OldRange,
+					player
+				)
 		--|| Swap Magnet Ramp Modes
 		elseif (ThingHovering.name == "RTMagnetTrainRamp") then
-			ElPosition = ThingHovering.position
-			ElForce = player.force
-			ElDirection = ThingHovering.direction
-			ElSurface = ThingHovering.surface
+			local ElPosition = ThingHovering.position
+			local ElForce = player.force
+			local ElDirection = ThingHovering.direction
+			local ElSurface = ThingHovering.surface
+			local OldRange = storage.MagnetRamps[script.register_on_object_destroyed(ThingHovering)].range-3
 			ThingHovering.destroy()
-			ElSurface.create_entity
+			local NewKid = ElSurface.create_entity
 				({
 				name = "RTMagnetTrainRampNoSkip",
 				position = ElPosition,
@@ -208,20 +213,27 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				force = ElForce,
 				raise_built = true,
 				create_build_effect_smoke = false,
-				raise_built = true
 				})
 			player.play_sound{
-				path="utility/rotated_big",
+				path="utility/rotated_large",
 				position=player.position,
 				volume_modifier=1
 				}
+			local RampDestroyNumber = script.register_on_object_destroyed(NewKid)
+			local RampProperties = storage.MagnetRamps[RampDestroyNumber]
+			magnetRamps.setRange(
+					RampProperties,
+					OldRange,
+					player
+				)
 		elseif (ThingHovering.name == "RTMagnetTrainRampNoSkip") then
-			ElPosition = ThingHovering.position
-			ElForce = player.force
-			ElDirection = ThingHovering.direction
-			ElSurface = ThingHovering.surface
+			local ElPosition = ThingHovering.position
+			local ElForce = player.force
+			local ElDirection = ThingHovering.direction
+			local ElSurface = ThingHovering.surface
+			local OldRange = storage.MagnetRamps[script.register_on_object_destroyed(ThingHovering)].range-3
 			ThingHovering.destroy()
-			ElSurface.create_entity
+			local NewKid = ElSurface.create_entity
 				({
 				name = "RTMagnetTrainRamp",
 				position = ElPosition,
@@ -229,13 +241,20 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				force = ElForce,
 				raise_built = true,
 				create_build_effect_smoke = false,
-				raise_built = true
 				})
 			player.play_sound{
-				path="utility/rotated_big",
+				path="utility/rotated_large",
 				position=player.position,
 				volume_modifier=1
 				}
+			local RampDestroyNumber = script.register_on_object_destroyed(NewKid)
+			local RampProperties = storage.MagnetRamps[RampDestroyNumber]
+			magnetRamps.setRange(
+					RampProperties,
+					OldRange,
+					player
+				)
+
 		-- bound pad ranges
 		elseif (ThingHovering.name == "BouncePlate") then
 			ThingHovering.surface.create_entity
@@ -339,79 +358,13 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		and PlayerProperties.state == "default"
 		and ThingHovering.type == "electric-pole"
 		and ElectricPoleBlackList[ThingHovering.name] == nil
-		and #ThingHovering.neighbours["copper"] ~= 0) then
+		and ThingHovering.get_wire_connector(defines.wire_connector_id.pole_copper, true).connection_count > 0) then
 			if (math.sqrt((player.position.x-ThingHovering.position.x)^2+(player.position.y-ThingHovering.position.y)^2) <= 3 ) then
 				if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
 				and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineItem")
 				and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read)
 				then
 					GetOnZipline(player, PlayerProperties, ThingHovering)
-					-- local OG = SwapToGhost(player)
-					-- ---------- get on zipline -----------------
-					-- local TheGuy = player
-					-- local FromXWireOffset = game.recipe_prototypes["RTGetTheGoods-"..ThingHovering.name.."X"].emissions_multiplier
-					-- local FromYWireOffset = game.recipe_prototypes["RTGetTheGoods-"..ThingHovering.name.."Y"].emissions_multiplier
-					-- local SpookySlideGhost = ThingHovering.surface.create_entity
-					-- 	({
-					-- 		name = "RTPropCar",
-					-- 		position = {ThingHovering.position.x+FromXWireOffset, ThingHovering.position.y+FromYWireOffset},
-					-- 		--force = TheGuy.force,
-					-- 		create_build_effect_smoke = false
-					-- 	})
-					-- local trolley = ThingHovering.surface.create_entity
-					-- 	({
-					-- 		name = "RTZipline",
-					-- 		position = {ThingHovering.position.x+FromXWireOffset, ThingHovering.position.y+FromYWireOffset},
-					-- 		force = TheGuy.force,
-					-- 		create_build_effect_smoke = false
-					-- 	})
-					-- local drain = ThingHovering.surface.create_entity
-					-- 	({
-					-- 		name = "RTZiplinePowerDrain",
-					-- 		position = ThingHovering.position,
-					-- 		force = TheGuy.force,
-					-- 		create_build_effect_smoke = false
-					-- 	})
-					-- rendering.draw_animation
-					-- 	{
-					-- 		animation = "RTZiplineOverGFX",
-					-- 		surface = TheGuy.surface,
-					-- 		target = trolley,
-					-- 		target_offset = {0, -0.3},
-					-- 		x_scale = 0.5,
-					-- 		y_scale = 0.5,
-					-- 		render_layer = "wires-above"
-					-- 	}
-					-- rendering.draw_sprite
-					-- 	{
-					-- 		sprite = "RTZiplineHarnessGFX",
-					-- 		surface = TheGuy.surface,
-					-- 		target = trolley,
-					-- 		target_offset = {0.03, 0.1},
-					-- 		x_scale = 0.5,
-					-- 		y_scale = 0.5,
-					-- 		render_layer = "128"
-					-- 	}
-					-- trolley.destructible = false
-					-- SpookySlideGhost.destructible = false
-					-- drain.destructible = false
-					-- TheGuy.teleport({SpookySlideGhost.position.x, 2+SpookySlideGhost.position.y})
-					-- trolley.teleport({SpookySlideGhost.position.x, 0.5+SpookySlideGhost.position.y})
-					-- PlayerProperties.zipline.LetMeGuideYou = SpookySlideGhost
-					-- PlayerProperties.zipline.ChuggaChugga = trolley
-					-- PlayerProperties.zipline.WhereDidYouComeFrom = ThingHovering
-					-- PlayerProperties.zipline.AreYouStillThere = true
-					-- PlayerProperties.zipline.succ = drain
-					-- --game.print("Attached to track")
-					-- PlayerProperties.state = "zipline"
-					-- PlayerProperties.zipline.StartingSurface = TheGuy.surface
-					-- PlayerProperties.SwapBack = OG
-					-- ThingHovering.surface.play_sound
-					-- 	{
-					-- 		path = "RTZipAttach",
-					-- 		position = ThingHovering.position,
-					-- 		volume = 0.7
-					-- 	}
 				else
 					player.print({"zipline-stuff.reqs"})
 				end
@@ -430,6 +383,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 
 
 	--| Adjust thrower range before placing
+	-- give player the adjusting blueprint
 	if (player.character
 	and player.cursor_stack.valid_for_read
 	and string.find(player.cursor_stack.name, "RTThrower-")
@@ -447,7 +401,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			vvv.insert({name = "blueprint"})
 			vvv.get_inventory(defines.inventory.chest)[1].set_blueprint_entities(
 				{
-					{entity_number = 1, name = thrower, position = {0,0}, direction = 4, drop_position = {0,-1.201} }
+					{entity_number = 1, name = thrower, position = {0,0}, direction = 8, drop_position = {0,-1.2} }
 				})
 			player.add_to_clipboard(vvv.get_inventory(defines.inventory.chest)[1])
 			player.activate_paste()
@@ -455,7 +409,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		else
 			player.cursor_stack.set_blueprint_entities(
 				{
-					{entity_number = 1, name = thrower, position = {0,0}, direction = 4, drop_position = {0,-1.201} }
+					{entity_number = 1, name = thrower, position = {0,0}, direction = 8, drop_position = {0,-1.2} }
 				})
 		end
 		player.play_sound{
@@ -463,36 +417,27 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			position=player.position,
 			volume_modifier=1
 			}
-		PlayerProperties.RangeAdjusting = true -- seems to immediately reset to false since the cursor stack changes to the blueprint but idk how to have the check go first and then set the global.RangeAdjusting
+		player.create_local_flying_text
+			{
+				position = CursorPosition,
+				text = "Range: "..1
+			}
+		PlayerProperties.RangeAdjusting = true -- seems to immediately reset to false since the cursor stack changes to the blueprint but idk how to have the check go first and then set the storage.RangeAdjusting
+		PlayerProperties.RangeAdjustingDirection = 8
+		PlayerProperties.RangeAdjustingRange = 1.2
 
-	elseif (player.is_cursor_blueprint()
-	and player.get_blueprint_entities() ~= nil
-	and #player.get_blueprint_entities() == 1
-	and string.find(player.get_blueprint_entities()[1].name, "RTThrower-")
-	and player.cursor_stack.name ~= "RTThrower-EjectorHatchRTItem"
-	and player.cursor_stack.name ~= "RTThrower-FilterEjectorHatchRTItem"
-	and player.get_blueprint_entities()[1].drop_position
-	and player.force.technologies["RTFocusedFlinging"].researched == true) then
-		local thrower = player.get_blueprint_entities()[1]
-		local OneD = player.get_blueprint_entities()[1].direction
-		local CurrentRange = math.ceil(math.abs(thrower.drop_position.x-thrower.position.x + thrower.drop_position.y-thrower.position.y))
-		if (CurrentRange >= game.entity_prototypes[thrower.name].inserter_drop_position[2]+1) then
-			WhereWeDroppin =
-				{
-					thrower.drop_position.x+(CurrentRange-3)*global.OrientationUnitComponents[global.Dir2Ori[thrower.direction]].x,
-					thrower.drop_position.y+(CurrentRange-3)*global.OrientationUnitComponents[global.Dir2Ori[thrower.direction]].y
-				}
+	--adjust range of blueprint thrower
+	elseif (PlayerProperties.RangeAdjusting == true) then
+		local thrower = player.cursor_stack.get_blueprint_entities()[1]
+		local CurrentRange = PlayerProperties.RangeAdjustingRange
+		if (CurrentRange >= prototypes.entity[thrower.name].inserter_drop_position[2]) then
+			CurrentRange = 1.2
 		else
-			WhereWeDroppin =
-				{
-					thrower.drop_position.x - global.OrientationUnitComponents[global.Dir2Ori[thrower.direction]].x,
-					thrower.drop_position.y - global.OrientationUnitComponents[global.Dir2Ori[thrower.direction]].y
-				}
+			CurrentRange = CurrentRange + 1
 		end
-
 		player.cursor_stack.set_blueprint_entities(
 			{
-				{entity_number = 1, name = thrower.name, position = {0,0}, direction = OneD, drop_position = WhereWeDroppin }
+				{entity_number = 1, name = thrower.name, position = {0,0}, direction = 8, drop_position = {0, -CurrentRange}}
 			})
 		player.play_sound{
 			path="utility/gui_click",
@@ -500,7 +445,12 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			volume_modifier=1
 			}
 		PlayerProperties.RangeAdjusting = true
-
+		PlayerProperties.RangeAdjustingRange = CurrentRange
+		player.create_local_flying_text
+			{
+				position = CursorPosition,
+				text = "Range: "..CurrentRange-0.2
+			}
 	end
 end
 

@@ -7,7 +7,7 @@ local function entity_built(event)
 
 	if event.player_index then
 		player = game.players[event.player_index]
-		if (global.AllPlayers[event.player_index].RangeAdjusting == true
+		if (storage.AllPlayers[event.player_index].RangeAdjusting == true
 		and entity.name == "entity-ghost"
 		and string.find(entity.ghost_prototype.name, "RTThrower-")
 		and player.get_main_inventory().find_item_stack(entity.ghost_prototype.name.."-Item")
@@ -25,9 +25,9 @@ local function entity_built(event)
 	end
 
 	if (entity.type == "inserter" and string.find(entity.name, "RTThrower-")) then
-		script.register_on_entity_destroyed(entity)
-		global.CatapultList[entity.unit_number] = {entity=entity, targets={}, BurnerSelfRefuelCompensation=0.2, IsElectric=false, InSpace=false, RangeAdjustable=false}
-		local properties = global.CatapultList[entity.unit_number]
+		local OnDestroyNumber = script.register_on_object_destroyed(entity)
+		storage.CatapultList[OnDestroyNumber] = {entity=entity, targets={}, BurnerSelfRefuelCompensation=0.2, IsElectric=false, InSpace=false, RangeAdjustable=false}
+		local properties = storage.CatapultList[OnDestroyNumber]
 
 		if (string.find(entity.name, "RTThrower-") and entity.name ~= "RTThrower-PrimerThrower" and entity.force.technologies["RTFocusedFlinging"].researched == true) then
 			properties.RangeAdjustable = true
@@ -45,43 +45,43 @@ local function entity_built(event)
 		end
 
 		if (entity.name == "RTThrower-EjectorHatchRT") then
-			global.CatapultList[entity.unit_number].sprite = rendering.draw_animation
+			storage.CatapultList[OnDestroyNumber].sprite = rendering.draw_animation
 				{
 					animation = "EjectorHatchFrames",
 					surface = entity.surface,
 					target = entity,
-					animation_offset = global.EjectorPointing[entity.direction],
+					animation_offset = storage.EjectorPointing[entity.direction],
 					render_layer = 131,
 					animation_speed = 0,
 					only_in_alt_mode = false
 				}
 		elseif (entity.name == "RTThrower-FilterEjectorHatchRT") then
-			global.CatapultList[entity.unit_number].sprite = rendering.draw_animation
+			storage.CatapultList[OnDestroyNumber].sprite = rendering.draw_animation
 				{
 					animation = "FilterEjectorHatchFrames",
 					surface = entity.surface,
 					target = entity,
-					animation_offset = global.EjectorPointing[entity.direction],
+					animation_offset = storage.EjectorPointing[entity.direction],
 					render_layer = 131,
 					animation_speed = 0,
 					only_in_alt_mode = false
 				}
 		elseif (entity.name == "RTThrower-PrimerThrower") then
-			--entity.rotatable = false
+			
 			entity.inserter_stack_size_override = 1
 			local sherlock = entity.surface.create_entity
 			{
 				name = "RTPrimerThrowerDetector",
 				position = entity.position,
-				direction = global.PrimerThrowerPointing[entity.direction],
+				direction = storage.PrimerThrowerPointing[entity.direction],
 				force = entity.force,
 				create_build_effect_smoke = false
 			}
 			sherlock.destructible = false
-			global.CatapultList[entity.unit_number].entangled = {}
-			global.CatapultList[entity.unit_number].entangled.detector = sherlock
-			global.PrimerThrowerLinks[sherlock.unit_number] = {thrower = entity, ready = false}--, box = box}
-			script.register_on_entity_destroyed(sherlock)
+			storage.CatapultList[OnDestroyNumber].entangled = {}
+			storage.CatapultList[OnDestroyNumber].entangled.detector = sherlock
+			local OnDestroyNumber2 = script.register_on_object_destroyed(sherlock)
+			storage.PrimerThrowerLinks[OnDestroyNumber2] = {thrower = entity, ready = false}--, box = box}
 		end
 
 	elseif (entity.name == "PlayerLauncher") then
@@ -89,12 +89,13 @@ local function entity_built(event)
 		entity.active = false
 
 	elseif (string.find(entity.name, "BouncePlate") and not string.find(entity.name, "Train")) then
-		global.BouncePadList[entity.unit_number] = {TheEntity = entity}
+		storage.BouncePadList[script.register_on_object_destroyed(entity)] = {TheEntity = entity}
+		local PouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(entity)]
 		ShowRange = settings.global["RTShowRange"].value
 		if (entity.name == "DirectedBouncePlate"
 		or entity.name == "DirectedBouncePlate5"
 		or entity.name == "DirectedBouncePlate15") then
-			entity.operable = false
+			--entity.operable = false
 			if (entity.orientation == 0) then
 				direction = "UD"
 				xflip = 1
@@ -119,7 +120,7 @@ local function entity_built(event)
 				xflip = xflip*1.5
 				yflip = yflip*1.5
 			end
-			global.BouncePadList[entity.unit_number].arrow = rendering.draw_sprite
+			PouncePadProperties.arrow = rendering.draw_sprite
 				{
 					sprite = "RTDirectedRangeOverlay"..direction,
 					surface = entity.surface,
@@ -144,7 +145,7 @@ local function entity_built(event)
 				xs = 1.5
 				ys = 1.5
 			end
-			global.BouncePadList[entity.unit_number].arrow = rendering.draw_sprite
+			PouncePadProperties.arrow = rendering.draw_sprite
 				{
 					sprite = "RTRangeOverlay",
 					surface = entity.surface,
@@ -157,30 +158,33 @@ local function entity_built(event)
 				}
 			-- link trackers with director plates on build or blueprint build
 			if (entity.name == "DirectorBouncePlate") then
-				for i = 1, 10 do
-					if (entity.get_or_create_control_behavior().get_signal(i).signal == nil)then
-						entity.get_or_create_control_behavior().set_signal(i, {signal={type="virtual", name="DirectorBouncePlateUp"}, count=0})
+				entity.get_or_create_control_behavior().add_section()
+				entity.get_or_create_control_behavior().add_section()
+				entity.get_or_create_control_behavior().add_section()
+				--[[ for i = 1, 10 do
+					if (entity.get_or_create_control_behavior().get_section(1).get_slot(i).value == nil)then
+						entity.get_or_create_control_behavior().get_section(1).set_slot(i, {value={type="virtual", name="DirectorBouncePlateUp"}})
 					end
 				end
 				for i = 11, 20 do
-					if (entity.get_or_create_control_behavior().get_signal(i).signal == nil)then
-						entity.get_or_create_control_behavior().set_signal(i, {signal={type="virtual", name="DirectorBouncePlateRight"}, count=0})
+					if (entity.get_or_create_control_behavior().get_section(1).get_slot(i).value == nil)then
+						entity.get_or_create_control_behavior().get_section(1).set_slot(i, {value={type="virtual", name="DirectorBouncePlateRight"}, count=0})
 					end
 				end
 				for i = 21, 30 do
-					if (entity.get_or_create_control_behavior().get_signal(i).signal == nil)then
-						entity.get_or_create_control_behavior().set_signal(i, {signal={type="virtual", name="DirectorBouncePlateDown"}, count=0})
+					if (entity.get_or_create_control_behavior().get_section(1).get_slot(i).value == nil)then
+						entity.get_or_create_control_behavior().get_section(1).set_slot(i, {value={type="virtual", name="DirectorBouncePlateDown"}, count=0})
 					end
 				end
 				for i = 31, 40 do
-					if (entity.get_or_create_control_behavior().get_signal(i).signal == nil)then
-						entity.get_or_create_control_behavior().set_signal(i, {signal={type="virtual", name="DirectorBouncePlateLeft"}, count=0})
+					if (entity.get_or_create_control_behavior().get_section(1).get_slot(i).value == nil)then
+						entity.get_or_create_control_behavior().get_section(1).set_slot(i, {value={type="virtual", name="DirectorBouncePlateLeft"}, count=0})
 					end
-				end
+				end ]]
 			end
 
 		elseif (entity.name == "PrimerBouncePlate") then
-			global.BouncePadList[entity.unit_number].arrow = rendering.draw_sprite
+			PouncePadProperties.arrow = rendering.draw_sprite
 				{
 					sprite = "RTPrimerRangeOverlay",
 					surface = entity.surface,
@@ -192,7 +196,7 @@ local function entity_built(event)
 					visible = ShowRange
 				}
 		elseif (entity.name == "PrimerSpreadBouncePlate") then
-			global.BouncePadList[entity.unit_number].arrow = rendering.draw_sprite
+			PouncePadProperties.arrow = rendering.draw_sprite
 				{
 					sprite = "RTPrimerSpreadRangeOverlay",
 					surface = entity.surface,
@@ -210,19 +214,19 @@ local function entity_built(event)
 
 	elseif (string.find(entity.name, "RTPrimerThrowerShooter-")) then
 		local time = 2
-		if (global.clock[game.tick+time] == nil) then
-			global.clock[game.tick+time] = {}
+		if (storage.clock[game.tick+time] == nil) then
+			storage.clock[game.tick+time] = {}
 		end
-		if (global.clock[game.tick+time].destroy == nil) then
-			global.clock[game.tick+time].destroy = {}
+		if (storage.clock[game.tick+time].destroy == nil) then
+			storage.clock[game.tick+time].destroy = {}
 		end
-		global.clock[game.tick+time].destroy[entity.unit_number] = entity
+		storage.clock[game.tick+time].destroy[entity.unit_number] = entity
 
 	elseif (entity.name == "RTZiplineTerminal") then
-		script.register_on_entity_destroyed(entity)
-		global.ZiplineTerminals[entity.unit_number] = {entity=entity, name=game.backer_names[math.random(1, #game.backer_names)]}
-		local tag = entity.force.add_chart_tag(entity.surface, {position=entity.position, text=global.ZiplineTerminals[entity.unit_number].name, icon={type="item", name="RTZiplineTerminalItem"}})
-		global.ZiplineTerminals[entity.unit_number].tag = tag
+		local OnDestroyNumber = script.register_on_object_destroyed(entity)
+		storage.ZiplineTerminals[OnDestroyNumber] = {entity=entity, name=game.backer_names[math.random(1, #game.backer_names)]}
+		local tag = entity.force.add_chart_tag(entity.surface, {position=entity.position, text=storage.ZiplineTerminals[OnDestroyNumber].name, icon={type="item", name="RTZiplineTerminalItem"}})
+		storage.ZiplineTerminals[OnDestroyNumber].tag = tag
 	end
 end
 

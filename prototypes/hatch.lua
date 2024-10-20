@@ -4,14 +4,22 @@ local nothing = {
 		height = 1
 	}
 
+local RememberNoUnderscores = "RTHatches"
+
 data:extend({
+{
+	type = "collision-layer",
+	order = "51",
+	name = RememberNoUnderscores
+},
+
 {
 type = "simple-entity-with-owner",
 name = "HatchRT",
 icon = "__RenaiTransportation__/graphics/hatch/icon.png",
 icon_size = 16,
 flags = {"placeable-neutral", "player-creation", "not-rotatable"},
-collision_mask = {"layer-51"},
+collision_mask = {layers={[RememberNoUnderscores]=true}},
 collision_box = {{-0.35, -0.3}, {0.35, 0.55}},
 selection_box = {{-0.35, -0.3}, {0.35, 0.55}},
 selection_priority = 255,
@@ -44,11 +52,13 @@ picture =
 	energy_required = 1,
 	ingredients =
 		{
-			{"pipe-to-ground", 1},
-			{"pipe", 1},
-			{"copper-plate", 2}
+			{type="item", name="pipe-to-ground", amount=1},
+			{type="item", name="pipe", amount=1},
+			{type="item", name="copper-plate", amount=2}
 		},
-	result = "HatchRTItem"
+	results = {
+		{type="item", name="HatchRTItem", amount=1}
+	}
 },
 ------------------ Ejector hatch ---------------------
 {
@@ -57,12 +67,13 @@ picture =
 	icon = "__RenaiTransportation__/graphics/hatch/EjeectorIccon.png",
 	icon_size = 43,
 	flags = {"placeable-neutral", "player-creation"},
-	collision_mask = {"layer-51"},
+	collision_mask = {layers={[RememberNoUnderscores]=true}},
 	collision_box = {{-0.35, -0.35}, {0.35, 0.35}},
 	selection_box = {{-0.4, -0.4}, {0.4, 0.4}},
 	selection_priority = 255,
 	minable = {mining_time = 0.2, result = "RTThrower-EjectorHatchRTItem"},
 	render_layer = "higher-object-under",
+	filter_count = 5,
 	energy_source =
 	{
 		type = "electric",
@@ -116,11 +127,13 @@ picture =
 	energy_required = 1,
 	ingredients =
 		{
-			{"HatchRTItem", 1},
-			{"BouncePlateItem", 1},
-			{"electronic-circuit", 2}
+			{type="item", name="HatchRTItem", amount=1},
+			{type="item", name="BouncePlateItem", amount=1},
+			{type="item", name="electronic-circuit", amount=2}
 		},
-	result = "RTThrower-EjectorHatchRTItem"
+	results = {
+		{type="item", name="RTThrower-EjectorHatchRTItem", amount=1}
+	}
 },
 ---------- sprites because inserters dont render above a lot of things
 {
@@ -135,14 +148,14 @@ picture =
 },
 
 
------------------- Filter Ejector hatch ---------------------
+--[[ ------------------ Filter Ejector hatch ---------------------
 {
 	type = "inserter",
 	name = "RTThrower-FilterEjectorHatchRT",
 	icon = "__RenaiTransportation__/graphics/hatch/FilterEjeectorIccon.png",
 	icon_size = 43,
 	flags = {"placeable-neutral", "player-creation"},
-	collision_mask = {"layer-51"},
+	collision_mask = {layers={[RememberNoUnderscores]=true}},
 	collision_box = {{-0.35, -0.35}, {0.35, 0.35}},
 	selection_box = {{-0.4, -0.4}, {0.4, 0.4}},
 	selection_priority = 255,
@@ -202,10 +215,12 @@ picture =
 	energy_required = 1,
 	ingredients =
 		{
-			{"RTThrower-EjectorHatchRTItem", 1},
-			{"electronic-circuit", 4}
+			{type="item", name="RTThrower-EjectorHatchRTItem", amount=1},
+			{type="item", name="electronic-circuit", amount=4}
 		},
-	result = "RTThrower-FilterEjectorHatchRTItem"
+	results = {
+		{type="item", name="RTThrower-FilterEjectorHatchRTItem", amount=1}
+	}
 },
 ---------- sprites because inserters dont render above a lot of things
 {
@@ -217,5 +232,5 @@ picture =
 	line_length = 4,
 	animation_speed = 0.1,
 	scale = 0.75
-}
+} ]]
 })

@@ -6,7 +6,8 @@ data:extend{
 		name = "RT-ghostLocomotive",
 		icon = baseLoco.icon,
 		icon_size = 64, icon_mipmaps = 4,
-		flags = {"placeable-neutral", "placeable-off-grid", "not-on-map", "hidden", "not-selectable-in-game"},
+		flags = {"placeable-neutral", "placeable-off-grid", "not-on-map",  "not-selectable-in-game"},
+		hidden = true,
 		collision_box = baseLoco.collision_box,
 		max_health = 1,
 		weight = 0.000000001,
@@ -22,10 +23,15 @@ data:extend{
 		vertical_selection_shift = -0.5,
 		energy_per_hit_point = 0,
 		pictures = {
-			direction_count = 1,
-			filename = "__core__/graphics/empty.png",
-			width = 1,
-			height = 1
+			rotated = {
+				layers ={
+				{
+					direction_count = 1,
+					filename = "__core__/graphics/empty.png",
+					width = 1,
+					height = 1
+				}}
+			}
 		}
 	}
 }

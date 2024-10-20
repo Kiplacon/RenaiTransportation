@@ -39,8 +39,6 @@ data:extend({
 	    collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
-		--item_slot_count = 18,
-		--circuit_wire_max_distance = 9,
 		picture =
 			{
 			  sheets =
@@ -184,9 +182,11 @@ data:extend({
 		energy_required = 1,
 		ingredients =
 			{
-				{"iron-plate", 5},
-				{"automation-science-pack", 1}
+				{type="item", name="iron-plate", amount=5},
+				{type="item", name="automation-science-pack", amount=1}
 			},
-		result = "DirectedBouncePlateItem"
+      results = {
+			{type="item", name="DirectedBouncePlateItem", amount=1}
+		}
 	}
 })

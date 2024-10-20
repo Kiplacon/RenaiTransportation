@@ -102,10 +102,12 @@ data:extend({
 		energy_required = 1,
 		ingredients = 
 			{
-				{"constant-combinator", 1},
-				{"BouncePlateItem", 1}
+				{type="item", name="constant-combinator", amount=1},
+				{type="item", name="BouncePlateItem", amount=1}
 			},
-		result = "SignalBouncePlateItem"
+		results = {
+			{type="item", name="SignalBouncePlateItem", amount=1}
+		}
 	},
 	
 	{ --------- bounce effect ----------
