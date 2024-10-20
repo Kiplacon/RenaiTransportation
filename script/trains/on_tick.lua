@@ -540,7 +540,7 @@ local function on_tick(event)
 				--upward arc
 				local rails = GuideCar.surface.find_entities_filtered{
 					position = GuideCar.position,
-					radius = 3,
+					radius = 1.5,
 					collision_mask = "elevated_rail"
 				}
 				if (#rails > 0) then
@@ -575,44 +575,26 @@ local function on_tick(event)
 				end
 			elseif (properties.altered == nil and height >= 3.25 and height <= 4.5 and VerticalSpeed < 0) then
 				-- downward arc
+				local gravity = 1/250
+				local LandingRunwayDistance = math.abs(GuideCar.speed)*(VerticalSpeed+math.sqrt((VerticalSpeed^2) - 2*gravity*(3-height)))/gravity -- "Landing strip" length needed for the touchdown animation
+				local XLandOffset = LandingRunwayDistance*storage.OrientationUnitComponents[GuideCar.orientation].x*(GuideCar.speed/math.abs(GuideCar.speed))
+				local YLandOffset = LandingRunwayDistance*storage.OrientationUnitComponents[GuideCar.orientation].y*(GuideCar.speed/math.abs(GuideCar.speed))
 				local rails = GuideCar.surface.find_entities_filtered{
-					position = GuideCar.position,
-					radius = 3,
+					position = {GuideCar.position.x+XLandOffset, GuideCar.position.y+YLandOffset},
+					radius = 1.5,
 					collision_mask = "elevated_rail"
-				}
-				if (#rails > 0) then
-					local gravity = 1/250
-					local LandingRunwayDistance = math.abs(GuideCar.speed)*(VerticalSpeed+math.sqrt((VerticalSpeed^2) - 2*gravity*(3-height)))/gravity -- "Landing strip" length needed for the touchdown animation
-					local XLandOffset = 0 --LandingRunwayDistance*storage.OrientationUnitComponents[GuideCar.orientation].x
-					local YLandOffset = 0 --LandingRunwayDistance*storage.OrientationUnitComponents[GuideCar.orientation].y
-					local TestTrain = GuideCar.surface.create_entity
-						({
-							name = properties.name,
-							position = {GuideCar.position.x+XLandOffset, GuideCar.position.y+YLandOffset},
-							direction = storage.OrientationNumberToDefinition[properties.orientation], -- i think this does nothing
-							raise_built = false
-						})
-					local PrepareForLanding = false
-					if (TestTrain ~= nil) then
-						for each, rail in pairs(TestTrain.train.get_rails()) do
-							if (rail.prototype.collision_mask.layers["elevated_rail"]) then
-								PrepareForLanding = true
-								break
-							end
-						end
-						if (PrepareForLanding == true) then
-							local T_Minus = math.ceil(LandingRunwayDistance/math.abs(GuideCar.speed))
-							properties.LandTick = game.tick + T_Minus
-							properties.AirTime = properties.LandTick - properties.LaunchTick
-							properties.shift = height
-							properties.ElevatedLandingStart = game.tick
-							properties.SpinMagnitude = 0.03 -- makes landing rotation more shallow to match the earlier landing
-							properties.SpinSpeed = 9 -- makes landing rotation more shallow to match the earlier landing
-						end
-						TestTrain.destroy()
-						properties.altered = 42069
-					end
+				}[1]
+				if (rails ~= nil) then
+					local T_Minus = math.ceil(LandingRunwayDistance/math.abs(GuideCar.speed))
+					properties.LandTick = game.tick + T_Minus
+					properties.AirTime = properties.LandTick - properties.LaunchTick
+					properties.shift = height
+					properties.ElevatedLandingStart = game.tick
+					properties.SpinMagnitude = 0.03 -- makes landing rotation more shallow to match the earlier landing
+					properties.SpinSpeed = 9 -- makes landing rotation more shallow to match the earlier landing
+					properties.altered = 42069
 				end
+				
 			end
 
 			-- Ultracube position handling

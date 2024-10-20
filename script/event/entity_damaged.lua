@@ -201,7 +201,7 @@ local function entity_damaged(event)
 			target = FlyingTrainProperties.follower,
 			surface = SpookyGhost.surface
 			}
-	 	end ]]
+		end ]]
 
 		FlyingTrainProperties.schedule = event.cause.train.schedule
 		if ((event.entity.name == "RTTrainRamp" or event.entity.name == "RTMagnetTrainRamp") and FlyingTrainProperties.schedule ~= nil) then
