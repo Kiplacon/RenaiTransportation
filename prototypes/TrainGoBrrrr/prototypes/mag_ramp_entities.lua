@@ -44,18 +44,24 @@ magRampEntities = {
 		icon_size = 16,
 		flags = {"placeable-neutral", "placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-flammable", "no-copy-paste"},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
-		selection_priority = 0,
-		collision_mask = {},
-		render_layer = "higher-object-under",
-		picture = util.empty_sprite(),
+		selection_priority = 1,
+		collision_mask = {layers={}},
+		render_layer = "rail-stone-path",
+		picture =
+			{
+				filename = "__RenaiTransportation__/graphics/TrainRamp/magnetrail2.png",
+				size = 64,
+				scale = 0.5
+			},
 	},
 	
-	{ -- "rail" sprite because entities cant have altered render layers
+	--[[ { -- "rail" sprite because entities cant have altered render layers
 		type = "sprite",
 		name = "RTMagnetRailSprite",
 		filename = "__RenaiTransportation__/graphics/TrainRamp/magnetrail2.png",
-		size = 64
-	},
+		size = 64,
+		scale = 0.5
+	}, ]]
 	
 	{
 		type = "animation",
@@ -84,15 +90,15 @@ magRampEntities = {
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		collision_box = {{-0.4, -0.4}, {0.4, 0.4}},
 		selection_priority = 101,
-		collision_mask = {},
+		collision_mask = {layers={}},
 		render_layer = "lower-object-above-shadow",
 		energy_source = {
 			type = "electric",
 			usage_priority = "secondary-input",
 			input_flow_limit = "40MW"
 		},
-		picture = removeShift(scaleSprite(accumulator.picture, 0.4)),
-		animation = removeShift(scaleSprite(accumulator.charge_animation, 0.4)),
+		picture = removeShift(scaleSprite(accumulator.chargable_graphics.picture, 0.4)),
+		animation = removeShift(scaleSprite(accumulator.chargable_graphics.charge_animation, 0.4)),
 		light = accumulator.charge_light,
 		working_sound = accumulator.working_sound
 	}	

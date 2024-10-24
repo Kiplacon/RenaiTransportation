@@ -2,7 +2,6 @@ require("prototypes.technology")
 require("prototypes.sounds")
 require("prototypes.TabSortingStuff")
 require("prototypes.TrainGoBrrrr.PropHunt")
-require("prototypes.DataTracker")
 
 if (settings.startup["RTThrowersSetting"].value == true) then
 	require("prototypes.BouncePlates.BouncePlate")
@@ -14,7 +13,7 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 
 	if (settings.startup["RTBounceSetting"].value == true) then
 		require("prototypes.BouncePlates.PrimerBouncePlate")
-		require("prototypes.BouncePlates.SignalBouncePlate")
+		--require("prototypes.BouncePlates.SignalBouncePlate")
 
 		require("prototypes.PrimerThrower.CheckingTurret")
 		require("prototypes.PrimerThrower.PrimerThrowerInserter")

@@ -4,7 +4,7 @@ brrr.next_upgrade = nil
 brrr.not_upgradable = true
 brrr.selectable_in_game = false
 brrr.flags = {"placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-flammable", "no-copy-paste"}
-brrr.collision_mask = {}
+brrr.collision_mask = {layers={}}
 brrr.energy_per_sector = "69TJ"
 brrr.max_distance_of_sector_revealed = 0
 brrr.max_distance_of_nearby_sector_revealed = 1
@@ -63,14 +63,14 @@ brrr,
 	subgroup = "gun",
 	order = "hh",
 	stack_size = 1,
-    attack_parameters =
-    {
+   attack_parameters =
+   {
       type = "projectile",
-	  ammo_category = "ZiplineMotor",
+      ammo_category = "ZiplineMotor",
       cooldown = 60,
       movement_slow_down_factor = 0,
       range = 0
-    },
+   },
 },
 
 
@@ -84,10 +84,10 @@ brrr,
 	order = "hi",
 	stack_size = 1,
 	ammo_type =
-    {
+   {
       category = "ZiplineMotor"
-
-	}
+	},
+   ammo_category = "ZiplineMotor"
 },
 { --------- zipline controls recipie ----------
 	type = "recipe",
@@ -96,12 +96,14 @@ brrr,
 	energy_required = 0.5,
 	ingredients =
 		{
-			{"copper-cable", 10},
-			{"iron-stick", 6},
-			{"iron-plate", 2},
-			{"electronic-circuit", 2}
+			{type="item", name="copper-cable", amount=10},
+			{type="item", name="iron-stick", amount=6},
+			{type="item", name="iron-plate", amount=2},
+			{type="item", name="electronic-circuit", amount=2}
 		},
-	result = "RTZiplineControlsItem"
+   results = {
+      {type="item", name="RTZiplineControlsItem", amount=1}
+   }
 },
 
 { --------- zipline crank controls -------------
@@ -138,7 +140,8 @@ brrr,
 			  }
 			}
 		}
-	}
+	},
+   ammo_category = "ZiplineMotor"
 },
 { --------- zipline crank controls recipie ----------
 	type = "recipe",
@@ -147,11 +150,13 @@ brrr,
 	energy_required = 0.5,
 	ingredients =
 		{
-			{"RTZiplineControlsItem", 1},
-			{"iron-stick", 2},
-			{"iron-gear-wheel", 10}
+			{type="item", name="RTZiplineControlsItem", amount=1},
+			{type="item", name="iron-stick", amount=2},
+			{type="item", name="iron-gear-wheel", amount=10}
 		},
-	result = "RTZiplineCrankControlsItem"
+   results = {
+      {type="item", name="RTZiplineCrankControlsItem", amount=1}
+   }
 },
 
 { --------- programmabel zipline controls -------------
@@ -163,10 +168,10 @@ brrr,
 	order = "hk",
 	stack_size = 1,
 	ammo_type =
-    {
+   {
       category = "ZiplineMotor"
-
-	}
+	},
+   ammo_category = "ZiplineMotor"
 },
 { --------- programmable zipline controls recipie ----------
 	type = "recipe",
@@ -175,10 +180,12 @@ brrr,
 	energy_required = 0.5,
 	ingredients =
 		{
-         {"RTZiplineControlsItem", 1},
-			{"electronic-circuit", 5}
+         {type="item", name="RTZiplineControlsItem", amount=1},
+			{type="item", name="electronic-circuit", amount=5}
 		},
-	result = "RTProgrammableZiplineControlsItem"
+   results = {
+      {type="item", name="RTProgrammableZiplineControlsItem", amount=1}
+   }
 },
 
 { ------ zipline over player graphic -----------
@@ -241,13 +248,15 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 			energy_required = 0.5,
 			ingredients =
 				{
-					{"copper-cable", 100},
-					{"iron-gear-wheel", 50},
-					{"electronic-circuit", 4},
-					{"PlayerLauncherItem", 1},
-					{"steel-chest", 1}
+					{type="item", name="copper-cable", amount=100},
+					{type="item", name="iron-gear-wheel", amount=50},
+					{type="item", name="electronic-circuit", amount=4},
+					{type="item", name="PlayerLauncherItem", amount=1},
+					{type="item", name="steel-chest", amount=1}
 				},
-			result = "RTZiplineItem"
+         results = {
+            {type="item", name="RTZiplineItem", amount=1}
+         }
 		}
 	})
 
@@ -260,12 +269,14 @@ else
 			energy_required = 0.5,
 			ingredients =
 				{
-					{"copper-cable", 100},
-					{"iron-gear-wheel", 50},
-					{"electronic-circuit", 5},
-					{"steel-chest", 1}
+					{type="item", name="copper-cable", amount=100},
+					{type="item", name="iron-gear-wheel", amount=50},
+					{type="item", name="electronic-circuit", amount=5},
+					{type="item", name="steel-chest", amount=1}
 				},
-			result = "RTZiplineItem"
+         results = {
+            {type="item", name="RTZiplineItem", amount=1}
+         }
 		}
 	})
 end
@@ -311,11 +322,13 @@ data:extend({
       energy_required = 0.5,
       ingredients =
          {
-            {"iron-gear-wheel", 100},
-            {"engine-unit", 10},
-            {"RTZiplineItem", 1},
+            {type="item", name="iron-gear-wheel", amount=100},
+            {type="item", name="engine-unit", amount=10},
+            {type="item", name="RTZiplineItem", amount=1},
          },
-      result = "RTZiplineItem2"
+         results = {
+            {type="item", name="RTZiplineItem2", amount=1}
+         }
    }
 })
 --============ trolley 3 ==================
@@ -360,12 +373,14 @@ data:extend({
       energy_required = 0.5,
       ingredients =
          {
-            {"iron-gear-wheel", 150},
-            {"electric-engine-unit", 10},
-            {"advanced-circuit", 10},
-            {"RTZiplineItem2", 1},
+            {type="item", name="iron-gear-wheel", amount=150},
+            {type="item", name="electric-engine-unit", amount=10},
+            {type="item", name="advanced-circuit", amount=10},
+            {type="item", name="RTZiplineItem2", amount=1},
          },
-      result = "RTZiplineItem3"
+         results = {
+            {type="item", name="RTZiplineItem3", amount=1}
+         }
    }
 })
 --============ trolley 4 ==================
@@ -410,12 +425,14 @@ data:extend({
       energy_required = 0.5,
       ingredients =
          {
-            {"iron-gear-wheel", 200},
-            {"rocket-fuel", 25},
-            {"processing-unit", 5},
-            {"RTZiplineItem3", 1},
+            {type="item", name="iron-gear-wheel", amount=200},
+            {type="item", name="rocket-fuel", amount=25},
+            {type="item", name="processing-unit", amount=5},
+            {type="item", name="RTZiplineItem3", amount=1},
          },
-      result = "RTZiplineItem4"
+         results = {
+            {type="item", name="RTZiplineItem4", amount=1}
+         }
    }
 })
 --============ trolley 5 ==================
@@ -460,12 +477,14 @@ data:extend({
       energy_required = 0.5,
       ingredients =
          {
-            {"iron-gear-wheel", 300},
-            {"nuclear-fuel", 5},
-            {"fusion-reactor-equipment", 1},
-            {"RTZiplineItem4", 1},
+            {type="item", name="iron-gear-wheel", amount=300},
+            {type="item", name="nuclear-fuel", amount=5},
+            {type="item", name="fission-reactor-equipment", amount=1},
+            {type="item", name="RTZiplineItem4", amount=1},
          },
-      result = "RTZiplineItem5"
+         results = {
+            {type="item", name="RTZiplineItem5", amount=1}
+         }
    }
 })
 
@@ -535,12 +554,14 @@ local RTZiplineTerminalRecipe =
       energy_required = 3,
       ingredients =
          {
-            {"medium-electric-pole", 1},
-            {"electronic-circuit", 10},
-            {"steel-plate", 20},
-            {"concrete", 25}
+            {type="item", name="medium-electric-pole", amount=1},
+            {type="item", name="electronic-circuit", amount=10},
+            {type="item", name="steel-plate", amount=20},
+            {type="item", name="concrete", amount=25}
          },
-      result = "RTZiplineTerminalItem"
+      results = {
+         {type="item", name="RTZiplineTerminalItem", amount=1}
+      }
    }
 data:extend({
    RTZiplineTerminal,

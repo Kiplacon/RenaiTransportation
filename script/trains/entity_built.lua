@@ -1,10 +1,11 @@
 local math2d = require('math2d')
 local util = require('util')
 local constants = require('constants')
+local magnetRampsStuff = require("__RenaiTransportation__/script/trains/magnet_ramps")
 
 local function handleMagnetRampBuilt(entity)
-	global.MagnetRamps[entity.unit_number] = {entity = entity, tiles = {}}
-	script.register_on_entity_destroyed(entity)
+	local OnDestroyNumber = script.register_on_object_destroyed(entity)
+	storage.MagnetRamps[OnDestroyNumber] = {entity = entity, tiles = {}}
 	entity.rotatable = false
 	local SUCC = entity.surface.create_entity({
 		name = "RTMagnetRampDrain",
@@ -15,7 +16,12 @@ local function handleMagnetRampBuilt(entity)
 	SUCC.electric_buffer_size = 1000000
 	SUCC.power_usage = 0
 	SUCC.destructible = false
-	global.MagnetRamps[entity.unit_number].power = SUCC
+	storage.MagnetRamps[OnDestroyNumber].power = SUCC
+	magnetRampsStuff.setRange(
+			storage.MagnetRamps[OnDestroyNumber],
+			nil,
+			player
+		)
 end
 
 local function handleTrainRampPlacerBuilt(entity, player)
@@ -27,7 +33,7 @@ local function handleTrainRampPlacerBuilt(entity, player)
 		direction = entity.direction,
 		force = entity.force,
 		raise_built = true,
-		create_build_effect_smoke = false,
+		--create_build_effect_smoke = false,
 		player = player
 	})
 

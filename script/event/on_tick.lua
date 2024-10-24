@@ -6,10 +6,10 @@ local function on_tick(event)
 	handle_players(event)
 	handle_trains(event)
 	handle_items(event)
-	if (global.clock[game.tick]) then
+	if (storage.clock[game.tick]) then
 		--=== destroy
-		if (global.clock[game.tick].destroy) then
-			for each, entity in pairs(global.clock[game.tick].destroy) do
+		if (storage.clock[game.tick].destroy) then
+			for each, entity in pairs(storage.clock[game.tick].destroy) do
 				if (entity.valid) then
 					entity.destroy()
 				end

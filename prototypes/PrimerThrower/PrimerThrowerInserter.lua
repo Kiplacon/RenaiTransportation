@@ -2,7 +2,7 @@ local TheItem = table.deepcopy(data.raw.item.inserter)
 	TheItem.icon = "__RenaiTransportation__/graphics/primerthrowericon.png"
 	TheItem.name = "RTThrower-PrimerThrower-Item"
 	TheItem.subgroup = "defensive-structure"
-   TheItem.order = "b-a-b"
+   	TheItem.order = "b-a-b"
 	TheItem.place_result = "RTThrower-PrimerThrower"
 
 TheRecipe =
@@ -13,12 +13,14 @@ TheRecipe =
 		energy_required = 1,
 		ingredients =
 			{
-				{"electronic-circuit", 2},
-				{"PrimerBouncePlateItem", 2},
-				{"gun-turret", 1},
-				{"inserter", 1}
+				{type="item", name="electronic-circuit", amount=2},
+				{type="item", name="PrimerBouncePlateItem", amount=2},
+				{type="item", name="gun-turret", amount=1},
+				{type="item", name="inserter", amount=1}
 			},
-		result = TheItem.name
+		results = {
+			{type="item", name=TheItem.name, amount=1}
+		}
 	}
 
 TheThrower = table.deepcopy(data.raw.inserter.inserter)
@@ -75,22 +77,14 @@ TheThrower = table.deepcopy(data.raw.inserter.inserter)
 		}
 	TheThrower.platform_picture =
 		{
-		  sheet =
-		  {
-			 filename = "__base__/graphics/entity/burner-inserter/burner-inserter-platform.png",
-			 priority = "extra-high",
-			 width = 46,
-			 height = 46,
-			 shift = {0.09375, 0},
-			 hr_version =
-			 {
-				filename = "__base__/graphics/entity/burner-inserter/hr-burner-inserter-platform.png",
+			sheet =
+			{
+				filename = "__base__/graphics/entity/burner-inserter/burner-inserter-platform.png",
 				priority = "extra-high",
 				width = 105,
 				height = 79,
 				shift = util.by_pixel(1.5, 7.5-1),
 				scale = 0.5
-			 }
-		  }
+			}
 		}
 data:extend({TheThrower, TheItem, TheRecipe})

@@ -3,7 +3,7 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 data:extend({
   {
 	type = "technology",
-	name = "se~no",
+	name = "se-no",
 	icon = "__RenaiTransportation__/graphics/tech/start.png",
 	icon_size = 128,
 	effects =
@@ -22,7 +22,7 @@ data:extend({
 		count = 10,
 		ingredients =
 		{
-		  {"automation-science-pack", 1}
+			{"automation-science-pack", 1}
 		},
 		time = 10
 	}
@@ -69,7 +69,7 @@ data:extend({
 			recipe = "HatchRTRecipe"
 		}
 	},
-	prerequisites = {"se~no"},
+	prerequisites = {"se-no"},
 	unit =
 	{
 		count = 20,
@@ -91,10 +91,10 @@ data:extend({
 			type = "unlock-recipe",
 			recipe = "RTThrower-EjectorHatchRTRecipe"
 		},
-		{
+		--[[ {
 			type = "unlock-recipe",
 			recipe = "RTThrower-FilterEjectorHatchRTRecipe"
-		}
+		} ]]
 	},
 	prerequisites = {"HatchRTTech"},
 	unit =
@@ -116,7 +116,7 @@ data:extend({
 	effects =
 	{
 	},
-	prerequisites = {"se~no", "logistic-science-pack"},
+	prerequisites = {"se-no", "logistic-science-pack"},
 	unit =
 	{
 		count = 50,
@@ -140,7 +140,7 @@ data:extend({
           recipe = "DirectorBouncePlateRecipie"
       }
     },
-    prerequisites = {"se~no", "advanced-electronics"},
+    prerequisites = {"se-no", "advanced-circuit"},
     unit =
     {
        count = 100,
@@ -158,7 +158,7 @@ else
 	data:extend({
 	  {
 		type = "technology",
-		name = "se~no",
+		name = "se-no",
 		icon = "__RenaiTransportation__/graphics/tech/start.png",
 		icon_size = 128,
 		effects =
@@ -190,7 +190,7 @@ if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RT
 				recipe = "PrimerBouncePlateRecipie"
 			}
 		},
-		prerequisites = {"se~no", "military-2"},
+		prerequisites = {"se-no", "military-2"},
 		unit =
 		{
 			count = 25,
@@ -202,7 +202,7 @@ if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RT
 			time = 25
 		}
 	  },
-   	{
+   	--[[ {
    		type = "technology",
    		name = "SignalPlateTech",
    		icon = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlateIconn.png",
@@ -214,7 +214,7 @@ if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RT
    				recipe = "SignalBouncePlateRecipie"
    			}
    		},
-   		prerequisites = {"se~no", "circuit-network"},
+   		prerequisites = {"se-no", "circuit-network"},
    		unit =
    		{
    			count = 25,
@@ -225,7 +225,7 @@ if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RT
    			},
    			time = 25
    		}
-      },
+      }, ]]
       {
          type = "technology",
          name = "PrimerThrowerTech",
@@ -238,7 +238,7 @@ if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RT
              recipe = "RTThrower-PrimerThrower-Recipe"
           }
          },
-         prerequisites = {"se~no", "PrimerPlateTech", "gun-turret", "military-science-pack"},
+         prerequisites = {"se-no", "PrimerPlateTech", "gun-turret", "military-science-pack"},
          unit =
          {
           count = 50,
@@ -300,7 +300,7 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 					recipe = "RTTrainRampRecipe"
 				}
 			},
-			prerequisites = {"se~no", "railway", "concrete"},
+			prerequisites = {"se-no", "railway", "concrete"},
 			unit =
 			{
 				count = 200,
@@ -357,7 +357,7 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
    				recipe = "RTImpactUnloaderRecipe"
    			}
    		},
-   		prerequisites = {"se~no", "railway", "concrete", "advanced-electronics"},
+   		prerequisites = {"se-no", "railway", "concrete", "advanced-circuit"},
    		unit =
    		{
    			count = 200,
@@ -425,7 +425,7 @@ if (settings.startup["RTZiplineSetting"].value == true) then
    			recipe = "RTZiplineControlsRecipe"
    		}
    	},
-   	prerequisites = {"se~no", "steel-processing"},
+   	prerequisites = {"se-no", "steel-processing"},
    	unit =
    	{
    		count = 100,
@@ -568,7 +568,7 @@ if (settings.startup["RTZiplineSetting"].value == true) then
           recipe = "RTZiplineRecipe4"
        }
       },
-      prerequisites = {"RTZiplineTech3", "rocket-fuel", "advanced-electronics-2"},
+      prerequisites = {"RTZiplineTech3", "rocket-fuel", "processing-unit"},
       unit =
       {
        count = 150,
@@ -599,7 +599,7 @@ if (settings.startup["RTZiplineSetting"].value == true) then
           recipe = "RTZiplineRecipe5"
        }
       },
-      prerequisites = {"RTZiplineTech4", "kovarex-enrichment-process", "fusion-reactor-equipment"},
+      prerequisites = {"RTZiplineTech4", "kovarex-enrichment-process", "fission-reactor-equipment"},
       unit =
       {
         count = 200,

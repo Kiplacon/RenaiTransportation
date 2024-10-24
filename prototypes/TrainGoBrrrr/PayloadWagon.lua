@@ -13,34 +13,15 @@ OhYouLikeTrains.icons =
 OhYouLikeTrains.minable = {mining_time = 0.5, result = "RTPayloadWagonItem"}
 OhYouLikeTrains.inventory_size = 8
 
-OhYouLikeTrains.pictures.layers[1].tint = {220,125,0}
-OhYouLikeTrains.pictures.layers[1].hr_version.tint = {220,125,0}
-OhYouLikeTrains.pictures.layers[2].tint = {220,125,0}
-OhYouLikeTrains.pictures.layers[2].hr_version.tint = {220,125,0}
-OhYouLikeTrains.pictures.layers[3].tint = {220,125,0}
-OhYouLikeTrains.pictures.layers[3].hr_version.tint = {220,125,0}
+OhYouLikeTrains.pictures.rotated.layers[1].tint = {220,125,0}
+OhYouLikeTrains.pictures.rotated.layers[2].tint = {220,125,0}
+OhYouLikeTrains.pictures.rotated.layers[3].tint = {220,125,0}
 
 OhYouLikeTrains.horizontal_doors.layers[1].tint = {220,125,0}
-OhYouLikeTrains.horizontal_doors.layers[1].hr_version.tint = {220,125,0}
 OhYouLikeTrains.horizontal_doors.layers[2].tint = {220,125,0}
-OhYouLikeTrains.horizontal_doors.layers[2].hr_version.tint = {220,125,0}
-OhYouLikeTrains.horizontal_doors.layers[3].tint = {220,125,0}
-OhYouLikeTrains.horizontal_doors.layers[3].hr_version.tint = {220,125,0}
-OhYouLikeTrains.horizontal_doors.layers[4].tint = {220,125,0}
-OhYouLikeTrains.horizontal_doors.layers[4].hr_version.tint = {220,125,0}
-OhYouLikeTrains.horizontal_doors.layers[5].tint = {220,125,0}
-OhYouLikeTrains.horizontal_doors.layers[5].hr_version.tint = {220,125,0}
 
 OhYouLikeTrains.vertical_doors.layers[1].tint = {220,125,0}
-OhYouLikeTrains.vertical_doors.layers[1].hr_version.tint = {220,125,0}
 OhYouLikeTrains.vertical_doors.layers[2].tint = {220,125,0}
-OhYouLikeTrains.vertical_doors.layers[2].hr_version.tint = {220,125,0}
-OhYouLikeTrains.vertical_doors.layers[3].tint = {220,125,0}
-OhYouLikeTrains.vertical_doors.layers[3].hr_version.tint = {220,125,0}
-OhYouLikeTrains.vertical_doors.layers[4].tint = {220,125,0}
-OhYouLikeTrains.vertical_doors.layers[4].hr_version.tint = {220,125,0}
-OhYouLikeTrains.vertical_doors.layers[5].tint = {220,125,0}
-OhYouLikeTrains.vertical_doors.layers[5].hr_version.tint = {220,125,0}
 
 data:extend({ 
 
@@ -71,11 +52,13 @@ OhYouLikeTrains,
 	energy_required = 1,
 	ingredients = 
 		{
-			{"explosives", 10},
-			{"PrimerBouncePlateItem", 5},
-			{"cargo-wagon", 1}
+			{type="item", name="explosives", amount=10},
+			{type="item", name="PrimerBouncePlateItem", amount=5},
+			{type="item", name="cargo-wagon", amount=1}
 		},
-	result = "RTPayloadWagonItem"
+	results = {
+		{type="item", name="RTPayloadWagonItem", amount=1}
+	}
 }
 
 })

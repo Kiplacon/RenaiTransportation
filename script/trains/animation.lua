@@ -20,25 +20,33 @@ function Animation.updateRendering(properties)
 	local elapsed = game.tick - properties.LaunchTick;
 	local initialVerticalVelocity = -0.5 * (gravity * properties.AirTime) -- v_0 = -(1/2) * (a * t)
 	local height = (initialVerticalVelocity * elapsed) + (0.5 * gravity * (elapsed ^ 2)) -- x = (v_0 * t) + (1/2) * a * t^2
+	local VertialSpeed = initialVerticalVelocity + gravity*elapsed
 
-	Animation.updateOffsets(properties, height)
+	Animation.updateOffsets(properties, height, elapsed)
 	Animation.updateScale(properties, height)
 	Animation.updateRotation(properties, elapsed)
+	return -height, -VertialSpeed
 end
 
-function Animation.updateOffsets(properties, height)
+function Animation.updateOffsets(properties, height, elapsed)
 	-- Adjust offset of rendered sprites
-	rendering.set_target(properties.TrainImageID, properties.GuideCar, {0, height})
-	rendering.set_target(properties.MaskID, properties.GuideCar, {0, height})
-	rendering.set_target(properties.ShadowID, properties.GuideCar, {-height + 1, 0.5})
+	if (properties.shift) then
+		local completedPercent = (game.tick-properties.ElevatedLandingStart) / (properties.LandTick-properties.ElevatedLandingStart)
+		height = -properties.shift + ((properties.shift-3)*completedPercent)
+	end
+	properties.TrainImageID.oriented_offset = {height,0}
+	properties.MaskID.oriented_offset = {height,0}
+	properties.ShadowID.oriented_offset = {0.5, height - 1}
 end
 
 function Animation.updateRotation(properties, elapsed)
-	local SpinMagnitude = 0.05
-	local SpinSpeed = 23
+	local SpinMagnitude = properties.SpinMagnitude or 0.05
+	local SpinSpeed = properties.SpinSpeed or 23
+	local test = properties.test or 2
 
 	local completedPercent = elapsed / properties.AirTime
-	local spinPercent = (2 * completedPercent) - 1 -- double the rotation arc and center it on 0, aka upright
+	--game.print(completedPercent)
+	local spinPercent = (test * completedPercent) - 1 -- double the rotation arc and center it on 0, aka upright
 	local spinScale = (spinPercent ^ SpinSpeed) - spinPercent
 	local spinAmount = SpinMagnitude * spinScale
 
@@ -50,11 +58,13 @@ function Animation.updateRotation(properties, elapsed)
 	if (properties.RampOrientation == 0 or properties.RampOrientation == 0.50) then
 		-- going down or up, spin the shadows
 		-- Spin amount plus 0.5 so the shadows orient north/south
-		rendering.set_orientation(properties.ShadowID, spinAmount + 0.5)
+		properties.TrainImageID.orientation = -0.25
+		properties.MaskID.orientation = -0.25
+		properties.ShadowID.orientation = spinAmount + 0.25
 	else
 		-- going left or right, spin the cars
-		rendering.set_orientation(properties.TrainImageID, spinAmount)
-		rendering.set_orientation(properties.MaskID, spinAmount)
+		properties.TrainImageID.orientation = spinAmount -0.25
+		properties.MaskID.orientation = spinAmount -0.25
 	end
 end
 
@@ -64,24 +74,24 @@ function Animation.updateScale(properties, height)
 		-- Going down or up, scale train to make it pop out
 		local scaleDelta = math.abs(height) * 0.05
 		local scale = scaleDelta + 1
-		rendering.set_x_scale(properties.TrainImageID, scale)
-		rendering.set_y_scale(properties.TrainImageID, scale)
-		rendering.set_x_scale(properties.MaskID, scale)
-		rendering.set_y_scale(properties.MaskID, scale)
+		properties.TrainImageID.x_scale = scale
+		properties.TrainImageID.y_scale = scale
+		properties.MaskID.x_scale = scale
+		properties.MaskID.y_scale = scale
 	else
-		rendering.set_x_scale(properties.TrainImageID, 1)
-		rendering.set_y_scale(properties.TrainImageID, 1)
-		rendering.set_x_scale(properties.MaskID, 1)
-		rendering.set_y_scale(properties.MaskID, 1)
+		properties.TrainImageID.x_scale = 1
+		properties.TrainImageID.y_scale = 1
+		properties.MaskID.x_scale = 1
+		properties.MaskID.y_scale = 1
 	end
 
 	-- Scale shadow height differently to maintain perspective
 	local shadowScaleDelta = math.abs(height) * 0.025
 
-	rendering.set_x_scale(properties.ShadowID, 0.25 + shadowScaleDelta)
-	rendering.set_y_scale(properties.ShadowID, 0.5 + shadowScaleDelta)
-	rendering.set_color(properties.ShadowID, {1, 1, 1, 2.5/(5-height)})
-	--rendering.set_color(properties.ShadowID, {1, 1, 1, math.abs(90 - 4*math.abs(math.ceil(height)))})
+	properties.ShadowID.x_scale = 0.25 + shadowScaleDelta
+	properties.ShadowID.y_scale = 0.5 + shadowScaleDelta
+	properties.ShadowID.color = {1, 1, 1, 2.5/(5-height)}
+	--rendering.set_color(properties.ShadowID, {1, 1, 1, math.abs(90 - 4*math.abs(math.ceil(height)))}) -- old
 end
 
 return Animation

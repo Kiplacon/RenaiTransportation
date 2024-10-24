@@ -32,8 +32,10 @@ data:extend({
 		name = "OpenContainerRecipie",
 		enabled = true,
 		energy_required = 0.5,
-		ingredients = {{"iron-chest", 1}},
-		result = "OpenContainerItem"
+		ingredients = {{type="item", name="iron-chest", amount=1}},
+		results = {
+			{type="item", name="OpenContainerItem", amount=1}
+		}
 	},
 	
 	{ --------- open to regular chest recipie ----------
@@ -41,8 +43,10 @@ data:extend({
 		name = "OpenContainerRevertRecipie",
 		enabled = true,
 		energy_required = 0.5,
-		ingredients = {{"OpenContainerItem", 1}},
-		result = "iron-chest",
+		ingredients = {{type="item", name="OpenContainerItem", amount=1}},
+		results = {
+			{type="item", name="iron-chest", amount=1}
+		},
 		allow_as_intermediate = false
 	},
 	

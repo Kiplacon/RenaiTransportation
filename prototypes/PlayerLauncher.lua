@@ -9,7 +9,7 @@ local PikachuFace = table.deepcopy(data.raw.inserter["inserter"])
 	PikachuFace.pickup_position = {0, -0.1}
 	PikachuFace.hand_size = 0
 	PikachuFace.collision_box = {{-0.05, -0.05}, {0.05, 0.05}} -- This size keeps it from being STOMPED when a player lands on it
-	PikachuFace.collision_mask = { "item-layer", "object-layer", "water-tile"} --not the player-layer so they can step on it
+	PikachuFace.collision_mask = {layers={["item"]=true, ["object"]=true, ["water_tile"]=true}} --not the player so they can step on it
 	PikachuFace.selection_box = {{-0.35, -0.35}, {0.35, 0.35}}
     PikachuFace.extension_speed = 0.027 -- default 0.03
     PikachuFace.rotation_speed = 0.03 -- default 0.014 
@@ -69,10 +69,12 @@ data:extend({
 		energy_required = 0.5,
 		ingredients = 
 			{
-				{"BouncePlateItem", 1},
-				{"iron-plate", 4}
+				{type="item", name="BouncePlateItem", amount=1},
+				{type="item", name="iron-plate", amount=4}
 			},
-		result = "PlayerLauncherItem"
+		results = {
+			{type="item", name="PlayerLauncherItem", amount=1}
+		}
 	},
 	
 	{ --------- bounce effect ----------

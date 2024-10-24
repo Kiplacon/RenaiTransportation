@@ -19,7 +19,7 @@ end
 	So to prevent any 'duplication' all irreplaceables must be removed from the inventory before the parent entity is destroyed.
 ]]--
 function cube_flying_trains.create_tokens_for_inventory(FlyingTrain, inventory, inv_type)
-	for prototype, _ in pairs(global.Ultracube.prototypes.irreplaceable) do
+	for prototype, _ in pairs(storage.Ultracube.prototypes.irreplaceable) do
 		local count = inventory.get_item_count(prototype)
 		if count > 0 then
 			inventory.remove({name=prototype, count=count})
@@ -35,7 +35,7 @@ function cube_flying_trains.create_tokens_for_inventory(FlyingTrain, inventory, 
 			)
 			local index = #FlyingTrain.Ultracube.tokens[inv_type]+1
 			FlyingTrain.Ultracube.tokens[inv_type][index] = token
-			if global.Ultracube.prototypes.cube[prototype] then
+			if storage.Ultracube.prototypes.cube[prototype] then
 				FlyingTrain.Ultracube.do_hint = true
 			end
 		end
@@ -43,7 +43,7 @@ function cube_flying_trains.create_tokens_for_inventory(FlyingTrain, inventory, 
 end
 
 function cube_flying_trains.create_token_for_burning(FlyingTrain)
-	if FlyingTrain.CurrentlyBurning and global.Ultracube.prototypes.irreplaceable[FlyingTrain.CurrentlyBurning.name] then -- There is a currently burning item for this FlyingTrain and it is an irreplaceable
+	if FlyingTrain.CurrentlyBurning and storage.Ultracube.prototypes.irreplaceable[FlyingTrain.CurrentlyBurning.name] then -- There is a currently burning item for this FlyingTrain and it is an irreplaceable
 		if FlyingTrain.Ultracube == nil then
 			FlyingTrain.Ultracube = {tokens={}, do_hint=false}
 		end
@@ -55,7 +55,7 @@ function cube_flying_trains.create_token_for_burning(FlyingTrain)
 				_create_token_init_data(FlyingTrain)
 			)
 		}
-		if global.Ultracube.prototypes.cube[FlyingTrain.CurrentlyBurning.name] then
+		if storage.Ultracube.prototypes.cube[FlyingTrain.CurrentlyBurning.name] then
 			FlyingTrain.Ultracube.do_hint = true
 		end
 		
@@ -121,7 +121,7 @@ function cube_flying_trains.release_burning(FlyingTrain, Burner, hint_entity)
 	local token = FlyingTrain.Ultracube.tokens["currently_burning"][1]
 	local item = remote.call("Ultracube", "release_ownership_token", token)
 	if item then -- Item hasn't been forcibly recovered
-		Burner.currently_burning = game.item_prototypes[item.name]
+		Burner.currently_burning = prototypes.item[item.name]
 		Burner.remaining_burning_fuel = FlyingTrain.Ultracube.RemainingFuel
 	end
 end

@@ -1,58 +1,53 @@
 local function entity_destroyed(event)
-	if (global.CatapultList[event.unit_number]) then
-		if (global.CatapultList[event.unit_number].entangled) then
-			for each, entity in pairs(global.CatapultList[event.unit_number].entangled) do
+	if (storage.CatapultList[event.registration_number]) then
+		if (storage.CatapultList[event.registration_number].entangled) then
+			for each, entity in pairs(storage.CatapultList[event.registration_number].entangled) do
 				entity.destroy()
 			end
 		end
-		if (global.HoverGFX[event.unit_number]) then
-			global.HoverGFX[event.unit_number] = nil
+		if (storage.HoverGFX[event.registration_number]) then
+			storage.HoverGFX[event.registration_number] = nil
 		end
-		global.CatapultList[event.unit_number] = nil
+		storage.CatapultList[event.registration_number] = nil
 	end
 
-	if (global.PrimerThrowerLinks[event.unit_number]) then
-		global.PrimerThrowerLinks[event.unit_number] = nil
+	if (storage.PrimerThrowerLinks[event.registration_number]) then
+		storage.PrimerThrowerLinks[event.registration_number] = nil
 	end
 
-	if (global.MagnetRamps[event.unit_number]) then
-		for each, tile in pairs(global.MagnetRamps[event.unit_number].tiles) do
+	if (storage.MagnetRamps[event.registration_number]) then
+		for each, tile in pairs(storage.MagnetRamps[event.registration_number].tiles) do
 			tile.destroy()
 		end
-		global.MagnetRamps[event.unit_number].power.destroy()
-		global.MagnetRamps[event.unit_number] = nil
+		storage.MagnetRamps[event.registration_number].power.destroy()
+		storage.MagnetRamps[event.registration_number] = nil
 	end
 
-	if (global.OnTheWay[event.unit_number]) then
-		global.OnTheWay[event.unit_number] = nil
+	if (storage.OnTheWay[event.registration_number]) then
+		storage.OnTheWay[event.registration_number] = nil
 	end
 
-	if (global.DataTrackerLinks[event.unit_number] ~= nil) then
-		global.DataTrackerLinks[event.unit_number].tracker.destroy()
-		global.DataTrackerLinks[event.unit_number] = nil
-	end
-
-	if (global.ThrowerPaths[event.unit_number] ~= nil) then
-		for ThrowerUN, TrackedItems in pairs(global.ThrowerPaths[event.unit_number]) do
-			if (global.CatapultList[ThrowerUN]) then
+	if (storage.ThrowerPaths[event.registration_number] ~= nil) then
+		for ThrowerUN, TrackedItems in pairs(storage.ThrowerPaths[event.registration_number]) do
+			if (storage.CatapultList[ThrowerUN]) then
 				for item, ligma in pairs(TrackedItems) do
-					global.CatapultList[ThrowerUN].targets[item] = nil
+					storage.CatapultList[ThrowerUN].targets[item] = nil
 				end
 			end
 		end
-		global.ThrowerPaths[event.unit_number] = nil
+		storage.ThrowerPaths[event.registration_number] = nil
 	end
 
-	if (global.ZiplineTerminals[event.unit_number] ~= nil) then
-		if (global.ZiplineTerminals[event.unit_number].tag.valid) then
-			global.ZiplineTerminals[event.unit_number].tag.destroy()
+	if (storage.ZiplineTerminals[event.registration_number] ~= nil) then
+		if (storage.ZiplineTerminals[event.registration_number].tag.valid) then
+			storage.ZiplineTerminals[event.registration_number].tag.destroy()
 		end
 		for each, player in pairs(game.players) do
-			if (player.gui.center.RTZiplineTerminalGUI and player.gui.center.RTZiplineTerminalGUI.tags.ID == event.unit_number) then
+			if (player.gui.center.RTZiplineTerminalGUI and player.gui.center.RTZiplineTerminalGUI.tags.ID == event.registration_number) then
 				player.gui.center.RTZiplineTerminalGUI.destroy()
 			end
 		end
-		global.ZiplineTerminals[event.unit_number] = nil
+		storage.ZiplineTerminals[event.registration_number] = nil
 	end
 end
 

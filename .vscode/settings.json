@@ -2,17 +2,20 @@
     "factorio.versions": [
         {
             "name": "Steam Install",
-            "factorioPath": "d:\\Steam\\steamapps\\common\\Factorio\\bin\\x64\\factorio.exe",
+            "factorioPath": "d:\\Steam\\steamapps\\common\\Factorio\\bin\\x64\\factorio.exe"
+        },
+        {
+            "name": "Factorio SA Beta",
+            "factorioPath": "c:\\Users\\xiaox\\OneDrive\\Desktop\\Factorio_2.0.0\\bin\\x64\\factorio.exe",
             "active": true
         }
     ],
     "Lua.workspace.library": [
         "c:/Users/xiaox/AppData/Roaming/Code/User/workspaceStorage/f34a32745aa52066e3ffde1bd64d08ef/justarandomgeek.factoriomod-debug/sumneko-3rd/factorio/library",
-        "d:\\Steam\\steamapps\\common\\Factorio\\data"
+        "c:\\Users\\xiaox\\OneDrive\\Desktop\\Factorio_2.0.0\\data"
     ],
     "Lua.workspace.userThirdParty": [
-        "c:\\Users\\xiaox\\AppData\\Roaming\\Code\\User\\workspaceStorage\\f34a32745aa52066e3ffde1bd64d08ef\\justarandomgeek.factoriomod-debug\\sumneko-3rd",
-        "c:\\Users\\xiaox\\AppData\\Roaming\\Code\\User\\workspaceStorage\\fb79f0e5d907020e822c3bfc2b8df319\\justarandomgeek.factoriomod-debug\\sumneko-3rd"
+        "c:\\Users\\xiaox\\AppData\\Roaming\\Code\\User\\workspaceStorage\\f2fed1bc2d4585d9e1270f0aa46a17fc\\justarandomgeek.factoriomod-debug\\sumneko-3rd"
     ],
     "Lua.diagnostics.globals": [
         "__DebugAdapter",

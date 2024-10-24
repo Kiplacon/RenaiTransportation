@@ -16,25 +16,69 @@ local function makeRampItem(name, icon, placerEntity)
 end
 
 local function makeRampPlacerEntity(name, icon, pictureFileName, placerItem)
+	local PictureSet =
+	{
+		structure =
+		{
+			layers =
+			{
+				{
+					filename = pictureFileName,
+					width = 200,
+					height = 200,
+					frame_count = 1,
+					direction_count = 4,
+				}
+			}
+		},
+		signal_color_to_structure_frame_index =
+		{
+			green  = 0,
+			yellow = 1,
+			red    = 2,
+		},
+		lights =
+		{
+			green  = { light = {intensity = 0.2, size = 4, color={r=0, g=1,   b=0 }}, shift = { 0, -0.5 }},
+			yellow = { light = {intensity = 0.2, size = 4, color={r=1, g=0.5, b=0 }}, shift = { 0,  0   }},
+			red    = { light = {intensity = 0.2, size = 4, color={r=1, g=0,   b=0 }}, shift = { 0,  0.5 }},
+		},
+		structure_align_to_animation_index =
+		{
+			0,  0,  0,  0,   0,  0,  0,  0,   0,  0,  0,  0,
+			0,  0,  0,  0,   0,  0,  0,  0,   0,  0,  0,  0,
+			0,  0,  0,  0,   0,  0,  0,  0,   0,  0,  0,  0,
+			0,  0,  0,  0,   0,  0,  0,  0,   0,  0,  0,  0,
+			1,  1,  1,  1,   1,  1,  1,  1,   1,  1,  1,  1,
+			1,  1,  1,  1,   1,  1,  1,  1,   1,  1,  1,  1,
+			1,  1,  1,  1,   1,  1,  1,  1,   1,  1,  1,  1,
+			1,  1,  1,  1,   1,  1,  1,  1,   1,  1,  1,  1,
+			2,  2,  2,  2,   2,  2,  2,  2,   2,  2,  2,  2,
+			2,  2,  2,  2,   2,  2,  2,  2,   2,  2,  2,  2,
+			2,  2,  2,  2,   2,  2,  2,  2,   2,  2,  2,  2,
+			2,  2,  2,  2,   2,  2,  2,  2,   2,  2,  2,  2,
+			3,  3,  3,  3,   3,  3,  3,  3,   3,  3,  3,  3,
+			3,  3,  3,  3,   3,  3,  3,  3,   3,  3,  3,  3,
+			3,  3,  3,  3,   3,  3,  3,  3,   3,  3,  3,  3,
+			3,  3,  3,  3,   3,  3,  3,  3,   3,  3,  3,  3,
+		}
+	}
 	return {
 		type = "rail-signal",
 		name = name,
 		icon = icon,
 		icon_size = 64,
-		flags = {"filter-directions", "fast-replaceable-no-build-while-moving"},
+		flags = {"filter-directions"},
 		minable = { mining_time = 0.5, result = placerItem },-- Minable so they can get the item back if the placer swap bugs out
 		render_layer = "higher-object-under",
-		collision_mask = {"floor-layer", "rail-layer", "item-layer", "water-tile", "object-layer"}, -- "water-tile" makes it compatible with Space Explotation because for some reason it changes signal collison masks and all signals have to have at least one overlapping collision mask
+		collision_mask = {layers={["floor"]=true, ["rail"]=true, ["item"]=true, ["water_tile"]=true, ["object"]=true}}, -- "water_tile" makes it compatible with Space Explotation because for some reason it changes signal collison masks and all signals have to have at least one overlapping collision mask
 		selection_priority = 100,
-		collision_box = {{-0.01, -2.35}, {2.25, 1.30}},
-		selection_box = {{-0.01, -2.35}, {2.25, 1.30}},
-		animation = {
-			filename = pictureFileName,
-			width = 200,
-			height = 200,
-			frame_count = 1,
-			direction_count = 4
-		}
+		--collision_box = {{-0.01, -2.35}, {2.25, 1.30}},
+		--selection_box = {{-0.01, -2.35}, {2.25, 1.30}},
+		collision_box = {{-0.4, -0.4}, {0.4, 0.4}},
+		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
+		ground_picture_set = PictureSet,
+		elevated_picture_set = PictureSet
 	}
 end
 
@@ -54,20 +98,20 @@ local function makeRampEntity(name, icon, pictureFileName, placerItem)
 		}
 
 	return {
-		type = "simple-entity-with-owner", -- Simplist entity that has 4 diections of sprites
+		type = "constant-combinator", -- Simplist entity that has 4 diections of sprites
 		name = name,
 		icon = icon,
 		icon_size = 64,
-		flags = {"player-creation", "hidden", "not-on-map"},
+		flags = {"player-creation", "not-on-map"},
+		hidden = true,
 		minable = {mining_time = 0.5, result = placerItem},
 		max_health = HP,
-		render_layer = "higher-object-under",
 		selection_box = {{-0.01, -1.6}, {2, 2.4}},
 		selection_priority = 100,
 		collision_box = {{-0.01, -1.5}, {1.9, 2.4}},
-		collision_mask = {"train-layer"},
+		collision_mask = {layers={["player"]=true, ["train"]=true}},
 		render_layer = "lower-object-above-shadow",
-		picture = {
+		sprites = {
 			-- Shifts are inverted because the sprites are pre-shifted to be at the ramp position already
 			north = {
 				filename = pictureFileName,
@@ -99,22 +143,22 @@ local function makeRampEntity(name, icon, pictureFileName, placerItem)
 			},
 		},
 		placeable_by = { item = placerItem, count = 1 }, -- Controls `q` and blueprint behavior
-		resistances = resists
+		resistances = resists,
 		-- null out the standard combinator stuff
 		-- item_slot_count = 0,
-		-- activity_led_sprites = util.empty_sprite(),
-		-- activity_led_light_offsets = {
-			-- {0, 0},
-			-- {0, 0},
-			-- {0, 0},
-			-- {0, 0}
-		-- },
-		-- circuit_wire_connection_points = {
-			-- { shadow = {}, wire = {} },
-			-- { shadow = {}, wire = {} },
-			-- { shadow = {}, wire = {} },
-			-- { shadow = {}, wire = {} },
-		-- }
+		activity_led_sprites = util.empty_sprite(),
+		activity_led_light_offsets = {
+			{0, 0},
+			{0, 0},
+			{0, 0},
+			{0, 0}
+		},
+		circuit_wire_connection_points = {
+			{ shadow = {}, wire = {} },
+			{ shadow = {}, wire = {} },
+			{ shadow = {}, wire = {} },
+			{ shadow = {}, wire = {} },
+		}
 	}
 end
 
@@ -184,11 +228,13 @@ data:extend({
 		energy_required = 2,
 		ingredients =
 			{
-				{"rail", 4},
-				{"steel-plate", 30},
-				{"concrete", 50}
+				{type="item", name="rail", amount=4},
+				{type="item", name="steel-plate", amount=30},
+				{type="item", name="concrete", amount=50}
 			},
-		result = "RTTrainRampItem"
+		results = {
+			{type="item", name="RTTrainRampItem", amount=1}
+		}
 	},
 
 	{ --------- ramp recipie ----------
@@ -198,13 +244,15 @@ data:extend({
 		energy_required = 2,
 		ingredients =
 			{
-				{"RTTrainRampItem", 1},
-				{"accumulator", 1},
-				{"substation", 1},
-				{"steel-plate", 100},
-				{"advanced-circuit", 25}
+				{type="item", name="RTTrainRampItem", amount=1},
+				{type="item", name="accumulator", amount=1},
+				{type="item", name="substation", amount=1},
+				{type="item", name="steel-plate", amount=100},
+				{type="item", name="advanced-circuit", amount=25}
 			},
-		result = "RTMagnetTrainRampItem"
+		results = {
+			{type="item", name="RTMagnetTrainRampItem", amount=1}
+		}
 	},
 
 	{ --------- ramp recipie ----------
@@ -214,11 +262,13 @@ data:extend({
 		energy_required = 2,
 		ingredients =
 			{
-				{"advanced-circuit", 20},
-				{"steel-plate", 100},
-				{"refined-concrete", 100}
+				{type="item", name="advanced-circuit", amount=20},
+				{type="item", name="steel-plate", amount=100},
+				{type="item", name="refined-concrete", amount=100}
 			},
-		result = "RTImpactUnloaderItem"
+		results = {
+			{type="item", name="RTImpactUnloaderItem", amount=1}
+		}
 	}
 })
 

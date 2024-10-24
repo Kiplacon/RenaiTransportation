@@ -50,11 +50,13 @@ data:extend({
 		energy_required = 1,
 		ingredients = 
 			{
-				{"BouncePlateItem", 1},
-				{"electronic-circuit", 2},
-				{"coal", 5}
+				{type="item", name="BouncePlateItem", amount=1},
+				{type="item", name="electronic-circuit", amount=2},
+				{type="item", name="coal", amount=5}
 			},
-		result = "PrimerBouncePlateItem"
+		results = {
+			{type="item", name="PrimerBouncePlateItem", amount=1}
+		}
 	},
 	
 	{ --------- bounce effect ----------
