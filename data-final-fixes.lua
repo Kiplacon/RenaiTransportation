@@ -477,6 +477,7 @@ end
 
 ----- Get the sprites of the carriage to use during a jump
 function MakeCarriageSprites(ThingData)
+	log("--------Extracting train sprites for "..ThingData.type..": "..ThingData.name.."-----------")
 	--if (ThingData.pictures and ThingData.pictures.rotated.layers) then
 		local UpSprites = {{
 							filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WheelsVertical.png",
@@ -522,143 +523,150 @@ function MakeCarriageSprites(ThingData)
 							}}
 		-- local SpriteSize = {1,1}
 		-- local SpriteScale = 1
-		local SpriteSets = ThingData.pictures.rotated.layers
-		--[[ if (ThingData.pictures.layers) then
-			SpriteSets = ThingData.pictures.layers
-		else
-			SpriteSets = ThingData.pictures.rotated.layers
-		end ]]
-		for each, SpriteSet in pairs(SpriteSets) do
-			if ((SpriteSet.flags == nil or (SpriteSet.flags and SpriteSet.flags[1] ~= "mask" and SpriteSet.flags[1] ~= "shadow")) and SpriteSet.draw_as_shadow == nil) then  -- carriage "body" sprite
-				if (SpriteSet.filenames and (SpriteSet.line_length*SpriteSet.lines_per_file)%4 == 0) then
-					if (SpriteSet.back_equals_front ~= true) then
-						table.insert(UpSprites, {filename = SpriteSet.filenames[1+0],
-											x = SpriteSet.width*(0%SpriteSet.line_length),
-											y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
-											size = {SpriteSet.width, SpriteSet.height},
-											scale = SpriteSet.scale,
-											shift = SpriteSet.shift,
-											tint = SpriteSet.tint})
-						table.insert(RightSprites, {filename = SpriteSet.filenames[1+math.floor(0.25*#SpriteSet.filenames)],
-											x = SpriteSet.width*((0.25*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
-											y = SpriteSet.height*math.floor(((0.25*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
-											size = {SpriteSet.width, SpriteSet.height},
-											scale = SpriteSet.scale,
-											shift = SpriteSet.shift,
-											tint = SpriteSet.tint})
-						table.insert(DownSprites, {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)],
-											x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
-											y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
-											size = {SpriteSet.width, SpriteSet.height},
-											scale = SpriteSet.scale,
-											shift = SpriteSet.shift,
-											tint = SpriteSet.tint})
-						table.insert(LeftSprites, {filename = SpriteSet.filenames[1+math.floor(0.75*#SpriteSet.filenames)],
-											x = SpriteSet.width*((0.75*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
-											y = SpriteSet.height*math.floor(((0.75*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
-											size = {SpriteSet.width, SpriteSet.height},
-											scale = SpriteSet.scale,
-											shift = SpriteSet.shift,
-											tint = SpriteSet.tint})
-					else
-						table.insert(UpSprites, {filename = SpriteSet.filenames[1+0],
-											x = SpriteSet.width*(0%SpriteSet.line_length),
-											y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
-											size = {SpriteSet.width, SpriteSet.height},
-											scale = SpriteSet.scale,
-											shift = SpriteSet.shift,
-											tint = SpriteSet.tint})
-						table.insert(RightSprites, {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)],
-											x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
-											y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
-											size = {SpriteSet.width, SpriteSet.height},
-											scale = SpriteSet.scale,
-											shift = SpriteSet.shift,
-											tint = SpriteSet.tint})
-						table.insert(DownSprites, {filename =SpriteSet.filenames[1+0], 
-											x = SpriteSet.width*(0%SpriteSet.line_length), 
-											y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
-											size = {SpriteSet.width, SpriteSet.height},
-											scale = SpriteSet.scale,
-											shift = SpriteSet.shift,
-											tint = SpriteSet.tint})
-						table.insert(LeftSprites, {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)], 
-											x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
-											y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
-											size = {SpriteSet.width, SpriteSet.height},
-											scale = SpriteSet.scale,
-											shift = SpriteSet.shift,
-											tint = SpriteSet.tint})
-					end
-				end
-
-
-			elseif (SpriteSet.flags and SpriteSet.flags[1] == "mask" and SpriteSet.draw_as_shadow == nil) then	-- carriage mask
-				if (SpriteSet.filenames and (SpriteSet.line_length*SpriteSet.lines_per_file)%4 == 0) then
-					if (SpriteSet.back_equals_front ~= true) then
-						table.insert(MaskUpSprites, {filename = SpriteSet.filenames[1+0],
-											x = SpriteSet.width*(0%SpriteSet.line_length),
-											y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
-											size = {SpriteSet.width, SpriteSet.height},
-											scale = SpriteSet.scale,
-											shift = SpriteSet.shift,
-											tint = SpriteSet.tint})
-						table.insert(MaskRightSprites, {filename = SpriteSet.filenames[1+math.floor(0.25*#SpriteSet.filenames)],
-											x = SpriteSet.width*((0.25*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
-											y = SpriteSet.height*math.floor(((0.25*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
-											size = {SpriteSet.width, SpriteSet.height},
-											scale = SpriteSet.scale,
-											shift = SpriteSet.shift,
-											tint = SpriteSet.tint})
-						table.insert(MaskDownSprites, {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)],
-											x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
-											y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
-											size = {SpriteSet.width, SpriteSet.height},
-											scale = SpriteSet.scale,
-											shift = SpriteSet.shift,
-											tint = SpriteSet.tint})
-						table.insert(MaskLeftSprites, {filename = SpriteSet.filenames[1+math.floor(0.75*#SpriteSet.filenames)],
-											x = SpriteSet.width*((0.75*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
-											y = SpriteSet.height*math.floor(((0.75*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
-											size = {SpriteSet.width, SpriteSet.height},
-											scale = SpriteSet.scale,
-											shift = SpriteSet.shift,
-											tint = SpriteSet.tint})
-					else
-						table.insert(MaskUpSprites, {filename = SpriteSet.filenames[1+0],
-											x = SpriteSet.width*(0%SpriteSet.line_length),
-											y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
-											size = {SpriteSet.width, SpriteSet.height},
-											scale = SpriteSet.scale,
-											shift = SpriteSet.shift,
-											tint = SpriteSet.tint})
-						table.insert(MaskRightSprites, {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)],
-											x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
-											y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
-											size = {SpriteSet.width, SpriteSet.height},
-											scale = SpriteSet.scale,
-											shift = SpriteSet.shift,
-											tint = SpriteSet.tint})
-						table.insert(MaskDownSprites, {filename = SpriteSet.filenames[1+0], 
-											x = SpriteSet.width*(0%SpriteSet.line_length),
-											y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
-											size = {SpriteSet.width, SpriteSet.height}, 
-											scale = SpriteSet.scale, 
-											shift = SpriteSet.shift,
-											tint = SpriteSet.tint})
-						table.insert(MaskLeftSprites, {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)],
-											x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
-											y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
-											size = {SpriteSet.width, SpriteSet.height},
-											scale = SpriteSet.scale,
-											shift = SpriteSet.shift,
-											tint = SpriteSet.tint})
-					end
-				end
+		local SpriteSets
+		if (ThingData.pictures
+		and ThingData.pictures.rotated) then
+			if (ThingData.pictures.rotated.layers) then
+				SpriteSets = ThingData.pictures.rotated.layers
+			else
+				SpriteSets = ThingData.pictures.rotated
 			end
-		end -- for loop end
+		else
+			-- no images (invisibel)
+		end
+		if (SpriteSets ~= nil) then
+			for each, SpriteSet in pairs(SpriteSets) do
+				if ((SpriteSet.flags == nil or (SpriteSet.flags and SpriteSet.flags[1] ~= "mask" and SpriteSet.flags[1] ~= "shadow")) and SpriteSet.draw_as_shadow == nil) then  -- carriage "body" sprite
+					if (SpriteSet.filenames and (SpriteSet.line_length*SpriteSet.lines_per_file)%4 == 0) then
+						if (SpriteSet.back_equals_front ~= true) then
+							table.insert(UpSprites, {filename = SpriteSet.filenames[1+0],
+												x = SpriteSet.width*(0%SpriteSet.line_length),
+												y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+												size = {SpriteSet.width, SpriteSet.height},
+												scale = SpriteSet.scale,
+												shift = SpriteSet.shift,
+												tint = SpriteSet.tint})
+							table.insert(RightSprites, {filename = SpriteSet.filenames[1+math.floor(0.25*#SpriteSet.filenames)],
+												x = SpriteSet.width*((0.25*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+												y = SpriteSet.height*math.floor(((0.25*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+												size = {SpriteSet.width, SpriteSet.height},
+												scale = SpriteSet.scale,
+												shift = SpriteSet.shift,
+												tint = SpriteSet.tint})
+							table.insert(DownSprites, {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)],
+												x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+												y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+												size = {SpriteSet.width, SpriteSet.height},
+												scale = SpriteSet.scale,
+												shift = SpriteSet.shift,
+												tint = SpriteSet.tint})
+							table.insert(LeftSprites, {filename = SpriteSet.filenames[1+math.floor(0.75*#SpriteSet.filenames)],
+												x = SpriteSet.width*((0.75*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+												y = SpriteSet.height*math.floor(((0.75*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+												size = {SpriteSet.width, SpriteSet.height},
+												scale = SpriteSet.scale,
+												shift = SpriteSet.shift,
+												tint = SpriteSet.tint})
+						else
+							table.insert(UpSprites, {filename = SpriteSet.filenames[1+0],
+												x = SpriteSet.width*(0%SpriteSet.line_length),
+												y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+												size = {SpriteSet.width, SpriteSet.height},
+												scale = SpriteSet.scale,
+												shift = SpriteSet.shift,
+												tint = SpriteSet.tint})
+							table.insert(RightSprites, {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)],
+												x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+												y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+												size = {SpriteSet.width, SpriteSet.height},
+												scale = SpriteSet.scale,
+												shift = SpriteSet.shift,
+												tint = SpriteSet.tint})
+							table.insert(DownSprites, {filename =SpriteSet.filenames[1+0], 
+												x = SpriteSet.width*(0%SpriteSet.line_length), 
+												y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+												size = {SpriteSet.width, SpriteSet.height},
+												scale = SpriteSet.scale,
+												shift = SpriteSet.shift,
+												tint = SpriteSet.tint})
+							table.insert(LeftSprites, {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)], 
+												x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+												y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+												size = {SpriteSet.width, SpriteSet.height},
+												scale = SpriteSet.scale,
+												shift = SpriteSet.shift,
+												tint = SpriteSet.tint})
+						end
+					end
 
-		if (#UpSprites>1 and #RightSprites>1 and #DownSprites>1 and #LeftSprites>1) then
+
+				elseif (SpriteSet.flags and SpriteSet.flags[1] == "mask" and SpriteSet.draw_as_shadow == nil) then	-- carriage mask
+					if (SpriteSet.filenames and (SpriteSet.line_length*SpriteSet.lines_per_file)%4 == 0) then
+						if (SpriteSet.back_equals_front ~= true) then
+							table.insert(MaskUpSprites, {filename = SpriteSet.filenames[1+0],
+												x = SpriteSet.width*(0%SpriteSet.line_length),
+												y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+												size = {SpriteSet.width, SpriteSet.height},
+												scale = SpriteSet.scale,
+												shift = SpriteSet.shift,
+												tint = SpriteSet.tint})
+							table.insert(MaskRightSprites, {filename = SpriteSet.filenames[1+math.floor(0.25*#SpriteSet.filenames)],
+												x = SpriteSet.width*((0.25*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+												y = SpriteSet.height*math.floor(((0.25*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+												size = {SpriteSet.width, SpriteSet.height},
+												scale = SpriteSet.scale,
+												shift = SpriteSet.shift,
+												tint = SpriteSet.tint})
+							table.insert(MaskDownSprites, {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)],
+												x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+												y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+												size = {SpriteSet.width, SpriteSet.height},
+												scale = SpriteSet.scale,
+												shift = SpriteSet.shift,
+												tint = SpriteSet.tint})
+							table.insert(MaskLeftSprites, {filename = SpriteSet.filenames[1+math.floor(0.75*#SpriteSet.filenames)],
+												x = SpriteSet.width*((0.75*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+												y = SpriteSet.height*math.floor(((0.75*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+												size = {SpriteSet.width, SpriteSet.height},
+												scale = SpriteSet.scale,
+												shift = SpriteSet.shift,
+												tint = SpriteSet.tint})
+						else
+							table.insert(MaskUpSprites, {filename = SpriteSet.filenames[1+0],
+												x = SpriteSet.width*(0%SpriteSet.line_length),
+												y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+												size = {SpriteSet.width, SpriteSet.height},
+												scale = SpriteSet.scale,
+												shift = SpriteSet.shift,
+												tint = SpriteSet.tint})
+							table.insert(MaskRightSprites, {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)],
+												x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+												y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+												size = {SpriteSet.width, SpriteSet.height},
+												scale = SpriteSet.scale,
+												shift = SpriteSet.shift,
+												tint = SpriteSet.tint})
+							table.insert(MaskDownSprites, {filename = SpriteSet.filenames[1+0], 
+												x = SpriteSet.width*(0%SpriteSet.line_length),
+												y = SpriteSet.height*math.floor((0%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+												size = {SpriteSet.width, SpriteSet.height}, 
+												scale = SpriteSet.scale, 
+												shift = SpriteSet.shift,
+												tint = SpriteSet.tint})
+							table.insert(MaskLeftSprites, {filename = SpriteSet.filenames[1+math.floor(0.5*#SpriteSet.filenames)],
+												x = SpriteSet.width*((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%SpriteSet.line_length),
+												y = SpriteSet.height*math.floor(((0.5*#SpriteSet.filenames*SpriteSet.line_length*SpriteSet.lines_per_file)%(SpriteSet.line_length*SpriteSet.lines_per_file))/SpriteSet.line_length),
+												size = {SpriteSet.width, SpriteSet.height},
+												scale = SpriteSet.scale,
+												shift = SpriteSet.shift,
+												tint = SpriteSet.tint})
+						end
+					end
+				end
+			end -- for loop end
+		end
+
+		--if (#UpSprites>1 and #RightSprites>1 and #DownSprites>1 and #LeftSprites>1) then
 			data:extend({
 				{
 					type = "sprite",
@@ -681,8 +689,8 @@ function MakeCarriageSprites(ThingData)
 					layers = LeftSprites
 				}
 			})
-		end
-		if (#MaskUpSprites>1 and #MaskRightSprites>1 and #MaskDownSprites>1 and #MaskLeftSprites>1) then
+		--end
+		--if (#MaskUpSprites>1 and #MaskRightSprites>1 and #MaskDownSprites>1 and #MaskLeftSprites>1) then
 			data:extend({
 				{
 					type = "sprite",
@@ -717,7 +725,7 @@ function MakeCarriageSprites(ThingData)
 					apply_runtime_tint = true
 				}
 			})
-		end
+		--end
 	--end
 end
 
