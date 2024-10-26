@@ -536,14 +536,7 @@ function(event)
 			}
 		end
 	else
-		rendering.draw_sprite
-		{
-		sprite = "RTlocomotiveleft",
-		target = {player.selected.position.x, player.selected.position.y-3.0},
-		surface = player.surface,
-		render_layer = "air-object",
-		}
-		--[[ rendering.draw_animation
+		rendering.draw_animation
 		{
 			animation = "RTHoojinTime",
 			x_scale = 0.5,
@@ -552,7 +545,7 @@ function(event)
 			surface = player.surface,
 			time_to_live = 120,
 			animation_speed = 0.5
-		} ]]
+		}
 	end
 end)
 
