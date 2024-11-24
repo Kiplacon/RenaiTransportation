@@ -327,6 +327,14 @@ local function on_tick(event)
 
 						-- this order of setting speed -> manual mode -> schedule is very important, other orders mess up a lot more
 						-- in 2.0, setting manua mode before speed works better, old way causes stuttering when following carriages reconnect
+						--game.print(NewTrain.train.speed.."    "..properties.speed)
+						local SpeedPolarity
+						if (NewTrain.train.speed >= 0) then
+							SpeedPolarity = 1
+						else
+							SpeedPolarity = -1
+						end
+						
 						if (properties.schedule ~= nil) then
 							reEnableSchedule(NewTrain.train, properties.schedule, properties.destinationStation, properties)
 						end
@@ -339,7 +347,7 @@ local function on_tick(event)
 						) then
 							NewTrain.train.manual_mode = properties.ManualMode -- TrainreEnableSchedules are default created in manual mode, and connecting a new carriage switches back to manual
 						end
-
+						
 						if (properties.leader == nil) then
 							if ((properties.ghostLoco ~= nil and properties.ghostLoco.valid == true and properties.RampOrientation == properties.ghostLoco.orientation)
 							or (properties.RampOrientation == properties.orientation))then
@@ -348,11 +356,11 @@ local function on_tick(event)
 								NewTrain.train.speed = math.abs(properties.speed)
 							end
 						else
-							if (NewTrain.train.speed>=0) then
-								NewTrain.train.speed = math.abs(properties.speed)
-							else
-								NewTrain.train.speed = -math.abs(properties.speed)
-							end
+							--if (SpeedPolarity>=0) then
+								NewTrain.train.speed = SpeedPolarity*math.abs(properties.speed)
+							--else
+								--NewTrain.train.speed = -math.abs(properties.speed)
+							--end
 						end
 
 						

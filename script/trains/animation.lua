@@ -61,13 +61,13 @@ function Animation.updateRotation(properties, elapsed, height)
 		-- Spin amount plus 0.5 so the shadows orient north/south
 		--properties.TrainImageID.orientation = -0.25
 		--properties.MaskID.orientation = -0.25
-		if (completedPercent > 0.93) then
+		if (properties.elevated and completedPercent > 0.93) then
 			spinAmount = properties.ShadowID.orientation
 		end
 		properties.ShadowID.orientation = spinAmount
 	else
 		-- going left or right, spin the cars
-		if (completedPercent > 0.93) then
+		if (properties.elevated and completedPercent > 0.93) then
 			spinAmount = properties.TrainImageID.orientation
 		end
 		properties.TrainImageID.orientation = spinAmount

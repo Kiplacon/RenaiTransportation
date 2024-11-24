@@ -237,6 +237,15 @@ local function entity_damaged(event)
 					{event.cause.position.x-4,event.cause.position.y+1}
 				}
 		end
+
+		--[[ rendering.draw_rectangle{
+			color = {1,1,0},
+			left_top = SearchBox[1],
+			right_bottom = SearchBox[2],
+			surface = event.cause.surface,
+			time_to_live = 10,
+		} ]]
+
 		--game.print(FlyingTrainProperties.RampOrientation)
 		FlyingTrainProperties.follower = SpookyGhost.surface.find_entities_filtered
 			{
