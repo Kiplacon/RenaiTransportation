@@ -117,7 +117,7 @@ function(event)
 									storage.OnTheWay[TargetDestroyNumber][HeldItem] = 0  -- correct any miscalculaltions resulting in negative values
 								end
 								local total = storage.OnTheWay[TargetDestroyNumber][HeldItem] + catapult.held_stack.count
-								local inserted = properties.targets[HeldItem].insert({name=HeldItem, count=total, quality=catapult.held_stack.quality.name})
+								local inserted = properties.targets[HeldItem].insert({name=HeldItem, count=total, quality=catapult.held_stack.quality.name, spoil_percent=catapult.held_stack.spoil_percent})
 								if (inserted < total) then
 									catapult.active = false
 								else

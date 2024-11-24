@@ -141,7 +141,6 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local ElForce = player.force
 			local ElDirection = ThingHovering.direction
 			local ElSurface = ThingHovering.surface
-			local OldRange = storage.MagnetRamps[script.register_on_object_destroyed(ThingHovering)].range-3
 			ThingHovering.destroy()
 			local NewKid = ElSurface.create_entity
 				({
@@ -158,19 +157,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					position=player.position,
 					volume_modifier=1
 				}
-			local RampDestroyNumber = script.register_on_object_destroyed(NewKid)
-			local RampProperties = storage.MagnetRamps[RampDestroyNumber]
-			magnetRamps.setRange(
-					RampProperties,
-					OldRange,
-					player
-				)
 		elseif (ThingHovering.name == "RTTrainRampNoSkip") then
 			local ElPosition = ThingHovering.position
 			local ElForce = player.force
 			local ElDirection = ThingHovering.direction
 			local ElSurface = ThingHovering.surface
-			local OldRange = storage.MagnetRamps[script.register_on_object_destroyed(ThingHovering)].range-3
 			ThingHovering.destroy()
 			local NewKid = ElSurface.create_entity
 				({
@@ -187,13 +178,51 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					position=player.position,
 					volume_modifier=1
 				}
-			local RampDestroyNumber = script.register_on_object_destroyed(NewKid)
-			local RampProperties = storage.MagnetRamps[RampDestroyNumber]
-			magnetRamps.setRange(
-					RampProperties,
-					OldRange,
-					player
-				)
+
+		--|| Swap Elevated Ramp Modes
+		elseif (string.find(ThingHovering.name, "-Elevated") ~= nil and string.find(ThingHovering.name, "NoSkip") == nil) then
+			local ElPosition = ThingHovering.position
+			local ElForce = player.force
+			local ElDirection = ThingHovering.direction
+			local ElSurface = ThingHovering.surface
+			local NewKid = ElSurface.create_entity
+				({
+					name = ThingHovering.name.."NoSkip",
+					position = ElPosition,
+					direction = ElDirection,
+					force = ElForce,
+					raise_built = true,
+					create_build_effect_smoke = false
+				})
+			player.play_sound
+				{
+					path="utility/rotated_large",
+					position=player.position,
+					volume_modifier=1
+				}
+			ThingHovering.destroy()
+		elseif (string.find(ThingHovering.name, "-Elevated") ~= nil and string.find(ThingHovering.name, "NoSkip") ~= nil) then
+			local ElPosition = ThingHovering.position
+			local ElForce = player.force
+			local ElDirection = ThingHovering.direction
+			local ElSurface = ThingHovering.surface
+			local NewKid = ElSurface.create_entity
+				({
+					name = string.gsub(ThingHovering.name, "NoSkip", ""),
+					position = ElPosition,
+					direction = ElDirection,
+					force = ElForce,
+					raise_built = true,
+					create_build_effect_smoke = false
+				})
+			player.play_sound
+				{
+					path="utility/rotated_large",
+					position=player.position,
+					volume_modifier=1
+				}
+			ThingHovering.destroy()
+									
 		--|| Swap Magnet Ramp Modes
 		elseif (ThingHovering.name == "RTMagnetTrainRamp") then
 			local ElPosition = ThingHovering.position

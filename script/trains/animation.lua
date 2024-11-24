@@ -40,6 +40,7 @@ function Animation.updateOffsets(properties, height, elapsed)
 end
 
 function Animation.updateRotation(properties, elapsed, height)
+	--y=0.05\cdot\left(\left(2x-1\right)^{23}-\left(2x-1\right)\right)
 	local SpinMagnitude = properties.SpinMagnitude or 0.05
 	local SpinSpeed = properties.SpinSpeed or 23
 	local test = properties.test or 2
@@ -49,9 +50,6 @@ function Animation.updateRotation(properties, elapsed, height)
 	local spinPercent = (test * completedPercent) - 1 -- double the rotation arc and center it on 0, aka upright
 	local spinScale = (spinPercent ^ SpinSpeed) - spinPercent
 	local spinAmount = SpinMagnitude * spinScale
-	if (completedPercent > 1) then
-		spinAmount = -0.042
-	end
 
 	if (properties.RampOrientation == 0.75 or properties.RampOrientation == 0) then
 		-- Going right or down, reverse spin
@@ -63,9 +61,15 @@ function Animation.updateRotation(properties, elapsed, height)
 		-- Spin amount plus 0.5 so the shadows orient north/south
 		--properties.TrainImageID.orientation = -0.25
 		--properties.MaskID.orientation = -0.25
+		if (completedPercent > 0.93) then
+			spinAmount = properties.ShadowID.orientation
+		end
 		properties.ShadowID.orientation = spinAmount
 	else
 		-- going left or right, spin the cars
+		if (completedPercent > 0.93) then
+			spinAmount = properties.TrainImageID.orientation
+		end
 		properties.TrainImageID.orientation = spinAmount
 		properties.MaskID.orientation = spinAmount
 	end

@@ -33,7 +33,7 @@ local function entity_built(event)
 			properties.RangeAdjustable = true
 		end
 
-		if (string.find(entity.surface.name, " Orbit") or string.find(entity.surface.name, " Field") or string.find(entity.surface.name, " Belt")) then
+		if (entity.surface.platform or string.find(entity.surface.name, " Orbit") or string.find(entity.surface.name, " Field") or string.find(entity.surface.name, " Belt")) then
 			properties.InSpace = true
 		end
 

@@ -242,7 +242,9 @@ if feature_flags["rail_bridges"] then
 			{
 				type = "simple-entity-with-owner", -- Simplist entity that has 4 diections of sprites
 				name = "RTTrainRamp-Elevated"..variant[1],
-				icon = '__RenaiTransportation__/graphics/TrainRamp/RTTrainRamp-elevated-icon.png',
+				localised_name = {"entity-name.RTTrainRamp"},
+				localised_description = {"entity-description.RTTrainRamp"},
+				icon = '__RenaiTransportation__/graphics/TrainRamp/RTTrainRamp-icon.png',
 				icon_size = 64,
 				flags = {"player-creation", "not-on-map", "not-rotatable", "placeable-off-grid"},
 				hidden = true,
@@ -254,7 +256,33 @@ if feature_flags["rail_bridges"] then
 				collision_mask = {layers={["elevated_train"]=true}},
 				render_layer = "elevated-object",
 				picture = {
-					filename = '__RenaiTransportation__/graphics/TrainRamp/' .. "RTTrainRamp" .. '.png',
+					filename = '__RenaiTransportation__/graphics/TrainRamp/RTTrainRamp.png',
+					width = 200,
+					height = 200,
+					y = variant[4],
+					shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[variant[5]..constants.elevated], -1)
+				},
+				placeable_by = { item = "RTTrainRampItem", count = 1 }, -- Controls `q` and blueprint behavior
+				resistances = {{type = "impact", percent = 100}},
+			},
+			{
+				type = "simple-entity-with-owner", -- Simplist entity that has 4 diections of sprites
+				name = "RTTrainRamp-Elevated"..variant[1].."NoSkip",
+				localised_name = {"entity-name.RTTrainRampNoSkip"},
+				localised_description = {"entity-description.RTTrainRampNoSkip"},
+				icon = '__RenaiTransportation__/graphics/TrainRamp/RTTrainRamp-icon.png',
+				icon_size = 64,
+				flags = {"player-creation", "not-on-map", "not-rotatable", "placeable-off-grid"},
+				hidden = true,
+				minable = {mining_time = 0.5, result = "RTTrainRampItem"},
+				max_health = 500,
+				selection_box = variant[2],
+				selection_priority = 100,
+				collision_box = variant[3],
+				collision_mask = {layers={["elevated_train"]=true}},
+				render_layer = "elevated-object",
+				picture = {
+					filename = '__RenaiTransportation__/graphics/TrainRamp/RTTrainRampNoSkip.png',
 					width = 200,
 					height = 200,
 					y = variant[4],

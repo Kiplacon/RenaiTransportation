@@ -233,14 +233,52 @@ data:extend({
 if (feature_flags["spoiling"]) then
 	data:extend({
 		{
-			type = "item",
+			type = "capsule",
 			name = "RTLickmawBalls",
 			icon = "__RenaiTransportation__/graphics/LickmawBALLS.png",
 			icon_size = 64,
-			subgroup = "agriculture-process",
-			weight = 1000,
+			subgroup = "agriculture-processes",
+			default_import_location = "gleba",
+			fuel_category = "chemical",
+			fuel_value = "1MJ",
+			weight = 2380,
 			order = "bbc",
-			stack_size = 69
+			stack_size = 69,
+			capsule_action = {
+				type = "use-on-self",
+				attack_parameters =
+				{
+				  type = "projectile",
+				  activation_type = "consume",
+				  ammo_category = "capsule",
+				  cooldown = 120,
+				  range = 0,
+				  ammo_type =
+				  {
+					target_type = "position",
+					action =
+					{
+					  type = "direct",
+					  action_delivery =
+					  {
+						type = "instant",
+						target_effects =
+						{
+						  {
+							type = "damage",
+							damage = {type = "physical", amount = -125},
+							use_substitute = false
+						  },
+						  {
+							type = "play-sound",
+							sound = {"__base__/sound/eat-1.ogg"},
+						  }
+						}
+					  }
+					}
+				  }
+				}
+			  }
 		}
 	})
 end

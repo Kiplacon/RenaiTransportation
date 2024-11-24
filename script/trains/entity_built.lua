@@ -3,7 +3,7 @@ local util = require('util')
 local constants = require('constants')
 local magnetRampsStuff = require("__RenaiTransportation__/script/trains/magnet_ramps")
 
-local function handleMagnetRampBuilt(entity)
+local function handleMagnetRampBuilt(entity, player)
 	local OnDestroyNumber = script.register_on_object_destroyed(entity)
 	storage.MagnetRamps[OnDestroyNumber] = {entity = entity, tiles = {}}
 	entity.rotatable = false
@@ -96,7 +96,7 @@ local function on_entity_built(entity, player)
 		handleTrainRampPlacerBuilt(entity)
 		return true
 	elseif (entity.name == "RTMagnetTrainRamp" or entity.name == "RTMagnetTrainRampNoSkip") then
-		handleMagnetRampBuilt(entity)
+		handleMagnetRampBuilt(entity, player)
 		return true
 	end
 

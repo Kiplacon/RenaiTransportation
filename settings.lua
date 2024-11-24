@@ -10,7 +10,7 @@ data:extend({
 	type = "bool-setting",
 	name = "RTThrowersDynamicRange",
 	setting_type = "startup",
-	default_value = false,
+	default_value = true,
 	order = "ab"
 },
 {
