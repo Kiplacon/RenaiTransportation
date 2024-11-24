@@ -531,15 +531,17 @@ local function on_tick(event)
 
          end
 
-
          if (clear == true) then
             if (FlyingItem.tracing == nil and FlyingItem.destination ~= nil and storage.OnTheWay[FlyingItem.destination]) then
                storage.OnTheWay[FlyingItem.destination][FlyingItem.item] = storage.OnTheWay[FlyingItem.destination][FlyingItem.item] - FlyingItem.amount
             end
             if (FlyingItem.player) then
+               if (FlyingItem.player.character) then
+                  FlyingItem.player.character_running_speed_modifier = FlyingItem.IAmSpeed
+                  FlyingItem.player.character.walking_state = {walking = false, direction = FlyingItem.player.character.direction}
+                  SwapBackFromGhost(FlyingItem.player, FlyingItem)
+               end
                storage.AllPlayers[FlyingItem.player.index].state = "default"
-               FlyingItem.player.character_running_speed_modifier = FlyingItem.IAmSpeed
-               FlyingItem.player.character.walking_state = {walking = false, direction = FlyingItem.player.character.direction}
             end
             if (FlyingItem.sprite) then -- from impact unloader
                FlyingItem.sprite.destroy()
@@ -558,18 +560,25 @@ local function on_tick(event)
             FlyingItem.shadow.destroy()
          end
          storage.FlyingItems[each] = nil
---[[       elseif (game.tick > FlyingItem.LandTick) then
-         if (FlyingItem.sprite) then
-            --rendering.destroy(FlyingItem.sprite)
-            --rendering.destroy(FlyingItem.shadow)
+
+      elseif (game.tick > FlyingItem.LandTick) then
+         if (FlyingItem.sprite) then -- from impact unloader/space throw
+            FlyingItem.sprite.destroy()
+         end
+         if (FlyingItem.shadow) then -- from impact unloader/space throw
+            FlyingItem.shadow.destroy()
          end
          if (FlyingItem.destination ~= nil and storage.OnTheWay[FlyingItem.destination]) then
             storage.OnTheWay[FlyingItem.destination][FlyingItem.item] = storage.OnTheWay[FlyingItem.destination][FlyingItem.item] - FlyingItem.amount
          end
          if (FlyingItem.player) then
-            SwapBackFromGhost(FlyingItem.player, FlyingItem)
+            if (FlyingItem.player.character) then
+               FlyingItem.player.character_running_speed_modifier = FlyingItem.IAmSpeed
+               SwapBackFromGhost(FlyingItem.player, FlyingItem)
+            end
+            storage.AllPlayers[FlyingItem.player.index].state = "default"
          end
-         storage.FlyingItems[each] = nil ]]
+         storage.FlyingItems[each] = nil
       end
 
 	  -- Ultracube non-sprite item position updating. Only done for items that require hinting as those are the ones the cube camera follows

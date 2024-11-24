@@ -2,17 +2,16 @@
     "factorio.versions": [
         {
             "name": "Steam Install",
-            "factorioPath": "d:\\Steam\\steamapps\\common\\Factorio\\bin\\x64\\factorio.exe"
+            "factorioPath": "d:\\Steam\\steamapps\\common\\Factorio\\bin\\x64\\factorio.exe",
+            "active": true
         },
         {
             "name": "Factorio SA Beta",
-            "factorioPath": "c:\\Users\\xiaox\\OneDrive\\Desktop\\Factorio_2.0.0\\bin\\x64\\factorio.exe",
-            "active": true
+            "factorioPath": "c:\\Users\\xiaox\\OneDrive\\Desktop\\Factorio_2.0.0\\bin\\x64\\factorio.exe"
         }
     ],
     "Lua.workspace.library": [
-        "c:/Users/xiaox/AppData/Roaming/Code/User/workspaceStorage/f34a32745aa52066e3ffde1bd64d08ef/justarandomgeek.factoriomod-debug/sumneko-3rd/factorio/library",
-        "c:\\Users\\xiaox\\OneDrive\\Desktop\\Factorio_2.0.0\\data"
+        "c:/Users/xiaox/AppData/Roaming/Code/User/workspaceStorage/f34a32745aa52066e3ffde1bd64d08ef/justarandomgeek.factoriomod-debug/sumneko-3rd/factorio/library"
     ],
     "Lua.workspace.userThirdParty": [
         "c:\\Users\\xiaox\\AppData\\Roaming\\Code\\User\\workspaceStorage\\cd53cc8d1e0c48409cc71b709c9664e9\\justarandomgeek.factoriomod-debug\\sumneko-3rd"

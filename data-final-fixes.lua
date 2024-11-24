@@ -882,20 +882,56 @@ for Category, ThingsTable in pairs(data.raw) do
 			if (casper.resistances) then
 				table.insert(casper.resistances,
 					{
-				     type = "fire",
-				     percent = 100
-				   }
+						type = "fire",
+						percent = 100
+					}
 				)
 			else
 				casper.resistances =
 				{
-				  {
-				    type = "fire",
-				    percent = 99
-				  }
+					{
+						type = "fire",
+						percent = 99
+					}
 				}
 			end
 			data:extend({casper})
+
+			--[[ for each, set in pairs(ThingData.animations) do
+				if (set.armors ~= nil) then
+					for every, armor in pairs(set.armors) do
+						local sprites = set.running or set.running_with_gun
+						if (armor == "mech-armor") then
+							sprites = set.idle_with_gun_in_air
+						end
+						local MLG = table.deepcopy(data.raw.car["RTPropCar"])
+						MLG.name = ThingData.name..armor.."RTGhostCar"
+						MLG.working_sound = nil
+						MLG.animation =
+							{
+								layers =
+								{
+									sprites
+								}
+							}
+						MLG.light_animation = MLG.animation
+						data:extend({MLG})
+					end
+				else
+					local MLG = table.deepcopy(data.raw.car["RTPropCar"])
+					MLG.name = ThingData.name.."RTGhostCar"
+					MLG.working_sound = nil
+					MLG.animation =
+						{
+							layers =
+							{
+								set.running or set.running_with_gun
+							}
+						}
+					MLG.light_animation = MLG.animation
+					data:extend({MLG})
+				end
+			end ]]
 		end
 	end
 end

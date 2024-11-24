@@ -135,6 +135,8 @@ local function on_int()
 
 	storage.HoverGFX = {}
 
+	storage.DestructionLinks = {}
+
 	-- Ultracube=specific globals
 	if script.active_mods["Ultracube"] then
 		ultracube_globals.setup_prototypes()

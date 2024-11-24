@@ -41,6 +41,52 @@ local function handleTrainRampPlacerBuilt(entity, player)
 		local dst = player or game
 		dst.print({"magnet-ramp-stuff.unable"})
 	else
+		if (entity.rail_layer == defines.rail_layer.elevated) then
+			if (ramp.name == "RTTrainRamp") then
+				local ElevatedRamp
+				if ramp.direction == 4 then
+					ElevatedRamp = ramp.surface.create_entity({
+						name = "RTTrainRamp-ElevatedLeft",
+						position = ramp.position,
+						force = ramp.force,
+						raise_built = true,
+						player = player
+					})
+				elseif ramp.direction == 12 then
+					ElevatedRamp = ramp.surface.create_entity({
+						name = "RTTrainRamp-ElevatedRight",
+						position = ramp.position,
+						force = ramp.force,
+						raise_built = true,
+						player = player
+					})
+				elseif ramp.direction == 8 then
+					ElevatedRamp = ramp.surface.create_entity({
+						name = "RTTrainRamp-ElevatedUp",
+						position = ramp.position,
+						force = ramp.force,
+						raise_built = true,
+						player = player
+					})
+				elseif ramp.direction == 0 then
+					ElevatedRamp = ramp.surface.create_entity({
+						name = "RTTrainRamp-ElevatedDown",
+						position = ramp.position,
+						force = ramp.force,
+						raise_built = true,
+						player = player
+					})
+				end
+				ramp.destroy()
+				if (ElevatedRamp) then
+					local RailDestryoNumber = script.register_on_object_destroyed(entity.get_connected_rails()[1])
+					if (storage.DestructionLinks[RailDestryoNumber] == nil) then
+						storage.DestructionLinks[RailDestryoNumber] = {}
+					end
+					table.insert(storage.DestructionLinks[RailDestryoNumber], ElevatedRamp)
+				end
+			end
+		end
 		entity.destroy({raise_destroy = true})
 	end
 end

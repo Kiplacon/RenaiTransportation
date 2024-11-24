@@ -82,7 +82,7 @@ local function makeRampPlacerEntity(name, icon, pictureFileName, placerItem)
 	}
 end
 
-local function makeRampEntity(name, icon, pictureFileName, placerItem)
+local function makeRampEntity(name, icon, pictureFileName, placerItem, elevated)
 	local impact = 100
 	local HP = 500
 	if (name == "RTImpactUnloader") then
@@ -96,21 +96,31 @@ local function makeRampEntity(name, icon, pictureFileName, placerItem)
 			  percent = impact
 			}
 		}
+	local ElevatedShift = constants.ground
+	local masks = {layers={["player"]=true, ["train"]=true}}
+	local RenderLayer = "lower-object-above-shadow"
+	local SelectionBox = {{-0.01, -1.6}, {2, 2.4}}
+	if (elevated ~= nil) then
+		masks = {layers={["elevated_train"]=true}}
+		ElevatedShift = constants.elevated
+		RenderLayer = "wires-above"
+		SelectionBox = {{-0.01, -1.6}, {2, 2.4}}
+	end
 
 	return {
 		type = "constant-combinator", -- Simplist entity that has 4 diections of sprites
 		name = name,
 		icon = icon,
 		icon_size = 64,
-		flags = {"player-creation", "not-on-map"},
+		flags = {"player-creation", "not-on-map", "not-rotatable"},
 		hidden = true,
 		minable = {mining_time = 0.5, result = placerItem},
 		max_health = HP,
-		selection_box = {{-0.01, -1.6}, {2, 2.4}},
+		selection_box = SelectionBox,
 		selection_priority = 100,
 		collision_box = {{-0.01, -1.5}, {1.9, 2.4}},
-		collision_mask = {layers={["player"]=true, ["train"]=true}},
-		render_layer = "lower-object-above-shadow",
+		collision_mask = masks,
+		render_layer = RenderLayer,
 		sprites = {
 			-- Shifts are inverted because the sprites are pre-shifted to be at the ramp position already
 			north = {
@@ -118,28 +128,28 @@ local function makeRampEntity(name, icon, pictureFileName, placerItem)
 				width = 200,
 				height = 200,
 				y = 0,
-				shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.north], -1)
+				shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.north..ElevatedShift], -1)
 			},
 			east = {
 				filename = pictureFileName,
 				width = 200,
 				height = 200,
 				y = 200,
-				shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.east], -1)
+				shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.east..ElevatedShift], -1)
 			},
 			south = {
 				filename = pictureFileName,
 				width = 200,
 				height = 200,
 				y = 400,
-				shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.south], -1)
+				shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.south..ElevatedShift], -1)
 			},
 			west = {
 				filename = pictureFileName,
 				width = 200,
 				height = 200,
 				y = 600,
-				shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.west], -1)
+				shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[defines.direction.west..ElevatedShift], -1)
 			},
 		},
 		placeable_by = { item = placerItem, count = 1 }, -- Controls `q` and blueprint behavior
@@ -218,6 +228,44 @@ data:extend(makeRampPrototypes("RTMagnetTrainRamp"))
 
 -- Impact UNloader
 data:extend(makeRampPrototypes("RTImpactUnloader"))
+
+-- Elevated Ramp
+if feature_flags["rail_bridges"] then
+	local variations = {
+		{"Down", {{-0.01, -4.4}, {2, -0.4}}, {{-0.01, -2}, {2, 2.7}}, 0, defines.direction.north},
+		{"Left", {{-2.3, -2.9}, {1.4, -0.9}}, {{-2.2, -0.01}, {1.3, 1.9}}, 200, defines.direction.east},
+		{"Up", {{-2, -5.4}, {0.01, -1.4}}, {{-1.9, -2.9}, {0.01, 1.8}}, 400, defines.direction.south},
+		{"Right", {{-1.6, -4.9}, {2.5, -2.9}}, {{-1.5, -2.01}, {2.4, 0.01}}, 600, defines.direction.west},
+	}
+	for each, variant in pairs(variations) do
+		data:extend({
+			{
+				type = "simple-entity-with-owner", -- Simplist entity that has 4 diections of sprites
+				name = "RTTrainRamp-Elevated"..variant[1],
+				icon = '__RenaiTransportation__/graphics/TrainRamp/RTTrainRamp-elevated-icon.png',
+				icon_size = 64,
+				flags = {"player-creation", "not-on-map", "not-rotatable", "placeable-off-grid"},
+				hidden = true,
+				minable = {mining_time = 0.5, result = "RTTrainRampItem"},
+				max_health = 500,
+				selection_box = variant[2],
+				selection_priority = 100,
+				collision_box = variant[3],
+				collision_mask = {layers={["elevated_train"]=true}},
+				render_layer = "elevated-object",
+				picture = {
+					filename = '__RenaiTransportation__/graphics/TrainRamp/' .. "RTTrainRamp" .. '.png',
+					width = 200,
+					height = 200,
+					y = variant[4],
+					shift = util.mul_shift(constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[variant[5]..constants.elevated], -1)
+				},
+				placeable_by = { item = "RTTrainRampItem", count = 1 }, -- Controls `q` and blueprint behavior
+				resistances = {{type = "impact", percent = 100}},
+			},
+		})
+	end
+end
 
 -- Add recipes for both items
 data:extend({

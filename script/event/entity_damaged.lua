@@ -1,23 +1,71 @@
 if script.active_mods["Ultracube"] then CubeFlyingItems = require("script.ultracube.cube_flying_items") end
 if script.active_mods["Ultracube"] then CubeFlyingTrains = require("script.ultracube.cube_flying_trains") end
 
+local TrainRamps = {
+	RTTrainRamp = "lickmaw",
+	RTTrainRampNoSkip = 69,
+	RTMagnetTrainRamp = 420,
+	RTMagnetTrainRampNoSkip = 1337,
+	["RTTrainRamp-ElevatedUp"] = 4,
+	["RTTrainRamp-ElevatedDown"] = 20,
+	["RTTrainRamp-ElevatedLeft"] = 60,
+	["RTTrainRamp-ElevatedRight"] = 9,
+}
+
+local NonMagneticRamps = {
+	RTTrainRamp = "lickmaw",
+	RTTrainRampNoSkip = 69,
+	["RTTrainRamp-ElevatedUp"] = 4,
+	["RTTrainRamp-ElevatedDown"] = 20,
+	["RTTrainRamp-ElevatedLeft"] = 60,
+	["RTTrainRamp-ElevatedRight"] = 9,
+}
+
+local MagneticRamps = {
+	RTMagnetTrainRamp = 420,
+	RTMagnetTrainRampNoSkip = 1337,
+}
+
+local SkippingRamps = {
+	RTTrainRamp = "lickmaw",
+	RTMagnetTrainRamp = 420,
+	["RTTrainRamp-ElevatedUp"] = 4,
+	["RTTrainRamp-ElevatedDown"] = 20,
+	["RTTrainRamp-ElevatedLeft"] = 60,
+	["RTTrainRamp-ElevatedRight"] = 9,
+}
+
+local NonSkippingRamps = {
+	RTTrainRampNoSkip = 69,
+	RTMagnetTrainRampNoSkip = 1337,
+}
+
 local function entity_damaged(event)
 	--| Detect train hitting ramp
 	if (
-		(event.entity.name == "RTTrainRamp" or event.entity.name == "RTTrainRampNoSkip" or event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip")
+		(TrainRamps[event.entity.name] ~= nil)
 		and event.cause
-		and (event.cause.type == "locomotive" or event.cause.type == "cargo-wagon" or event.cause.type == "fluid-wagon" or event.cause.type == "artillery-wagon")
+		and (event.cause.type == "locomotive"
+			or event.cause.type == "cargo-wagon"
+			or event.cause.type == "fluid-wagon"
+			or event.cause.type == "artillery-wagon")
 		and (math.abs(event.entity.orientation-event.cause.orientation) == 0.5
 			or math.abs(event.entity.orientation-event.cause.orientation) == 0
+			or string.find(event.entity.name, "-Elevated")~=nil)
+		and (
+				(((event.entity.name == "RTTrainRamp-ElevatedDown" or (string.find(event.entity.name, "-Elevated")==nil and event.entity.orientation == 0)) and event.entity.position.y-event.cause.position.y>0) --down
+				or ((event.entity.name == "RTTrainRamp-ElevatedLeft" or (string.find(event.entity.name, "-Elevated")==nil and event.entity.orientation == 0.25)) and event.entity.position.x-event.cause.position.x<0) --left
+				or ((event.entity.name == "RTTrainRamp-ElevatedUp" or (string.find(event.entity.name, "-Elevated")==nil and event.entity.orientation == 0.5)) and event.entity.position.y-event.cause.position.y<0) --up
+				or ((event.entity.name == "RTTrainRamp-ElevatedRight" or (string.find(event.entity.name, "-Elevated")==nil and event.entity.orientation == 0.75)) and event.entity.position.x-event.cause.position.x>0) --right
+				)
 			)
-		and (event.entity.orientation == 0 and event.entity.position.y-event.cause.position.y>0
-			or event.entity.orientation == 0.25 and event.entity.position.x-event.cause.position.x<0
-			or event.entity.orientation == 0.50 and event.entity.position.y-event.cause.position.y<0
-			or event.entity.orientation == 0.75 and event.entity.position.x-event.cause.position.x>0
-			)
-		) then
-
-
+	) then
+		local elevated = (string.find(event.entity.name, "-Elevated") ~= nil)
+		local HeightOffset = 0
+		if (elevated) then
+			HeightOffset = -3
+		end
+		--game.print(elevated)
 		local SpookyGhost = event.entity.surface.create_entity
 			({
 				name = "RTPropCar",
@@ -30,7 +78,6 @@ local function entity_damaged(event)
 		SpookyGhost.destructible = false
 
 		local base = event.cause.name
-		--mask = "NoMask"
 		local way = storage.OrientationUnitComponents[event.cause.orientation].name
 
 		if (helpers.is_valid_sprite_path("RT"..base..way)) then
@@ -38,7 +85,6 @@ local function entity_damaged(event)
 		else
 			image = "RT"..event.cause.type..way
 		end
-
 		if (helpers.is_valid_sprite_path("RT"..base.."Mask"..way)) then
 			mask = "RT"..base.."Mask"..way
 		else
@@ -55,9 +101,9 @@ local function entity_damaged(event)
 			{
 				sprite = "GenericShadow",
 				tint = {a = 90},
-				target = SpookyGhost,
+				target = {entity=SpookyGhost, offset={0,HeightOffset}},
 				surface = SpookyGhost.surface,
-				orientation_target = SpookyGhost,
+				orientation = event.cause.orientation,
 				x_scale = 0.25,
 				y_scale = 0.5,
 				render_layer = "air-object"
@@ -65,21 +111,16 @@ local function entity_damaged(event)
 		local TrainImage = rendering.draw_sprite
 			{
 			sprite = image,
-			target = SpookyGhost,
+			target = {entity=SpookyGhost, offset={0,HeightOffset}},
 			surface = SpookyGhost.surface,
-			orientation_target = SpookyGhost,
-			orientation = -0.25,
 			render_layer = "air-object",
 			}
 		local Mask = rendering.draw_sprite
 			{
 			sprite = mask,
 			tint =  maskhue,
-			target = SpookyGhost,
+			target = {entity=SpookyGhost, offset={0,HeightOffset}},
 			surface = SpookyGhost.surface,
-			orientation_target = SpookyGhost,
-			--x_scale = 0.5,
-			--y_scale = 0.5,
 			render_layer = "air-object"
 			}
 		if (math.random(1000) == 420) then
@@ -87,9 +128,8 @@ local function entity_damaged(event)
 			TrainImage = rendering.draw_animation
 				{
 					animation = "RTHoojinTime",
-					target = SpookyGhost,
+					target = {entity=SpookyGhost, offset={0,HeightOffset}},
 					surface = SpookyGhost.surface,
-					orientation_target = SpookyGhost,
 					orientation = -0.25,
 					animation_speed = 0.5,
 					render_layer = "air-object",
@@ -99,9 +139,8 @@ local function entity_damaged(event)
 				{
 					sprite = "RTBlank",
 					tint =  maskhue,
-					target = SpookyGhost,
+					target = {entity=SpookyGhost, offset={0,HeightOffset}},
 					surface = SpookyGhost.surface,
-					orientation_target = SpookyGhost,
 					--x_scale = 0.5,
 					--y_scale = 0.5,
 					render_layer = "air-object"
@@ -109,7 +148,7 @@ local function entity_damaged(event)
 			SpookyGhost.surface.create_entity
 				{
 					name="RTSaysYourCrosshairIsTooLow",
-					target=SpookyGhost,
+					target={entity=SpookyGhost, offset={0,HeightOffset}},
 					position={420,69}
 				}
 		end
@@ -118,22 +157,30 @@ local function entity_damaged(event)
 		local FlyingTrainProperties = storage.FlyingTrains[SpookyGhost.unit_number]
 		FlyingTrainProperties.GuideCar = SpookyGhost
 		if (event.cause.get_driver() ~= nil) then
-			FlyingTrainProperties.passenger = event.cause.get_driver()
+			--FlyingTrainProperties.passenger = event.cause.get_driver()
 			SpookyGhost.set_passenger(event.cause.get_driver())
 		end
 		FlyingTrainProperties.name = event.cause.name
 		FlyingTrainProperties.type = event.cause.type
 		FlyingTrainProperties.LaunchTick = game.tick
+		if (elevated) then
+			FlyingTrainProperties.elevated = 3
+			FlyingTrainProperties.height = 3
+			FlyingTrainProperties.VerticalSpeed = 1
+		end
 		local MagnetRampProperties = storage.MagnetRamps[script.register_on_object_destroyed(event.entity)]
-		if ((event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") and MagnetRampProperties and MagnetRampProperties.range ~= 0 and MagnetRampProperties.power.energy/MagnetRampProperties.power.electric_buffer_size >= 0.95) then
+		if (MagneticRamps[event.entity.name] and MagnetRampProperties and MagnetRampProperties.range ~= 0 and MagnetRampProperties.power.energy/MagnetRampProperties.power.electric_buffer_size >= 0.95) then
 			FlyingTrainProperties.LandTick = math.ceil(game.tick + math.abs(MagnetRampProperties.range/(0.8*event.cause.speed)))
 			FlyingTrainProperties.MagnetComp = math.ceil(game.tick + 130*math.abs(event.cause.speed))-FlyingTrainProperties.LandTick
 			FlyingTrainProperties.MakeFX = "yes"
 			--game.print("power")
 
-		elseif ((event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") and MagnetRampProperties and MagnetRampProperties.range ~= 0 and MagnetRampProperties.power.energy/MagnetRampProperties.power.electric_buffer_size < 0.95) then
+		elseif (MagneticRamps[event.entity.name] and MagnetRampProperties and MagnetRampProperties.range ~= 0 and MagnetRampProperties.power.energy/MagnetRampProperties.power.electric_buffer_size < 0.95) then
 			FlyingTrainProperties.MakeFX = "NoEnergy"
 			--game.print("no power")
+			FlyingTrainProperties.LandTick = math.ceil(game.tick + 130*math.abs(event.cause.speed))
+
+		elseif (elevated) then -- elevated jumps
 			FlyingTrainProperties.LandTick = math.ceil(game.tick + 130*math.abs(event.cause.speed))
 
 		else
@@ -148,7 +195,7 @@ local function entity_damaged(event)
 		FlyingTrainProperties.SpecialName = event.cause.backer_name
 		FlyingTrainProperties.color = maskhue
 		FlyingTrainProperties.orientation = event.cause.orientation
-		FlyingTrainProperties.RampOrientation = event.entity.orientation
+		--FlyingTrainProperties.RampOrientation = event.entity.orientation
 		FlyingTrainProperties.ShadowID = OwTheEdge
 		FlyingTrainProperties.ManualMode = event.cause.train.manual_mode
 		FlyingTrainProperties.length = #event.cause.train.carriages
@@ -160,31 +207,37 @@ local function entity_damaged(event)
 			end
 		end
 
-		if (event.entity.orientation == 0) then --ramp down
+		local SearchBox
+		if (event.entity.name == "RTTrainRamp-ElevatedDown" or (elevated == false and event.entity.orientation == 0)) then --ramp down
+			FlyingTrainProperties.RampOrientation = 0
 			SearchBox =
 				{
 					{event.cause.position.x-1,event.cause.position.y-6},
 					{event.cause.position.x+1,event.cause.position.y-4}
 				}
-		elseif (event.entity.orientation == 0.25) then -- ramp left
+		elseif (event.entity.name == "RTTrainRamp-ElevatedLeft" or (elevated == false and event.entity.orientation == 0.25)) then -- ramp left
+			FlyingTrainProperties.RampOrientation = 0.25
 			SearchBox =
 				{
 					{event.cause.position.x+4,event.cause.position.y-1},
 					{event.cause.position.x+6,event.cause.position.y+1}
 				}
-		elseif (event.entity.orientation == 0.50) then -- ramp up
+		elseif (event.entity.name == "RTTrainRamp-ElevatedUp" or (elevated == false and event.entity.orientation == 0.50)) then -- ramp up
+			FlyingTrainProperties.RampOrientation = 0.5
 			SearchBox =
 				{
 					{event.cause.position.x-1,event.cause.position.y+4},
 					{event.cause.position.x+1,event.cause.position.y+6}
 				}
-		elseif (event.entity.orientation == 0.75) then -- ramp right
+		elseif (event.entity.name == "RTTrainRamp-ElevatedRight" or (elevated == false and event.entity.orientation == 0.75)) then -- ramp right
+			FlyingTrainProperties.RampOrientation = 0.75
 			SearchBox =
 				{
 					{event.cause.position.x-6,event.cause.position.y-1},
 					{event.cause.position.x-4,event.cause.position.y+1}
 				}
 		end
+		--game.print(FlyingTrainProperties.RampOrientation)
 		FlyingTrainProperties.follower = SpookyGhost.surface.find_entities_filtered
 			{
 			area = SearchBox,
@@ -204,13 +257,13 @@ local function entity_damaged(event)
 		end ]]
 
 		FlyingTrainProperties.schedule = event.cause.train.schedule
-		if ((event.entity.name == "RTTrainRamp" or event.entity.name == "RTMagnetTrainRamp") and FlyingTrainProperties.schedule ~= nil) then
+		if (SkippingRamps[event.entity.name] and FlyingTrainProperties.schedule ~= nil) then
 			if (FlyingTrainProperties.schedule.current == table_size(FlyingTrainProperties.schedule.records)) then
 				FlyingTrainProperties.schedule.current = 1
 			else
 				FlyingTrainProperties.schedule.current = FlyingTrainProperties.schedule.current+1
 			end
-		elseif ((event.entity.name == "RTTrainRampNoSkip" or event.entity.name == "RTMagnetTrainRampNoSkip") and FlyingTrainProperties.schedule ~= nil) then
+		elseif (NonSkippingRamps[event.entity.name] and FlyingTrainProperties.schedule ~= nil) then
 			FlyingTrainProperties.destinationStation = event.cause.train.path_end_stop
 			FlyingTrainProperties.adjustDestinationLimit = event.cause.train.path_end_stop -- manual trains don't have this, it will be nill
 			if (FlyingTrainProperties.adjustDestinationLimit and event.cause.train.path_end_stop.trains_limit > 0 and event.cause.train.path_end_stop.trains_limit < 4294967295) then -- apparently 4294967295 means train limit is disabled
@@ -228,7 +281,7 @@ local function entity_damaged(event)
 				FlyingTrainProperties.ManualMode = storage.FlyingTrains[number].ManualMode
 				FlyingTrainProperties.destinationStation = storage.FlyingTrains[number].destinationStation
 				FlyingTrainProperties.adjustDestinationLimit = storage.FlyingTrains[number].adjustDestinationLimit
-				if ((event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") and MagnetRampProperties and storage.FlyingTrains[number].MagnetComp ~= nil and (storage.FlyingTrains[number].MakeFX == "yes" or storage.FlyingTrains[number].MakeFX == "followerY")) then
+				if (MagneticRamps[event.entity.name] and MagnetRampProperties and storage.FlyingTrains[number].MagnetComp ~= nil and (storage.FlyingTrains[number].MakeFX == "yes" or storage.FlyingTrains[number].MakeFX == "followerY")) then
 					FlyingTrainProperties.LandTick = math.ceil(game.tick + math.abs(MagnetRampProperties.range/(0.8*storage.FlyingTrains[number].speed)))
 					FlyingTrainProperties.MagnetComp = storage.FlyingTrains[number].MagnetComp
 					FlyingTrainProperties.MakeFX = "followerY"
@@ -262,7 +315,7 @@ local function entity_damaged(event)
 		--game.print(game.tick.." JumpStartPosition: "..serpent.block(FlyingTrainProperties.JumpStartPosition))
 
 		--| Magnet Ramp GFX
-		if ((event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") and MagnetRampProperties and MagnetRampProperties.range ~= 0 and FlyingTrainProperties.MakeFX == "yes") then
+		if (MagneticRamps[event.entity.name] and MagnetRampProperties and MagnetRampProperties.range ~= 0 and FlyingTrainProperties.MakeFX == "yes") then
 			MagnetRampProperties.power.energy = 0
 			if (FlyingTrainProperties.MagnetComp < 0) then
 				polarity = "RTPush"
@@ -290,7 +343,7 @@ local function entity_damaged(event)
 					}
 			end
 
-		elseif ((event.entity.name == "RTMagnetTrainRamp" or event.entity.name == "RTMagnetTrainRampNoSkip") and MagnetRampProperties and MagnetRampProperties.range ~= 0 and FlyingTrainProperties.MakeFX == "NoEnergy") then
+		elseif (MagneticRamps[event.entity.name] and MagnetRampProperties and MagnetRampProperties.range ~= 0 and FlyingTrainProperties.MakeFX == "NoEnergy") then
 			for each, guy in pairs(game.connected_players) do
 				guy.add_custom_alert(MagnetRampProperties.entity, {type = "item", name = "RTMagnetTrainRampItem"}, "A Magnet Ramp was used without a full buffer!", true)
 			end

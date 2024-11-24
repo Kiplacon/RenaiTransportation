@@ -22,10 +22,10 @@ function Animation.updateRendering(properties)
 	local height = (initialVerticalVelocity * elapsed) + (0.5 * gravity * (elapsed ^ 2)) -- x = (v_0 * t) + (1/2) * a * t^2
 	local VertialSpeed = initialVerticalVelocity + gravity*elapsed
 
-	Animation.updateOffsets(properties, height, elapsed)
-	Animation.updateScale(properties, height)
-	Animation.updateRotation(properties, elapsed)
-	return -height, -VertialSpeed
+	Animation.updateOffsets(properties, height - (properties.elevated or 0), elapsed)
+	Animation.updateScale(properties, height - (properties.elevated or 0))
+	Animation.updateRotation(properties, elapsed, height)
+	return -height +(properties.elevated or 0) , -VertialSpeed
 end
 
 function Animation.updateOffsets(properties, height, elapsed)
@@ -34,12 +34,12 @@ function Animation.updateOffsets(properties, height, elapsed)
 		local completedPercent = (game.tick-properties.ElevatedLandingStart) / (properties.LandTick-properties.ElevatedLandingStart)
 		height = -properties.shift + ((properties.shift-3)*completedPercent)
 	end
-	properties.TrainImageID.oriented_offset = {height,0}
-	properties.MaskID.oriented_offset = {height,0}
-	properties.ShadowID.oriented_offset = {0.5, height - 1}
+	properties.TrainImageID.target = {entity=properties.GuideCar, offset={0, height}}
+	properties.MaskID.target = {entity=properties.GuideCar, offset={0, height}}
+	properties.ShadowID.target = {entity=properties.GuideCar, offset={1-height, 0.5}}
 end
 
-function Animation.updateRotation(properties, elapsed)
+function Animation.updateRotation(properties, elapsed, height)
 	local SpinMagnitude = properties.SpinMagnitude or 0.05
 	local SpinSpeed = properties.SpinSpeed or 23
 	local test = properties.test or 2
@@ -49,6 +49,9 @@ function Animation.updateRotation(properties, elapsed)
 	local spinPercent = (test * completedPercent) - 1 -- double the rotation arc and center it on 0, aka upright
 	local spinScale = (spinPercent ^ SpinSpeed) - spinPercent
 	local spinAmount = SpinMagnitude * spinScale
+	if (completedPercent > 1) then
+		spinAmount = -0.042
+	end
 
 	if (properties.RampOrientation == 0.75 or properties.RampOrientation == 0) then
 		-- Going right or down, reverse spin
@@ -58,14 +61,15 @@ function Animation.updateRotation(properties, elapsed)
 	if (properties.RampOrientation == 0 or properties.RampOrientation == 0.50) then
 		-- going down or up, spin the shadows
 		-- Spin amount plus 0.5 so the shadows orient north/south
-		properties.TrainImageID.orientation = -0.25
-		properties.MaskID.orientation = -0.25
-		properties.ShadowID.orientation = spinAmount + 0.25
+		--properties.TrainImageID.orientation = -0.25
+		--properties.MaskID.orientation = -0.25
+		properties.ShadowID.orientation = spinAmount
 	else
 		-- going left or right, spin the cars
-		properties.TrainImageID.orientation = spinAmount -0.25
-		properties.MaskID.orientation = spinAmount -0.25
+		properties.TrainImageID.orientation = spinAmount
+		properties.MaskID.orientation = spinAmount
 	end
+	--game.print(completedPercent.."   "..spinAmount)
 end
 
 function Animation.updateScale(properties, height)

@@ -17,7 +17,7 @@ end
 
 ---- ziplines and player launchers swap the character with a collision immune copy
 function SwapToGhost(player)
-	-------------- create ghost copy ---------------
+	-------------- create ghost copy and place original in car ---------------
 	local OG = player.character
 	OG.destructible = false
    local NEWHOST = OG.surface.create_entity{
@@ -31,6 +31,9 @@ function SwapToGhost(player)
       position = OG.position,
       force = OG.force
    }
+   player.character = NEWHOST
+
+   -- copy stats of character to the ghost --
 	NEWHOST.health = OG.health
 	NEWHOST.selected_gun_index = OG.selected_gun_index
 	------ modifiers --------
@@ -53,8 +56,28 @@ function SwapToGhost(player)
 	for each, modifier in pairs(CharacterModifiers) do
 		NEWHOST[modifier] = OG[modifier]
 	end
+
+   -- logistics stuff
    NEWHOST.get_requester_point().enabled = OG.get_requester_point().enabled
    NEWHOST.get_requester_point().trash_not_requested = OG.get_requester_point().trash_not_requested
+   OG.get_requester_point().enabled = false
+   OG.get_requester_point().trash_not_requested = false
+   NEWHOST.get_logistic_sections().remove_section(1) -- new character starts with one
+   for i = 1, OG.get_logistic_sections().sections_count do
+      local from = OG.get_logistic_sections().get_section(i)
+      local to = NEWHOST.get_logistic_sections().add_section(from.group)
+      to.active = from.active
+      to.multiplier = from.multiplier
+      if (from.group == "") then
+         for j = 1, from.filters_count do
+            to.set_slot(j, from.get_slot(j))
+         end
+      end
+   end
+   for i = 1, OG.get_logistic_sections().sections_count do
+      OG.get_logistic_sections().remove_section(1) --whenever you remove a slot, a new one becomes slot 1
+   end
+
 	------ undo crafting queue -------
 	local TheList = nil
 	if (OG.crafting_queue) then
@@ -66,7 +89,6 @@ function SwapToGhost(player)
 			end
 		end
 	end
-
 	------ move items ----------
 	OG.character_inventory_slots_bonus = OG.character_inventory_slots_bonus+10000 -- hopefully offset losing armor inventory bonuses
 	for i = 1, #OG.get_inventory(defines.inventory.character_armor) do
@@ -82,11 +104,6 @@ function SwapToGhost(player)
 	OG.get_inventory(defines.inventory.character_armor).clear()
 	OG.get_inventory(defines.inventory.character_trash).clear()
    NEWHOST.cursor_stack.transfer_stack(OG.cursor_stack)
-   --[[ for i = 1, OG.request_slot_count do
-      local thing = OG.get_personal_logistic_slot(i)
-      NEWHOST.set_personal_logistic_slot(i, thing)
-      OG.clear_personal_logistic_slot(i)
-   end ]]
 	---------- redo crafting queue -----------
 	if (TheList ~= nil) then
 		for i = #TheList, 1, -1 do
@@ -97,6 +114,7 @@ function SwapToGhost(player)
 			end
 		end
 	end
+
    ---------- move robot ownership ----------
    for each, bot in pairs(OG.following_robots) do
       bot.combat_robot_owner = NEWHOST
@@ -111,8 +129,9 @@ function SwapToGhost(player)
          spider.follow_target = NEWHOST
       end
    end
+
    ---------- swap control -----------------
-	player.set_controller{type=defines.controllers.character, character=NEWHOST}
+	--player.set_controller{type=defines.controllers.character, character=NEWHOST}
    if (remote.interfaces.jetpack and remote.interfaces.jetpack.block_jetpack) then
       remote.call("jetpack", "block_jetpack", {character=NEWHOST})
    end
@@ -122,170 +141,135 @@ function SwapToGhost(player)
    zhonyas.set_driver(OG)
    zhonyas.force = "enemy"
    zhonyas.destructible = false
+
 	return OG
 end
 
 ---- swapping back from character ghost copy from using the ziplines or player launcher
 function SwapBackFromGhost(player, FlyingItem)
-	if (FlyingItem) then
-		storage.AllPlayers[FlyingItem.player.index].state = "default"
-      storage.AllPlayers[FlyingItem.player.index].PlayerLauncher = {}
-		if (FlyingItem.player.character) then
-			local OG2 = FlyingItem.player.character
-         FlyingItem.SwapBack.vehicle.destroy()
-			FlyingItem.SwapBack.teleport(FlyingItem.player.position)
-			FlyingItem.player.character = FlyingItem.SwapBack
-			FlyingItem.SwapBack.direction = OG2.direction
-			------ undo crafting queue -------
-			local TheList = nil
-			if (OG2.crafting_queue) then
-				TheList = {}
-				for i = OG2.crafting_queue_size, 1, -1 do
-					if OG2.crafting_queue and OG2.crafting_queue[i] then
-						table.insert(TheList, OG2.crafting_queue[i])
-						OG2.cancel_crafting(OG2.crafting_queue[i])
-					end
-				end
-			end
-			------ swap inventories ---------
-			util.swap_entity_inventories(OG2, FlyingItem.SwapBack, defines.inventory.character_main)
-			util.swap_entity_inventories(OG2, FlyingItem.SwapBack, defines.inventory.character_guns)
-			util.swap_entity_inventories(OG2, FlyingItem.SwapBack, defines.inventory.character_ammo)
-			util.swap_entity_inventories(OG2, FlyingItem.SwapBack, defines.inventory.character_trash)
-			for i = 1, #OG2.get_inventory(defines.inventory.character_armor) do
-				FlyingItem.player.character.get_inventory(defines.inventory.character_armor).insert(OG2.get_inventory(defines.inventory.character_armor)[i])
-			end
-         player.character.cursor_stack.transfer_stack(OG2.cursor_stack)
-			FlyingItem.SwapBack.character_inventory_slots_bonus = FlyingItem.SwapBack.character_inventory_slots_bonus-10000
-         --[[ for i = 1, OG2.request_slot_count do
-            local thing = OG2.get_personal_logistic_slot(i)
-            FlyingItem.SwapBack.set_personal_logistic_slot(i, thing)
-            OG2.clear_personal_logistic_slot(i)
-         end ]]
-			---------- redo crafting queue -----------
-			if (TheList ~= nil) then
-				for i = #TheList, 1, -1 do
-					local crafting = TheList[i]
-					if crafting then
-						crafting.silent = true
-						player.character.begin_crafting(crafting)
-					end
-				end
-			end
-         ---------- move robot ownership ----------
-         for each, bot in pairs(OG2.following_robots) do
-            bot.combat_robot_owner = FlyingItem.SwapBack
-         end
-         local spidies = OG2.surface.find_entities_filtered{
-            position = OG2.position,
-            radius = 100,
-            type = "spider-vehicle"
-         }
-         for each, spider in pairs(spidies) do
-            if (spider.follow_target == OG2) then
-               spider.follow_target = FlyingItem.SwapBack
+   local PlayerProperties = storage.AllPlayers[player.index]
+   PlayerProperties.state = "default"
+   PlayerProperties.PlayerLauncher = {}
+   local OG = PlayerProperties.SwapBack
+   if (FlyingItem) then
+      OG = FlyingItem.SwapBack
+   end
+   
+   if (player.character) then
+      -- swap the original character back to the ghost position ---
+      local ghost = player.character
+      OG.vehicle.destroy()
+      OG.teleport(ghost.position)
+      player.character = OG
+      OG.direction = ghost.direction
+      OG.destructible = true
+
+      -- copy stats of ghost back to the original (it might have changed --
+      OG.health = ghost.health
+      OG.selected_gun_index = ghost.selected_gun_index
+      ------ modifiers --------
+      local CharacterModifiers = {
+         "character_crafting_speed_modifier",
+         "character_inventory_slots_bonus",
+         "character_mining_speed_modifier",
+         "character_additional_mining_categories",
+         "character_build_distance_bonus",
+         "character_item_drop_distance_bonus",
+         "character_reach_distance_bonus",
+         "character_resource_reach_distance_bonus",
+         "character_item_pickup_distance_bonus",
+         "character_loot_pickup_distance_bonus",
+         "character_trash_slot_count_bonus",
+         "character_maximum_following_robot_count_bonus",
+         "character_health_bonus",
+         "allow_dispatching_robots"
+      }
+      for each, modifier in pairs(CharacterModifiers) do
+         OG[modifier] = ghost[modifier]
+      end
+
+      -- logistics stuff
+      OG.get_requester_point().enabled = ghost.get_requester_point().enabled
+      OG.get_requester_point().trash_not_requested = ghost.get_requester_point().trash_not_requested
+      for i = 1, ghost.get_logistic_sections().sections_count do
+         local from = ghost.get_logistic_sections().get_section(i)
+         local to = OG.get_logistic_sections().add_section(from.group)
+         to.active = from.active
+         to.multiplier = from.multiplier
+         if (from.group == "") then
+            for j = 1, from.filters_count do
+               to.set_slot(j, from.get_slot(j))
             end
          end
-			FlyingItem.SwapBack.destructible = true
-			FlyingItem.SwapBack.health = OG2.health
-			FlyingItem.SwapBack.selected_gun_index = OG2.selected_gun_index
-         ------ modifiers --------
-         local CharacterModifiers = {
-            "character_crafting_speed_modifier",
-            "character_inventory_slots_bonus",
-            "character_mining_speed_modifier",
-            "character_additional_mining_categories",
-            "character_build_distance_bonus",
-            "character_item_drop_distance_bonus",
-            "character_reach_distance_bonus",
-            "character_resource_reach_distance_bonus",
-            "character_item_pickup_distance_bonus",
-            "character_loot_pickup_distance_bonus",
-            "character_trash_slot_count_bonus",
-            "character_maximum_following_robot_count_bonus",
-            "character_health_bonus",
-            "allow_dispatching_robots"
-         }
-         for each, modifier in pairs(CharacterModifiers) do
-            OG2[modifier] = FlyingItem.SwapBack[modifier]
-         end
-         FlyingItem.SwapBack.get_requester_point().enabled = OG2.get_requester_point().enabled
-         FlyingItem.SwapBack.get_requester_point().trash_not_requested = OG2.get_requester_point().trash_not_requested
-         if (remote.interfaces["space-exploration"] and remote.interfaces["space-exploration"].on_character_swapped) then
-            remote.call("space-exploration", "on_character_swapped", {new_character=FlyingItem.SwapBack,old_character=OG2})
-         end
-			OG2.destroy()
-		else
-			FlyingItem.SwapBack.destructible = true
-			FlyingItem.SwapBack.destroy()
-		end
+      end
 
-	elseif (player.character) then
-		local PlayerProperties = storage.AllPlayers[player.index]
-		local OG2 = player.character
-      PlayerProperties.SwapBack.vehicle.destroy()
-		PlayerProperties.SwapBack.teleport(player.position)
-		player.character = PlayerProperties.SwapBack
-		PlayerProperties.SwapBack.direction = OG2.direction
-		------ undo crafting queue -------
-		local TheList = nil
-		if (OG2.crafting_queue) then
-			TheList = {}
-			for i = OG2.crafting_queue_size, 1, -1 do
-				if OG2.crafting_queue and OG2.crafting_queue[i] then
-					table.insert(TheList, OG2.crafting_queue[i])
-					OG2.cancel_crafting(OG2.crafting_queue[i])
-				end
-			end
-		end
-		------ swap inventories ---------
-		util.swap_entity_inventories(OG2, PlayerProperties.SwapBack, defines.inventory.character_main)
-		util.swap_entity_inventories(OG2, PlayerProperties.SwapBack, defines.inventory.character_guns)
-		util.swap_entity_inventories(OG2, PlayerProperties.SwapBack, defines.inventory.character_ammo)
-		util.swap_entity_inventories(OG2, PlayerProperties.SwapBack, defines.inventory.character_trash)
-		for i = 1, #OG2.get_inventory(defines.inventory.character_armor) do
-			player.character.get_inventory(defines.inventory.character_armor).insert(OG2.get_inventory(defines.inventory.character_armor)[i])
-		end
-      player.character.cursor_stack.transfer_stack(OG2.cursor_stack)
-		player.character.character_inventory_slots_bonus = player.character.character_inventory_slots_bonus-10000
-      for i = 1, OG2.request_slot_count do
-         local thing = OG2.get_personal_logistic_slot(i)
-         PlayerProperties.SwapBack.set_personal_logistic_slot(i, thing)
-         OG2.clear_personal_logistic_slot(i)
+      ------ undo crafting queue -------
+      local TheList = nil
+      if (ghost.crafting_queue) then
+         TheList = {}
+         for i = ghost.crafting_queue_size, 1, -1 do
+            if ghost.crafting_queue and ghost.crafting_queue[i] then
+               table.insert(TheList, ghost.crafting_queue[i])
+               ghost.cancel_crafting(ghost.crafting_queue[i])
+            end
+         end
       end
-		---------- redo crafting queue -----------
-		if (TheList ~= nil) then
-			for i = #TheList, 1, -1 do
-				local crafting = TheList[i]
-				if crafting then
-					crafting.silent = true
-					player.character.begin_crafting(crafting)
-				end
-			end
-		end
+      ------ move items ----------
+      for i = 1, #ghost.get_inventory(defines.inventory.character_armor) do
+         OG.get_inventory(defines.inventory.character_armor).insert(ghost.get_inventory(defines.inventory.character_armor)[i])
+      end
+      util.swap_entity_inventories(ghost, OG, defines.inventory.character_main)
+      util.swap_entity_inventories(ghost, OG, defines.inventory.character_guns)
+      util.swap_entity_inventories(ghost, OG, defines.inventory.character_ammo)
+      util.swap_entity_inventories(ghost, OG, defines.inventory.character_trash)
+      ghost.get_main_inventory().clear()
+      ghost.get_inventory(defines.inventory.character_guns).clear()
+      ghost.get_inventory(defines.inventory.character_ammo).clear()
+      ghost.get_inventory(defines.inventory.character_armor).clear()
+      ghost.get_inventory(defines.inventory.character_trash).clear()
+      OG.cursor_stack.transfer_stack(ghost.cursor_stack)
+      --OG.character_inventory_slots_bonus = OG.character_inventory_slots_bonus-10000
+      ---------- redo crafting queue -----------
+      if (TheList ~= nil) then
+         for i = #TheList, 1, -1 do
+            local crafting = TheList[i]
+            if crafting then
+               crafting.silent = true
+               OG.begin_crafting(crafting)
+            end
+         end
+      end
+
       ---------- move robot ownership ----------
-      for each, bot in pairs(OG2.following_robots) do
-         bot.combat_robot_owner = PlayerProperties.SwapBack
+      for each, bot in pairs(ghost.following_robots) do
+         bot.combat_robot_owner = OG
       end
-      local spidies = OG2.surface.find_entities_filtered{
-         position = OG2.position,
+      local spidies = OG.surface.find_entities_filtered{
+         position = OG.position,
          radius = 100,
          type = "spider-vehicle"
       }
       for each, spider in pairs(spidies) do
-         if (spider.follow_target == OG2) then
-            spider.follow_target = PlayerProperties.SwapBack
+         if (spider.follow_target == ghost) then
+            spider.follow_target = OG
          end
       end
-      PlayerProperties.SwapBack.destructible = true
-      PlayerProperties.SwapBack.health = OG2.health
-      PlayerProperties.SwapBack.selected_gun_index = OG2.selected_gun_index
+
+      --- swap control
       if (remote.interfaces["space-exploration"] and remote.interfaces["space-exploration"].on_character_swapped) then
-            remote.call("space-exploration", "on_character_swapped", {new_character=PlayerProperties.SwapBack,old_character=OG2})
+         remote.call("space-exploration", "on_character_swapped", {new_character=OG, old_character=ghost})
       end
-      OG2.destroy()
+      ghost.destroy()
       PlayerProperties.SwapBack = nil
-      end
+
+   else
+      OG.vehicle.destroy()
+      OG.destructible = true
+      OG.destroy()
+      PlayerProperties.SwapBack = nil
+   end
+
+
 end
 
 function copy(object)
@@ -315,6 +299,7 @@ end
 
 function GetOnZipline(player, PlayerProperties, pole)
    ---------- get on zipline -----------------
+   local OG = SwapToGhost(player)
    local TheGuy = player
    local FromXWireOffset = prototypes.recipe["RTGetTheGoods-"..pole.name.."X"].emissions_multiplier
    local FromYWireOffset = prototypes.recipe["RTGetTheGoods-"..pole.name.."Y"].emissions_multiplier
@@ -418,7 +403,8 @@ function GetOnZipline(player, PlayerProperties, pole)
    --game.print("Attached to track")
    PlayerProperties.state = "zipline"
    PlayerProperties.zipline.StartingSurface = TheGuy.surface
-   PlayerProperties.OGSpeed = player.character.character_running_speed_modifier
+   PlayerProperties.SwapBack = OG
+   --PlayerProperties.OGSpeed = player.character.character_running_speed_modifier
    pole.surface.play_sound
       {
          path = "RTZipAttach",
@@ -427,9 +413,9 @@ function GetOnZipline(player, PlayerProperties, pole)
       }
 end
 
-
 function GetOffZipline(player, PlayerProperties)
    local ZiplineStuff = PlayerProperties.zipline
+   SwapBackFromGhost(player)
    ZiplineStuff.LetMeGuideYou.surface.play_sound
       {
          path = "RTZipDettach",
@@ -448,6 +434,14 @@ function GetOffZipline(player, PlayerProperties)
    player.teleport(player.surface.find_non_colliding_position("character", {player.position.x, player.position.y+2}, 0, 0.01))
    PlayerProperties.zipline = {}
    PlayerProperties.state = "default"
-   player.character.character_running_speed_modifier = PlayerProperties.OGSpeed
+   --player.character.character_running_speed_modifier = PlayerProperties.OGSpeed
    PlayerProperties.OGSpeed = nil
+end
+
+function OffsetPosition(p1, p2)
+   local p1x = p1.x or p1[1]
+   local p1y = p1.y or p1[2]
+   local p2x = p2.x or p2[1]
+   local p2y = p2.y or p2[2]
+   return {p1x+p2x, p1y+p2y}
 end

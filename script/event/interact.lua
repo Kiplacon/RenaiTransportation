@@ -8,18 +8,16 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	local ThingHovering = player.selected
 
 	--| Player Launcher
+	local PlayerLauncher
 	if (settings.startup["RTThrowersSetting"].value == true) then
 		PlayerLauncher = player.surface.find_entity("PlayerLauncher", {math.floor(player.position.x)+0.5, math.floor(player.position.y)+0.5})
-	else
-		PlayerLauncher = nil
 	end
-
 	if (PlayerLauncher ~= nil
 	and player.character
 	and (not string.find(player.character.name, "RTGhost"))
 	and PlayerProperties.state == "default") then
 		PlayerProperties.state = "jumping"
-		--local OG = SwapToGhost(player)
+		local OG = SwapToGhost(player)
 		player.teleport(PlayerLauncher.position) -- align player on the launch pad
 		local shadow = rendering.draw_circle
 			{
@@ -43,7 +41,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				arc=arc,
 				player=player,
 				IAmSpeed=player.character.character_running_speed_modifier,
-				--SwapBack=OG,
+				SwapBack=OG,
 				target={x=x, y=y},
 				start=player.position,
 				AirTime=AirTime,
@@ -59,9 +57,8 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	end
 
 	--| Drop from ziplining
-	if (PlayerProperties.state == "zipline") then
+	if (PlayerProperties.state == "zipline" and (player.selected == nil or player.selected.type ~= "electric-pole")) then
 		GetOffZipline(player, PlayerProperties)
-
 		--game.print("manually detached")
 	end
 

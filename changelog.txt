@@ -1,4 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.2
+Date: 10/26/2024
+  Additions:
+    - Train Ramps now placable on elevated rails.
+  Changes:
+    - Re-enabled system for no collision while ziplining
+    - Better adapted ziplining code for the 2.0 API
+  Bugfixes:
+    - Fixed some crashes relating to taking damage/dying while ziplining
+---------------------------------------------------------------------------------------------------
 Version: 2.0.1
 Date: 10/26/2024
   Bugfixes:

@@ -95,7 +95,9 @@ local function on_tick(event)
 		end
 
 		--|| Landing
-		if (game.tick == properties.LandTick) then
+		if ((properties.elevated == nil and game.tick == properties.LandTick)
+		or (properties.elevated ~= nil and properties.height <= 0.1 and properties.altered == nil and properties.ProcessedLanding == nil)
+		or (properties.elevated ~= nil and properties.height <= 3.1 and properties.altered ~= nil and properties.ProcessedLanding == nil)) then
 			--game.print(game.tick.." land at position "..serpent.block(GuideCar.position))
 			--||| Bounce Pad
 			--[[ rendering.draw_circle{
@@ -139,6 +141,7 @@ local function on_tick(event)
 				if storage.Ultracube and properties.Ultracube then -- Mod is active and this FlyingTrain is one that contains Ultracube irreplaceables
 					CubeFlyingTrains.position_update(properties)
 				end
+				properties.elevated = nil
 
 			elseif (TrainLandedOn ~= nil and TrainLandedOn.name == "RTTrainDirectedBouncePlate") then
 				--game.print(game.tick..": "..GuideCar.position.x..","..GuideCar.position.y)
@@ -181,7 +184,7 @@ local function on_tick(event)
 						tint = {a = 90},
 						target = GuideCar,
 						surface = GuideCar.surface,
-						orientation_target = GuideCar,
+						orientation = properties.orientation,
 						x_scale = 0.25,
 						y_scale = 0.5,
 						render_layer = "air-object"
@@ -191,7 +194,6 @@ local function on_tick(event)
 						sprite = image,
 						target = GuideCar,
 						surface = GuideCar.surface,
-						orientation_target = GuideCar,
 						render_layer = "air-object",
 					}
 				properties.MaskID = rendering.draw_sprite
@@ -200,7 +202,6 @@ local function on_tick(event)
 						tint =  properties.color,
 						target = GuideCar,
 						surface = GuideCar.surface,
-						orientation_target = GuideCar,
 						render_layer = "air-object"
 					}
 
@@ -230,17 +231,18 @@ local function on_tick(event)
 				if storage.Ultracube and properties.Ultracube then -- Mod is active and this FlyingTrain is one that contains Ultracube irreplaceables
 					CubeFlyingTrains.position_update(properties)
 				end
+				properties.elevated = nil
 
 			--||| Try to reform train
 			else
 				local NewTrain = GuideCar.surface.create_entity
-					({
+					{
 						name = properties.name,
 						position = GuideCar.position,
 						direction = storage.OrientationNumberToDefinition[properties.orientation], -- i think this does nothing
 						force = GuideCar.force,
 						raise_built = true
-					})
+					}
 				storage.FlyingTrains[PropUnitNumber].LandedTrain = NewTrain
 				--|||| Success
 				if (NewTrain ~= nil) then
@@ -249,8 +251,10 @@ local function on_tick(event)
 						remote.call("VehicleWagon2", "set_wagon_data", NewTrain, storage.savedVehicleWagons[properties.WagonUnitNumber])
 					end
 
-					if (properties.passenger ~= nil) then
-						NewTrain.set_driver(properties.passenger)
+					if (properties.GuideCar.get_passenger() ~= nil) then
+						local rrr = properties.GuideCar.get_passenger()
+						properties.GuideCar.set_passenger(nil) -- SA 2.0.15 for some reason landing on the ground needs this now otherwise the player gets ejected instead of put into the new train
+						NewTrain.set_driver(rrr)
 					end
 
 					AngleChange = math.abs(NewTrain.orientation-properties.orientation) -- a new train will be made if there's enough rail, direction doesn't matter
@@ -529,14 +533,17 @@ local function on_tick(event)
 					--storage.FlyingTrains[PropUnitNumber] = nil
 
 				end
+				properties.ProcessedLanding = true
 			end
-		--|| Animating Train
-		elseif (game.tick < properties.LandTick) then
+		--|| during flight calculations/checks
+		elseif properties.ProcessedLanding == nil and ((properties.elevated == nil and game.tick < properties.LandTick) or (properties.elevated ~= nil and properties.height > 0.1)) then
 			local height, VerticalSpeed = Animation.updateRendering(properties)
-
-			--game.print(height..": "..VerticalSpeed)
+			--game.print(height.."   "..VerticalSpeed)
+			properties.height = height
+			properties.VerticalSpeed = VerticalSpeed
 			-- hitting or landing on elevated rails
-			if (properties.altered == nil and height >= 1.2 and height <= 3.5 and VerticalSpeed > 0) then -- estimated height of elevated rails
+			if (properties.altered == nil and height >= 1.2 and height <= 4 and VerticalSpeed > 0 and properties.elevated == nil)
+			or (properties.altered == nil and height < 3.5 and VerticalSpeed < 0) then -- estimated height of elevated rails = 3
 				--upward arc
 				local rails = GuideCar.surface.find_entities_filtered{
 					position = GuideCar.position,
@@ -573,7 +580,7 @@ local function on_tick(event)
 					GuideCar.destroy()
 					storage.FlyingTrains[PropUnitNumber] = nil
 				end
-			elseif (properties.altered == nil and height >= 3.25 and height <= 4.5 and VerticalSpeed < 0) then
+			elseif (properties.altered == nil and height >= 3.5 and height <= 4.25 and VerticalSpeed < 0) then
 				-- downward arc
 				local gravity = 1/250
 				local LandingRunwayDistance = math.abs(GuideCar.speed)*(VerticalSpeed+math.sqrt((VerticalSpeed^2) - 2*gravity*(3-height)))/gravity -- "Landing strip" length needed for the touchdown animation

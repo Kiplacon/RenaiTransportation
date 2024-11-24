@@ -49,6 +49,14 @@ local function entity_destroyed(event)
 		end
 		storage.ZiplineTerminals[event.registration_number] = nil
 	end
+
+	if (storage.DestructionLinks[event.registration_number]) then
+		for each, entity in pairs(storage.DestructionLinks[event.registration_number]) do
+			if (entity.valid) then
+				entity.destroy()
+			end
+		end
+	end
 end
 
 return entity_destroyed

@@ -149,7 +149,11 @@ local function config_changed()
 	if (storage.HoverGFX == nil) then
 		storage.HoverGFX = {}
 	end
-	
+
+	if (storage.DestructionLinks == nil) then
+		storage.DestructionLinks = {}
+	end
+
 	-- Ultracube-specific globals
 	if script.active_mods["Ultracube"] then
 		-- Prototype data should be reset on config change just in case Ultracube has updated to add new types

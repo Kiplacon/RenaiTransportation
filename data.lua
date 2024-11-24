@@ -227,5 +227,20 @@ data:extend({
 			}
 		},
 	oriented_particle = true
-}
+},
 })
+
+if (feature_flags["spoiling"]) then
+	data:extend({
+		{
+			type = "item",
+			name = "RTLickmawBalls",
+			icon = "__RenaiTransportation__/graphics/LickmawBALLS.png",
+			icon_size = 64,
+			subgroup = "agriculture-process",
+			weight = 1000,
+			order = "bbc",
+			stack_size = 69
+		}
+	})
+end

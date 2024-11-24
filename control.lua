@@ -516,7 +516,7 @@ script.on_event(
 "DebugAdvanceActionProcess",
 function(event)
 	local player = game.players[event.player_index]
-	if (player.cursor_stack.valid_for_read == true) then
+	if (player.cursor_stack and player.cursor_stack.valid_for_read == true) then
 		local item = player.cursor_stack.name
 		if (prototypes.entity["RTItemProjectile-"..item..25]) then
 			player.surface.create_entity
@@ -535,13 +535,15 @@ function(event)
 				target_position=event.cursor_position
 			}
 		end
-	else
+	elseif (player.character) then
 		rendering.draw_animation
 		{
 			animation = "RTHoojinTime",
 			x_scale = 0.5,
 			y_scale = 0.5,
-			target = player.character,
+			target = {
+				entity = player.character,
+			},
 			surface = player.surface,
 			time_to_live = 120,
 			animation_speed = 0.5
@@ -582,6 +584,7 @@ function(event)
 			end
 			SwapBackFromGhost(player, FlyingItem)
 			storage.FlyingItems[number] = nil
+			PlayerProperties.state = "default"
 		end
 	end
 end)

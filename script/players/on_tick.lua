@@ -320,9 +320,16 @@ local function on_tick(event)
 				GetOffZipline(player, PlayerProperties)
 				--game.print("failsafe/wire destroyed")
 			end
+
 		--||| Zipline Failsafe
 		elseif (PlayerProperties.state == "zipline" and PlayerProperties.zipline.path == nil) then
 			GetOffZipline(player, PlayerProperties)
+
+		--||| Player dies on zipline
+		elseif (PlayerProperties.state == "zipline" and player.character == nil) then
+			game.print(33)
+			GetOffZipline(player, PlayerProperties)
+			PlayerProperties.state = "default"
 
 		--||| Set thrower range before placing
 		elseif (PlayerProperties.RangeAdjusting == true) then
