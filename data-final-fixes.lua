@@ -397,6 +397,7 @@ TheRecipe =
 		name = "RTThrower-"..ThingData.name.."-Recipe",
 		enabled = isitenabled,
 		energy_required = 1,
+		localised_name =  "Thrower "..ThingData.name:gsub("-i"," i"), 
 		ingredients =
 			{
 				{type="item", name=ThingData.minable.result, amount=1},
@@ -410,8 +411,8 @@ TheRecipe =
 TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	TheThrower.name = "RTThrower-"..ThingData.name
 	TheThrower.minable = {mining_time = 0.1, result = TheItem.name}
-	--TheThrower.localised_name ="Thrower "..ThingData.name
-	TheThrower.localised_name = {"thrower-gen.name", {"entity-name."..ThingData.name}}
+	TheThrower.localised_name ="Thrower "..ThingData.name:gsub("-i"," i")
+	--TheThrower.localised_name = {"thrower-gen.name", {"entity-name."..ThingData.name}}
 	TheThrower.insert_position = {0, 15.2}
 	TheThrower.allow_custom_vectors = true
 	ItsRange = 15
