@@ -89,7 +89,7 @@ brrr,
 	},
    ammo_category = "ZiplineMotor"
 },
-{ --------- zipline controls recipie ----------
+{ --------- zipline controls recipe ----------
 	type = "recipe",
 	name = "RTZiplineControlsRecipe",
 	enabled = false,
@@ -143,7 +143,7 @@ brrr,
 	},
    ammo_category = "ZiplineMotor"
 },
-{ --------- zipline crank controls recipie ----------
+{ --------- zipline crank controls recipe ----------
 	type = "recipe",
 	name = "RTZiplineCrankControlsRecipe",
 	enabled = false,
@@ -173,7 +173,7 @@ brrr,
 	},
    ammo_category = "ZiplineMotor"
 },
-{ --------- programmable zipline controls recipie ----------
+{ --------- programmable zipline controls recipe ----------
 	type = "recipe",
 	name = "RTProgrammableZiplineControlsRecipe",
 	enabled = false,
@@ -241,7 +241,7 @@ data:extend({ succ })
 
 if (settings.startup["RTThrowersSetting"].value == true) then
 	data:extend({
-		{ --------- zipline recipie ----------
+		{ --------- zipline recipe ----------
 			type = "recipe",
 			name = "RTZiplineRecipe",
 			enabled = false,
@@ -262,7 +262,7 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 
 else
 	data:extend({
-		{ --------- zipline recipie ----------
+		{ --------- zipline recipe ----------
 			type = "recipe",
 			name = "RTZiplineRecipe",
 			enabled = false,
@@ -315,7 +315,7 @@ data:extend({
          range = 0
        },
    },
-   { --------- zipline recipie ----------
+   { --------- zipline recipe ----------
       type = "recipe",
       name = "RTZiplineRecipe2",
       enabled = false,
@@ -366,7 +366,7 @@ data:extend({
          range = 0
        },
    },
-   { --------- zipline recipie ----------
+   { --------- zipline recipe ----------
       type = "recipe",
       name = "RTZiplineRecipe3",
       enabled = false,
@@ -418,7 +418,7 @@ data:extend({
          range = 0
        },
    },
-   { --------- zipline recipie ----------
+   { --------- zipline recipe ----------
       type = "recipe",
       name = "RTZiplineRecipe4",
       enabled = false,
@@ -470,7 +470,7 @@ data:extend({
          range = 0
        },
    },
-   { --------- zipline recipie ----------
+   { --------- zipline recipe ----------
       type = "recipe",
       name = "RTZiplineRecipe5",
       enabled = false,

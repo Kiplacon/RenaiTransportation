@@ -45,7 +45,7 @@ OhYouLikeTrains,
 	stack_size = 5
 },
 
-{ --------- prop recipie ----------
+{ --------- prop recipe ----------
 	type = "recipe",
 	name = "RTPayloadWagonRecipe",
 	enabled = false,

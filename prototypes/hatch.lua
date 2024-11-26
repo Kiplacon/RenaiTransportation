@@ -45,7 +45,7 @@ picture =
 	stack_size = 50
 },
 
-{ --------- The hatch recipie ----------
+{ --------- The hatch recipe ----------
 	type = "recipe",
 	name = "HatchRTRecipe",
 	enabled = false,
@@ -120,7 +120,7 @@ picture =
 	stack_size = 50
 },
 
-{ --------- The ejector hatch recipie ----------
+{ --------- The ejector hatch recipe ----------
 	type = "recipe",
 	name = "RTThrower-EjectorHatchRTRecipe",
 	enabled = false,
@@ -208,7 +208,7 @@ picture =
 	stack_size = 50
 },
 
-{ --------- The ejector hatch recipie ----------
+{ --------- The ejector hatch recipe ----------
 	type = "recipe",
 	name = "RTThrower-FilterEjectorHatchRTRecipe",
 	enabled = false,

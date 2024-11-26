@@ -62,9 +62,9 @@ data:extend({
 		stack_size = 50
 	},
 	
-	{ --------- The thrower recipie ----------
+	{ --------- The thrower recipe ----------
 		type = "recipe",
-		name = "PlayerLauncherRecipie",
+		name = "PlayerLauncherRecipe",
 		enabled = false,
 		energy_required = 0.5,
 		ingredients = 
