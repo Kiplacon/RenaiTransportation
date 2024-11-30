@@ -458,20 +458,10 @@ local function entity_damaged(event)
 					if (LaunchedPortion > 1) then
 						LaunchedPortion = 1
 					end
-					local ItemName
-					local amount
-					local ItemQuality
-					local contents = {}
 					for eachh, stack in pairs(wagon.get_inventory(defines.inventory.cargo_wagon).get_contents()) do
-						contents[ItemName..ItemQuality] = amount
-						ItemName = stack.name
-						amount = stack.count
-						ItemQuality = stack.quality
-						game.print(ItemName..", "..amount..", "..ItemQuality)
-					end
-					local TotalSlots = wagon.prototype.get_inventory_size(defines.inventory.cargo_wagon, wagon.quality.name)
-					for qq = 1, TotalSlots do
-						local slot = wagon.get_inventory(defines.inventory.cargo_wagon)[i]
+						local ItemName = stack.name
+						local amount = stack.count
+						local ItemQuality = stack.quality
 						local LaunchedAmount = math.floor(amount*LaunchedPortion)
 						if (LaunchedAmount > 0) then
 							local GroupSize = math.ceil((LaunchedAmount*wagons)/settings.global["RTImpactGrouping"].value)
@@ -662,7 +652,6 @@ local function entity_damaged(event)
 							wagon.get_inventory(defines.inventory.cargo_wagon).remove({name = ItemName, count=LaunchedAmount, quality=ItemQuality})
 						end
 					end
-					
 				end
 			end
 			if (event.cause.train.schedule and event.cause.train.manual_mode == false) then
