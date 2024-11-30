@@ -69,9 +69,9 @@ data:extend({
 		stack_size = 50
 	},
 	
-	{ --------- The Bounce plate recipie ----------
+	{ --------- The Bounce plate recipe ----------
 		type = "recipe",
-		name = "PrimerBouncePlateRecipie",
+		name = "PrimerBouncePlateRecipe",
 		enabled = false,
 		energy_required = 1,
 		ingredients = 

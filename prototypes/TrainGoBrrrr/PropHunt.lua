@@ -49,7 +49,7 @@ MLG,
 	stack_size = 50
 },
 
-{ --------- prop recipie ----------
+{ --------- prop recipe ----------
 	type = "recipe",
 	name = "RTPropCar",
 	enabled = false,

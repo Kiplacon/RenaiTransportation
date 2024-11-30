@@ -297,7 +297,7 @@ end
 
 -- Add recipes for both items
 data:extend({
-	{ --------- ramp recipie ----------
+	{ --------- ramp recipe ----------
 		type = "recipe",
 		name = "RTTrainRampRecipe",
 		enabled = false,
@@ -313,7 +313,7 @@ data:extend({
 		}
 	},
 
-	{ --------- ramp recipie ----------
+	{ --------- ramp recipe ----------
 		type = "recipe",
 		name = "RTMagnetTrainRampRecipe",
 		enabled = false,
@@ -331,7 +331,7 @@ data:extend({
 		}
 	},
 
-	{ --------- ramp recipie ----------
+	{ --------- ramp recipe ----------
 		type = "recipe",
 		name = "RTImpactUnloaderRecipe",
 		enabled = false,
