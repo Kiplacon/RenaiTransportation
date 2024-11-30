@@ -3,6 +3,9 @@ Version: 2.0.4
 Date: 11/30/2024
   Changes:
     - Fixed recipe names. Fix by RandomRDP
+  Bugfixes:
+    - Fixed a crash with the Impact unloader and items with item_numbers. Reported by Venomless
+    - Fixed some quality compatability with thrown items
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.3
 Date: 11/24/2024

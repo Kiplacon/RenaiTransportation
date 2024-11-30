@@ -458,20 +458,10 @@ local function entity_damaged(event)
 					if (LaunchedPortion > 1) then
 						LaunchedPortion = 1
 					end
-					local ItemName
-					local amount
-					local ItemQuality
-					local contents = {}
-					for eachh, stack in pairs(wagon.get_inventory(defines.inventory.cargo_wagon).get_contents()) do
-						contents[ItemName..ItemQuality] = amount
-						ItemName = stack.name
-						amount = stack.count
-						ItemQuality = stack.quality
-						game.print(ItemName..", "..amount..", "..ItemQuality)
-					end
-					local TotalSlots = wagon.prototype.get_inventory_size(defines.inventory.cargo_wagon, wagon.quality.name)
-					for qq = 1, TotalSlots do
-						local slot = wagon.get_inventory(defines.inventory.cargo_wagon)[i]
+					for _, stack in pairs(wagon.get_inventory(defines.inventory.cargo_wagon).get_contents()) do
+						local ItemName = stack.name
+						local amount = stack.count
+						local ItemQuality = stack.quality
 						local LaunchedAmount = math.floor(amount*LaunchedPortion)
 						if (LaunchedAmount > 0) then
 							local GroupSize = math.ceil((LaunchedAmount*wagons)/settings.global["RTImpactGrouping"].value)
@@ -547,7 +537,8 @@ local function entity_damaged(event)
 										surface=wagon.surface,
 										path=path
 									}
-								if (wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack({name=ItemName, quality=ItemQuality}).item_number ~= nil) then --quality crashes
+								if (wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack({name=ItemName, quality=ItemQuality})
+								and wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack({name=ItemName, quality=ItemQuality}).item_number ~= nil) then --quality crashes
 									local CloudStorage = game.create_inventory(1)
 									local item, index = wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack({name=ItemName, quality=ItemQuality})
 									CloudStorage.insert(item)
@@ -563,7 +554,7 @@ local function entity_damaged(event)
 
 								storage.FlightNumber = storage.FlightNumber + 1
 							end
-							if (LaunchedAmount%GroupSize ~= 0) then
+							if (LaunchedAmount-(math.floor(LaunchedAmount/GroupSize)*GroupSize) > 0) then
 								local sprite = rendering.draw_sprite
 									{
 										sprite = "item/"..ItemName,
@@ -585,7 +576,7 @@ local function entity_damaged(event)
 								local yUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation)))/(0.5*math.pi)) - 1
 								local ForwardSpread = math.random(100,400)*0.1
 								local HorizontalSpread = math.random(-40,40)*ForwardSpread*0.01
-								local	x = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
+								local x = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
 								local y = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
 								local distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
 								local speed = math.abs(wagon.speed) * (distance/(35*math.abs(wagon.speed))) * math.random(45,100)*0.01
@@ -623,7 +614,7 @@ local function entity_damaged(event)
 										arc=arc,
 										spin=spin,
 										item=ItemName,
-										amount=GroupSize,
+										amount=LaunchedAmount-(math.floor(LaunchedAmount/GroupSize)*GroupSize),
 										quality=ItemQuality,
 										target={x=x, y=y},
 										start={x=wagon.position.x+random1, y=wagon.position.y+random2},
@@ -635,7 +626,8 @@ local function entity_damaged(event)
 										surface=wagon.surface,
 										path=path
 									}
-								if (wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack({name=ItemName, quality=ItemQuality}).item_number ~= nil) then
+								if (wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack({name=ItemName, quality=ItemQuality})
+								and wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack({name=ItemName, quality=ItemQuality}).item_number ~= nil) then
 									local CloudStorage = game.create_inventory(1)
 									local item, index = wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack({name=ItemName, quality=ItemQuality})
 									CloudStorage.insert(item)
@@ -662,7 +654,6 @@ local function entity_damaged(event)
 							wagon.get_inventory(defines.inventory.cargo_wagon).remove({name = ItemName, count=LaunchedAmount, quality=ItemQuality})
 						end
 					end
-					
 				end
 			end
 			if (event.cause.train.schedule and event.cause.train.manual_mode == false) then

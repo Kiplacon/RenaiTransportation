@@ -281,7 +281,7 @@ local function on_tick(event)
                      elseif storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
                         CubeFlyingItems.release_and_insert(FlyingItem, ThingLandedOn)
                      else
-                        ThingLandedOn.insert({name=FlyingItem.item, count=FlyingItem.amount})
+                        ThingLandedOn.insert({name=FlyingItem.item, count=FlyingItem.amount, quality=FlyingItem.quality})
                      end
                      ThingLandedOn.surface.play_sound
                         {
@@ -291,14 +291,14 @@ local function on_tick(event)
                         }
 
                   ---- If the thing it landed on has an inventory and a hatch, insert the item ----
-                  elseif (ThingLandedOn.surface.find_entity('HatchRT', {math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5}) and ThingLandedOn.can_insert({name=FlyingItem.item})) then
+                  elseif (ThingLandedOn.surface.find_entity('HatchRT', {math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5}) and ThingLandedOn.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
                      if (FlyingItem.CloudStorage) then
                         ThingLandedOn.insert(FlyingItem.CloudStorage[1])
                         FlyingItem.CloudStorage.destroy()
                      elseif storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
                         CubeFlyingItems.release_and_insert(FlyingItem, ThingLandedOn)
                      else
-                        ThingLandedOn.insert({name=FlyingItem.item, count=FlyingItem.amount})
+                        ThingLandedOn.insert({name=FlyingItem.item, count=FlyingItem.amount, quality=FlyingItem.quality})
                      end
                      ThingLandedOn.surface.play_sound
                         {
@@ -308,14 +308,14 @@ local function on_tick(event)
                         }
 
                   ---- If it landed on something but there's also a cargo wagon there
-                  elseif (LandedOnCargoWagon ~= nil and LandedOnCargoWagon.can_insert({name=FlyingItem.item})) then
+                  elseif (LandedOnCargoWagon ~= nil and LandedOnCargoWagon.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
                      if (FlyingItem.CloudStorage) then
                         LandedOnCargoWagon.insert(FlyingItem.CloudStorage[1])
                         FlyingItem.CloudStorage.destroy()
                      elseif storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
                         CubeFlyingItems.release_and_insert(FlyingItem, LandedOnCargoWagon)
                      else
-                        LandedOnCargoWagon.insert({name=FlyingItem.item, count=FlyingItem.amount})
+                        LandedOnCargoWagon.insert({name=FlyingItem.item, count=FlyingItem.amount, quality=FlyingItem.quality})
                      end
 
                   -- If it's an Ultracube FlyingItem, just spill it near whatever it landed on, potentially onto a belt
@@ -342,7 +342,7 @@ local function on_tick(event)
                            for l = 1, 2 do
                               for i = 0, 0.9, 0.1 do
                                  if (total > 0 and ThingLandedOn.get_transport_line(l).can_insert_at(i) == true) then
-                                    ThingLandedOn.get_transport_line(l).insert_at(i, {name=FlyingItem.item, count=1})
+                                    ThingLandedOn.get_transport_line(l).insert_at(i, {name=FlyingItem.item, count=1, quality=FlyingItem.quality})
                                     total = total - 1
                                  end
                               end
