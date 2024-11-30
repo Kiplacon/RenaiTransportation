@@ -10,11 +10,11 @@ data:extend({
 	{
 		{
 			type = "unlock-recipe",
-			recipe = "DirectedBouncePlateRecipie"
+			recipe = "DirectedBouncePlateRecipe"
 		},
 		{
 			type = "unlock-recipe",
-			recipe = "PlayerLauncherRecipie"
+			recipe = "PlayerLauncherRecipe"
 		}
 	},
 	unit =
@@ -137,7 +137,7 @@ data:extend({
     {
       {
           type = "unlock-recipe",
-          recipe = "DirectorBouncePlateRecipie"
+          recipe = "DirectorBouncePlateRecipe"
       }
     },
     prerequisites = {"se-no", "advanced-circuit"},
@@ -187,7 +187,7 @@ if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RT
 		{
 			{
 				type = "unlock-recipe",
-				recipe = "PrimerBouncePlateRecipie"
+				recipe = "PrimerBouncePlateRecipe"
 			}
 		},
 		prerequisites = {"se-no", "military-2"},
@@ -211,7 +211,7 @@ if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RT
    		{
    			{
    				type = "unlock-recipe",
-   				recipe = "SignalBouncePlateRecipie"
+   				recipe = "SignalBouncePlateRecipe"
    			}
    		},
    		prerequisites = {"se-no", "circuit-network"},
@@ -383,11 +383,11 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 				{
 					{
 						type = "unlock-recipe",
-						recipe = "RTTrainBouncePlateRecipie"
+						recipe = "RTTrainBouncePlateRecipe"
 					},
 					{
 						type = "unlock-recipe",
-						recipe = "RTTrainDirectedBouncePlateRecipie"
+						recipe = "RTTrainDirectedBouncePlateRecipe"
 					}
 				},
 				prerequisites = {"RTFlyingFreight"},

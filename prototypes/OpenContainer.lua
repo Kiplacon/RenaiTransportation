@@ -27,9 +27,9 @@ data:extend({
 		stack_size = 50
 	},
 	
-	{ --------- The container recipie ----------
+	{ --------- The container recipe ----------
 		type = "recipe",
-		name = "OpenContainerRecipie",
+		name = "OpenContainerRecipe",
 		enabled = true,
 		energy_required = 0.5,
 		ingredients = {{type="item", name="iron-chest", amount=1}},
@@ -38,9 +38,9 @@ data:extend({
 		}
 	},
 	
-	{ --------- open to regular chest recipie ----------
+	{ --------- open to regular chest recipe ----------
 		type = "recipe",
-		name = "OpenContainerRevertRecipie",
+		name = "OpenContainerRevertRecipe",
 		enabled = true,
 		energy_required = 0.5,
 		ingredients = {{type="item", name="OpenContainerItem", amount=1}},

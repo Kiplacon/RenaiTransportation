@@ -175,9 +175,9 @@ data:extend({
 		stack_size = 50
 	},
 
-	{ --------- The Bounce plate recipie ----------
+	{ --------- The Bounce plate recipe ----------
 		type = "recipe",
-		name = "DirectedBouncePlateRecipie",
+		name = "DirectedBouncePlateRecipe",
 		enabled = false,
 		energy_required = 1,
 		ingredients =

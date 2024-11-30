@@ -49,7 +49,7 @@ OhYouLikeTrains,
 	stack_size = 5
 },
 
-{ --------- wagon recipie ----------
+{ --------- wagon recipe ----------
 	type = "recipe",
 	name = "RTImpactWagonRecipe",
 	enabled = false,
@@ -78,7 +78,7 @@ OhYouLikeTrains,
 -- 	place_result = "RTImpactUnloader",
 -- 	stack_size = 10
 -- },
--- { --------- impact unloader recipie ----------
+-- { --------- impact unloader recipe ----------
 -- 	type = "recipe",
 -- 	name = "RTImpactUnloaderRecipe",
 -- 	enabled = false,
