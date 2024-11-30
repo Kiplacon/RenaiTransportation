@@ -1,0 +1,18 @@
+{
+	"recipe":
+	[
+		[ "BouncePlateRecipie", "BouncePlateRecipe" ],
+		[ "PrimerBouncePlateRecipie", "PrimerBouncePlateRecipe" ],
+		[ "PrimerSpreadBouncePlateRecipie", "PrimerSpreadBouncePlateRecipe" ],
+		[ "SignalBouncePlateRecipie", "SignalBouncePlateRecipe" ],
+		[ "DirectedBouncePlateRecipie", "DirectedBouncePlateRecipe" ],
+		[ "DirectorBouncePlateRecipie", "DirectorBouncePlateRecipe" ],
+		[ "OpenContainerRecipie", "OpenContainerRecipe" ],
+		[ "OpenContainerRevertRecipie", "OpenContainerRevertRecipe" ],
+		[ "PlayerLauncherRecipie", "PlayerLauncherRecipe" ],
+		[ "RTThrower-EjectorHatchRTRecipie", "RTThrower-EjectorHatchRTRecipe" ],
+		[ "RTThrower-FilterEjectorHatchRTRecipie", "RTThrower-FilterEjectorHatchRTRecipe" ],
+		[ "RTTrainBouncePlateRecipie", "RTTrainBouncePlateRecipe" ],
+		[ "RTTrainDirectedBouncePlateRecipie", "RTTrainDirectedBouncePlateRecipe" ]
+	]
+}
