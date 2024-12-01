@@ -3,8 +3,9 @@ Version: 2.0.5
 Date: 12/1/2024
   Changes:
     - Jumping into water/lava while wearing Mech armor no longer kills you
+    - Added a bunch of locale translations by NikTheMimic (Chinese, German, Spanish, French, and Japanese)
   Bugfixes:
-    - Fixed that different quality Hatches and Player launchers didn't work. Reported by NikTheMimic
+    - Fixed that non-normal quality Hatches and Player launchers didn't work. Reported by NikTheMimic
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.4
 Date: 11/30/2024
@@ -22,7 +23,7 @@ Date: 11/24/2024
 Version: 2.0.2
 Date: 11/23/2024
   Additions:
-    - Train Ramps are now placable on elevated rails. Some of the animation are jumping between normal and elevated rails are still a bit jank
+    - Train Ramps are now placable on elevated rails. Some of the animations for jumping between normal and elevated rails are still a bit jank
     - Throwing items into lava makes a cool fiery splash
   Changes:
     - Items thrown by Thrower Inserters on space platforms don't arc as if there's gravity up there
