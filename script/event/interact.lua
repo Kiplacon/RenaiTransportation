@@ -10,7 +10,9 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	--| Player Launcher
 	local PlayerLauncher
 	if (settings.startup["RTThrowersSetting"].value == true) then
-		PlayerLauncher = player.surface.find_entity("PlayerLauncher", {math.floor(player.position.x)+0.5, math.floor(player.position.y)+0.5})
+		PlayerLauncher = player.surface.find_entities_filtered({
+			name="PlayerLauncher",
+			position={math.floor(player.position.x)+0.5, math.floor(player.position.y)+0.5}})[1]
 	end
 	if (PlayerLauncher ~= nil
 	and player.character

@@ -291,7 +291,10 @@ local function on_tick(event)
                         }
 
                   ---- If the thing it landed on has an inventory and a hatch, insert the item ----
-                  elseif (ThingLandedOn.surface.find_entity('HatchRT', {math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5}) and ThingLandedOn.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
+                  elseif (ThingLandedOn.surface.find_entities_filtered({
+                     name='HatchRT',
+                     position={math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5}})
+                  and ThingLandedOn.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
                      if (FlyingItem.CloudStorage) then
                         ThingLandedOn.insert(FlyingItem.CloudStorage[1])
                         FlyingItem.CloudStorage.destroy()
@@ -424,8 +427,14 @@ local function on_tick(event)
                      name = "fire-smoke",
                      position = FlyingItem.target
                   }
-               if (FlyingItem.player) then
-                  FlyingItem.player.character.die()
+               if (FlyingItem.player and FlyingItem.player.character) then
+                  if (FlyingItem.player.character.get_inventory(defines.inventory.character_armor)
+                  and FlyingItem.player.character.get_inventory(defines.inventory.character_armor).is_full()
+                  and FlyingItem.player.character.get_inventory(defines.inventory.character_armor)[1].prototype.provides_flight == true) then
+                     -- character lives
+                  else
+                     FlyingItem.player.character.die()
+                  end
                else
                   if ((FlyingItem.item == "ironclad" or FlyingItem.item == "ironclad-ironclad-mortar" or FlyingItem.item == "ironclad-ironclad-cannon") and script.active_mods["aai-vehicles-ironclad"] and ProjectileSurface.can_place_entity{name="ironclad", position=FlyingItem.target} == true) then
                      ProjectileSurface.create_entity
@@ -463,8 +472,14 @@ local function on_tick(event)
                   }
                end
 
-               if (FlyingItem.player) then
-                  FlyingItem.player.character.die()
+               if (FlyingItem.player and FlyingItem.player.character) then
+                  if (FlyingItem.player.character.get_inventory(defines.inventory.character_armor)
+                  and FlyingItem.player.character.get_inventory(defines.inventory.character_armor).is_full()
+                  and FlyingItem.player.character.get_inventory(defines.inventory.character_armor)[1].prototype.provides_flight == true) then
+                     -- character lives
+                  else
+                     FlyingItem.player.character.die()
+                  end
                else
                   if (FlyingItem.item == "raw-fish") then
                      for i = 1, math.floor(FlyingItem.amount/5) do

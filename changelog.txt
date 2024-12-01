@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.5
+Date: 12/1/2024
+  Changes:
+    - Jumping into water/lava while wearing Mech armor no longer kills you
+  Bugfixes:
+    - Fixed that different quality Hatches and Player launchers didn't work. Reported by NikTheMimic
+---------------------------------------------------------------------------------------------------
 Version: 2.0.4
 Date: 11/30/2024
   Changes:
