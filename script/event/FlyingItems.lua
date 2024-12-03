@@ -345,7 +345,7 @@ local function on_tick(event)
                            for l = 1, 2 do
                               for i = 0, 0.9, 0.1 do
                                  if (total > 0 and ThingLandedOn.get_transport_line(l).can_insert_at(i) == true) then
-                                    ThingLandedOn.get_transport_line(l).insert_at(i, {name=FlyingItem.item, count=1})
+                                    ThingLandedOn.get_transport_line(l).insert_at(i, {name=FlyingItem.item, count=1, quality=FlyingItem.quality})
                                     total = total - 1
                                  end
                               end
