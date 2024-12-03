@@ -264,7 +264,7 @@ local function on_tick(event)
             elseif (FlyingItem.tracing == nil) then
                -- players falling on something
                if (FlyingItem.player) then
-                  ---- Doesn't make sense for player landing on cliff to destroy it ----
+                  ---- Doesn't make sense for player landingit ----
                   if (ThingLandedOn.name == "cliff") then
                      FlyingItem.player.teleport(ThingLandedOn.surface.find_non_colliding_position("iron-chest", FlyingItem.target, 0, 0.5))
                   elseif (ThingLandedOn.name ~= "PlayerLauncher") then
@@ -293,7 +293,7 @@ local function on_tick(event)
                   ---- If the thing it landed on has an inventory and a hatch, insert the item ----
                   elseif (ThingLandedOn.surface.find_entities_filtered({
                      name='HatchRT',
-                     position={math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5}})
+                     position={math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5}})[1]
                   and ThingLandedOn.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
                      if (FlyingItem.CloudStorage) then
                         ThingLandedOn.insert(FlyingItem.CloudStorage[1])
@@ -345,7 +345,7 @@ local function on_tick(event)
                            for l = 1, 2 do
                               for i = 0, 0.9, 0.1 do
                                  if (total > 0 and ThingLandedOn.get_transport_line(l).can_insert_at(i) == true) then
-                                    ThingLandedOn.get_transport_line(l).insert_at(i, {name=FlyingItem.item, count=1, quality=FlyingItem.quality})
+                                    ThingLandedOn.get_transport_line(l).insert_at(i, {name=FlyingItem.item, count=1})
                                     total = total - 1
                                  end
                               end

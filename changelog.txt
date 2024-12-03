@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.6
+Date: 12/2/2024
+  Bugfixes:
+    - Fixed a mistake I made with the non-normal quality Hatch fix I made last version. Reported by howardxu23
+---------------------------------------------------------------------------------------------------
 Version: 2.0.5
 Date: 12/1/2024
   Changes:
