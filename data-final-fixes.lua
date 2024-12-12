@@ -774,9 +774,9 @@ for Category, ThingsTable in pairs(data.raw) do
 	for ThingID, ThingData in pairs(ThingsTable) do
 		if (ThingData.stack_size) then
 			log("==========Creating item projectile for "..ThingData.type..": "..ThingData.name.."===========")
-			MakeProjectile(ThingData, 0.18)
-			MakeProjectile(ThingData, 0.25)
-			MakeProjectile(ThingData, 0.6)
+			MakeProjectile(ThingData, 0.18) -- thrower inserter speed
+			MakeProjectile(ThingData, 0.25) -- ejector hatch speed
+			MakeProjectile(ThingData, 0.6) -- train bounce pad speed
 			if (settings.startup["RTBounceSetting"].value == true) then
 				if (ThingData.type == "ammo" -- looking for things like rockets, tank shells, missles, etc
 				and ThingData.ammo_type.action --if this ammo does something
@@ -937,9 +937,11 @@ for Category, ThingsTable in pairs(data.raw) do
 	end
 end
 
-for _, ingredient in pairs(data.raw.recipe.RTZiplineRecipe4.ingredients) do
-	if (ingredient.type and ingredient.type == "fluid") then
-		data.raw.recipe.RTZiplineRecipe4.category = "crafting-with-fluid"
-		break
+if (settings.startup["RTZiplineSetting"].value == true) then
+	for _, ingredient in pairs(data.raw.recipe.RTZiplineRecipe4.ingredients) do
+		if (ingredient.type and ingredient.type == "fluid") then
+			data.raw.recipe.RTZiplineRecipe4.category = "crafting-with-fluid"
+			break
+		end
 	end
 end

@@ -137,6 +137,8 @@ local function on_int()
 
 	storage.DestructionLinks = {}
 
+	storage.EntityProperties = {}
+
 	-- Ultracube=specific globals
 	if script.active_mods["Ultracube"] then
 		ultracube_globals.setup_prototypes()

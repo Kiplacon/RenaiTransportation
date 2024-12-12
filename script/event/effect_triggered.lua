@@ -4,6 +4,7 @@
 -- source_entity :: LuaEntity (optional)
 -- target_position :: Position (optional)
 -- target_entity :: LuaEntity (optional)
+-- cause_entity :: LuaEntity (optional)
 
 local function effect_triggered(event)
 	if (event.effect_id == "RTCrank"
@@ -69,6 +70,7 @@ local function effect_triggered(event)
 					}
 			end
 		end
+
 	elseif (event.effect_id == "PrimerThrowerCheck") then
 		local detector = event.source_entity
 		local DetectorNumber = script.register_on_object_destroyed(detector)
@@ -91,6 +93,11 @@ local function effect_triggered(event)
 		else
 			--box.get_output_inventory().clear()
 		end
+
+	elseif (event.effect_id == "RTToggleTrapdoor") then
+		local properties = EntityProperties(event.source_entity)
+		game.print(game.tick.." "..event.target_entity.name..", lag="..game.tick-properties.BuiltTick)
+		properties.BuiltTick = game.tick
 	end
 end
 

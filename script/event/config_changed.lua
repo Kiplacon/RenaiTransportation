@@ -154,6 +154,10 @@ local function config_changed()
 		storage.DestructionLinks = {}
 	end
 
+	if (storage.EntityProperties == nil) then
+		storage.EntityProperties = {}
+	end
+
 	-- Ultracube-specific globals
 	if script.active_mods["Ultracube"] then
 		-- Prototype data should be reset on config change just in case Ultracube has updated to add new types

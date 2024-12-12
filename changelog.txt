@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.8
+Date: 12/xx/2024
+  Additions:
+    - Holding an item in the cursor and pressing the new Throw button (default shift+F) will manually throw the item if the cursor is within your character's reach.
+    - Added a separate control for getting on/off a zipline so you can assign it a different key in control settings. Recommended by dhiva
+  Changes:
+    - Getting off a zipline now needs a valid spot to stand nearby (unless you're wearing mech armor). This prevents huge lag spikes from the infinite search range when you hit the dismount key by accident over a large ocean. Reported by dhiva
+    - Doubled the range for getting on a zipline
+  Bugfixes:
+    - Fixed the name of the simplified Chinese locale folder. Fix by PlexPt
+    - Fixed that editing a Zipline Terminal tag name from map view didn't change the actual name of the Zipline Terminal for routing and stuff
+---------------------------------------------------------------------------------------------------
 Version: 2.0.7
 Date: 12/3/2024
   Bugfixes:

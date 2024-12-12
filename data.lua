@@ -42,6 +42,8 @@ if (settings.startup["RTZiplineSetting"].value == true) then
 	require("prototypes.zipline")
 end
 
+--require("prototypes.TrainGoBrrrr.TrapdoorWagon")
+
 
 data:extend({
 {
@@ -49,16 +51,22 @@ data:extend({
 	name = "RTInteract",
 	key_sequence = "F"
 },
--- {
--- type = "custom-input",
--- name = "RTtcaretnI",
--- key_sequence = "SHIFT + F"
--- },
+{
+	type = "custom-input",
+	name = "RTThrow",
+	key_sequence = "SHIFT + F"
+},
+{
+	type = "custom-input",
+	name = "RTOnOffZipline",
+	key_sequence = "F"
+},
 {
 	type = "custom-input",
 	name = "RTClick",
 	key_sequence = "",
-	linked_game_control = "open-gui"
+	linked_game_control = "open-gui",
+	hidden = true
 },
 {
 	type = "sprite",
@@ -103,7 +111,9 @@ data:extend({
 	type = "custom-input",
 	name = "DebugAdvanceActionProcess",
 	key_sequence = "BACKSLASH",
-	enabled_while_in_cutscene = true
+	enabled_while_in_cutscene = true,
+	order = "zzz",
+	hidden = true
 },
 {
 	type = "virtual-signal",
@@ -230,7 +240,7 @@ data:extend({
 },
 })
 
-if (feature_flags["spoiling"]) then
+--[[ if (feature_flags["spoiling"]) then
 	data:extend({
 		{
 			type = "capsule",
@@ -281,4 +291,4 @@ if (feature_flags["spoiling"]) then
 			  }
 		}
 	})
-end
+end ]]

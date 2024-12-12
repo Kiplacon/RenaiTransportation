@@ -59,14 +59,15 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	end
 
 	--| Drop from ziplining
-	if (PlayerProperties.state == "zipline" and (player.selected == nil or player.selected.type ~= "electric-pole")) then
+	--[[ if (PlayerProperties.state == "zipline" and (player.selected == nil or player.selected.type ~= "electric-pole")) then
 		GetOffZipline(player, PlayerProperties)
 		--game.print("manually detached")
-	end
+	end ]]
 
 	--| Hovering something
 	if (ThingHovering) then
 		local DestroyNumber = script.register_on_object_destroyed(ThingHovering)
+		--game.print(DestroyNumber)
 		--|| Adjusting Thrower Range
 		if (ThingHovering.type == "inserter" and string.find(ThingHovering.name, "RTThrower-") and ThingHovering.name ~= "RTThrower-PrimerThrower" and storage.CatapultList[DestroyNumber].RangeAdjustable == true) then
 			local CurrentRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
@@ -379,7 +380,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				}
 			ThingHovering.destroy()
 		--|| Zipline
-		elseif (player.character
+		--[[ elseif (player.character
 		and player.character.driving == false
 		and (not string.find(player.character.name, "RTGhost"))
 		and (not string.find(player.character.name, "-jetpack"))
@@ -387,7 +388,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		and ThingHovering.type == "electric-pole"
 		and ElectricPoleBlackList[ThingHovering.name] == nil
 		and ThingHovering.get_wire_connector(defines.wire_connector_id.pole_copper, true).connection_count > 0) then
-			if (math.sqrt((player.position.x-ThingHovering.position.x)^2+(player.position.y-ThingHovering.position.y)^2) <= 3 ) then
+			if (math.sqrt((player.position.x-ThingHovering.position.x)^2+(player.position.y-ThingHovering.position.y)^2) <= 6 ) then
 				if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
 				and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineItem")
 				and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read)
@@ -404,7 +405,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			player.print({"zipline-stuff.range"})
 
 		elseif (player.character and player.character.driving == false and PlayerProperties.state == "default" and ThingHovering.type == "electric-pole" and #ThingHovering.neighbours == 0) then
-			player.print({"zipline-stuff.NotConnected"})
+			player.print({"zipline-stuff.NotConnected"}) ]]
 
 		end
 	end

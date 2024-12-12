@@ -5,9 +5,6 @@ local function entity_destroyed(event)
 				entity.destroy()
 			end
 		end
-		if (storage.HoverGFX[event.registration_number]) then
-			storage.HoverGFX[event.registration_number] = nil
-		end
 		storage.CatapultList[event.registration_number] = nil
 	end
 
@@ -56,6 +53,15 @@ local function entity_destroyed(event)
 				entity.destroy()
 			end
 		end
+	end
+
+	if (storage.EntityProperties[event.registration_number]) then
+		storage.EntityProperties[event.registration_number] = nil
+	end
+
+	if (storage.HoverGFX[event.registration_number]) then
+		storage.HoverGFX[event.registration_number] = nil
+		-- attached graphics should be destroyed with the entity
 	end
 end
 

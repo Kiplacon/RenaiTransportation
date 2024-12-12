@@ -273,10 +273,10 @@ function(event)
 									item=HeldItem,
 									amount=catapult.held_stack.count,
 									quality=catapult.held_stack.quality.name,
-									thrower=catapult,
+									--thrower=catapult, -- not used?
 									ThrowerPosition=catapult.position,
 									target={x=x, y=y},
-									start=start,
+									--start=start, --ThrowerPosition now
 									AirTime=AirTime,
 									StartTick=game.tick,
 									LandTick=game.tick+AirTime,
@@ -409,6 +409,50 @@ script.on_event(
 	require("script.event.interact")
 )
 
+-- Zipline mount/dismount
+script.on_event(
+	"RTOnOffZipline",
+	require("script.event.GetOnOrOffZipline")
+)
+
+-- throw
+script.on_event(
+	"RTThrow",
+function(event1)
+	local player = game.get_player(event1.player_index)
+	local CursorPosition = event1.cursor_position
+	if (player
+	and player.character
+	and player.character.surface.name == player.surface.name
+	and player.cursor_stack
+	and player.cursor_stack.valid_for_read == true) then
+		if (DistanceBetween(player.character.position, CursorPosition) <= player.character.reach_distance) then
+			local stack
+			if (player.cursor_stack.item_number ~= nil) then
+				stack = player.cursor_stack
+			end
+			CreateThrownItem(player.character, CursorPosition, player.cursor_stack.name, 1, player.cursor_stack.quality.name, player.surface, {0,-1}, stack, true)
+			player.cursor_stack.count = player.cursor_stack.count-1
+			player.surface.play_sound
+				{
+					path = "RTThrow",
+					position = player.position,
+					--volume_modifier = 0.1
+				}
+		else
+			rendering.draw_circle{
+				color = {217, 145, 21},
+				radius = player.character.reach_distance,
+				target = player.character,
+				surface = player.character.surface,
+				players = {player},
+				time_to_live = 60
+			}
+		end
+	end
+end
+)
+
 -- On Click
 script.on_event(
 	"RTClick",
@@ -422,8 +466,8 @@ script.on_event(
 
 
 script.on_event(defines.events.on_player_changed_surface,
--- .player_index :: uint: The player who changed surfaces
--- .surface_index :: uint: The surface index the player was on
+-- .player_indent: Ter who changed surfaces
+-- .surface_index :: uint: Te surace index the player was on
 function(event)
 local player = game.players[event.player_index]
 local PlayerProperties = storage.AllPlayers[event.player_index]
@@ -653,6 +697,16 @@ function(event)
 			director.get_or_create_control_behavior().get_section(section).set_slot(slot, {value={name=element.elem_value}})
 		else
 			director.get_or_create_control_behavior().get_section(section).clear_slot(slot)
+		end
+	end
+end)
+
+script.on_event(
+defines.events.on_chart_tag_modified,
+function(event)
+	for OnDestroyNumber, properties in pairs(storage.ZiplineTerminals) do
+		if (properties.tag and properties.tag.valid and properties.tag.tag_number == event.tag.tag_number) then
+			properties.name = event.tag.text
 		end
 	end
 end)

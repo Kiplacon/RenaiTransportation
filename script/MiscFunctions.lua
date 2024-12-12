@@ -294,7 +294,11 @@ function copy(object)
 end
 
 function DistanceBetween(p1, p2)
-   return math.sqrt((p1.x-p2.x)^2+(p1.y-p2.y)^2)
+   local p1x = p1.x or p1[1]
+   local p1y = p1.y or p1[2]
+   local p2x = p2.x or p2[1]
+   local p2y = p2.y or p2[2]
+   return math.sqrt((p1x-p2x)^2+(p1y-p2y)^2)
 end
 
 function GetOnZipline(player, PlayerProperties, pole)
@@ -431,7 +435,13 @@ function GetOffZipline(player, PlayerProperties)
    ZiplineStuff.LetMeGuideYou.destroy()
    ZiplineStuff.ChuggaChugga.destroy()
    ZiplineStuff.succ.destroy()
-   player.teleport(player.surface.find_non_colliding_position("character", {player.position.x, player.position.y+2}, 0, 0.01))
+   if (player.character.get_inventory(defines.inventory.character_armor)
+   and player.character.get_inventory(defines.inventory.character_armor).is_full()
+   and player.character.get_inventory(defines.inventory.character_armor)[1].prototype.provides_flight == true) then
+      -- don't drop
+   else
+      player.teleport(player.surface.find_non_colliding_position("character", {player.position.x, player.position.y+2}, 11, 0.01))
+   end
    PlayerProperties.zipline = {}
    PlayerProperties.state = "default"
    --player.character.character_running_speed_modifier = PlayerProperties.OGSpeed
@@ -443,5 +453,82 @@ function OffsetPosition(p1, p2)
    local p1y = p1.y or p1[2]
    local p2x = p2.x or p2[1]
    local p2y = p2.y or p2[2]
-   return {p1x+p2x, p1y+p2y}
+   return {x=p1x+p2x, y=p1y+p2y}
+end
+
+function CreateThrownItem(source, target, item, amount, quality, surface, StartOffset, stack, ManualThrow)
+   if (type(source) == "userdata") then
+      source = source.position
+   end
+   if (StartOffset == nil) then
+      StartOffset = {0,0}
+   end
+   local TargetX = target.x
+   local TargetY = target.y
+   local distance = math.sqrt((TargetX-source.x)^2 + (TargetY-source.y)^2)
+   local speed = 0.18
+   local AirTime = math.max(1, math.floor(distance/speed))
+   storage.FlyingItems[storage.FlightNumber] =
+   {
+      item=item,
+      amount=amount,
+      quality=quality or "normal",
+      ThrowerPosition=source, -- for bounce pad redirecting
+      target={x=TargetX, y=TargetY},
+      AirTime=AirTime,
+      StartTick=game.tick,
+      LandTick=game.tick+AirTime,
+      --destination=DestinationDestroyNumber, -- for overflow prevention
+      space=false,
+      surface=surface, -- to search for things by the landing zone
+   }
+   local FlyingItem = storage.FlyingItems[storage.FlightNumber]
+   storage.FlightNumber = storage.FlightNumber + 1
+   surface.create_entity
+      {
+         name="RTItemProjectile-"..item..speed*100,
+         position=source,
+         source_position=OffsetPosition(source, StartOffset),
+         target_position={TargetX, TargetY}
+      }
+   if (stack ~= nil) then
+      local CloudStorage = game.create_inventory(1)
+      CloudStorage.insert(stack)
+      if (ManualThrow ~= false) then
+         CloudStorage[1].count = 1
+      end
+      FlyingItem.CloudStorage = CloudStorage
+   end
+   -- Ultracube irreplaceables detection & handling
+   if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[item] then -- Ultracube mod is active, and the held item is an irreplaceable
+      -- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
+      CubeFlyingItems.create_token_for(storage.FlyingItems[storage.FlightNumber])
+   end
+end
+
+function EntityProperties(thing)
+   local ID
+   if (type(thing) == "userdata" and thing.object_name) then
+      ID = script.register_on_object_destroyed(thing)
+   elseif (type(thing) == "number") then
+      ID = thing
+      return storage.EntityProperties[ID]
+   end
+   if (ID ~= nil
+   and storage.EntityProperties[ID] == nil
+   ) then -- nil if there is no entry (includes if it was destroyed)
+      storage.EntityProperties[ID] =
+      {
+         entity=thing,
+         name=thing.name,
+         ForceName=thing.force.name,
+         SurfaceName=thing.surface.name,
+         position=thing.position,
+         OnDestroyNumber=script.register_on_object_destroyed(thing),
+         OnDestroyEffects=
+         {
+         }
+      }
+   end
+   return storage.EntityProperties[ID]
 end

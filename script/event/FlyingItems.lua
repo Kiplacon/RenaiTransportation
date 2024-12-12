@@ -83,20 +83,20 @@ local function on_tick(event)
                   end
                   ::kkkkkk::
                   if (unitx == 1 and unity == 1) then -- if there is no matching signal
-                     if (FlyingItem.start.y > FlyingItem.target.y
-                     and math.abs(FlyingItem.start.y-FlyingItem.target.y) > math.abs(FlyingItem.start.x-FlyingItem.target.x)) then
+                     if (FlyingItem.ThrowerPosition.y > FlyingItem.target.y
+                     and math.abs(FlyingItem.ThrowerPosition.y-FlyingItem.target.y) > math.abs(FlyingItem.ThrowerPosition.x-FlyingItem.target.x)) then
                         unitx = 0
                         unity = -1
-                     elseif (FlyingItem.start.y < FlyingItem.target.y
-                     and math.abs(FlyingItem.start.y-FlyingItem.target.y) > math.abs(FlyingItem.start.x-FlyingItem.target.x)) then
+                     elseif (FlyingItem.ThrowerPosition.y < FlyingItem.target.y
+                     and math.abs(FlyingItem.ThrowerPosition.y-FlyingItem.target.y) > math.abs(FlyingItem.ThrowerPosition.x-FlyingItem.target.x)) then
                         unitx = 0
                         unity = 1
-                     elseif (FlyingItem.start.x > FlyingItem.target.x
-                     and math.abs(FlyingItem.start.y-FlyingItem.target.y) < math.abs(FlyingItem.start.x-FlyingItem.target.x)) then
+                     elseif (FlyingItem.ThrowerPosition.x > FlyingItem.target.x
+                     and math.abs(FlyingItem.ThrowerPosition.y-FlyingItem.target.y) < math.abs(FlyingItem.ThrowerPosition.x-FlyingItem.target.x)) then
                         unitx = -1
                         unity = 0
-                     elseif (FlyingItem.start.x < FlyingItem.target.x
-                     and math.abs(FlyingItem.start.y-FlyingItem.target.y) < math.abs(FlyingItem.start.x-FlyingItem.target.x)) then
+                     elseif (FlyingItem.ThrowerPosition.x < FlyingItem.target.x
+                     and math.abs(FlyingItem.ThrowerPosition.y-FlyingItem.target.y) < math.abs(FlyingItem.ThrowerPosition.x-FlyingItem.target.x)) then
                         unitx = 1
                         unity = 0
                      end
@@ -182,7 +182,7 @@ local function on_tick(event)
                      end
                      local AirTime = math.floor(distance/FlyingItem.speed)
                      FlyingItem.target={x=TargetX, y=TargetY}
-                     FlyingItem.start=ThingLandedOn.position
+                     --FlyingItem.start=ThingLandedOn.position
                      FlyingItem.ThrowerPosition=ThingLandedOn.position
                      FlyingItem.StartTick=game.tick
                      FlyingItem.AirTime=AirTime
@@ -249,7 +249,7 @@ local function on_tick(event)
                      local	x = ThingLandedOn.position.x  +unitx*(range+RangeBonus)  +unity*(SidewaysShift)
                      local y = ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)
                      FlyingItem.target={x=x, y=y}
-                     FlyingItem.start=ThingLandedOn.position
+                     --FlyingItem.start=ThingLandedOn.position
                      FlyingItem.StartTick=game.tick
                      FlyingItem.AirTime=1
                      FlyingItem.LandTick=game.tick+1
@@ -337,6 +337,18 @@ local function on_tick(event)
                                  end
                               end
                            end
+                        else
+                           local spilt = FlyingItem.surface.spill_item_stack
+                              {
+                                 position = FlyingItem.surface.find_non_colliding_position("item-on-ground", FlyingItem.target, 500, 0.1),
+                                 stack = FlyingItem.CloudStorage[1]
+                              }
+                           if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
+                              for every, thing in pairs(spilt) do
+                                 thing.order_deconstruction("player")
+                              end
+                           end
+                           FlyingItem.CloudStorage.destroy()
                         end
                         FlyingItem.CloudStorage.destroy()
                      else -- depreciated drop method from old item tracking system
@@ -482,7 +494,7 @@ local function on_tick(event)
                   end
                else
                   if (FlyingItem.item == "raw-fish") then
-                     for i = 1, math.floor(FlyingItem.amount/5) do
+                     for i = 1, math.floor(FlyingItem.amount/prototypes.entity.fish.mineable_properties.products[1].amount) do
                         ProjectileSurface.create_entity
                         {
                            name = "fish",

@@ -101,6 +101,10 @@ ClickableStuff = {
 		storage.ZiplineTerminals[event.element.parent.parent.tags.ID].name = TerminalName
       if (storage.ZiplineTerminals[event.element.parent.parent.tags.ID].tag.valid) then
          storage.ZiplineTerminals[event.element.parent.parent.tags.ID].tag.text = TerminalName
+      else
+         local entity = storage.ZiplineTerminals[event.element.parent.parent.tags.ID].entity
+         local tag = entity.force.add_chart_tag(entity.surface, {position=entity.position, text=storage.ZiplineTerminals[event.element.parent.parent.tags.ID].name, icon={type="item", name="RTZiplineTerminalItem"}})
+		   storage.ZiplineTerminals[event.element.parent.parent.tags.ID].tag = tag
       end
 		event.element.parent.TerminalName.destroy()
 		event.element.destroy()

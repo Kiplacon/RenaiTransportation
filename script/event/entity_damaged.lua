@@ -665,11 +665,14 @@ local function entity_damaged(event)
 				end
 				event.cause.train.schedule = stor
 			end
---[[ 			event.cause.health = event.cause.health - (event.cause.prototype.max_health/10)
-			if (event.cause.health <= 0) then
-				event.cause.die()
-			end ]]
 		end
+
+	--[[ elseif (event.entity.type == "character"
+	and event.cause
+	and (event.cause.type == "locomotive" or event.cause.type == "cargo-wagon" or event.cause.type == "fluid-wagon" or event.cause.type == "artillery-wagon")
+	) then
+		CreateThrownItem(event.entity, event.entity.player, "wood", nil, event.entity.surface, {0,-1}) ]]
+
 	end
 end
 

@@ -227,6 +227,10 @@ local function entity_built(event)
 		storage.ZiplineTerminals[OnDestroyNumber] = {entity=entity, name=game.backer_names[math.random(1, #game.backer_names)]}
 		local tag = entity.force.add_chart_tag(entity.surface, {position=entity.position, text=storage.ZiplineTerminals[OnDestroyNumber].name, icon={type="item", name="RTZiplineTerminalItem"}})
 		storage.ZiplineTerminals[OnDestroyNumber].tag = tag
+
+	elseif (entity.name == "RTTrapdoorTrigger") then
+		local properties = EntityProperties(entity)
+		properties.BuiltTick = game.tick
 	end
 end
 
