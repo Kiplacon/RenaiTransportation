@@ -25,10 +25,10 @@ local function entity_destroyed(event)
 	end
 
 	if (storage.ThrowerPaths[event.registration_number] ~= nil) then
-		for ThrowerUN, TrackedItems in pairs(storage.ThrowerPaths[event.registration_number]) do
-			if (storage.CatapultList[ThrowerUN]) then
+		for ThrowerDestroyNumber, TrackedItems in pairs(storage.ThrowerPaths[event.registration_number]) do
+			if (storage.CatapultList[ThrowerDestroyNumber]) then
 				for item, ligma in pairs(TrackedItems) do
-					storage.CatapultList[ThrowerUN].targets[item] = nil
+					storage.CatapultList[ThrowerDestroyNumber].targets[item] = nil
 				end
 			end
 		end

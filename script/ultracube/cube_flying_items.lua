@@ -8,8 +8,8 @@ function cube_flying_items.create_token_for(FlyingItem, velocity)
 		FlyingItem.AirTime+1, -- Timeout before Ultracube forces recovery. AirTime+1 as that's the exact tick where if there hasn't been an update call something must have gone wrong
 		{
 			surface = FlyingItem.surface,
-			position = FlyingItem.start, -- Render position (what the camera follows and where explosions are emitted)
-			spill_position = FlyingItem.start,
+			position = FlyingItem.ThrowerPosition, -- Render position (what the camera follows and where explosions are emitted)
+			spill_position = FlyingItem.ThrowerPosition,
 			velocity = velocity -- Vector for altering the explosion animation
 		}
 	)
@@ -36,8 +36,8 @@ function cube_flying_items.item_with_stream_update(FlyingItem)
 	-- Vector from start position to end position scaled by delta to get vector for distance traveled, and then added to start position to get a rough 'ground' position
 	-- As far as I can tell figuring out the position of the particle in the stream entity would require calculating the physics for it from scratch, so this is probably the best we can get.
 	local position = {
-		x = delta * (FlyingItem.target.x - FlyingItem.start.x) + FlyingItem.start.x,
-		y = delta * (FlyingItem.target.y - FlyingItem.start.y) + FlyingItem.start.y
+		x = delta * (FlyingItem.target.x - FlyingItem.ThrowerPosition.x) + FlyingItem.ThrowerPosition.x,
+		y = delta * (FlyingItem.target.y - FlyingItem.ThrowerPosition.y) + FlyingItem.ThrowerPosition.y
 	}
 	remote.call("Ultracube", "update_ownership_token",
 		FlyingItem.cube_token_id,
@@ -55,8 +55,8 @@ function cube_flying_items.bounce_update(FlyingItem)
 		FlyingItem.AirTime+1, -- Bounce will increase total air time so update the timeout to add the new air time
 		{
 			surface = FlyingItem.surface,
-			position = FlyingItem.start, -- Render position
-			spill_position = FlyingItem.start -- Spill position on forced recovery
+			position = FlyingItem.ThrowerPosition, -- Render position
+			spill_position = FlyingItem.ThrowerPosition -- Spill position on forced recovery
 			-- TODO: Velocity parameter?
 		}
 	)
@@ -105,7 +105,7 @@ function cube_flying_items.panic(FlyingItem)
 		0, -- Force a timeout immediately after this update
 		{
 			surface = FlyingItem.surface,
-			spill_position = FlyingItem.start, -- Return to the position the FlyingItem was presumable thrown from
+			spill_position = FlyingItem.ThrowerPosition, -- Return to the position the FlyingItem was presumable thrown from
 		}
 	)
 end

@@ -45,7 +45,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				IAmSpeed=player.character.character_running_speed_modifier,
 				SwapBack=OG,
 				target={x=x, y=y},
-				start=player.position,
+				ThrowerPosition=player.position,
 				AirTime=AirTime,
 				StartTick=game.tick,
 				LandTick=game.tick+AirTime,

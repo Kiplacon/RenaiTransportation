@@ -250,6 +250,7 @@ local function on_tick(event)
                      local y = ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)
                      FlyingItem.target={x=x, y=y}
                      --FlyingItem.start=ThingLandedOn.position
+                     FlyingItem.ThrowerPosition=ThingLandedOn.position -- for redirecting
                      FlyingItem.StartTick=game.tick
                      FlyingItem.AirTime=1
                      FlyingItem.LandTick=game.tick+1
@@ -552,7 +553,6 @@ local function on_tick(event)
 
          -- tracer
          elseif (FlyingItem.tracing ~= nil and storage.CatapultList[FlyingItem.tracing]) then
-            --game.print(FlyingItem.tracing)
             storage.CatapultList[FlyingItem.tracing].ImAlreadyTracer = "traced"
             storage.CatapultList[FlyingItem.tracing].targets[FlyingItem.item] = "nothing"
 

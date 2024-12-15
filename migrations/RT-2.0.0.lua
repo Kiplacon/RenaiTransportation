@@ -1,30 +1,28 @@
-local trainHandler = require("__RenaiTransportation__/script/trains/entity_built")
-
-local function entity_built(event)
-	local entity = event.created_entity or event.entity or event.destination
-
-	local player = nil
-
-	if event.player_index then
-		player = game.players[event.player_index]
-		if (storage.AllPlayers[event.player_index].RangeAdjusting == true
-		and entity.name == "entity-ghost"
-		and string.find(entity.ghost_prototype.name, "RTThrower-")
-		and player.get_main_inventory().find_item_stack(entity.ghost_prototype.name.."-Item")
-		) then
-			player.get_main_inventory().remove({name=entity.ghost_prototype.name.."-Item", count=1})
-			entity.revive({raise_revive = true})
-			return
+if (storage.CatapultList) then
+	-- record all throwers then clear the list
+	local throwers = {}
+	for ID, stuff in pairs(storage.CatapultList) do
+		if (stuff.entity and stuff.entity.valid) then
+			table.insert(throwers, stuff.entity)
 		end
-	elseif event.robot then
-		player = event.robot.last_user
+		if (stuff.sprite) then
+			if (type(stuff.sprite) == "number" and rendering.get_object_by_id(stuff.sprite) ~= nil) then
+				rendering.get_object_by_id(stuff.sprite).destroy()
+			else
+				stuff.sprite.destroy()
+			end
+		end
+		if (stuff.entangled) then
+			for each, entity in pairs(stuff.entangled) do
+				entity.destructible = true
+				entity.destroy{}
+			end
+		end
 	end
-
-	if trainHandler(entity, player) then
-		return
-	end
-
-	if (entity.type == "inserter" and string.find(entity.name, "RTThrower-")) then
+	storage.CatapultList = {}
+	storage.PrimerThrowerLinks = {}
+	-- rebuild the list
+	for each, entity in pairs(throwers) do
 		local OnDestroyNumber = script.register_on_object_destroyed(entity)
 		storage.CatapultList[OnDestroyNumber] = {entity=entity, targets={}, BurnerSelfRefuelCompensation=0.2, IsElectric=false, InSpace=false, RangeAdjustable=false}
 		local properties = storage.CatapultList[OnDestroyNumber]
@@ -67,7 +65,6 @@ local function entity_built(event)
 					only_in_alt_mode = false
 				}
 		elseif (entity.name == "RTThrower-PrimerThrower") then
-			
 			entity.inserter_stack_size_override = 1
 			local sherlock = entity.surface.create_entity
 			{
@@ -83,15 +80,39 @@ local function entity_built(event)
 			local OnDestroyNumber2 = script.register_on_object_destroyed(sherlock)
 			storage.PrimerThrowerLinks[OnDestroyNumber2] = {thrower = entity, ready = false}--, box = box}
 		end
+	end
+end
 
-	elseif (entity.name == "PlayerLauncher") then
-		entity.operable = false
-		entity.active = false
+if (storage.HoverGFX) then
+	storage.HoverGFX = {}
+end
 
-	elseif (string.find(entity.name, "BouncePlate") and not string.find(entity.name, "Train")) then
+if (storage.BouncePadList) then
+	-- record all bounce pads then clear the list
+	local pads = {}
+	for ID, stuff in pairs(storage.BouncePadList) do
+		if (stuff.TheEntity and stuff.TheEntity.valid) then
+			table.insert(pads, stuff.TheEntity)
+		end
+		if (stuff.entity and stuff.entity.valid) then
+			table.insert(pads, stuff.entity)
+		end
+		if (stuff.arrow) then
+			if (type(stuff.arrow) == "number" and rendering.get_object_by_id(stuff.arrow) ~= nil) then
+				rendering.get_object_by_id(stuff.arrow).destroy()
+			else
+				stuff.arrow.destroy()
+			end
+		end
+	end
+	storage.BouncePadList = {}
+
+	for each, entity in pairs(pads) do
+		entity.rotatable = true
+		entity.operable = true
 		storage.BouncePadList[script.register_on_object_destroyed(entity)] = {entity = entity}
 		local PouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(entity)]
-		ShowRange = settings.global["RTShowRange"].value
+		local ShowRange = settings.global["RTShowRange"].value
 		if (entity.name == "DirectedBouncePlate"
 		or entity.name == "DirectedBouncePlate5"
 		or entity.name == "DirectedBouncePlate15") then
@@ -156,32 +177,6 @@ local function entity_built(event)
 					tint = {r = 0.4, g = 0.4, b = 0.4, a = 0},
 					visible = ShowRange
 				}
-			-- link trackers with director plates on build or blueprint build
-			if (entity.name == "DirectorBouncePlate") then
-				entity.get_or_create_control_behavior().add_section()
-				entity.get_or_create_control_behavior().add_section()
-				entity.get_or_create_control_behavior().add_section()
-				--[[ for i = 1, 10 do
-					if (entity.get_or_create_control_behavior().get_section(1).get_slot(i).value == nil)then
-						entity.get_or_create_control_behavior().get_section(1).set_slot(i, {value={type="virtual", name="DirectorBouncePlateUp"}})
-					end
-				end
-				for i = 11, 20 do
-					if (entity.get_or_create_control_behavior().get_section(1).get_slot(i).value == nil)then
-						entity.get_or_create_control_behavior().get_section(1).set_slot(i, {value={type="virtual", name="DirectorBouncePlateRight"}, count=0})
-					end
-				end
-				for i = 21, 30 do
-					if (entity.get_or_create_control_behavior().get_section(1).get_slot(i).value == nil)then
-						entity.get_or_create_control_behavior().get_section(1).set_slot(i, {value={type="virtual", name="DirectorBouncePlateDown"}, count=0})
-					end
-				end
-				for i = 31, 40 do
-					if (entity.get_or_create_control_behavior().get_section(1).get_slot(i).value == nil)then
-						entity.get_or_create_control_behavior().get_section(1).set_slot(i, {value={type="virtual", name="DirectorBouncePlateLeft"}, count=0})
-					end
-				end ]]
-			end
 
 		elseif (entity.name == "PrimerBouncePlate") then
 			PouncePadProperties.arrow = rendering.draw_sprite
@@ -208,30 +203,57 @@ local function entity_built(event)
 					visible = ShowRange
 				}
 		end
-	------- make train ramp stuff unrotatable just in case
-	elseif (entity.name == "RTTrainRamp" or entity.name == "RTTrainRampNoSkip" or entity.name == "RTMagnetTrainRamp" or entity.name == "RTMagnetTrainRampNoSkip") then
-		entity.rotatable = false
-
-	elseif (string.find(entity.name, "RTPrimerThrowerShooter-")) then
-		local time = 2
-		if (storage.clock[game.tick+time] == nil) then
-			storage.clock[game.tick+time] = {}
-		end
-		if (storage.clock[game.tick+time].destroy == nil) then
-			storage.clock[game.tick+time].destroy = {}
-		end
-		storage.clock[game.tick+time].destroy[entity.unit_number] = entity
-
-	elseif (entity.name == "RTZiplineTerminal") then
-		local OnDestroyNumber = script.register_on_object_destroyed(entity)
-		storage.ZiplineTerminals[OnDestroyNumber] = {entity=entity, name=game.backer_names[math.random(1, #game.backer_names)]}
-		local tag = entity.force.add_chart_tag(entity.surface, {position=entity.position, text=storage.ZiplineTerminals[OnDestroyNumber].name, icon={type="item", name="RTZiplineTerminalItem"}})
-		storage.ZiplineTerminals[OnDestroyNumber].tag = tag
-
-	elseif (entity.name == "RTTrapdoorTrigger") then
-		local properties = EntityProperties(entity)
-		properties.BuiltTick = game.tick
 	end
 end
 
-return entity_built
+if (storage.ThrowerPaths) then
+	storage.ThrowerPaths = {}
+end
+
+if (storage.OnTheWay) then
+	storage.OnTheWay = {}
+end
+
+if (storage.FlyingItems) then
+	for each, FlyingItem in pairs(storage.FlyingItems) do
+		if (FlyingItem.sprite) then -- from impact unloader/space throw
+			if (type(FlyingItem.sprite) == "number" and rendering.get_object_by_id(FlyingItem.sprite) ~= nil) then
+				rendering.get_object_by_id(FlyingItem.sprite).destroy()
+			else
+				FlyingItem.sprite.destroy()
+			end
+		end
+		if (FlyingItem.shadow) then -- from impact unloader/space throw
+			if (type(FlyingItem.shadow) == "number" and rendering.get_object_by_id(FlyingItem.shadow) ~= nil) then
+				rendering.get_object_by_id(FlyingItem.shadow).destroy()
+			else
+				FlyingItem.shadow.destroy()
+			end
+		end
+	end
+	storage.FlyingItems = {}
+end
+
+if (storage.ZiplineTerminals) then
+	-- record all bounce pads then clear the list
+	local terminals = {}
+	for ID, stuff in pairs(storage.ZiplineTerminals) do
+		if (stuff.entity and stuff.entity.valid) then
+			terminals[script.register_on_object_destroyed(stuff.entity)] = storage.ZiplineTerminals[ID]
+		end
+	end
+	storage.ZiplineTerminals = {}
+	storage.ZiplineTerminals = terminals
+end
+
+if (storage.MagnetRamps) then
+	-- record all bounce pads then clear the list
+	local ramps = {}
+	for ID, stuff in pairs(storage.MagnetRamps) do
+		if (stuff.entity and stuff.entity.valid) then
+			ramps[script.register_on_object_destroyed(stuff.entity)] = storage.MagnetRamps[ID]
+		end
+	end
+	storage.MagnetRamps = {}
+	storage.MagnetRamps = ramps
+end

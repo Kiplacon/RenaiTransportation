@@ -56,7 +56,7 @@ end)
 script.on_nth_tick(300,
 function(event)
 	for unitID, ItsStuff in pairs(storage.BouncePadList) do
-		if (ItsStuff.TheEntity and ItsStuff.TheEntity.valid) then
+		if (ItsStuff.entity and ItsStuff.entity.valid) then
 			-- it's good
 		else
 			storage.BouncePadList[unitID] = nil
@@ -181,14 +181,14 @@ function(event)
 								local AirTime = 1
 								storage.FlyingItems[storage.FlightNumber] =
 									{
-									item=HeldItem, --not like it matters
+									item=HeldItem, --this matters for tracing paths through director bounce pads
 									amount=0, --not like it matters
 									target=
 									{
 										x=properties.entity.drop_position.x, 
 										y=properties.entity.drop_position.y
 									},
-									start=properties.entity.position,
+									ThrowerPosition=properties.entity.position,
 									AirTime=AirTime,
 									StartTick=event.tick,
 									LandTick=event.tick+AirTime,
@@ -206,6 +206,7 @@ function(event)
 						and storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])] == nil) then
 							storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])] = {}
 							storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])][HeldItem] = 0
+							catapult.active = false
 
 						-- first time throws for this particular item to this target
 						elseif (properties.targets[HeldItem]
@@ -213,6 +214,7 @@ function(event)
 						and storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])]
 						and storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])][HeldItem] == nil) then
 							storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])][HeldItem] = 0
+							catapult.active = false
 						end
 					-- overflow prevention is set to off
 					else
@@ -231,11 +233,11 @@ function(event)
 							local y = catapult.drop_position.y
 							local distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
 							-- calcaulte projectile parameters
-							local start=catapult.held_stack_position
+							local ShootPosition=catapult.held_stack_position
 							local speed = 0.18
 							if (catapult.name == "RTThrower-EjectorHatchRT" or catapult.name == "RTThrower-FilterEjectorHatchRT") then
 								distance = math.sqrt((x-catapult.position.x)^2 + (y-catapult.position.y)^2)
-								start=catapult.position
+								ShootPosition=catapult.position
 								speed = 0.25
 								--[[ catapult.surface.play_sound
 								{
@@ -290,7 +292,7 @@ function(event)
 									{
 										name="RTItemProjectile-"..HeldItem..speed*100,
 										position=catapult.held_stack_position,
-										source_position=start,
+										source_position=ShootPosition,
 										target_position=catapult.drop_position
 									}
 								else
@@ -298,7 +300,7 @@ function(event)
 									{
 										name="RTTestProjectile"..speed*100,
 										position=catapult.held_stack_position,
-										source_position=start,
+										source_position=ShootPosition,
 										target_position=catapult.drop_position
 									}
 								end
@@ -413,6 +415,18 @@ script.on_event(
 script.on_event(
 	"RTOnOffZipline",
 	require("script.event.GetOnOrOffZipline")
+)
+
+-- Zipline brakes
+script.on_event(
+	"RTZiplineBrake",
+	function (event) -- has .name = event ID number, .tick = tick number, .player_index, and .input_name = custom input name
+		local PlayerProperties = storage.AllPlayers[event.player_index]
+
+		if (PlayerProperties.state == "zipline" and PlayerProperties.zipline and PlayerProperties.zipline.path == nil) then
+			PlayerProperties.zipline.LetMeGuideYou.speed = 0
+		end
+	end
 )
 
 -- throw
@@ -690,7 +704,7 @@ defines.events.on_gui_elem_changed,
 function(event)
 	local element = event.element
 	if (element.parent and element.parent.parent and element.parent.parent.name == "RTDirectorPadGUI") then
-		local director = storage.BouncePadList[element.parent.parent.tags.ID].TheEntity
+		local director = storage.BouncePadList[element.parent.parent.tags.ID].entity
 		local section = element.tags.section
 		local slot = element.tags.slot
 		if (element.elem_value) then

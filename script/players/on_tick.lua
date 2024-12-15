@@ -11,7 +11,7 @@ local function on_tick(event)
 			local height = (duration/(FlyingItem.arc*FlyingItem.AirTime))-(duration^2/(FlyingItem.arc*FlyingItem.AirTime^2))
 			player.character.teleport -- predefined bounce "animation"
 				(
-					{FlyingItem.start.x+(progress*FlyingItem.vector.x), FlyingItem.start.y+(progress*FlyingItem.vector.y)+height}
+					{FlyingItem.ThrowerPosition.x+(progress*FlyingItem.vector.x), FlyingItem.ThrowerPosition.y+(progress*FlyingItem.vector.y)+height}
 				)
 			if (PlayerProperties.PlayerLauncher.direction == "right") then
 				player.character.walking_state = {walking = true, direction = defines.direction.east}

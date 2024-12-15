@@ -46,10 +46,10 @@ local function rotate(event)
 	end
 
 	if (storage.ThrowerPaths[EntityDestroyNumber] ~= nil) then -- if the rotated thing is part of a throw path
-		for ThrowerUN, TrackedItems in pairs(storage.ThrowerPaths[EntityDestroyNumber]) do -- go through all the throwers/item pairs this thing was a part of
-			if (storage.CatapultList[ThrowerUN]) then -- valid check
+		for ThrowerDestroyNumber, TrackedItems in pairs(storage.ThrowerPaths[EntityDestroyNumber]) do -- go through all the throwers/item pairs this thing was a part of
+			if (storage.CatapultList[ThrowerDestroyNumber]) then -- valid check
 				for item, sugma in pairs(TrackedItems) do
-					storage.CatapultList[ThrowerUN].targets[item] = nil -- reset the thrower/item pair
+					storage.CatapultList[ThrowerDestroyNumber].targets[item] = nil -- reset the thrower/item pair
 				end
 			end
 		end

@@ -63,6 +63,11 @@ data:extend({
 },
 {
 	type = "custom-input",
+	name = "RTZiplineBrake",
+	key_sequence = "LSHIFT"
+},
+{
+	type = "custom-input",
 	name = "RTClick",
 	key_sequence = "",
 	linked_game_control = "open-gui",
@@ -240,7 +245,7 @@ data:extend({
 },
 })
 
---[[ if (feature_flags["spoiling"]) then
+if (feature_flags["spoiling"]) then
 	data:extend({
 		{
 			type = "capsule",
@@ -291,4 +296,4 @@ data:extend({
 			  }
 		}
 	})
-end ]]
+end

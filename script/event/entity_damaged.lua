@@ -493,7 +493,7 @@ local function entity_damaged(event)
 								local speed = math.abs(wagon.speed) * (distance/(35*math.abs(wagon.speed))) * math.random(45,100)*0.01
 								local arc = -(0.3236*distance^-0.404) -- lower number is higher arc
 								local space = false
-								if (string.find(wagon.surface.name, " Orbit") or string.find(wagon.surface.name, " Field") or string.find(wagon.surface.name, " Belt")) then
+								if (wagon.surface.platform or string.find(wagon.surface.name, " Orbit") or string.find(wagon.surface.name, " Field") or string.find(wagon.surface.name, " Belt")) then
 									arc = -99999999999999
 									x = x + (xUnit*wagon.speed * 200)
 									y = y + (yUnit*wagon.speed * 200)
@@ -528,7 +528,7 @@ local function entity_damaged(event)
 										amount=GroupSize,
 										quality=ItemQuality,
 										target={x=x, y=y},
-										start={x=wagon.position.x+random1, y=wagon.position.y+random2},
+										ThrowerPosition={x=wagon.position.x+random1, y=wagon.position.y+random2},
 										AirTime=AirTime,
 										StartTick=game.tick,
 										LandTick=game.tick+AirTime,
@@ -582,7 +582,7 @@ local function entity_damaged(event)
 								local speed = math.abs(wagon.speed) * (distance/(35*math.abs(wagon.speed))) * math.random(45,100)*0.01
 								local arc = -(0.3236*distance^-0.404) -- lower number is higher arc
 								local space = false
-								if (string.find(wagon.surface.name, " Orbit") or string.find(wagon.surface.name, " Field") or string.find(wagon.surface.name, " Belt")) then
+								if (wagon.surface.platform or string.find(wagon.surface.name, " Orbit") or string.find(wagon.surface.name, " Field") or string.find(wagon.surface.name, " Belt")) then
 									arc = -99999999999999
 									x = x + (xUnit*wagon.speed * 200)
 									y = y + (yUnit*wagon.speed * 200)
@@ -617,7 +617,7 @@ local function entity_damaged(event)
 										amount=LaunchedAmount-(math.floor(LaunchedAmount/GroupSize)*GroupSize),
 										quality=ItemQuality,
 										target={x=x, y=y},
-										start={x=wagon.position.x+random1, y=wagon.position.y+random2},
+										ThrowerPosition={x=wagon.position.x+random1, y=wagon.position.y+random2},
 										AirTime=AirTime,
 										StartTick=game.tick,
 										LandTick=game.tick+AirTime,
