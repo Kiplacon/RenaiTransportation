@@ -5,7 +5,7 @@ function ultracube_globals.setup_prototypes()
 		cube = remote.call("Ultracube", "cube_item_prototypes"),
 		irreplaceable = remote.call("Ultracube", "irreplaceable_item_prototypes")
 	}}
-	log("Ultracube init/config_changed set the following data: ".. game.table_to_json(storage.Ultracube))
+	log("Ultracube init/config_changed set the following data: ".. helpers.table_to_json(storage.Ultracube))
 end
 
 return ultracube_globals
