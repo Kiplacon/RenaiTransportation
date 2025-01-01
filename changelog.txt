@@ -1,11 +1,12 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.9
-Date: 12/31/2024
+Date: 1/1/2025
   Changes:
     - Zipline crank controller can now propel the zipline even if the electric pole it's attached to is out of power. Recommended by dhiva
     - Braking on the zipline now slows you to a stop gradually (still pretty quick though) instead of stopping you instantly
   Bugfixes:
     - Zipline max speed now correctly correlates to how powered the zipline is instead of always allowing max speed with even the smallest crumb of electricity. Reported by dhiva
+    - Fixed startup crash with Ultracube due to outdated 1.1 API command. Fix by kumquat-ir
   Other:
     - Happy New Year m80s!
 ---------------------------------------------------------------------------------------------------
