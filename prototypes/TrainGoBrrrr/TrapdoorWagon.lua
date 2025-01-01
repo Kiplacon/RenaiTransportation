@@ -1,6 +1,6 @@
 local OhYouLikeTrains = table.deepcopy(data.raw["cargo-wagon"]["cargo-wagon"])
 local color = {1,1,0}
-OhYouLikeTrains.name = "RTTrapdoortWagon"
+OhYouLikeTrains.name = "RTTrapdoorWagon"
 OhYouLikeTrains.icons =
 {
 	{
@@ -23,32 +23,23 @@ OhYouLikeTrains.horizontal_doors.layers[2].tint = color
 OhYouLikeTrains.vertical_doors.layers[1].tint = color
 OhYouLikeTrains.vertical_doors.layers[2].tint = color
 
-local NameEveryTrainStation = table.deepcopy(data.raw["land-mine"]["land-mine"])
-NameEveryTrainStation.name = "RTTrapdoorTrigger"
-NameEveryTrainStation.trigger_collision_mask = {layers={["elevated_train"]=true, ["train"]=true}}
-NameEveryTrainStation.collision_mask = {layers={}}
-NameEveryTrainStation.picture_safe.tint = color
-NameEveryTrainStation.picture_set.tint = color
-NameEveryTrainStation.picture_set_enemy.tint = color
-NameEveryTrainStation.trigger_radius = 0.75
-NameEveryTrainStation.timeout = 0
-NameEveryTrainStation.trigger_force = "all"
-NameEveryTrainStation.force_die_on_attack = false
-NameEveryTrainStation.action =
+local NameEveryTrainStation =
 {
-    type = "direct",
-    action_delivery =
-    {
-        type = "instant",
-        target_effects =
-        {
-            {
-                type = "script",
-                effect_id = "RTToggleTrapdoor",
-                affects_target = true,
-            },
-        }
-    }
+	type = "simple-entity-with-owner",
+	name = "RTTrapdoorTrigger",
+	flags = {"placeable-off-grid"},
+	minable = {mining_time = 0.5, result = "RTTrapdoorTriggerItem"},
+	max_health = 500,
+	selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
+	collision_box = {{-0.1, -0.1}, {0.1, 0.1}},
+	collision_mask = {layers={["elevated_train"]=true, ["train"]=true}},
+	render_layer = "elevated-object",
+	picture = {
+		filename = '__RenaiTransportation__/graphics/LickmawBALLS.png',
+		width = 64,
+		height = 64,
+		scale = 0.5
+	},
 }
 
 
@@ -58,7 +49,7 @@ OhYouLikeTrains,
 
 { --------- wagon item -------------
 	type = "item",
-	name = "RTTrapdoortWagonItem",
+	name = "RTTrapdoorWagonItem",
 	icon_size = 64,
 	icons =
 	{
@@ -70,14 +61,14 @@ OhYouLikeTrains,
 	},
 	subgroup = "train-transport",
 	order = "aj",
-	place_result = "RTTrapdoortWagon",
+	place_result = "RTTrapdoorWagon",
 	stack_size = 5
 },
 
 { --------- wagon recipe ----------
 	type = "recipe",
-	name = "RTTrapdoortWagonRecipe",
-	enabled = false,
+	name = "RTTrapdoorWagonRecipe",
+	enabled = true,
 	energy_required = 1,
 	ingredients =
 		{
@@ -86,7 +77,7 @@ OhYouLikeTrains,
 			{type="item", name="cargo-wagon", amount=1}
 		},
 	results = {
-		{type="item", name="RTTrapdoortWagonItem", amount=1}
+		{type="item", name="RTTrapdoorWagonItem", amount=1}
 	}
 },
 
@@ -101,12 +92,12 @@ NameEveryTrainStation,
     subgroup = "RT",
     order = "g",
     place_result = "RTTrapdoorTrigger",
-    stack_size = 10
+    stack_size = 10,
 },
 { --------- trigger recipe ----------
     type = "recipe",
     name = "RTTrapdoorTriggerRecipe",
-    enabled = false,
+    enabled = true,
     energy_required = 0.1,
     ingredients =
     {

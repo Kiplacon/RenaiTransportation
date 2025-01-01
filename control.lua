@@ -1,6 +1,17 @@
 if script.active_mods["gvv"] then require("__gvv__.gvv")() end
 if script.active_mods["Ultracube"] then CubeFlyingItems = require("script.ultracube.cube_flying_items") end
 
+---- keikaku
+-- dynamic zipline, get on from anywhere and autodrive anywhere
+-- better zipline driving with close connections
+-- deflector pad, diagonal (w/range adjusts)
+-- director pad range adjusting
+-- better system to adjust filters/range before placing thrower?
+
+-- trapdoor wagon
+-- electromagnetic item cannon
+
+
 -- Setup tables and stuff for new/existing saves ----
 script.on_init(
 	require("script.event.init")
@@ -422,9 +433,20 @@ script.on_event(
 	"RTZiplineBrake",
 	function (event) -- has .name = event ID number, .tick = tick number, .player_index, and .input_name = custom input name
 		local PlayerProperties = storage.AllPlayers[event.player_index]
-
-		if (PlayerProperties.state == "zipline" and PlayerProperties.zipline and PlayerProperties.zipline.path == nil) then
-			PlayerProperties.zipline.LetMeGuideYou.speed = 0
+		local player = game.players[event.player_index]
+		if (PlayerProperties.state == "zipline"
+		and PlayerProperties.zipline
+		and PlayerProperties.zipline.path == nil
+		--and math.abs(PlayerProperties.zipline.LetMeGuideYou.speed) > 0
+		) then
+			--PlayerProperties.zipline.LetMeGuideYou.speed = 0
+			PlayerProperties.zipline.braking = true
+			player.character.surface.play_sound
+			{
+				path = "RTZipBrake",
+				position = player.character.position,
+				volume_modifier = 0.15
+			}
 		end
 	end
 )

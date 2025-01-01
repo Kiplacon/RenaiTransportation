@@ -11,7 +11,7 @@ local function effect_triggered(event)
 	and event.source_entity
 	and event.source_entity.player
 	and storage.AllPlayers[event.source_entity.player.index].state == "zipline"
-	and storage.AllPlayers[event.source_entity.player.index].zipline.succ.energy ~= 0
+	--and storage.AllPlayers[event.source_entity.player.index].zipline.succ.energy ~= 0
 	and storage.AllPlayers[event.source_entity.player.index].zipline.path == nil
 	and game.get_player(event.source_entity.player.index).character.get_inventory(defines.inventory.character_guns)[game.get_player(event.source_entity.player.index).character.selected_gun_index].valid_for_read
 	and string.find(game.get_player(event.source_entity.player.index).character.get_inventory(defines.inventory.character_guns)[game.get_player(event.source_entity.player.index).character.selected_gun_index].name, "RTZiplineItem")

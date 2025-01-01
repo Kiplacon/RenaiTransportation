@@ -241,14 +241,25 @@ local function on_tick(event)
 							0.5+ZiplineStuff.LetMeGuideYou.position.y-(3*(FromStart^2-FromStart*ZiplineStuff.distance)/ZiplineStuff.distance^2)
 						})
 					ZiplineStuff.LetMeGuideYou.orientation = ZiplineStuff.DaWhey
-
-					if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
+					-- Braking
+					if (ZiplineStuff.braking ~= nil) then
+						local BrakeForce = 0.15
+						if (ZiplineStuff.LetMeGuideYou.speed > 0) then
+							ZiplineStuff.LetMeGuideYou.speed = math.max(ZiplineStuff.LetMeGuideYou.speed - BrakeForce, 0)
+						elseif (ZiplineStuff.LetMeGuideYou.speed < 0) then
+							ZiplineStuff.LetMeGuideYou.speed = math.min(ZiplineStuff.LetMeGuideYou.speed + BrakeForce, 0)
+						end
+						if (ZiplineStuff.LetMeGuideYou.speed == 0) then
+							ZiplineStuff.braking = nil
+						end
+					-- valid movement conditions
+					elseif (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
 					and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineItem")
 					and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
 					and (player.character.walking_state.walking == true or ZiplineStuff.path)
 					and ZiplineStuff.succ.energy ~= 0
-					--and math.abs(ZiplineStuff.LetMeGuideYou.speed) <= MaxSpeed)
 					)then
+						local satisfaction = ZiplineStuff.succ.energy/ZiplineStuff.succ.electric_buffer_size
 						local EquippedTrolley = player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name
 						local MaxSpeed = 0.3
 						local accel = 0.004
@@ -271,15 +282,19 @@ local function on_tick(event)
 						if (ZiplineStuff.path) then
 							MaxSpeed = (2/3)*MaxSpeed
 						end
+						MaxSpeed = MaxSpeed*satisfaction
+						accel = math.max(accel*satisfaction, 0.004)
+						--game.print(satisfaction..", "..MaxSpeed..", "..accel)
 						if (game.tick%2 == 0 and (ZiplineStuff.ForwardDirection[player.character.walking_state.direction] ~= nil or ZiplineStuff.path)) then
 							if (ZiplineStuff.LetMeGuideYou.speed <= MaxSpeed) then
-								ZiplineStuff.LetMeGuideYou.speed = ZiplineStuff.LetMeGuideYou.speed + (accel*2) --increments slower than 0.008 don't seem to do anything
+								ZiplineStuff.LetMeGuideYou.speed = ZiplineStuff.LetMeGuideYou.speed + (accel*2) --increments slower than 0.004 don't seem to do anything
 							end
 						elseif (ZiplineStuff.path == nil and game.tick%2 == 0 and ZiplineStuff.BackwardsDirection[player.character.walking_state.direction] ~= nil) then
 							if (ZiplineStuff.LetMeGuideYou.speed >= -MaxSpeed) then
 								ZiplineStuff.LetMeGuideYou.speed = ZiplineStuff.LetMeGuideYou.speed - (accel*2)
 							end
 						end
+					-- decellerate if moving isnt valid and not braking
 					elseif (game.tick%2 == 0) then
 						if (ZiplineStuff.LetMeGuideYou.speed > 0) then
 							ZiplineStuff.LetMeGuideYou.speed = ZiplineStuff.LetMeGuideYou.speed - 0.004
@@ -299,12 +314,31 @@ local function on_tick(event)
 							break
 						end
 						if (ZiplineStuff.FinalStop.valid == false or ZiplineStuff.WhereDidYouComeFrom.unit_number == ZiplineStuff.FinalStop.unit_number) then
-							GetOffZipline(player, PlayerProperties)
+							if (player.character.get_inventory(defines.inventory.character_armor)
+							and player.character.get_inventory(defines.inventory.character_armor).is_full()
+							and player.character.get_inventory(defines.inventory.character_armor)[1].prototype.provides_flight == true) then
+								GetOffZipline(player, PlayerProperties)
+					
+							elseif (player.surface.find_non_colliding_position("character", {player.position.x, player.position.y+2}, 5, 0.01)
+							and player.character.get_inventory(defines.inventory.character_armor)
+							and (
+									(player.character.get_inventory(defines.inventory.character_armor).is_full()
+									and player.character.get_inventory(defines.inventory.character_armor)[1].prototype.provides_flight == false)
+								or
+									(player.character.get_inventory(defines.inventory.character_armor).is_empty())
+								)
+							) then
+								GetOffZipline(player, PlayerProperties)
+					
+							else
+								player.print({"zipline-stuff.NoFreeSpot"})
+								ZiplineStuff.path = nil
+							end
 						end
 					end
 
 				--|||| Back at start
-				elseif (FromEnd-0.1 > ZiplineStuff.distance and #ZiplineStuff.WhereDidYouGo.get_wire_connector(defines.wire_connector_id.pole_copper, true).real_connections > 1) then
+				elseif (FromEnd-0.1 > ZiplineStuff.distance and #ZiplineStuff.WhereDidYouComeFrom.get_wire_connector(defines.wire_connector_id.pole_copper, true).real_connections > 1) then
 					--game.print("Returned, removing destination to find a new one")
 					ZiplineStuff.LetMeGuideYou.speed = 0 --For some reason character gets stuck if I don't do this
 					--ZiplineStuff.WhereDidYouComeFrom = ZiplineStuff.WhereDidYouGo
@@ -312,7 +346,27 @@ local function on_tick(event)
 
 				--|||| Hit dead end
 				else
-					GetOffZipline(player, PlayerProperties)
+					--game.print("ewfw")
+					if (player.character.get_inventory(defines.inventory.character_armor)
+					and player.character.get_inventory(defines.inventory.character_armor).is_full()
+					and player.character.get_inventory(defines.inventory.character_armor)[1].prototype.provides_flight == true) then
+						GetOffZipline(player, PlayerProperties)
+			
+					elseif (player.surface.find_non_colliding_position("character", {player.position.x, player.position.y+2}, 5, 0.01)
+					and player.character.get_inventory(defines.inventory.character_armor)
+					and (
+							(player.character.get_inventory(defines.inventory.character_armor).is_full()
+							and player.character.get_inventory(defines.inventory.character_armor)[1].prototype.provides_flight == false)
+						or
+							(player.character.get_inventory(defines.inventory.character_armor).is_empty())
+						)
+					) then
+						GetOffZipline(player, PlayerProperties)
+			
+					else
+						player.print({"zipline-stuff.NoFreeSpot"})
+						ZiplineStuff.LetMeGuideYou.speed = -0.15*(ZiplineStuff.LetMeGuideYou.speed/ZiplineStuff.LetMeGuideYou.speed)
+					end
 					--game.print("Dead end")
 				end
 			--||| Break if poles are invalid (destroyed or something)
@@ -327,7 +381,6 @@ local function on_tick(event)
 
 		--||| Player dies on zipline
 		elseif (PlayerProperties.state == "zipline" and player.character == nil) then
-			game.print(33)
 			GetOffZipline(player, PlayerProperties)
 			PlayerProperties.state = "default"
 

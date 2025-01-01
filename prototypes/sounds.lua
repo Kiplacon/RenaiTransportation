@@ -118,5 +118,11 @@ data:extend({
 	filename = "__base__/sound/car-engine-stop.ogg",
 	audible_distance_modifier = 0.5,
 	volume = 0.75
+},
+{
+	type = "sound",
+	name = "RTZipBrake",
+	filename = "__RenaiTransportation__/sickw0bs/brake.ogg",
+	audible_distance_modifier = 0.5,
 }
 })

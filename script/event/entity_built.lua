@@ -91,7 +91,7 @@ local function entity_built(event)
 	elseif (string.find(entity.name, "BouncePlate") and not string.find(entity.name, "Train")) then
 		storage.BouncePadList[script.register_on_object_destroyed(entity)] = {entity = entity}
 		local PouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(entity)]
-		ShowRange = settings.global["RTShowRange"].value
+		local ShowRange = settings.global["RTShowRange"].value
 		if (entity.name == "DirectedBouncePlate"
 		or entity.name == "DirectedBouncePlate5"
 		or entity.name == "DirectedBouncePlate15") then
@@ -161,26 +161,6 @@ local function entity_built(event)
 				entity.get_or_create_control_behavior().add_section()
 				entity.get_or_create_control_behavior().add_section()
 				entity.get_or_create_control_behavior().add_section()
-				--[[ for i = 1, 10 do
-					if (entity.get_or_create_control_behavior().get_section(1).get_slot(i).value == nil)then
-						entity.get_or_create_control_behavior().get_section(1).set_slot(i, {value={type="virtual", name="DirectorBouncePlateUp"}})
-					end
-				end
-				for i = 11, 20 do
-					if (entity.get_or_create_control_behavior().get_section(1).get_slot(i).value == nil)then
-						entity.get_or_create_control_behavior().get_section(1).set_slot(i, {value={type="virtual", name="DirectorBouncePlateRight"}, count=0})
-					end
-				end
-				for i = 21, 30 do
-					if (entity.get_or_create_control_behavior().get_section(1).get_slot(i).value == nil)then
-						entity.get_or_create_control_behavior().get_section(1).set_slot(i, {value={type="virtual", name="DirectorBouncePlateDown"}, count=0})
-					end
-				end
-				for i = 31, 40 do
-					if (entity.get_or_create_control_behavior().get_section(1).get_slot(i).value == nil)then
-						entity.get_or_create_control_behavior().get_section(1).set_slot(i, {value={type="virtual", name="DirectorBouncePlateLeft"}, count=0})
-					end
-				end ]]
 			end
 
 		elseif (entity.name == "PrimerBouncePlate") then

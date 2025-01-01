@@ -1,4 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.9
+Date: 12/31/2024
+  Changes:
+    - Zipline crank controller can now propel the zipline even if the electric pole it's attached to is out of power. Recommended by dhiva
+    - Braking on the zipline now slows you to a stop gradually (still pretty quick though) instead of stopping you instantly
+  Bugfixes:
+    - Zipline max speed now correctly correlates to how powered the zipline is instead of always allowing max speed with even the smallest crumb of electricity. Reported by dhiva
+  Other:
+    - Happy New Year m80s!
+---------------------------------------------------------------------------------------------------
 Version: 2.0.8
 Date: 12/15/2024
   Additions:
@@ -53,8 +63,8 @@ Date: 11/23/2024
     - Items thrown by Thrower Inserters on space platforms don't arc as if there's gravity up there
     - Re-enabled system for no collision while ziplining now that I've had some time to work out the 2.0 API stuff a bit better (if anyone knows how I can transfer ownership of a construction/logistics bot between characters pls hit me up, it's the last major thing that doesn't carry over when getting on/off the zipline)
     - Changed the Dynamic Range setting by wrothmonk default to true (makes modded thrower inserter range based on the original arm length instead of always being 15, pretty neat imo)
-    - Removed Filter Ejector Hatch
-    - Removed Signal Bounce Pad
+    - Removed Filter Ejector Hatch (not needed now obviously)
+    - Removed Signal Bounce Pad (I don't think anyone used these I certainly didnt)
   Bugfixes:
     - Fixed items refreshing their spoilage timer when thrown by a Thrower Inserter
     - Fixed some crashes relating to taking damage/dying while ziplining
