@@ -331,7 +331,6 @@ function(event)
 										height = 0
 									}
 								end
-								path.duration = AirTime
 								storage.FlyingItems[storage.FlightNumber].path = path
 								storage.FlyingItems[storage.FlightNumber].space = true
 								storage.FlyingItems[storage.FlightNumber].LandTick = game.tick+AirTime
@@ -437,7 +436,7 @@ script.on_event(
 		if (PlayerProperties.state == "zipline"
 		and PlayerProperties.zipline
 		and PlayerProperties.zipline.path == nil
-		--and math.abs(PlayerProperties.zipline.LetMeGuideYou.speed) > 0
+		and math.abs(PlayerProperties.zipline.LetMeGuideYou.speed) > 0
 		) then
 			--PlayerProperties.zipline.LetMeGuideYou.speed = 0
 			PlayerProperties.zipline.braking = true

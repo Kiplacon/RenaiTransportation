@@ -41,8 +41,7 @@ local NonSkippingRamps = {
 }
 
 local function entity_damaged(event)
-	--| Detect train hitting ramp
-	if (
+	if ( -- train ramps
 		(TrainRamps[event.entity.name] ~= nil)
 		and event.cause
 		and (event.cause.type == "locomotive"
@@ -358,7 +357,7 @@ local function entity_damaged(event)
 			end
 
 		end
-
+		-- record stuff based on wagon type
 		if (event.cause.type == "locomotive" and event.cause.burner) then
 			if (storage.About2Jump[event.cause.unit_number] ~= nil) then
 				FlyingTrainProperties.CurrentlyBurning = storage.About2Jump[event.cause.unit_number].BurningFuel
@@ -389,12 +388,14 @@ local function entity_damaged(event)
 				local inventory = event.cause.get_inventory(defines.inventory.cargo_wagon)
 				CubeFlyingTrains.create_tokens_for_inventory(FlyingTrain, inventory, defines.inventory.cargo_wagon)
 			end
+			-- record inventory and filters
 			FlyingTrainProperties.cargo = event.cause.get_inventory(defines.inventory.cargo_wagon).get_contents()
 			FlyingTrainProperties.bar = event.cause.get_inventory(defines.inventory.cargo_wagon).get_bar()
 			FlyingTrainProperties.filter = {}
 			for i = 1, #event.cause.get_inventory(defines.inventory.cargo_wagon) do
 				FlyingTrainProperties.filter[i] = event.cause.get_inventory(defines.inventory.cargo_wagon).get_filter(i)
 			end
+			-- ArmoredTrains support
 			if (remote.interfaces.ArmoredTrains and remote.interfaces.ArmoredTrains.SendTurretList) then
 				local list = remote.call("ArmoredTrains", "SendTurretList")
 				if (list ~= nil) then
@@ -410,12 +411,21 @@ local function entity_damaged(event)
 					end
 				end
 			end
+			-- Trapdoor wagon
+			local DestroyNumber = script.register_on_object_destroyed(event.cause)
+			--[[ local open = false -- assume its closed
+			if (storage.TrapdoorWagonsOpen[DestroyNumber] ~= nil) then
+				open = true
+			end ]]
+			FlyingTrainProperties.trapdoor = storage.TrapdoorWagonsOpen[DestroyNumber] or storage.TrapdoorWagonsClosed[DestroyNumber]
+			storage.TrapdoorWagonsOpen[DestroyNumber] = nil -- nil both cause it'll only be one or the other
+			storage.TrapdoorWagonsClosed[DestroyNumber] = nil
 		elseif (event.cause.type == "fluid-wagon") then
 			FlyingTrainProperties.fluids = event.cause.get_fluid_contents()
 		elseif (event.cause.type == "artillery-wagon") then
 			FlyingTrainProperties.artillery = event.cause.get_inventory(defines.inventory.artillery_wagon_ammo).get_contents()
 		end
-
+		-- temporarily set all trains to burn the fastest fuel so it can keep up with the initial speed
 		if (FlyingTrainProperties.leader == nil) then
 			for each, carriage in pairs(event.cause.train.carriages) do
 				if (carriage.burner) then
@@ -425,7 +435,7 @@ local function entity_damaged(event)
 				end
 			end
 		end
-
+		-- record the equipment grid
 		if (event.cause.grid ~= nil) then
 			FlyingTrainProperties.gridd = {}
 			for j = 0, event.cause.grid.height-1 do
@@ -436,7 +446,7 @@ local function entity_damaged(event)
 				end
 			end
 		end
-
+		-- VehicleWagons2 support
 		if remote.interfaces.VehicleWagon2 and remote.interfaces.VehicleWagon2.get_wagon_data then
 			storage.savedVehicleWagons[event.cause.unit_number] = remote.call("VehicleWagon2", "get_wagon_data", event.cause) -- returns nil if not a vehicle wagon
 			FlyingTrainProperties.WagonUnitNumber = event.cause.unit_number
@@ -491,10 +501,10 @@ local function entity_damaged(event)
 								local y = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
 								local distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
 								local speed = math.abs(wagon.speed) * (distance/(35*math.abs(wagon.speed))) * math.random(45,100)*0.01
-								local arc = -(0.3236*distance^-0.404) -- lower number is higher arc
+								local arc = 0.3236*distance^-0.404 -- lower number is higher arc
 								local space = false
 								if (wagon.surface.platform or string.find(wagon.surface.name, " Orbit") or string.find(wagon.surface.name, " Field") or string.find(wagon.surface.name, " Belt")) then
-									arc = -99999999999999
+									arc = 99999999999999
 									x = x + (xUnit*wagon.speed * 200)
 									y = y + (yUnit*wagon.speed * 200)
 									distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
@@ -516,13 +526,11 @@ local function entity_damaged(event)
 										height = progress * (1-progress) / arc
 									}
 								end
-								path.duration = AirTime
 								storage.FlyingItems[storage.FlightNumber] =
 									{
 										sprite=sprite,
 										shadow=shadow,
 										speed=speed,
-										arc=arc,
 										spin=spin,
 										item=ItemName,
 										amount=GroupSize,
@@ -532,7 +540,6 @@ local function entity_damaged(event)
 										AirTime=AirTime,
 										StartTick=game.tick,
 										LandTick=game.tick+AirTime,
-										vector=vector,
 										space=space,
 										surface=wagon.surface,
 										path=path
@@ -580,10 +587,10 @@ local function entity_damaged(event)
 								local y = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
 								local distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
 								local speed = math.abs(wagon.speed) * (distance/(35*math.abs(wagon.speed))) * math.random(45,100)*0.01
-								local arc = -(0.3236*distance^-0.404) -- lower number is higher arc
+								local arc = 0.3236*distance^-0.404 -- lower number is higher arc
 								local space = false
 								if (wagon.surface.platform or string.find(wagon.surface.name, " Orbit") or string.find(wagon.surface.name, " Field") or string.find(wagon.surface.name, " Belt")) then
-									arc = -99999999999999
+									arc = 99999999999999
 									x = x + (xUnit*wagon.speed * 200)
 									y = y + (yUnit*wagon.speed * 200)
 									distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
@@ -605,13 +612,11 @@ local function entity_damaged(event)
 										height = progress * (1-progress) / arc
 									}
 								end
-								path.duration = AirTime
 								storage.FlyingItems[storage.FlightNumber] =
 									{
 										sprite=sprite,
 										shadow=shadow,
 										speed=speed,
-										arc=arc,
 										spin=spin,
 										item=ItemName,
 										amount=LaunchedAmount-(math.floor(LaunchedAmount/GroupSize)*GroupSize),
@@ -621,7 +626,6 @@ local function entity_damaged(event)
 										AirTime=AirTime,
 										StartTick=game.tick,
 										LandTick=game.tick+AirTime,
-										vector=vector,
 										space=space,
 										surface=wagon.surface,
 										path=path
@@ -673,6 +677,39 @@ local function entity_damaged(event)
 	) then
 		CreateThrownItem(event.entity, event.entity.player, "wood", nil, event.entity.surface, {0,-1}) ]]
 
+	elseif (event.entity.name == "RTTrainDetector") then
+		local detector = event.entity
+		-- toggle the trapdoor on the wagon if it was hit by a trapdoor wagon
+		if (event.cause and event.cause.valid and event.cause.name == "RTTrapdoorWagon") then
+			local DestroyNumber = script.register_on_object_destroyed(event.cause)
+			-- properties.entity = the wagon entity
+			-- properties.open = true/false
+			-- properties.OpenIndicator = RenderObject
+			if (storage.TrapdoorWagonsOpen[DestroyNumber] ~= nil) then
+				storage.TrapdoorWagonsOpen[DestroyNumber].OpenIndicator.color = {r=1,g=0,b=0,a=1}
+				storage.TrapdoorWagonsOpen[DestroyNumber].open = false
+				storage.TrapdoorWagonsClosed[DestroyNumber], storage.TrapdoorWagonsOpen[DestroyNumber] = storage.TrapdoorWagonsOpen[DestroyNumber], nil
+			elseif (storage.TrapdoorWagonsClosed[DestroyNumber] ~= nil) then
+				storage.TrapdoorWagonsClosed[DestroyNumber].OpenIndicator.color = {r=0,g=1,b=0,a=1}
+				storage.TrapdoorWagonsClosed[DestroyNumber].open = true
+				storage.TrapdoorWagonsOpen[DestroyNumber], storage.TrapdoorWagonsClosed[DestroyNumber] = storage.TrapdoorWagonsClosed[DestroyNumber], nil
+			end
+			
+		end
+		-- start trying to res the detector
+		local time = game.tick+1
+		if (storage.clock[time] == nil) then
+			storage.clock[time] = {}
+		end
+		if (storage.clock[time].rez == nil) then
+			storage.clock[time].rez = {}
+		end
+		table.insert(storage.clock[time].rez, {name=detector.name, position=detector.position, force="neutral", surface=detector.surface})
+		-- remove the now broken detector from the destruction link of its trigger
+		local trigger = detector.surface.find_entities_filtered({name="RTTrapdoorTrigger", position=detector.position})[1]
+		if (trigger) then
+			storage.DestructionLinks[script.register_on_object_destroyed(trigger)] = {}
+		end
 	end
 end
 

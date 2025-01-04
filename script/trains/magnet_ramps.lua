@@ -49,14 +49,6 @@ function makeMagRampSection(centerPosition, surface, orientation)
 		position = math2d.position.add(centerPosition, offsets.a),
 		create_build_effect_smoke = true
 	})
-	--[[ rendering.draw_sprite{
-			sprite = "RTMagnetRailSprite",
-			x_scale = 0.5,
-			y_scale = 0.5,
-			surface = surface,
-			target = a,
-			render_layer = "80"
-		} ]]
 	a.destructible = false
 
 	local b = surface.create_entity({
@@ -64,14 +56,6 @@ function makeMagRampSection(centerPosition, surface, orientation)
 		position = math2d.position.add(centerPosition, offsets.b),
 		create_build_effect_smoke = true
 	})
-	--[[ rendering.draw_sprite{
-			sprite = "RTMagnetRailSprite",
-			x_scale = 0.5,
-			y_scale = 0.5,
-			surface = surface,
-			target = b,
-			render_layer = "80"
-		} ]]
 	b.destructible = false
 
 	return a, b

@@ -53,15 +53,19 @@ local function entity_destroyed(event)
 				entity.destroy()
 			end
 		end
-	end
-
-	if (storage.EntityProperties[event.registration_number]) then
-		storage.EntityProperties[event.registration_number] = nil
+		storage.DestructionLinks[event.registration_number] = nil
 	end
 
 	if (storage.HoverGFX[event.registration_number]) then
 		storage.HoverGFX[event.registration_number] = nil
 		-- attached graphics should be destroyed with the entity
+	end
+
+	if (storage.TrapdoorWagonsOpen[event.registration_number]) then
+		storage.TrapdoorWagonsOpen[event.registration_number] = nil
+	end
+	if (storage.TrapdoorWagonsClosed[event.registration_number]) then
+		storage.TrapdoorWagonsClosed[event.registration_number] = nil
 	end
 end
 

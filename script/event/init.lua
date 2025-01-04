@@ -137,7 +137,8 @@ local function on_int()
 
 	storage.DestructionLinks = {}
 
-	storage.EntityProperties = {}
+	storage.TrapdoorWagonsOpen = {}
+	storage.TrapdoorWagonsClosed = {}
 
 	-- Ultracube=specific globals
 	if script.active_mods["Ultracube"] then

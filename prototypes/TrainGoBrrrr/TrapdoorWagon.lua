@@ -10,7 +10,7 @@ OhYouLikeTrains.icons =
 		tint = color
 	}
 }
-OhYouLikeTrains.minable = {mining_time = 0.5, result = "RTImpactWagonItem"}
+OhYouLikeTrains.minable = {mining_time = 0.5, result = "RTTrapdoorWagonItem"}
 --OhYouLikeTrains.inventory_size = 8
 
 OhYouLikeTrains.pictures.rotated.layers[1].tint = color
@@ -27,13 +27,13 @@ local NameEveryTrainStation =
 {
 	type = "simple-entity-with-owner",
 	name = "RTTrapdoorTrigger",
-	flags = {"placeable-off-grid"},
+	flags = {"placeable-off-grid", "player-creation"},
 	minable = {mining_time = 0.5, result = "RTTrapdoorTriggerItem"},
 	max_health = 500,
 	selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 	collision_box = {{-0.1, -0.1}, {0.1, 0.1}},
-	collision_mask = {layers={["elevated_train"]=true, ["train"]=true}},
-	render_layer = "elevated-object",
+	collision_mask = {layers={}, not_colliding_with_itself=true},
+	render_layer = "transport-belt",
 	picture = {
 		filename = '__RenaiTransportation__/graphics/LickmawBALLS.png',
 		width = 64,
@@ -87,7 +87,7 @@ NameEveryTrainStation,
 { --------- trigger item ----------
     type = "item",
     name = "RTTrapdoorTriggerItem",
-    icon = '__RenaiTransportation__/graphics/TrainRamp/RTImpactUnloader-icon.png',
+    icon = '__RenaiTransportation__/graphics/LickmawBALLS.png',
     icon_size = 64,
     subgroup = "RT",
     order = "g",
@@ -106,6 +106,23 @@ NameEveryTrainStation,
     results = {
         {type="item", name="RTTrapdoorTriggerItem", amount=1}
     }
+},
+{ -- actual collision detector
+	type = "simple-entity-with-owner",
+	name = "RTTrainDetector",
+	icon = '__RenaiTransportation__/graphics/Untitled.png',
+	icon_size = 32,
+	flags = {"placeable-neutral", "placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-flammable", "no-copy-paste"},
+	max_health = 1,
+	selection_box = {{-0.2, -0.2}, {0.2, 0.2}},
+	collision_box = {{-0.01, -0.01}, {0.01, 0.01}},
+	collision_mask = {layers={["elevated_train"]=true, ["train"]=true}},
+	picture = {
+		filename = '__RenaiTransportation__/graphics/Untitled.png',
+		width = 32,
+		height = 32,
+		scale = 0.5
+	},
 }
 
 })

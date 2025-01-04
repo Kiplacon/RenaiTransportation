@@ -9,17 +9,21 @@ local function on_tick(event)
          local duration = event.tick-FlyingItem.StartTick
          local x_coord = FlyingItem.path[duration].x
          local y_coord = FlyingItem.path[duration].y
-         local height = FlyingItem.path[duration].height
+         local height = -FlyingItem.path[duration].height -- negative because in factorio +y is south
          local orientation = FlyingItem.spin*duration
          FlyingItem.sprite.target = {x_coord, y_coord + height}
          FlyingItem.sprite.orientation = orientation
          if (FlyingItem.space == false) then
             FlyingItem.shadow.target = {x_coord - height, y_coord}
             FlyingItem.shadow.orientation = orientation
+            local shadowScaleDelta = math.abs(height) * 0.025
+            FlyingItem.shadow.x_scale = 0.25 + shadowScaleDelta
+            FlyingItem.shadow.y_scale = 0.5 + shadowScaleDelta
+            FlyingItem.shadow.color = {0, 0, 0, 2.5/(5-height)}
          end
 
          if storage.Ultracube and FlyingItem.cube_token_id then
-         CubeFlyingItems.item_with_sprite_update(FlyingItem, duration)
+            CubeFlyingItems.item_with_sprite_update(FlyingItem, duration)
          end
 
       elseif (event.tick == FlyingItem.LandTick and FlyingItem.space == false) then
@@ -36,6 +40,7 @@ local function on_tick(event)
                }[1]
          -- landed on something
          if (ThingLandedOn) then
+            --game.print(ThingLandedOn.name)
             if (string.find(ThingLandedOn.name, "BouncePlate")) then -- if that thing was a bounce plate
                if (FlyingItem.sprite) then -- from impact unloader
                   FlyingItem.sprite.destroy()
@@ -312,7 +317,7 @@ local function on_tick(event)
                         }
 
                   ---- If it landed on something but there's also a cargo wagon there
-                  elseif (LandedOnCargoWagon ~= nil and LandedOnCargoWagon.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
+                  elseif (LandedOnCargoWagon ~= nil and LandedOnCargoWagon.draw_data.height==0 and LandedOnCargoWagon.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
                      if (FlyingItem.CloudStorage) then
                         LandedOnCargoWagon.insert(FlyingItem.CloudStorage[1])
                         FlyingItem.CloudStorage.destroy()

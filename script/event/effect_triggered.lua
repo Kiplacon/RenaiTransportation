@@ -93,11 +93,6 @@ local function effect_triggered(event)
 		else
 			--box.get_output_inventory().clear()
 		end
-
-	elseif (event.effect_id == "RTToggleTrapdoor") then
-		local properties = EntityProperties(event.source_entity)
-		game.print(game.tick.." "..event.target_entity.name..", lag="..game.tick-properties.BuiltTick)
-		properties.BuiltTick = game.tick
 	end
 end
 

@@ -209,8 +209,38 @@ local function entity_built(event)
 		storage.ZiplineTerminals[OnDestroyNumber].tag = tag
 
 	elseif (entity.name == "RTTrapdoorTrigger") then
-		local properties = EntityProperties(entity)
-		properties.BuiltTick = game.tick
+		local TriggerDestroyNumber = script.register_on_object_destroyed(entity)
+		if (storage.DestructionLinks[TriggerDestroyNumber] == nil) then
+			storage.DestructionLinks[TriggerDestroyNumber] = {}
+		end
+		local detector = entity.surface.create_entity
+		{
+			name = "RTTrainDetector",
+			position = entity.position,
+			force = "neutral",
+			create_build_effect_smoke = false,
+			raise_built = true
+		}
+	elseif (entity.name == "RTTrainDetector") then -- used when a trapdoor trigger is built or rezzed
+		entity.destructible = true -- maybe this enables impact damage when friendly fire is off?
+		local trigger = entity.surface.find_entities_filtered({name="RTTrapdoorTrigger", position=entity.position})[1]
+		if (trigger) then
+			storage.DestructionLinks[script.register_on_object_destroyed(trigger)] = {entity} -- Trapdoor triggers will only ever have 1 linked detector so this is a list of 1
+		else
+			entity.destroy()
+		end
+	elseif (entity.name == "RTTrapdoorWagon") then
+		storage.TrapdoorWagonsClosed[script.register_on_object_destroyed(entity)] = {entity=entity, OpenIndicator=nil}
+		-- draw a red circle to show the trapdoor starts closed
+		storage.TrapdoorWagonsClosed[script.register_on_object_destroyed(entity)].OpenIndicator = rendering.draw_circle
+			{
+				color = {r = 1, g = 0, b = 0},
+				radius = 0.5,
+				filled = true,
+				target = entity,
+				surface = entity.surface,
+				only_in_alt_mode = true
+			}
 	end
 end
 

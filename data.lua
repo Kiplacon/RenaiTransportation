@@ -33,17 +33,17 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 	require("prototypes.TrainGoBrrrr.prototypes.ramps")
 	require("prototypes.TrainGoBrrrr.sprites.base")
 	require("prototypes.TrainGoBrrrr.GhostLoco")
-	if (settings.startup["RTImpactSetting"].value == true) then
-		require("prototypes.TrainGoBrrrr.ImpactWagon")
-	end
+end
+
+if (settings.startup["RTImpactSetting"].value == true) then
+	require("prototypes.TrainGoBrrrr.ImpactWagon")
 end
 
 if (settings.startup["RTZiplineSetting"].value == true) then
 	require("prototypes.zipline")
 end
 
-require("prototypes.TrainGoBrrrr.TrapdoorWagon")
-
+--require("prototypes.TrainGoBrrrr.TrapdoorWagon")
 
 data:extend({
 {
@@ -245,7 +245,7 @@ data:extend({
 },
 })
 
-if (feature_flags["spoiling"]) then
+if (data.raw.tree.lickmaw and data.raw["item-subgroup"]["agriculture-processes"]) then
 	data:extend({
 		{
 			type = "capsule",

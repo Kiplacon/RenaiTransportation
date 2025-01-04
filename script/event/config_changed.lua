@@ -154,8 +154,14 @@ local function config_changed()
 		storage.DestructionLinks = {}
 	end
 
-	if (storage.EntityProperties == nil) then
-		storage.EntityProperties = {}
+	if (storage.TrapdoorWagonsOpen == nil) then
+		storage.TrapdoorWagonsOpen = {}
+	end
+	if (storage.TrapdoorWagonsClosed == nil) then
+		storage.TrapdoorWagonsClosed = {}
+	end
+	if (storage.TrapdoorWagons) then
+		storage.TrapdoorWagons = nil
 	end
 
 	-- Ultracube-specific globals

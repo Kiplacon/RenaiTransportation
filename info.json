@@ -1,9 +1,8 @@
 {
     "name": "RenaiTransportation",
-    "version": "2.0.8",
+    "version": "2.0.12",
     "title": "Renai Transportation",
     "author": "Kiplacon",
     "factorio_version": "2.0",
-    "dependencies": ["base >= 2.0.0"],
-    "description": "The most unhinged ways to transport items and yourself around your factory. Fling items around with Thrower Inserters, launch your trains off ramps, and soar through your base on electric ziplines!"
+    "dependencies": ["base >= 2.0.0", "? space-age >= 1.0.0"],   "description": "The most unhinged ways to transport items and yourself around your factory. Fling items around with Thrower Inserters, launch your trains off ramps, and soar through your base on electric ziplines!"
 }
