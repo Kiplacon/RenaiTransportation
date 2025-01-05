@@ -389,7 +389,19 @@ local function entity_damaged(event)
 				CubeFlyingTrains.create_tokens_for_inventory(FlyingTrain, inventory, defines.inventory.cargo_wagon)
 			end
 			-- record inventory and filters
-			FlyingTrainProperties.cargo = event.cause.get_inventory(defines.inventory.cargo_wagon).get_contents()
+			local inventory = event.cause.get_inventory(defines.inventory.cargo_wagon)
+			local cargo = {}
+			for i = 1, #inventory do
+				local stack = inventory[i]
+				if (stack.valid_for_read and stack.item_number) then
+					local CloudStorage = game.create_inventory(1)
+					CloudStorage.insert(stack)
+					table.insert(cargo, CloudStorage)
+				elseif (stack.valid_for_read) then
+					table.insert(cargo, {name=stack.name, count=stack.count, health=stack.health, quality=stack.quality, spoil_percent=stack.spoil_percent})
+				end
+			end
+			FlyingTrainProperties.cargo = cargo
 			FlyingTrainProperties.bar = event.cause.get_inventory(defines.inventory.cargo_wagon).get_bar()
 			FlyingTrainProperties.filter = {}
 			for i = 1, #event.cause.get_inventory(defines.inventory.cargo_wagon) do
@@ -413,11 +425,9 @@ local function entity_damaged(event)
 			end
 			-- Trapdoor wagon
 			local DestroyNumber = script.register_on_object_destroyed(event.cause)
-			--[[ local open = false -- assume its closed
-			if (storage.TrapdoorWagonsOpen[DestroyNumber] ~= nil) then
-				open = true
-			end ]]
-			FlyingTrainProperties.trapdoor = storage.TrapdoorWagonsOpen[DestroyNumber] or storage.TrapdoorWagonsClosed[DestroyNumber]
+			if (storage.TrapdoorWagonsOpen[DestroyNumber]) then
+				FlyingTrainProperties.trapdoor = true
+			end
 			storage.TrapdoorWagonsOpen[DestroyNumber] = nil -- nil both cause it'll only be one or the other
 			storage.TrapdoorWagonsClosed[DestroyNumber] = nil
 		elseif (event.cause.type == "fluid-wagon") then
@@ -694,7 +704,6 @@ local function entity_damaged(event)
 				storage.TrapdoorWagonsClosed[DestroyNumber].open = true
 				storage.TrapdoorWagonsOpen[DestroyNumber], storage.TrapdoorWagonsClosed[DestroyNumber] = storage.TrapdoorWagonsClosed[DestroyNumber], nil
 			end
-			
 		end
 		-- start trying to res the detector
 		local time = game.tick+1

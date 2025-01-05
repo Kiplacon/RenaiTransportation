@@ -539,6 +539,8 @@ local RTZiplineTerminal = table.deepcopy(data.raw["electric-pole"]["medium-elect
      }
    }
    RTZiplineTerminal.supply_area_distance = 0
+   RTZiplineTerminal.next_upgrade = nil
+   
 local RTZiplineTerminalItem = table.deepcopy(data.raw.item["medium-electric-pole"])
    RTZiplineTerminalItem.name = "RTZiplineTerminalItem"
    RTZiplineTerminalItem.icon = "__RenaiTransportation__/graphics/zipline/terminalicon.png"

@@ -399,28 +399,34 @@ local function on_tick(event)
 								end
 								
 								for each, stack in pairs(properties.FuelInventory) do
-									NewTrain.burner.inventory.insert({name = stack.name, count = stack.count})
+									NewTrain.burner.inventory.insert({name=stack.name, count=stack.count, quality=stack.quality})
 								end
 								for each, stack in pairs(properties.BurntFuelInventory) do
-									NewTrain.burner.burnt_result_inventory.insert({name = stack.name, count = stack.count})
+									NewTrain.burner.burnt_result_inventory.insert({name=stack.name, count=stack.count, quality=stack.quality})
 								end
 								
 							end
 						elseif (NewTrain.type == "cargo-wagon") then
+							local WagonInventory = NewTrain.get_inventory(defines.inventory.cargo_wagon)
 							-- set filters
-							NewTrain.get_inventory(defines.inventory.cargo_wagon).set_bar(properties.bar)
+							WagonInventory.set_bar(properties.bar)
 							for i, filter in pairs(properties.filter) do
-								NewTrain.get_inventory(defines.inventory.cargo_wagon).set_filter(i, filter)
+								WagonInventory.set_filter(i, filter)
 							end
 							-- Ultracube handling: insert irreplaceables that were previously in the cargo wagon and release tokens
 							if storage.Ultracube and properties.Ultracube then -- Ultracube is active and this cargo wagon has irreplaceables in it
-								local inventory = NewTrain.get_inventory(defines.inventory.cargo_wagon)
-								CubeFlyingTrains.release_and_insert(properties, inventory, defines.inventory.cargo_wagon, NewTrain)
+								CubeFlyingTrains.release_and_insert(properties, WagonInventory, defines.inventory.cargo_wagon, NewTrain)
 							end
 							-- restore cargo inventory
-							for each, stack in pairs(properties.cargo) do
-								NewTrain.get_inventory(defines.inventory.cargo_wagon).insert({name = stack.name, count = stack.count})
+							for _, stack in pairs(properties.cargo) do
+								if (stack.object_name) then -- only the script inventory would have an object_name
+									WagonInventory.insert(stack[1])
+									stack.destroy()
+								else
+									WagonInventory.insert({name=stack.name, count=stack.count, health=stack.health, quality=stack.quality, spoil_percent=stack.spoil_percent})
+								end
 							end
+							-- ArmordTrains restory turret ammo
 							if (remote.interfaces.ArmoredTrains and remote.interfaces.ArmoredTrains.SendTurretList and properties.ammo) then
 								local list = remote.call("ArmoredTrains", "SendTurretList")
 								local turret = nil
@@ -439,7 +445,7 @@ local function on_tick(event)
 								end
 							end
 							--restore trapdoor wagon tracking, existing tracking table in storage.TrapdoorWagonsClosed[script.register_on_object_destroyed(NewTrain)], created from raise_built in wagon respawning
-							if (properties.trapdoor.open == true) then
+							if (properties.trapdoor ~= nil) then
 								local NewTrainDestoyNumber = script.register_on_object_destroyed(NewTrain)
 								storage.TrapdoorWagonsClosed[NewTrainDestoyNumber].OpenIndicator.color = {r=0,g=1,b=0,a=1}
 								storage.TrapdoorWagonsOpen[NewTrainDestoyNumber] = storage.TrapdoorWagonsClosed[NewTrainDestoyNumber]
@@ -452,7 +458,7 @@ local function on_tick(event)
 							end
 						elseif (NewTrain.type == "artillery-wagon") then
 							for eacg, stack in pairs(properties.artillery) do
-								NewTrain.get_inventory(defines.inventory.artillery_wagon_ammo).insert({name = stack.name, count = stack.count})
+								NewTrain.get_inventory(defines.inventory.artillery_wagon_ammo).insert({name=stack.name, count=stack.count, quality=stack.quality})
 							end
 						end
 					end
@@ -617,12 +623,122 @@ local function on_tick(event)
 					properties.SpinSpeed = 9 -- makes landing rotation more shallow to match the earlier landing
 					properties.altered = 42069
 				end
-				
 			end
 
 			-- Ultracube position handling
 			if storage.Ultracube and properties.Ultracube then -- Mod is active and this FlyingTrain is one that contains Ultracube irreplaceables
 				CubeFlyingTrains.position_update(properties)
+			end
+
+			-- open trapdoor wagon spilling items out during flight
+			if (properties.trapdoor and #properties.cargo > 0) then
+				local ItemsPerDrop = 2
+				local items = properties.cargo
+				for drop = 1, 5 do
+					-- Randomly select up to 10 items to spill
+					if (#items > 0) then
+						local spill = {}
+						local wagon = GuideCar
+						local slot = math.random(#items)
+						local stack = items[slot]
+						-- Take X from each stack
+						if (stack.object_name) then -- only a script inventory would have an object_name
+							stack=stack[1]
+							table.insert(spill, stack)
+						else
+							local take = math.min(stack.count, ItemsPerDrop)
+							table.insert(spill, {name=stack.name, count=take, health=stack.health, quality=stack.quality, spoil_percent=stack.spoil_percent})
+							stack.count = stack.count-take
+							if (stack.count <= 0) then
+								table.remove(items, slot)
+							end
+						end
+						-- Spill the selected items on the ground
+						for _, stack in pairs(spill) do
+							local ItemName = stack.name
+							local sprite = rendering.draw_sprite
+								{
+									sprite = "item/"..ItemName,
+									render_layer = "under-elevated",
+									x_scale = 0.5,
+									y_scale = 0.5,
+									target = wagon.position,
+									surface = wagon.surface
+								}
+							local shadow = rendering.draw_sprite
+								{
+									sprite = "item/"..ItemName,
+									render_layer = "under-elevated",
+									tint = {0,0,0,0.1},
+									x_scale = 0.5,
+									y_scale = 0.5,
+									target = wagon.position,
+									surface = wagon.surface
+								}
+							local xUnit = math.sin(2*math.pi*(wagon.orientation))
+							local yUnit = math.sin(2*math.pi*(wagon.orientation-0.25))
+							local randomX = math.random(-5, 5)*0.1
+							local randomY = math.random(-5, 5)*0.1
+							local inertia = 20
+							local LandX = (wagon.position.x+randomX + (inertia*wagon.speed*xUnit)) + math.random(-height, height)*0.25
+							local LandY = (wagon.position.y+randomY + (inertia*wagon.speed*yUnit)) + math.random(-height, height)*0.25
+							local vector = {x=LandX-wagon.position.x, y=LandY-wagon.position.y}
+							local path = {}
+							local AirTime = math.floor(math.sqrt(2*height/12)*60) + math.random(-40, 0) -- +- half a second
+							for i = 0, AirTime do
+								local progress = i/AirTime
+								path[i] =
+								{
+									x = wagon.position.x+randomX+(progress*vector.x),
+									y = wagon.position.y+randomY+(progress*vector.y),
+									height = -(height*progress^2)+height,
+								}
+							end
+							storage.FlyingItems[storage.FlightNumber] =
+								{
+									sprite=sprite,
+									shadow=shadow,
+									--speed=speed,
+									spin=math.random(-2,2)*0.01,
+									item=ItemName,
+									amount=stack.count,
+									quality=stack.quality,
+									target={x=LandX, y=LandY},
+									ThrowerPosition={x=wagon.position.x, y=wagon.position.y},
+									AirTime=AirTime,
+									StartTick=game.tick,
+									LandTick=game.tick+AirTime,
+									space=false,
+									surface=wagon.surface,
+									path=path
+								}
+							if (stack.item_number) then
+								local CloudStorage = game.create_inventory(1)
+								CloudStorage.insert(stack)
+								storage.FlyingItems[storage.FlightNumber].CloudStorage = CloudStorage
+								stack.count = stack.count - math.min(stack.count, ItemsPerDrop)
+								if (stack.count <= 0) then
+									items[slot].destroy()
+									table.remove(items, slot)
+								end
+							end
+							-- Ultracube irreplaceables detection & handling
+							if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] then -- Ultracube mod is active, and item is an irreplaceable
+								-- Velocity calculation
+								local velocity = {x=0,y=0}
+								if storage.FlyingItems[storage.FlightNumber].AirTime >= 2 then
+									local v1 = storage.FlyingItems[storage.FlightNumber].path[1]
+									local v2 = storage.FlyingItems[storage.FlightNumber].path[2]
+									velocity.x = v2.x - v1.x
+									velocity.y = v2.y - v1.y
+								end
+								-- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
+								CubeFlyingItems.create_token_for(storage.FlyingItems[storage.FlightNumber], velocity)
+							end
+							storage.FlightNumber = storage.FlightNumber + 1
+						end
+					end
+				end
 			end
 
 		--|| Landing speed control
@@ -671,17 +787,18 @@ local function on_tick(event)
 	end
 
 	-- Trapdoor wagons
-	if (game.tick%2 == 0) then
-		for DestroyNumber, properties in pairs(storage.TrapdoorWagonsOpen) do
-			-- properties.entity = the wagon entity
-			-- properties.open = true/false
-			-- properties.OpenIndicator = RenderObject
-			-- spill some of the wagons contents on the ground if the trapdoor is open
-			-- WIP drop 10 random items even if there are less than 10 stacks in the wagon
-			if (properties.entity.valid) then
-				local wagon = properties.entity
-				local inventory = wagon.get_inventory(defines.inventory.cargo_wagon)
-				if (inventory.is_empty() == false) then
+	for DestroyNumber, properties in pairs(storage.TrapdoorWagonsOpen) do
+		-- properties.entity = the wagon entity
+		-- properties.open = true/false
+		-- properties.OpenIndicator = RenderObject
+		-- spill some of the wagons contents on the ground if the trapdoor is open
+		-- WIP drop 10 random items even if there are less than 10 stacks in the wagon
+		if (properties.entity.valid) then
+			local wagon = properties.entity
+			local inventory = wagon.get_inventory(defines.inventory.cargo_wagon)
+			if (inventory.is_empty() == false) then
+				local ItemsPerDrop = 2
+				for drop = 1, 4 do
 					-- Get the inventory of the cargo wagon
 					local spill = {}
 					local items = {}
@@ -691,81 +808,107 @@ local function on_tick(event)
 							table.insert(items, inventory[i])
 						end
 					end
-					-- Randomly select up to 10 items to spill
-					for j = 1, math.min(2, #items) do
-						local item = table.remove(items, math.random(#items))
-						local stack = item
-						-- Take 1 from each stack
-						local take = math.min(stack.count, 3)
-						table.insert(spill, {name=stack.name, count=take, health=stack.health, quality=stack.quality, spoil_percent=stack.spoil_percent})
-						stack.count = stack.count-take
-					end
-
-					-- Spill the selected items on the ground
-					for _, stack in pairs(spill) do
-						-- off an elevated rail
-						if (wagon.draw_data.height == 3) then
-							local ItemName = stack.name
-							local sprite = rendering.draw_sprite
-								{
-									sprite = "item/"..ItemName,
-									render_layer = "under-elevated",
-									x_scale = 0.5,
-									y_scale = 0.5,
-									target = wagon.position,
-									surface = wagon.surface
-								}
-							local shadow = rendering.draw_sprite
-								{
-									sprite = "item/"..ItemName,
-									render_layer = "under-elevated",
-									tint = {0,0,0,0.1},
-									x_scale = 0.5,
-									y_scale = 0.5,
-									target = wagon.position,
-									surface = wagon.surface
-								}
-							local xUnit = math.sin(2*math.pi*(wagon.orientation))
-							local yUnit = math.sin(2*math.pi*(wagon.orientation-0.25))
-							local randomX = math.random(-5, 5)*0.1
-							local randomY = math.random(-5, 5)*0.1
-							local inertia = 20
-							local LandX = wagon.position.x+randomX + (inertia*wagon.speed*xUnit)
-							local LandY = wagon.position.y+randomY + (inertia*wagon.speed*yUnit)
-							local vector = {x=LandX-wagon.position.x, y=LandY-wagon.position.y}
-							local path = {}
-							local AirTime = 30
-							for i = 0, AirTime do
-								local progress = i/AirTime
-								path[i] =
-								{
-									x = wagon.position.x+randomX+(progress*vector.x),
-									y = wagon.position.y+randomY+(progress*vector.y),
-									height = -((progress^2)/0.3333)+3,
-								}
-							end
-							storage.FlyingItems[storage.FlightNumber] =
-								{
-									sprite=sprite,
-									shadow=shadow,
-									--speed=speed,
-									spin=math.random(-2,2)*0.01,
-									item=ItemName,
-									amount=stack.count,
-									quality=stack.quality,
-									target={x=LandX, y=LandY},
-									ThrowerPosition={x=wagon.position.x, y=wagon.position.y},
-									AirTime=AirTime,
-									StartTick=game.tick,
-									LandTick=game.tick+AirTime,
-									space=false,
-									surface=wagon.surface,
-									path=path
-								}
-							storage.FlightNumber = storage.FlightNumber + 1
-						-- Spill the selected items on the ground
+					if (#items > 0) then
+						-- Randomly select item to spill
+						local stack = table.remove(items, math.random(#items))
+						-- Take X from each stack
+						local take = math.min(stack.count, ItemsPerDrop)
+						if (stack.item_number) then
+							table.insert(spill, stack)
 						else
-							properties.entity.surface.spill_item_stack({position=properties.entity.position, stack=stack})
+							table.insert(spill, {name=stack.name, count=take, health=stack.health, quality=stack.quality, spoil_percent=stack.spoil_percent})
+							stack.count = stack.count-take
+						end
+
+						-- Spill the selected items on the ground
+						for _, stack in pairs(spill) do
+							-- off an elevated rail
+							if (wagon.draw_data.height == 3) then
+								local ItemName = stack.name
+								local sprite = rendering.draw_sprite
+									{
+										sprite = "item/"..ItemName,
+										render_layer = "under-elevated",
+										x_scale = 0.5,
+										y_scale = 0.5,
+										target = wagon.position,
+										surface = wagon.surface
+									}
+								local shadow = rendering.draw_sprite
+									{
+										sprite = "item/"..ItemName,
+										render_layer = "under-elevated",
+										tint = {0,0,0,0.1},
+										x_scale = 0.5,
+										y_scale = 0.5,
+										target = wagon.position,
+										surface = wagon.surface
+									}
+								local xUnit = math.sin(2*math.pi*(wagon.orientation))
+								local yUnit = math.sin(2*math.pi*(wagon.orientation-0.25))
+								local randomX = math.random(-5, 5)*0.1
+								local randomY = math.random(-5, 5)*0.1
+								local inertia = 20
+								local LandX = wagon.position.x+randomX + (inertia*wagon.speed*xUnit)
+								local LandY = wagon.position.y+randomY + (inertia*wagon.speed*yUnit)
+								local vector = {x=LandX-wagon.position.x, y=LandY-wagon.position.y}
+								local path = {}
+								local AirTime = 30
+								for i = 0, AirTime do
+									local progress = i/AirTime
+									path[i] =
+									{
+										x = wagon.position.x+randomX+(progress*vector.x),
+										y = wagon.position.y+randomY+(progress*vector.y),
+										height = -((progress^2)/0.3333)+3,
+									}
+								end
+								storage.FlyingItems[storage.FlightNumber] =
+									{
+										sprite=sprite,
+										shadow=shadow,
+										--speed=speed,
+										spin=math.random(-2,2)*0.01,
+										item=ItemName,
+										amount=stack.count,
+										quality=stack.quality,
+										target={x=LandX, y=LandY},
+										ThrowerPosition={x=wagon.position.x, y=wagon.position.y},
+										AirTime=AirTime,
+										StartTick=game.tick,
+										LandTick=game.tick+AirTime,
+										space=false,
+										surface=wagon.surface,
+										path=path
+									}
+								if (stack.item_number) then
+									local CloudStorage = game.create_inventory(1)
+									CloudStorage.insert(stack)
+									storage.FlyingItems[storage.FlightNumber].CloudStorage = CloudStorage
+									stack.count = stack.count - take
+								end
+								-- Ultracube irreplaceables detection & handling
+								if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] then -- Ultracube mod is active, and item is an irreplaceable
+									-- Velocity calculation
+									local velocity = {x=0,y=0}
+									if storage.FlyingItems[storage.FlightNumber].AirTime >= 2 then
+										local v1 = storage.FlyingItems[storage.FlightNumber].path[1]
+										local v2 = storage.FlyingItems[storage.FlightNumber].path[2]
+										velocity.x = v2.x - v1.x
+										velocity.y = v2.y - v1.y
+									end
+									-- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
+									CubeFlyingItems.create_token_for(storage.FlyingItems[storage.FlightNumber], velocity)
+								end
+								storage.FlightNumber = storage.FlightNumber + 1
+							-- Spill the selected items on the ground
+							else
+								-- WIP ultracube support spill on ground driectly from wagon
+								properties.entity.surface.spill_item_stack({position=properties.entity.position, stack=stack})
+								if (stack.item_number) then
+									stack.count = stack.count - take
+								end
+							end
 						end
 					end
 				end

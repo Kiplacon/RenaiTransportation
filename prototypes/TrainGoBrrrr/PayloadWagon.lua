@@ -1,27 +1,32 @@
 local OhYouLikeTrains = table.deepcopy(data.raw["cargo-wagon"]["cargo-wagon"])
-
+local color = {220,125,0}
 OhYouLikeTrains.name = "RTPayloadWagon"
-OhYouLikeTrains.icons = 
+OhYouLikeTrains.icons =
 {
 	{
 		icon = "__base__/graphics/icons/cargo-wagon.png",
 		icon_size = 64, 
 		icon_mipmaps = 4,
-		tint = {220,125,0}
+		tint = color
 	}
 }
 OhYouLikeTrains.minable = {mining_time = 0.5, result = "RTPayloadWagonItem"}
 OhYouLikeTrains.inventory_size = 8
 
-OhYouLikeTrains.pictures.rotated.layers[1].tint = {220,125,0}
-OhYouLikeTrains.pictures.rotated.layers[2].tint = {220,125,0}
-OhYouLikeTrains.pictures.rotated.layers[3].tint = {220,125,0}
-
-OhYouLikeTrains.horizontal_doors.layers[1].tint = {220,125,0}
-OhYouLikeTrains.horizontal_doors.layers[2].tint = {220,125,0}
-
-OhYouLikeTrains.vertical_doors.layers[1].tint = {220,125,0}
-OhYouLikeTrains.vertical_doors.layers[2].tint = {220,125,0}
+for _, part in pairs({"rotated", "sloped"}) do
+	if OhYouLikeTrains.pictures[part].layers then
+		for i, layer in pairs(OhYouLikeTrains.pictures[part].layers) do
+			layer.tint = color
+		end
+	end
+end
+for _, part in pairs({"horizontal_doors", "vertical_doors"}) do
+	if OhYouLikeTrains[part].layers then
+		for i, layer in pairs(OhYouLikeTrains[part].layers) do
+			layer.tint = color
+		end
+	end
+end
 
 data:extend({ 
 

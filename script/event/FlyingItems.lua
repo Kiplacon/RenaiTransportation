@@ -462,8 +462,8 @@ local function on_tick(event)
                         force = "player",
                         raise_built = true
                      }
-				      elseif storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
-					      CubeFlyingItems.panic(FlyingItem) -- Purposefully resort to Ultracube forced recovery
+                  elseif storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
+                     CubeFlyingItems.panic(FlyingItem) -- Purposefully resort to Ultracube forced recovery
                   else
                      ProjectileSurface.pollute(FlyingItem.target, FlyingItem.amount*0.5)
                   end
@@ -515,8 +515,8 @@ local function on_tick(event)
                         force = "player",
                         raise_built = true
                      }
-				      elseif storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
-					      CubeFlyingItems.panic(FlyingItem) -- Purposefully resort to Ultracube forced recovery
+                  elseif storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
+                     CubeFlyingItems.panic(FlyingItem) -- Purposefully resort to Ultracube forced recovery
                   else
                      ProjectileSurface.pollute(FlyingItem.target, FlyingItem.amount*0.5)
                   end
@@ -539,8 +539,8 @@ local function on_tick(event)
                         end
                      end
                      FlyingItem.CloudStorage.destroy()
-				      elseif storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
-					      CubeFlyingItems.release_and_spill(FlyingItem)
+                  elseif storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
+                     CubeFlyingItems.release_and_spill(FlyingItem)
                   else
                      local spilt = ProjectileSurface.spill_item_stack
                         {

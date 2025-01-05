@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.13
+Date: 1/4/2025
+  Bugfixes:
+    - Fixed that items in cargo wagons, fuel in trains, and ammo in artillery wagons lost quality after a jump
+    - Fixed a load crash with 5Dim Energy and other mods that change the next_upgrade of the medium power pole because I copied most of its settings for the Zipline terminal. Reported by Samario
+---------------------------------------------------------------------------------------------------
 Version: 2.0.12
 Date: 1/4/2025
   Bugfixes:

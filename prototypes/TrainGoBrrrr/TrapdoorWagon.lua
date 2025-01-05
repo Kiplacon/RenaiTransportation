@@ -11,17 +11,21 @@ OhYouLikeTrains.icons =
 	}
 }
 OhYouLikeTrains.minable = {mining_time = 0.5, result = "RTTrapdoorWagonItem"}
---OhYouLikeTrains.inventory_size = 8
 
-OhYouLikeTrains.pictures.rotated.layers[1].tint = color
-OhYouLikeTrains.pictures.rotated.layers[2].tint = color
-OhYouLikeTrains.pictures.rotated.layers[3].tint = color
-
-OhYouLikeTrains.horizontal_doors.layers[1].tint = color
-OhYouLikeTrains.horizontal_doors.layers[2].tint = color
-
-OhYouLikeTrains.vertical_doors.layers[1].tint = color
-OhYouLikeTrains.vertical_doors.layers[2].tint = color
+for _, part in pairs({"rotated", "sloped"}) do
+	if OhYouLikeTrains.pictures[part].layers then
+		for i, layer in pairs(OhYouLikeTrains.pictures[part].layers) do
+			layer.tint = color
+		end
+	end
+end
+for _, part in pairs({"horizontal_doors", "vertical_doors"}) do
+	if OhYouLikeTrains[part].layers then
+		for i, layer in pairs(OhYouLikeTrains[part].layers) do
+			layer.tint = color
+		end
+	end
+end
 
 local NameEveryTrainStation =
 {
