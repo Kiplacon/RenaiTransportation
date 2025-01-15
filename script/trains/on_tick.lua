@@ -106,12 +106,15 @@ local function on_tick(event)
 				target = GuideCar.position,
 				surface = GuideCar.surface
 			} ]]
-			TrainLandedOn = GuideCar.surface.find_entities_filtered
-				{
-					name = {"RTTrainBouncePlate", "RTTrainDirectedBouncePlate"},
-					position = GuideCar.position,
-					radius = 3,
-				}[1] -- in theory only one thing should be detected in the object layer this way
+			local TrainLandedOn
+			if (settings.startup["RTTrainBounceSetting"].value == true) then
+				TrainLandedOn = GuideCar.surface.find_entities_filtered
+					{
+						name = {"RTTrainBouncePlate", "RTTrainDirectedBouncePlate"},
+						position = GuideCar.position,
+						radius = 3,
+					}[1] -- in theory only one thing should be detected in the object layer this way
+			end
 			if (TrainLandedOn ~= nil and TrainLandedOn.name == "RTTrainBouncePlate") then
 				--game.print(game.tick..": "..GuideCar.position.x..","..GuideCar.position.y)
 				if (properties.MagnetComp ~= nil) then
@@ -679,7 +682,7 @@ local function on_tick(event)
 							local yUnit = math.sin(2*math.pi*(wagon.orientation-0.25))
 							local randomX = math.random(-5, 5)*0.1
 							local randomY = math.random(-5, 5)*0.1
-							local inertia = 20
+							local inertia = 13
 							local LandX = (wagon.position.x+randomX + (inertia*wagon.speed*xUnit)) + math.random(-height, height)*0.25
 							local LandY = (wagon.position.y+randomY + (inertia*wagon.speed*yUnit)) + math.random(-height, height)*0.25
 							local vector = {x=LandX-wagon.position.x, y=LandY-wagon.position.y}

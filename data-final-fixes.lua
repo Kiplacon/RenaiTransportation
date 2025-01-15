@@ -136,7 +136,6 @@ function MakeProjectile(ThingData, speed)
 	data:extend({TheProjectile})
 end
 
-
 function MakePrimedProjectile(ThingData, ProjectileType)-------------------------------------------
 log("--------Creating primed projectile for "..ThingData.type..": "..ThingData.name.."-----------")
 TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
@@ -155,10 +154,10 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 	if (ThingData.capsule_action) then --capsules with thrown actions: grenades, combat robots, poison, slowdown
 		if (ThingData.capsule_action.attack_parameters.ammo_type.action[1]) then
 			log(ThingData.type..": "..ThingData.name.." has multiple actions.")
-			ProjectileInitialAction = data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile].action
+			ProjectileInitialAction = table.deepcopy(data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action[1].action_delivery.projectile].action)
 		elseif (ThingData.capsule_action.attack_parameters.ammo_type.action) then
 			log(ThingData.type..": "..ThingData.name.." has 1 action.")
-			ProjectileInitialAction = data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile].action
+			ProjectileInitialAction = table.deepcopy(data.raw.projectile[ThingData.capsule_action.attack_parameters.ammo_type.action.action_delivery.projectile].action)
 		end
 	elseif (ThingData.place_result and data.raw["land-mine"][ThingData.place_result]) then  --landmines
 		log(ThingData.type..": "..ThingData.name.." places "..ThingData.place_result)
@@ -182,28 +181,28 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 			log(ThingData.type..": "..ThingData.name.." has multiple actions.")
 			for i, action in pairs(ThingData.ammo_type.action) do
 				if (action.action_delivery.projectile) then
-					ProjectileInitialAction = data.raw["artillery-projectile"][ThingData.ammo_type.action[1].action_delivery.projectile].action
-					ProjectileFinalAction = data.raw["artillery-projectile"][ThingData.ammo_type.action[1].action_delivery.projectile].final_action
+					ProjectileInitialAction = table.deepcopy(data.raw["artillery-projectile"][ThingData.ammo_type.action[1].action_delivery.projectile].action)
+					ProjectileFinalAction = table.deepcopy(data.raw["artillery-projectile"][ThingData.ammo_type.action[1].action_delivery.projectile].final_action)
 				end
 			end
 		elseif (ThingData.ammo_type.action) then
 			log(ThingData.type..": "..ThingData.name.." has 1 action.")
-			ProjectileInitialAction = data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].action
-			ProjectileFinalAction = data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].final_action
+			ProjectileInitialAction = table.deepcopy(data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].action)
+			ProjectileFinalAction = table.deepcopy(data.raw["artillery-projectile"][ThingData.ammo_type.action.action_delivery.projectile].final_action)
 		end
 	else -- rockets/atomic bombs/other
 		if (ThingData.ammo_type.action[1]) then
 			log(ThingData.type..": "..ThingData.name.." has multiple actions.")
 			for i, action in pairs(ThingData.ammo_type.action) do
 				if (action.action_delivery.projectile) then
-					ProjectileInitialAction = data.raw.projectile[ThingData.ammo_type.action[i].action_delivery.projectile].action
-					ProjectileFinalAction = data.raw.projectile[ThingData.ammo_type.action[i].action_delivery.projectile].final_action
+					ProjectileInitialAction = table.deepcopy(data.raw.projectile[ThingData.ammo_type.action[i].action_delivery.projectile].action)
+					ProjectileFinalAction = table.deepcopy(data.raw.projectile[ThingData.ammo_type.action[i].action_delivery.projectile].final_action)
 				end
 			end
 		elseif (ThingData.ammo_type.action) then
 			log(ThingData.type..": "..ThingData.name.." has 1 action.")
-			ProjectileInitialAction = data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].action
-			ProjectileFinalAction = data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].final_action
+			ProjectileInitialAction = table.deepcopy(data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].action)
+			ProjectileFinalAction = table.deepcopy(data.raw.projectile[ThingData.ammo_type.action.action_delivery.projectile].final_action)
 		end
 	end
 	if (ProjectileInitialAction) then
@@ -238,8 +237,8 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 		end
 	end
 	-- specific whitelist of single-target projectiles (base rocket/cannon shell) to AOE
-	if (ThingData.name == "rocket" 
-	or ThingData.name == "cannon-shell" 
+	if (ThingData.name == "rocket"
+	or ThingData.name == "cannon-shell"
 	or ThingData.name == "uranium-cannon-shell") then
 		for sbeve, effect in pairs(combined) do
 			effect.type = "area"
@@ -247,49 +246,53 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 		end
 	end
 	TheProjectile.initial_action = combined
-local RedTint = {255,100,100}
-local ScaleSize = 1.5
-if (ThingData.icons) then
-	if (ThingData.icon_size) then
-		TheProjectile.particle.size = ThingData.icon_size
-	else
-		TheProjectile.particle.size = ThingData.icons[1].icon_size
-	end
 
-	TheProjectile.particle.layers = {}
-	for iconlayer, iconspecs in pairs(ThingData.icons) do
-		if (iconspecs.icon_size) then
-			eeee = iconspecs.icon_size
+	local RedTint = {255,100,100}
+	local ScaleSize = 1.5
+	if (ThingData.icon_size == nil) then
+		ThingData.icon_size = 64
+	end
+	if (ThingData.icons) then
+		if (ThingData.icon_size) then
+			TheProjectile.particle.size = ThingData.icon_size
 		else
-			eeee = TheProjectile.particle.size
+			TheProjectile.particle.size = ThingData.icons[1].icon_size
 		end
 
-		table.insert(TheProjectile.particle.layers,
-			{
-				filename = iconspecs.icon,
-				line_length = 1,
-				frame_count = 1,
-				priority = "high",
-				scale = (19.2/eeee)*ScaleSize,
-				size = eeee,
-				tint = RedTint
-			})
+		TheProjectile.particle.layers = {}
+		for iconlayer, iconspecs in pairs(ThingData.icons) do
+			if (iconspecs.icon_size) then
+				eeee = iconspecs.icon_size
+			else
+				eeee = TheProjectile.particle.size
+			end
+
+			table.insert(TheProjectile.particle.layers,
+				{
+					filename = iconspecs.icon,
+					line_length = 1,
+					frame_count = 1,
+					priority = "high",
+					scale = (19.2/eeee)*ScaleSize,
+					size = eeee,
+					tint = RedTint
+				})
+		end
+	else
+		TheProjectile.particle =
+		{
+			filename = ThingData.icon,
+			line_length = 1,
+			width = ThingData.icon_size,
+			height = ThingData.icon_size,
+			frame_count = 1,
+			tint = RedTint,
+			--shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
+			priority = "high",
+			scale = (19.2/ThingData.icon_size)*ScaleSize --0.3*ScaleSize (0.3 is how big an item is on the ground)
+			--animation_speed = 1,
+		}
 	end
-else
-	TheProjectile.particle =
-	{
-		filename = ThingData.icon,
-		line_length = 1,
-		width = ThingData.icon_size,
-		height = ThingData.icon_size,
-		frame_count = 1,
-		tint = RedTint,
-		--shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
-		priority = "high",
-		scale = (19.2/ThingData.icon_size)*ScaleSize --0.3*ScaleSize (0.3 is how big an item is on the ground)
-		--animation_speed = 1,
-    }
-end
 	TheProjectile.spine_animation = nil
 
 	if (TheProjectile.initial_action.type or (TheProjectile.initial_action[1] and TheProjectile.initial_action[1].type and TheProjectile.initial_action[1].action_delivery)) then
@@ -730,7 +733,6 @@ function MakeCarriageSprites(ThingData)
 	--end
 end
 
-
 --- loop through data.raw ---------------------------------
 ---- Make thrower variants first so that the projectile generating will work
 
@@ -769,14 +771,13 @@ for ThingID, ThingData in pairs(data.raw.inserter) do
 	end
 end
 
-
 for Category, ThingsTable in pairs(data.raw) do
 	for ThingID, ThingData in pairs(ThingsTable) do
 		if (ThingData.stack_size) then
 			log("==========Creating item projectile for "..ThingData.type..": "..ThingData.name.."===========")
-			MakeProjectile(ThingData, 0.18) -- thrower inserter speed
-			MakeProjectile(ThingData, 0.25) -- ejector hatch speed
-			MakeProjectile(ThingData, 0.6) -- train bounce pad speed
+			MakeProjectile(table.deepcopy(ThingData), 0.18) -- thrower inserter speed
+			MakeProjectile(table.deepcopy(ThingData), 0.25) -- ejector hatch speed
+			MakeProjectile(table.deepcopy(ThingData), 0.6) -- train bounce pad speed
 			if (settings.startup["RTBounceSetting"].value == true) then
 				if (ThingData.type == "ammo" -- looking for things like rockets, tank shells, missles, etc
 				and ThingData.ammo_type.action --if this ammo does something
@@ -784,11 +785,11 @@ for Category, ThingsTable in pairs(data.raw) do
 					if (ThingData.ammo_type.action[1]) then
 						for i, action in pairs(ThingData.ammo_type.action) do
 							if (action.action_delivery and action.action_delivery.type ~= "stream" and action.action_delivery.projectile) then
-								MakePrimedProjectile(ThingData, action.action_delivery.type)
+								MakePrimedProjectile(table.deepcopy(ThingData), action.action_delivery.type)
 							end
 						end
 					elseif (ThingData.ammo_type.action and ThingData.ammo_type.action.action_delivery and ThingData.ammo_type.action.action_delivery.type ~= "stream" and ThingData.ammo_type.action.action_delivery.projectile) then
-						MakePrimedProjectile(ThingData, ThingData.ammo_type.action.action_delivery.type)
+						MakePrimedProjectile(table.deepcopy(ThingData), ThingData.ammo_type.action.action_delivery.type)
 					end
 				elseif
 					(
@@ -817,7 +818,7 @@ for Category, ThingsTable in pairs(data.raw) do
 						)
 						or data.raw["land-mine"][ThingData.place_result]
 					) then
-					MakePrimedProjectile(ThingData, "capsule")
+					MakePrimedProjectile(table.deepcopy(ThingData), "capsule")
 				end
 			end
 		end
@@ -873,7 +874,7 @@ for Category, ThingsTable in pairs(data.raw) do
 		end
 
 		if (Category == "locomotive" or Category == "cargo-wagon" or Category == "fluid-wagon") then
-			MakeCarriageSprites(ThingData)
+			MakeCarriageSprites(table.deepcopy(ThingData))
 		end
 
 		if (Category == "character" and (not string.find(ThingID, "RTGhost")) and (not string.find(ThingID, "-jetpack"))) then

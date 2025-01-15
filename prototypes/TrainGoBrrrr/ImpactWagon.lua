@@ -13,17 +13,21 @@ OhYouLikeTrains.icons =
 OhYouLikeTrains.minable = {mining_time = 0.5, result = "RTImpactWagonItem"}
 
 for _, part in pairs({"rotated", "sloped"}) do
-	if OhYouLikeTrains.pictures[part].layers then
+	if OhYouLikeTrains.pictures[part] and OhYouLikeTrains.pictures[part].layers then
 		for i, layer in pairs(OhYouLikeTrains.pictures[part].layers) do
 			layer.tint = color
 		end
+	elseif OhYouLikeTrains.pictures[part] then
+		OhYouLikeTrains.pictures[part].tint = color
 	end
 end
 for _, part in pairs({"horizontal_doors", "vertical_doors"}) do
-	if OhYouLikeTrains[part].layers then
+	if OhYouLikeTrains[part] and OhYouLikeTrains[part].layers then
 		for i, layer in pairs(OhYouLikeTrains[part].layers) do
 			layer.tint = color
 		end
+	elseif OhYouLikeTrains[part] then
+		OhYouLikeTrains[part].tint = color
 	end
 end
 

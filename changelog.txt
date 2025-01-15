@@ -1,9 +1,21 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.15
+Date: 1/15/2025
+  Bugfixes:
+    - Fixed a crash when jumping trains landed if you didn't have Train Bounce Pads enabled. Reported by DevilPaean
+    - Fixed generation of item projectiles to not add item icon_size data if it doesn't need it.
+---------------------------------------------------------------------------------------------------
+Version: 2.0.14
+Date: 1/7/2025
+  Bugfixes:
+    - Fixed a startup crash that would happen if you didn't have Elevated Rails enabled. Reported by D0rkL0rd and briel1235
+---------------------------------------------------------------------------------------------------
 Version: 2.0.13
 Date: 1/4/2025
   Bugfixes:
     - Fixed that items in cargo wagons, fuel in trains, and ammo in artillery wagons lost quality after a jump
     - Fixed a load crash with 5Dim Energy and other mods that change the next_upgrade of the medium power pole because I copied most of its settings for the Zipline terminal. Reported by Samario
+    - Fixed that the various cargo wagons lost their color while going up a train ramp.
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.12
 Date: 1/4/2025
