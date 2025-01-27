@@ -2,7 +2,7 @@ local function rotate(event)
 	local EntityDestroyNumber = script.register_on_object_destroyed(event.entity)
 	if ((event.entity.name == "DirectedBouncePlate" or event.entity.name == "DirectedBouncePlate5" or event.entity.name == "DirectedBouncePlate15")
 	and storage.BouncePadList[EntityDestroyNumber] ~= nil) then
-		CantSeeMe = storage.BouncePadList[EntityDestroyNumber].arrow.visible
+		local CantSeeMe = storage.BouncePadList[EntityDestroyNumber].arrow.visible
 		storage.BouncePadList[EntityDestroyNumber].arrow.destroy()
 		if (event.entity.orientation == 0) then
 			direction = "UD"
@@ -46,25 +46,10 @@ local function rotate(event)
 	end
 
 	if (storage.ThrowerPaths[EntityDestroyNumber] ~= nil) then -- if the rotated thing is part of a throw path
-		for ThrowerDestroyNumber, TrackedItems in pairs(storage.ThrowerPaths[EntityDestroyNumber]) do -- go through all the throwers/item pairs this thing was a part of
-			if (storage.CatapultList[ThrowerDestroyNumber]) then -- valid check
-				for item, sugma in pairs(TrackedItems) do
-					storage.CatapultList[ThrowerDestroyNumber].targets[item] = nil -- reset the thrower/item pair
-				end
-			end
-		end
-		storage.ThrowerPaths[EntityDestroyNumber] = {} -- reset this thing being part of any thrower paths
+		ResetPathComponentOverflowTracking(event.entity)
 	end
-
 	if (storage.CatapultList[EntityDestroyNumber]) then
-		storage.CatapultList[EntityDestroyNumber].targets = {}
-		for componentUN, PathsItsPartOf in pairs(storage.ThrowerPaths) do
-			for ThrowerUN, TrackedItems in pairs(PathsItsPartOf) do
-				if (ThrowerUN == EntityDestroyNumber) then
-					storage.ThrowerPaths[componentUN][ThrowerUN] = {}
-				end
-			end
-		end
+		ResetThrowerOverflowTracking(event.entity)
 	end
 
 	-- I could probably just rotate the detector instead of replacing it but w/e lmao

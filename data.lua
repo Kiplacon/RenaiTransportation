@@ -43,7 +43,8 @@ if (settings.startup["RTZiplineSetting"].value == true) then
 	require("prototypes.zipline")
 end
 
---require("prototypes.TrainGoBrrrr.TrapdoorWagon")
+require("prototypes.TrainGoBrrrr.TrapdoorWagon")
+require("prototypes.VacuumHatch")
 
 data:extend({
 {

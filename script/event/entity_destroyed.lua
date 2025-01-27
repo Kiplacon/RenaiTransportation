@@ -1,4 +1,8 @@
 local function entity_destroyed(event)
+	if (storage.FlyingItems[event.registration_number]) then
+		ResolveThrownItem(storage.FlyingItems[event.registration_number])
+	end
+
 	if (storage.CatapultList[event.registration_number]) then
 		if (storage.CatapultList[event.registration_number].entangled) then
 			for each, entity in pairs(storage.CatapultList[event.registration_number].entangled) do

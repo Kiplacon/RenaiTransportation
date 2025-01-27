@@ -34,12 +34,6 @@ local function on_tick(event)
 						create_build_effect_smoke = RezSpecs.smoke or false,
 						raise_built = RezSpecs.raise_built or true
 					}
-					--[[ if (RezSpecs.name == "RTTrainDetector") then
-						local trigger = RezSpecs.surface.find_entities_filtered({name="RTTrapdoorTrigger", position=RezSpecs.position})[1]
-						if (trigger) then
-							storage.DestructionLinks[script.register_on_object_destroyed(trigger)] = {rezzd} -- Trapdoor triggers will only ever have 1 linked detector so this is a list of 1
-						end
-					end ]]
 				else
 					-- try rez again next tick
 					if (storage.clock[game.tick+1] == nil) then

@@ -681,12 +681,6 @@ local function entity_damaged(event)
 			end
 		end
 
-	--[[ elseif (event.entity.type == "character"
-	and event.cause
-	and (event.cause.type == "locomotive" or event.cause.type == "cargo-wagon" or event.cause.type == "fluid-wagon" or event.cause.type == "artillery-wagon")
-	) then
-		CreateThrownItem(event.entity, event.entity.player, "wood", nil, event.entity.surface, {0,-1}) ]]
-
 	elseif (event.entity.name == "RTTrainDetector") then
 		local detector = event.entity
 		-- toggle the trapdoor on the wagon if it was hit by a trapdoor wagon

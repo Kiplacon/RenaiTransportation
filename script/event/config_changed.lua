@@ -121,6 +121,10 @@ local function config_changed()
 	if (storage.FlyingItems == nil) then
 		storage.FlyingItems = {}
 	end
+	if (storage.CustomPathFlyingItemSprites == nil) then
+		storage.CustomPathFlyingItemSprites = {}
+	end
+	
 
 --[[ 	if (game.surfaces["RTStasisRealm"] == nil) then
 		game.create_surface("RTStasisRealm",

@@ -5,14 +5,18 @@ local function on_tick(event)
 		--|| Player Launchers
 		if (PlayerProperties.state == "jumping" and player.character and PlayerProperties.sliding ~= true) then
 			player.character_running_speed_modifier = -0.75
+			local arc = -0.13 -- closer to 0 is higher arc
 			local FlyingItem = storage.FlyingItems[PlayerProperties.PlayerLauncher.tracker]
 			local duration = game.tick-FlyingItem.StartTick
 			local progress = duration/FlyingItem.AirTime
-			local height = (duration/(FlyingItem.arc*FlyingItem.AirTime))-(duration^2/(FlyingItem.arc*FlyingItem.AirTime^2))
+			local height = (duration/(arc*FlyingItem.AirTime))-(duration^2/(arc*FlyingItem.AirTime^2))
 			player.character.teleport -- predefined bounce "animation"
 				(
 					{FlyingItem.ThrowerPosition.x+(progress*FlyingItem.vector.x), FlyingItem.ThrowerPosition.y+(progress*FlyingItem.vector.y)+height}
 				)
+			local shadow = FlyingItem.shadow
+			shadow.target = {FlyingItem.ThrowerPosition.x+(progress*FlyingItem.vector.x)-height, FlyingItem.ThrowerPosition.y+(progress*FlyingItem.vector.y)}
+			shadow.color = {0, 0, 0, 2.5/(5-height)}
 			if (PlayerProperties.PlayerLauncher.direction == "right") then
 				player.character.walking_state = {walking = true, direction = defines.direction.east}
 			elseif (PlayerProperties.PlayerLauncher.direction == "left") then

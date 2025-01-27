@@ -70,24 +70,26 @@ function SwapToGhost(player)
 	end
 
     -- logistics stuff
-    NEWHOST.get_requester_point().enabled = OG.get_requester_point().enabled
-    NEWHOST.get_requester_point().trash_not_requested = OG.get_requester_point().trash_not_requested
-    OG.get_requester_point().enabled = false
-    OG.get_requester_point().trash_not_requested = false
-    NEWHOST.get_logistic_sections().remove_section(1) -- new character starts with one
-    for i = 1, OG.get_logistic_sections().sections_count do
-        local from = OG.get_logistic_sections().get_section(i)
-        local to = NEWHOST.get_logistic_sections().add_section(from.group)
-        to.active = from.active
-        to.multiplier = from.multiplier
-        if (from.group == "") then
-            for j = 1, from.filters_count do
-                to.set_slot(j, from.get_slot(j))
+    if (player.force.character_logistic_requests == true) then
+        NEWHOST.get_requester_point().enabled = OG.get_requester_point().enabled
+        NEWHOST.get_requester_point().trash_not_requested = OG.get_requester_point().trash_not_requested
+        OG.get_requester_point().enabled = false
+        OG.get_requester_point().trash_not_requested = false
+        NEWHOST.get_logistic_sections().remove_section(1) -- new character starts with one
+        for i = 1, OG.get_logistic_sections().sections_count do
+            local from = OG.get_logistic_sections().get_section(i)
+            local to = NEWHOST.get_logistic_sections().add_section(from.group)
+            to.active = from.active
+            to.multiplier = from.multiplier
+            if (from.group == "") then
+                for j = 1, from.filters_count do
+                    to.set_slot(j, from.get_slot(j))
+                end
             end
         end
-    end
-    for i = 1, OG.get_logistic_sections().sections_count do
-        OG.get_logistic_sections().remove_section(1) --whenever you remove a slot, a new one becomes slot 1
+        for i = 1, OG.get_logistic_sections().sections_count do
+            OG.get_logistic_sections().remove_section(1) --whenever you remove a slot, a new one becomes slot 1
+        end
     end
 
 	------ undo crafting queue -------
@@ -201,16 +203,18 @@ function SwapBackFromGhost(player, FlyingItem)
         end
 
         -- logistics stuff
-        OG.get_requester_point().enabled = ghost.get_requester_point().enabled
-        OG.get_requester_point().trash_not_requested = ghost.get_requester_point().trash_not_requested
-        for i = 1, ghost.get_logistic_sections().sections_count do
-            local from = ghost.get_logistic_sections().get_section(i)
-            local to = OG.get_logistic_sections().add_section(from.group)
-            to.active = from.active
-            to.multiplier = from.multiplier
-            if (from.group == "") then
-                for j = 1, from.filters_count do
-                to.set_slot(j, from.get_slot(j))
+        if (player.force.character_logistic_requests == true) then
+            OG.get_requester_point().enabled = ghost.get_requester_point().enabled
+            OG.get_requester_point().trash_not_requested = ghost.get_requester_point().trash_not_requested
+            for i = 1, ghost.get_logistic_sections().sections_count do
+                local from = ghost.get_logistic_sections().get_section(i)
+                local to = OG.get_logistic_sections().add_section(from.group)
+                to.active = from.active
+                to.multiplier = from.multiplier
+                if (from.group == "") then
+                    for j = 1, from.filters_count do
+                    to.set_slot(j, from.get_slot(j))
+                    end
                 end
             end
         end
@@ -319,54 +323,4 @@ function OffsetPosition(p1, p2)
     local p2x = p2.x or p2[1]
     local p2y = p2.y or p2[2]
     return {x=p1x+p2x, y=p1y+p2y}
-end
-
-function CreateThrownItem(source, target, item, amount, quality, surface, StartOffset, stack, ManualThrow)
-    if (type(source) == "userdata") then
-        source = source.position
-    end
-    if (StartOffset == nil) then
-        StartOffset = {0,0}
-    end
-    local TargetX = target.x
-    local TargetY = target.y
-    local distance = math.sqrt((TargetX-source.x)^2 + (TargetY-source.y)^2)
-    local speed = 0.18
-    local AirTime = math.max(1, math.floor(distance/speed))
-    storage.FlyingItems[storage.FlightNumber] =
-    {
-        item=item,
-        amount=amount,
-        quality=quality or "normal",
-        ThrowerPosition=source, -- for bounce pad redirecting
-        target={x=TargetX, y=TargetY},
-        AirTime=AirTime,
-        StartTick=game.tick,
-        LandTick=game.tick+AirTime,
-        --destination=DestinationDestroyNumber, -- for overflow prevention
-        space=false,
-        surface=surface, -- to search for things by the landing zone
-    }
-    local FlyingItem = storage.FlyingItems[storage.FlightNumber]
-    storage.FlightNumber = storage.FlightNumber + 1
-    surface.create_entity
-        {
-            name="RTItemProjectile-"..item..speed*100,
-            position=source,
-            source_position=OffsetPosition(source, StartOffset),
-            target_position={TargetX, TargetY}
-        }
-    if (stack ~= nil) then
-        local CloudStorage = game.create_inventory(1)
-        CloudStorage.insert(stack)
-        if (ManualThrow ~= false) then
-            CloudStorage[1].count = 1
-        end
-        FlyingItem.CloudStorage = CloudStorage
-    end
-    -- Ultracube irreplaceables detection & handling
-    if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[item] then -- Ultracube mod is active, and the held item is an irreplaceable
-        -- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
-        CubeFlyingItems.create_token_for(storage.FlyingItems[storage.FlightNumber])
-    end
 end
