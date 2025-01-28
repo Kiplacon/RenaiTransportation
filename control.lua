@@ -314,8 +314,8 @@ function(event)
 								CubeFlyingItems.create_token_for(storage.FlyingItems[storage.FlightNumber])
 							end
 							
-							storage.FlightNumber = storage.FlightNumber + 1 ]]
-							catapult.held_stack.clear()
+							storage.FlightNumber = storage.FlightNumber + 1
+							catapult.held_stack.clear() ]]
 						end
 					end
 				end
@@ -421,12 +421,21 @@ script.on_event(
 		and player.cursor_stack
 		and player.cursor_stack.valid_for_read == true) then
 			if (DistanceBetween(player.character.position, CursorPosition) <= player.character.reach_distance) then
-				local stack
+				--[[ local stack
 				if (player.cursor_stack.item_number ~= nil) then
 					stack = player.cursor_stack
 				end
 				CreateThrownItem(player.character, CursorPosition, player.cursor_stack.name, 1, player.cursor_stack.quality.name, player.surface, {0,-1}, stack, true)
-				player.cursor_stack.count = player.cursor_stack.count-1
+				player.cursor_stack.count = player.cursor_stack.count-1 ]]
+				
+				CreateThrownItem({
+					type = "ReskinnedStream",
+					stack = player.cursor_stack,
+					ThrowFromStackAmount = 1,
+					start = player.character.position,
+					target = CursorPosition,
+					surface = player.surface,
+				})
 				player.surface.play_sound
 					{
 						path = "RTThrow",

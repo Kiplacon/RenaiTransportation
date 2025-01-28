@@ -42,30 +42,12 @@ local function on_tick(event)
       end
    end
 
-
-   for each, FlyingItem in pairs(storage.FlyingItems) do
-      --[[ if (game.tick > FlyingItem.LandTick) then --failsafe
-         if (FlyingItem.sprite) then -- from impact unloader/space throw
-            FlyingItem.sprite.destroy()
+   if (storage.Ultracube) then
+      for each, FlyingItem in pairs(storage.FlyingItems) do
+         if (FlyingItem.sprite == nil and FlyingItem.cube_should_hint and event.tick < FlyingItem.LandTick) then
+            -- Ultracube non-sprite item position updating. Only done for items that require hinting as those are the ones the cube camera follows
+            CubeFlyingItems.item_with_stream_update(FlyingItem)
          end
-         if (FlyingItem.shadow) then -- from impact unloader/space throw
-            FlyingItem.shadow.destroy()
-         end
-         if (FlyingItem.destination ~= nil and storage.OnTheWay[FlyingItem.destination]) then
-            storage.OnTheWay[FlyingItem.destination][FlyingItem.item] = storage.OnTheWay[FlyingItem.destination][FlyingItem.item] - FlyingItem.amount
-         end
-         if (FlyingItem.player) then
-            if (FlyingItem.player.character) then
-               FlyingItem.player.character_running_speed_modifier = FlyingItem.IAmSpeed
-               SwapBackFromGhost(FlyingItem.player, FlyingItem)
-            end
-            storage.AllPlayers[FlyingItem.player.index].state = "default"
-         end
-         storage.FlyingItems[each] = nil
-      end ]]
-      -- Ultracube non-sprite item position updating. Only done for items that require hinting as those are the ones the cube camera follows
-      if (storage.Ultracube and FlyingItem.sprite == nil and FlyingItem.cube_should_hint and event.tick < FlyingItem.LandTick) then
-         CubeFlyingItems.item_with_stream_update(FlyingItem)
       end
    end
 end

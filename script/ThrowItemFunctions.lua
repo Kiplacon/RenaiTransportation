@@ -92,13 +92,13 @@ function CreateThrownItem(stuff)
                         target = start,
                         surface = surface
                     }
-                    FlyingItem.spin = math.random(-10,10)*0.01
+                    FlyingItem.spin = stuff.spin or math.random(-10,10)*0.01
                     local FlightNumber = "CustomPath"..NewFlightNumber()
                     FlyingItem.FlightNumber = FlightNumber
                     storage.FlyingItems[FlightNumber] = FlyingItem
                     storage.CustomPathFlyingItemSprites[FlightNumber] = true
                 else
-                    error("CustomPath requires a path")
+                    error("CustomPath requires a path and air time")
                 end
             elseif (ProjectileType == "tracer") then
                 FlyingItem.AirTime = 1
@@ -574,13 +574,34 @@ function ResolveThrownItem(FlyingItem)
 
                 ---- otherwise it bounces off whatever it landed on and lands as an item on the nearest empty space within 10 tiles. destroyed if no space ----
                 else
-                    if (FlyingItem.CloudStorage) then -- for things with data/tags or whatever, should only ever be 1 in stack
+                    if (FlyingItem.CloudStorage) then -- for "real" item stacks and things with data/tags
                         if (ThingLandedOn.type == "transport-belt") then
                             for l = 1, 2 do
                                 for i = 0, 0.9, 0.1 do
                                     if (FlyingItem.CloudStorage[1].count > 0 and ThingLandedOn.get_transport_line(l).can_insert_at(i) == true) then
                                         ThingLandedOn.get_transport_line(l).insert_at(i, FlyingItem.CloudStorage[1])
                                         FlyingItem.CloudStorage[1].count = FlyingItem.CloudStorage[1].count - 1
+                                    end
+                                end
+                            end
+                            if (FlyingItem.CloudStorage[1].count > 0) then
+                                if (settings.global["RTSpillSetting"].value == "Destroy") then
+                                    FlyingItem.surface.pollute(FlyingItem.target, FlyingItem.CloudStorage[1].count*0.5)
+                                    FlyingItem.surface.create_entity
+                                    ({
+                                        name = "water-splash",
+                                        position = FlyingItem.target
+                                    })
+                                else
+                                    local spilt = FlyingItem.surface.spill_item_stack
+                                        {
+                                            position = FlyingItem.surface.find_non_colliding_position("item-on-ground", FlyingItem.target, 500, 0.1),
+                                            stack = FlyingItem.CloudStorage[1]
+                                        }
+                                    if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
+                                        for every, thing in pairs(spilt) do
+                                            thing.order_deconstruction("player")
+                                        end
                                     end
                                 end
                             end
@@ -595,10 +616,9 @@ function ResolveThrownItem(FlyingItem)
                                     thing.order_deconstruction("player")
                                 end
                             end
-                            FlyingItem.CloudStorage.destroy()
                         end
                         FlyingItem.CloudStorage.destroy()
-                    else -- depreciated drop method from old item tracking system
+                    else -- for "fake" item stacks
                         local total = FlyingItem.amount
                         if (ThingLandedOn.type == "transport-belt") then
                             for l = 1, 2 do

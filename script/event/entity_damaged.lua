@@ -478,7 +478,105 @@ local function entity_damaged(event)
 					if (LaunchedPortion > 1) then
 						LaunchedPortion = 1
 					end
-					for _, stack in pairs(wagon.get_inventory(defines.inventory.cargo_wagon).get_contents()) do
+					local WagonInventory = wagon.get_inventory(defines.inventory.cargo_wagon)
+					for i = 1, #WagonInventory do
+						local stack = WagonInventory[i]
+						if (stack.valid_for_read) then
+							local LaunchedAmount = math.ceil(stack.count*LaunchedPortion)
+							local GroupSize = math.ceil((stack.count/20)*wagons) -- each stack will launch out as maximum 20 projectiles
+
+							local xUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation+0.25)))/(0.5*math.pi)) - 1
+							local yUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation)))/(0.5*math.pi)) - 1
+							
+							for _ = 1, math.floor(LaunchedAmount/GroupSize) do
+								local ForwardSpread = math.random(100,400)*0.1
+								local HorizontalSpread = math.random(-40,40)*ForwardSpread*0.01
+								local TargetX = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
+								local TargetY = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
+								local distance = math.sqrt((TargetX-wagon.position.x)^2 + (TargetY-wagon.position.y)^2)
+								local speed = math.abs(wagon.speed) * (distance/(35*math.abs(wagon.speed))) * math.random(45,100)*0.01
+								local arc = 0.3236*distance^-0.404 -- lower number is higher arc
+								local space = false
+								if (wagon.surface.platform or string.find(wagon.surface.name, " Orbit") or string.find(wagon.surface.name, " Field") or string.find(wagon.surface.name, " Belt")) then
+									arc = 99999999999999
+									TargetX = TargetX + (xUnit*wagon.speed * 200)
+									TargetY = TargetY + (yUnit*wagon.speed * 200)
+									distance = math.sqrt((TargetX-wagon.position.x)^2 + (TargetY-wagon.position.y)^2)
+									space = true
+								end
+								local AirTime = math.floor(distance/speed)
+								local vector = {x=TargetX-wagon.position.x, y=TargetY-wagon.position.y}
+								local path = {}
+								local random1 = math.random(-10, 10)*0.1
+								local random2 = math.random(-20, 5)*0.1
+								for j = 1, AirTime do
+									local progress = j/AirTime
+									path[j] =
+									{
+										x = wagon.position.x+random1+(progress*vector.x),
+										y = wagon.position.y+random2+(progress*vector.y),
+										height = progress * (1-progress) / arc
+									}
+								end
+								CreateThrownItem({
+									type = "CustomPath",
+									stack = stack,
+									ThrowFromStackAmount = GroupSize,
+									start = wagon.position,
+									target = {x=TargetX, y=TargetY},
+									path = path,
+									AirTime = AirTime,
+									space = space,
+									surface=wagon.surface,
+								})
+							end
+							local remainder = LaunchedAmount-(math.floor(LaunchedAmount/GroupSize)*GroupSize)
+							if (remainder > 0) then
+								local ForwardSpread = math.random(100,400)*0.1
+								local HorizontalSpread = math.random(-40,40)*ForwardSpread*0.01
+								local TargetX = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
+								local TargetY = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
+								local distance = math.sqrt((TargetX-wagon.position.x)^2 + (TargetY-wagon.position.y)^2)
+								local speed = math.abs(wagon.speed) * (distance/(35*math.abs(wagon.speed))) * math.random(45,100)*0.01
+								local arc = 0.3236*distance^-0.404 -- lower number is higher arc
+								local space = false
+								if (wagon.surface.platform or string.find(wagon.surface.name, " Orbit") or string.find(wagon.surface.name, " Field") or string.find(wagon.surface.name, " Belt")) then
+									arc = 99999999999999
+									TargetX = TargetX + (xUnit*wagon.speed * 200)
+									TargetY = TargetY + (yUnit*wagon.speed * 200)
+									distance = math.sqrt((TargetX-wagon.position.x)^2 + (TargetY-wagon.position.y)^2)
+									space = true
+								end
+								local AirTime = math.floor(distance/speed)
+								local vector = {x=TargetX-wagon.position.x, y=TargetY-wagon.position.y}
+								local path = {}
+								local random1 = math.random(-10, 10)*0.1
+								local random2 = math.random(-20, 5)*0.1
+								for j = 1, AirTime do
+									local progress = j/AirTime
+									path[j] =
+									{
+										x = wagon.position.x+random1+(progress*vector.x),
+										y = wagon.position.y+random2+(progress*vector.y),
+										height = progress * (1-progress) / arc
+									}
+								end
+								CreateThrownItem({
+									type = "CustomPath",
+									stack = stack,
+									ThrowFromStackAmount = remainder,
+									start = wagon.position,
+									target = {x=TargetX, y=TargetY},
+									path = path,
+									AirTime = AirTime,
+									space = space,
+									surface=wagon.surface,
+								})
+							end
+						end
+					end
+					
+					--[[ for _, stack in pairs(wagon.get_inventory(defines.inventory.cargo_wagon).get_contents()) do
 						local ItemName = stack.name
 						local amount = stack.count
 						local ItemQuality = stack.quality
@@ -667,7 +765,7 @@ local function entity_damaged(event)
 							end
 							wagon.get_inventory(defines.inventory.cargo_wagon).remove({name = ItemName, count=LaunchedAmount, quality=ItemQuality})
 						end
-					end
+					end ]]
 				end
 			end
 			if (event.cause.train.schedule and event.cause.train.manual_mode == false) then

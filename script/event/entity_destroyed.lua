@@ -1,5 +1,5 @@
 local function entity_destroyed(event)
-	if (storage.FlyingItems[event.registration_number]) then
+	if (storage.FlyingItems[event.registration_number]) then -- ##### VERY IMPORTANT THIS IS HOW LANDING OF THROWN ITEMS IS DETECTED #####
 		ResolveThrownItem(storage.FlyingItems[event.registration_number])
 	end
 
