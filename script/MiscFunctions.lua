@@ -324,3 +324,19 @@ function OffsetPosition(p1, p2)
     local p2y = p2.y or p2[2]
     return {x=p1x+p2x, y=p1y+p2y}
 end
+
+function ToggleTrapdoorWagon(WagonEntity)
+    local DestroyNumber = script.register_on_object_destroyed(WagonEntity)
+    -- properties.entity = the wagon entity
+    -- properties.open = true/false
+    -- properties.OpenIndicator = RenderObject
+    if (storage.TrapdoorWagonsOpen[DestroyNumber] ~= nil) then
+        storage.TrapdoorWagonsOpen[DestroyNumber].OpenIndicator.color = {r=1,g=0,b=0,a=1}
+        storage.TrapdoorWagonsOpen[DestroyNumber].open = false
+        storage.TrapdoorWagonsClosed[DestroyNumber], storage.TrapdoorWagonsOpen[DestroyNumber] = storage.TrapdoorWagonsOpen[DestroyNumber], nil
+    elseif (storage.TrapdoorWagonsClosed[DestroyNumber] ~= nil) then
+        storage.TrapdoorWagonsClosed[DestroyNumber].OpenIndicator.color = {r=0,g=1,b=0,a=1}
+        storage.TrapdoorWagonsClosed[DestroyNumber].open = true
+        storage.TrapdoorWagonsOpen[DestroyNumber], storage.TrapdoorWagonsClosed[DestroyNumber] = storage.TrapdoorWagonsClosed[DestroyNumber], nil
+    end
+end

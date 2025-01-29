@@ -483,14 +483,13 @@ local function entity_damaged(event)
 						local stack = WagonInventory[i]
 						if (stack.valid_for_read) then
 							local LaunchedAmount = math.ceil(stack.count*LaunchedPortion)
-							local GroupSize = math.ceil((stack.count/20)*wagons) -- each stack will launch out as maximum 20 projectiles
-
+							local GroupSize = math.ceil((stack.count/17)*wagons) -- each stack will launch out as maximum 17 projectiles per wagon
 							local xUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation+0.25)))/(0.5*math.pi)) - 1
 							local yUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation)))/(0.5*math.pi)) - 1
 							
 							for _ = 1, math.floor(LaunchedAmount/GroupSize) do
 								local ForwardSpread = math.random(100,400)*0.1
-								local HorizontalSpread = math.random(-40,40)*ForwardSpread*0.01
+								local HorizontalSpread = math.random(-35,35)*ForwardSpread*0.01
 								local TargetX = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
 								local TargetY = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
 								local distance = math.sqrt((TargetX-wagon.position.x)^2 + (TargetY-wagon.position.y)^2)
@@ -533,7 +532,7 @@ local function entity_damaged(event)
 							local remainder = LaunchedAmount-(math.floor(LaunchedAmount/GroupSize)*GroupSize)
 							if (remainder > 0) then
 								local ForwardSpread = math.random(100,400)*0.1
-								local HorizontalSpread = math.random(-40,40)*ForwardSpread*0.01
+								local HorizontalSpread = math.random(-35,35)*ForwardSpread*0.01
 								local TargetX = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
 								local TargetY = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
 								local distance = math.sqrt((TargetX-wagon.position.x)^2 + (TargetY-wagon.position.y)^2)
@@ -783,19 +782,7 @@ local function entity_damaged(event)
 		local detector = event.entity
 		-- toggle the trapdoor on the wagon if it was hit by a trapdoor wagon
 		if (event.cause and event.cause.valid and event.cause.name == "RTTrapdoorWagon") then
-			local DestroyNumber = script.register_on_object_destroyed(event.cause)
-			-- properties.entity = the wagon entity
-			-- properties.open = true/false
-			-- properties.OpenIndicator = RenderObject
-			if (storage.TrapdoorWagonsOpen[DestroyNumber] ~= nil) then
-				storage.TrapdoorWagonsOpen[DestroyNumber].OpenIndicator.color = {r=1,g=0,b=0,a=1}
-				storage.TrapdoorWagonsOpen[DestroyNumber].open = false
-				storage.TrapdoorWagonsClosed[DestroyNumber], storage.TrapdoorWagonsOpen[DestroyNumber] = storage.TrapdoorWagonsOpen[DestroyNumber], nil
-			elseif (storage.TrapdoorWagonsClosed[DestroyNumber] ~= nil) then
-				storage.TrapdoorWagonsClosed[DestroyNumber].OpenIndicator.color = {r=0,g=1,b=0,a=1}
-				storage.TrapdoorWagonsClosed[DestroyNumber].open = true
-				storage.TrapdoorWagonsOpen[DestroyNumber], storage.TrapdoorWagonsClosed[DestroyNumber] = storage.TrapdoorWagonsClosed[DestroyNumber], nil
-			end
+			ToggleTrapdoorWagon(event.cause)
 		end
 		-- start trying to res the detector
 		local time = game.tick+1
@@ -805,7 +792,11 @@ local function entity_damaged(event)
 		if (storage.clock[time].rez == nil) then
 			storage.clock[time].rez = {}
 		end
-		table.insert(storage.clock[time].rez, {name=detector.name, position=detector.position, force="neutral", surface=detector.surface})
+		local info = {name=detector.name, position=detector.position, force="neutral", surface=detector.surface, LastToggled=event.cause.unit_number}
+		--[[ if (event.cause and event.cause.valid and event.cause.name == "RTTrapdoorWagon") then
+			info.LastToggled = event.cause.unit_number
+		end ]]
+		table.insert(storage.clock[time].rez, info)
 		-- remove the now broken detector from the destruction link of its trigger
 		local trigger = detector.surface.find_entities_filtered({name="RTTrapdoorTrigger", position=detector.position})[1]
 		if (trigger) then

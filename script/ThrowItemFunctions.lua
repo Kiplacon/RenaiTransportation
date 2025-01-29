@@ -15,9 +15,10 @@ function CreateThrownItem(stuff)
         and (stuff.start and stuff.target and (stuff.surface or stuff.bouncing)) then
             -- setup the flying item data
             local bounced = stuff.bouncing or {}
-            local ItemName = bounced.item or stuff.ItemName or stuff.stack.name
-            local count = bounced.amount or stuff.count or stuff.stack.count
-            local quality = bounced.quality or stuff.quality or stuff.stack.quality.name
+            local stack = stuff.stack or {quality={}}
+            local ItemName = bounced.item or stack.name or stuff.ItemName
+            local count = bounced.amount or stack.count or stuff.count
+            local quality = bounced.quality or stack.quality.name or stuff.quality
             local start = stuff.start -- {x=0,y=0} or {0,0} or entity
             if (type(stuff.start) == "userdata") then
                 start = stuff.start.position
@@ -78,6 +79,7 @@ function CreateThrownItem(stuff)
                     FlyingItem.sprite = rendering.draw_sprite
                     {
                         sprite = "item/"..ItemName,
+                        render_layer = "under-elevated",
                         x_scale = 0.5,
                         y_scale = 0.5,
                         target = start,
@@ -86,6 +88,7 @@ function CreateThrownItem(stuff)
                     FlyingItem.shadow = rendering.draw_sprite
                     {
                         sprite = "item/"..ItemName,
+                        render_layer = "under-elevated",
                         tint = {0,0,0,0.5},
                         x_scale = 0.5,
                         y_scale = 0.5,
@@ -822,7 +825,7 @@ function ResolveThrownItem(FlyingItem)
         storage.CatapultList[FlyingItem.tracing].ImAlreadyTracer = "traced"
         storage.CatapultList[FlyingItem.tracing].targets[FlyingItem.item] = "nothing"
     end
-
+    
     -- cleanup
     if (FlyingItem.tracing == nil and ClearOverflowTracking == true and FlyingItem.DestinationDestroyNumber ~= nil and storage.OnTheWay[FlyingItem.DestinationDestroyNumber]) then
         storage.OnTheWay[FlyingItem.DestinationDestroyNumber][FlyingItem.item] = storage.OnTheWay[FlyingItem.DestinationDestroyNumber][FlyingItem.item] - FlyingItem.amount

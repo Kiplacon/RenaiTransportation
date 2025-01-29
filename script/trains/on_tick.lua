@@ -634,7 +634,7 @@ local function on_tick(event)
 			end
 
 			-- open trapdoor wagon spilling items out during flight
-			if (properties.trapdoor and #properties.cargo > 0) then
+			if (properties.trapdoor and #properties.cargo ~= 0 and ((height > 1.5 and VerticalSpeed > 0) or VerticalSpeed <= 0)) then
 				local ItemsPerDrop = 2
 				local items = properties.cargo
 				for drop = 1, 5 do
@@ -659,35 +659,16 @@ local function on_tick(event)
 						-- Spill the selected items on the ground
 						for _, stack in pairs(spill) do
 							local ItemName = stack.name
-							local sprite = rendering.draw_sprite
-								{
-									sprite = "item/"..ItemName,
-									render_layer = "under-elevated",
-									x_scale = 0.5,
-									y_scale = 0.5,
-									target = wagon.position,
-									surface = wagon.surface
-								}
-							local shadow = rendering.draw_sprite
-								{
-									sprite = "item/"..ItemName,
-									render_layer = "under-elevated",
-									tint = {0,0,0,0.1},
-									x_scale = 0.5,
-									y_scale = 0.5,
-									target = wagon.position,
-									surface = wagon.surface
-								}
 							local xUnit = math.sin(2*math.pi*(wagon.orientation))
 							local yUnit = math.sin(2*math.pi*(wagon.orientation-0.25))
 							local randomX = math.random(-5, 5)*0.1
 							local randomY = math.random(-5, 5)*0.1
-							local inertia = 13
+							local inertia = 10
 							local LandX = (wagon.position.x+randomX + (inertia*wagon.speed*xUnit)) + math.random(-height, height)*0.25
 							local LandY = (wagon.position.y+randomY + (inertia*wagon.speed*yUnit)) + math.random(-height, height)*0.25
 							local vector = {x=LandX-wagon.position.x, y=LandY-wagon.position.y}
 							local path = {}
-							local AirTime = math.floor(math.sqrt(2*height/12)*60) + math.random(-40, 0) -- +- half a second
+							local AirTime = math.max(1, math.floor(math.sqrt(2*height/12)*60 * (math.random(95, 105)*0.01))) -- +- half a second
 							for i = 0, AirTime do
 								local progress = i/AirTime
 								path[i] =
@@ -697,7 +678,35 @@ local function on_tick(event)
 									height = -(height*progress^2)+height,
 								}
 							end
-							storage.FlyingItems[storage.FlightNumber] =
+							if (stack.item_number) then
+								CreateThrownItem({
+									type = "CustomPath",
+									stack = stack,
+									ThrowFromStackAmount = math.min(stack.count, ItemsPerDrop),
+									start = wagon.position,
+									target = {x=LandX, y=LandY},
+									path = path,
+									AirTime = AirTime,
+									surface=wagon.surface,
+								})
+								if (stack.count <= 0) then
+									items[slot].destroy()
+									table.remove(items, slot)
+								end
+							else
+								CreateThrownItem({
+									type = "CustomPath",
+									ItemName = ItemName,
+									count = stack.count, -- take value
+									quality = stack.quality,
+									start = wagon.position,
+									target = {x=LandX, y=LandY},
+									path = path,
+									AirTime = AirTime,
+									surface=wagon.surface,
+								})
+							end
+							--[[ storage.FlyingItems[storage.FlightNumber] =
 								{
 									sprite=sprite,
 									shadow=shadow,
@@ -738,7 +747,7 @@ local function on_tick(event)
 								-- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
 								CubeFlyingItems.create_token_for(storage.FlyingItems[storage.FlightNumber], velocity)
 							end
-							storage.FlightNumber = storage.FlightNumber + 1
+							storage.FlightNumber = storage.FlightNumber + 1 ]]
 						end
 					end
 				end
@@ -828,25 +837,6 @@ local function on_tick(event)
 							-- off an elevated rail
 							if (wagon.draw_data.height == 3) then
 								local ItemName = stack.name
-								local sprite = rendering.draw_sprite
-									{
-										sprite = "item/"..ItemName,
-										render_layer = "under-elevated",
-										x_scale = 0.5,
-										y_scale = 0.5,
-										target = wagon.position,
-										surface = wagon.surface
-									}
-								local shadow = rendering.draw_sprite
-									{
-										sprite = "item/"..ItemName,
-										render_layer = "under-elevated",
-										tint = {0,0,0,0.1},
-										x_scale = 0.5,
-										y_scale = 0.5,
-										target = wagon.position,
-										surface = wagon.surface
-									}
 								local xUnit = math.sin(2*math.pi*(wagon.orientation))
 								local yUnit = math.sin(2*math.pi*(wagon.orientation-0.25))
 								local randomX = math.random(-5, 5)*0.1
@@ -866,44 +856,30 @@ local function on_tick(event)
 										height = -((progress^2)/0.3333)+3,
 									}
 								end
-								storage.FlyingItems[storage.FlightNumber] =
-									{
-										sprite=sprite,
-										shadow=shadow,
-										--speed=speed,
-										spin=math.random(-2,2)*0.01,
-										item=ItemName,
-										amount=stack.count,
-										quality=stack.quality,
-										target={x=LandX, y=LandY},
-										ThrowerPosition={x=wagon.position.x, y=wagon.position.y},
-										AirTime=AirTime,
-										StartTick=game.tick,
-										LandTick=game.tick+AirTime,
-										space=false,
-										surface=wagon.surface,
-										path=path
-									}
 								if (stack.item_number) then
-									local CloudStorage = game.create_inventory(1)
-									CloudStorage.insert(stack)
-									storage.FlyingItems[storage.FlightNumber].CloudStorage = CloudStorage
-									stack.count = stack.count - take
+									CreateThrownItem({
+										type = "CustomPath",
+										stack = stack,
+										ThrowFromStackAmount = math.min(stack.count, ItemsPerDrop),
+										start = wagon.position,
+										target = {x=LandX, y=LandY},
+										path = path,
+										AirTime = AirTime,
+										surface=wagon.surface,
+									})
+								else
+									CreateThrownItem({
+										type = "CustomPath",
+										ItemName = ItemName,
+										count = stack.count, -- take value
+										quality = stack.quality,
+										start = wagon.position,
+										target = {x=LandX, y=LandY},
+										path = path,
+										AirTime = AirTime,
+										surface=wagon.surface,
+									})
 								end
-								-- Ultracube irreplaceables detection & handling
-								if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] then -- Ultracube mod is active, and item is an irreplaceable
-									-- Velocity calculation
-									local velocity = {x=0,y=0}
-									if storage.FlyingItems[storage.FlightNumber].AirTime >= 2 then
-										local v1 = storage.FlyingItems[storage.FlightNumber].path[1]
-										local v2 = storage.FlyingItems[storage.FlightNumber].path[2]
-										velocity.x = v2.x - v1.x
-										velocity.y = v2.y - v1.y
-									end
-									-- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
-									CubeFlyingItems.create_token_for(storage.FlyingItems[storage.FlightNumber], velocity)
-								end
-								storage.FlightNumber = storage.FlightNumber + 1
 							-- Spill the selected items on the ground
 							else
 								-- WIP ultracube support spill on ground driectly from wagon
