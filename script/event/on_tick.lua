@@ -51,7 +51,7 @@ local function on_tick(event)
 							limit = 1
 						}[1]
 						if (blocking and blocking.unit_number ~= RezSpecs.LastToggled) then
-							game.print(game.tick..": "..blocking.unit_number.."   "..RezSpecs.LastToggled)
+							game.print("Debug: "..blocking.unit_number.."   "..RezSpecs.LastToggled)
 							ToggleTrapdoorWagon(blocking)
 							RezSpecs.LastToggled = blocking.unit_number
 						end

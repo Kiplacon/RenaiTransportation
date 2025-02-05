@@ -634,7 +634,8 @@ local function on_tick(event)
 			end
 
 			-- open trapdoor wagon spilling items out during flight
-			if (properties.trapdoor and #properties.cargo ~= 0 and ((height > 1.5 and VerticalSpeed > 0) or VerticalSpeed <= 0)) then
+			if (properties.trapdoor and #properties.cargo ~= 0 and not (height < 1.5 and VerticalSpeed > 0)) then
+			--if (properties.trapdoor and #properties.cargo ~= 0 and ((height > 1.5 and VerticalSpeed > 0) or VerticalSpeed <= 0)) then
 				local ItemsPerDrop = 2
 				local items = properties.cargo
 				for drop = 1, 5 do

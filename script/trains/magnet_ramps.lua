@@ -1,18 +1,20 @@
 local math2d = require('math2d')
 
 local magnetRamps = {}
-
+--get_or_create_control_behavior().circuit_condition = {constant = 5}
+--get_or_create_control_behavior().circuit_condition.constant
 magnetRamps.setRange = function (ramp, range, player, message)
+	local CurrentSetting = ramp.entity.get_or_create_control_behavior().circuit_condition.constant
 	if (range == nil) then
-		if (ramp.entity.get_or_create_control_behavior().get_section(1).get_slot(1).min and ramp.entity.get_or_create_control_behavior().get_section(1).get_slot(1).min>0) then
-			range = ramp.entity.get_or_create_control_behavior().get_section(1).get_slot(1).min-3
-			ramp.range = ramp.entity.get_or_create_control_behavior().get_section(1).get_slot(1).min
+		if (CurrentSetting > 0) then
+			range = CurrentSetting-3
+			ramp.range = CurrentSetting
 		else
 			ramp.range = 0
 		end
 	else
 		ramp.range = range + 3
-		ramp.entity.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=ramp.range})
+		ramp.entity.get_or_create_control_behavior().circuit_condition = {constant = ramp.range}
 	end
 
 	if (range ~= nil) then
@@ -40,8 +42,8 @@ end
 
 function makeMagRampSection(centerPosition, surface, orientation)
 	local offsets = {
-		a = math2d.position.rotate_vector({ 0.5, 0 }, 360 * orientation),
-		b = math2d.position.rotate_vector({ 1.5, 0 }, 360 * orientation),
+		a = math2d.position.rotate_vector({ 0.5, 0.1 }, 360 * orientation),
+		b = math2d.position.rotate_vector({-0.5, 0.1 }, 360 * orientation),
 	}
 
 	local a = surface.create_entity({

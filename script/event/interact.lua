@@ -158,6 +158,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local ElForce = player.force
 			local ElDirection = ThingHovering.direction
 			local ElSurface = ThingHovering.surface
+			local RailLayer = ThingHovering.rail_layer
 			ThingHovering.destroy()
 			local NewKid = ElSurface.create_entity
 				({
@@ -166,7 +167,8 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					direction = ElDirection,
 					force = ElForce,
 					raise_built = true,
-					create_build_effect_smoke = false
+					create_build_effect_smoke = false,
+					rail_layer = RailLayer
 				})
 			player.play_sound
 				{
@@ -179,6 +181,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local ElForce = player.force
 			local ElDirection = ThingHovering.direction
 			local ElSurface = ThingHovering.surface
+			local RailLayer = ThingHovering.rail_layer
 			ThingHovering.destroy()
 			local NewKid = ElSurface.create_entity
 				({
@@ -187,7 +190,8 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					direction = ElDirection,
 					force = ElForce,
 					raise_built = true,
-					create_build_effect_smoke = false
+					create_build_effect_smoke = false,
+					rail_layer = RailLayer
 				})
 			player.play_sound
 				{

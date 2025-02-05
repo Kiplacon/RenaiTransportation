@@ -1,12 +1,14 @@
 -- effect_id :: string: The effect_id specified in the trigger effect.
 -- surface_index :: uint: The surface the effect happened on.
--- source_position :: Position (optional)
+-- source_position :: Position (optional) | particle trigger effect where it lands
 -- source_entity :: LuaEntity (optional)
--- target_position :: Position (optional)
+-- target_position :: Position (optional) | particle trigger effect where it lands
 -- target_entity :: LuaEntity (optional)
 -- cause_entity :: LuaEntity (optional)
 
 local function effect_triggered(event)
+	local surface = game.surfaces[event.surface_index]
+
 	if (event.effect_id == "RTCrank"
 	and event.source_entity
 	and event.source_entity.player
@@ -93,6 +95,33 @@ local function effect_triggered(event)
 		else
 			--box.get_output_inventory().clear()
 		end
+
+	--[[ elseif (event.effect_id == "RTTestProjectileRegularEffect") then
+		game.print(game.tick.." Regular effect triggered")
+	elseif (event.effect_id == "RTTestProjectileWaterEffect") then
+		game.print("Water effect triggered")
+		rendering.draw_circle
+		{
+			color = {r = 0, g = 0, b = 1},
+			radius = 0.2,
+			width = 1,
+			filled = false,
+			target = event.target_position,
+			surface = surface,
+			time_to_live = 60
+		}
+	elseif (event.effect_id == "RTTestProjectileGroundEffect") then
+		game.print("Ground effect triggered")
+		rendering.draw_circle
+		{
+			color = {r = 0, g = 1, b = 0},
+			radius = 0.2,
+			width = 1,
+			filled = false,
+			target = event.target_position,
+			surface = surface,
+			time_to_live = 60
+		} ]]
 	end
 end
 

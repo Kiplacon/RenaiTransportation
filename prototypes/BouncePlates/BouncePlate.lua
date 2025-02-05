@@ -85,15 +85,49 @@ data:extend({
 		render_layer = "higher-object-above",
 		pictures =
 			{
-			  filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Particle.png",
-			  --width = 64,
-			  --height = 64,
-			  size = 32,
-			  priority = "extra-high",
-			  line_length = 4, -- frames per row
-			  frame_count = 4, -- total frames
-			  animation_speed = 0.5
+				filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Particle.png",
+				--width = 64,
+				--height = 64,
+				size = 32,
+				priority = "extra-high",
+				line_length = 4, -- frames per row
+				frame_count = 4, -- total frames
+				animation_speed = 0.5
 			}
+	},
+	{ --------- bounce effect ----------
+		type = "optimized-particle",
+		name = "RTTestParticle",
+		life_time = 60*5,
+		render_layer = "under-elevated",
+		pictures =
+			{
+				filename = "__RenaiTransportation__/graphics/LickmawBALLS.png",
+				--width = 64,
+				--height = 64,
+				size = 64,
+				scale = 0.3,
+				priority = "high",
+				line_length = 1, -- frames per row
+				frame_count = 1, -- total frames
+			},
+		shadows =
+			{
+				filename = "__RenaiTransportation__/graphics/LickmawBALLS.png",
+				--width = 64,
+				--height = 64,
+				size = 64,
+				scale = 0.3,
+				priority = "high",
+				line_length = 1, -- frames per row
+				frame_count = 1, -- total frames
+			},
+		draw_shadow_when_on_ground = false,
+		--regular_trigger_effect = {type="script", effect_id="RTTestProjectileRegularEffect"}, -- while in flight
+		--regular_trigger_effect_frequency = 30, -- how ofter while in flight
+		ended_in_water_trigger_effect = {type="script", effect_id="RTTestProjectileWaterEffect"}, -- the particle is destroyed when it hits the water regardless if this is defined or not
+		ended_on_ground_trigger_effect = {type="script", effect_id="RTTestProjectileGroundEffect"}, -- destroys the particle once it hits the ground in addition to the effect
+		--movement_modifier_when_on_ground = 0 -- > 1 means it speeds up when on the ground, 0 means it stops, < 1 means it slows down
 	}
 })
 

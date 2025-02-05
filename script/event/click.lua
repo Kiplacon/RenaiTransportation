@@ -19,10 +19,10 @@ local function click(event)
 					sprite = "RTMagnetTrainRampRange",
 					surface = ramp.surface,
 					orientation = ramp.orientation+0.25,
-					target = 
+					target =
 						{
-							ramp.position.x+storage.OrientationUnitComponents[ramp.orientation+0.25].x-(MaxRange+1)/2*storage.OrientationUnitComponents[ramp.orientation].x,
-							ramp.position.y+storage.OrientationUnitComponents[ramp.orientation+0.25].y-(MaxRange+1)/2*storage.OrientationUnitComponents[ramp.orientation].y
+							ramp.position.x-(MaxRange+1)/2*storage.OrientationUnitComponents[ramp.orientation].x,
+							ramp.position.y-(MaxRange+1)/2*storage.OrientationUnitComponents[ramp.orientation].y
 						},
 					x_scale = MaxRange/2,
 					y_scale = 1,

@@ -8,10 +8,17 @@ if script.active_mods["Ultracube"] then CubeFlyingItems = require("script.ultrac
 -- director pad range adjusting
 -- better system to adjust filters/range before placing thrower?
 
--- trapdoor wagon
+-- trapdoor wagon, trapdoor triggering ramp
 -- electromagnetic item cannon
 -- belt ramp
 -- vacuum hatch
+
+-- crash on interact to toggle things not currently enabled
+
+-- thrown item rework when animations can have dynamically rotated sprites
+-- particle for each item
+-- 10000 invisible particles with unique trigger IDs to cycle through
+-- sprite and invisible particle thrown on top of each other together to create the illusion of a single entity 
 
 
 -- Setup tables and stuff for new/existing saves ----
@@ -605,8 +612,16 @@ function(event)
 				name="RTSaysYourCrosshairIsTooLow",
 				target=player.character,
 				position={420,69},
-				
 			}.time_to_live=120
+		--[[ player.surface.create_particle(
+		{
+			name = "RTTestParticle",
+			position = player.character.position,
+			movement = {-0.1, 0},
+			height = 1,
+			vertical_speed = 0.1,
+			frame_speed = 1,
+		}) ]]
 	end
 end)
 
