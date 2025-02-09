@@ -17,6 +17,16 @@ local function config_changed()
 		end
 	end
 
+	if (storage.CatapultGroup == nil) then
+		storage.CatapultGroup = 1
+	end
+	if (storage.ThrowerGroups == nil) then
+		storage.ThrowerGroups = 3
+	end
+	if (storage.ThrowerProcessing == nil) then
+		storage.ThrowerProcessing = {{}, {}, {}}
+	end
+
 	if (storage.savedVehicleWagons == nil) then -- used for Vehicle Wagons 2 compatability
 		storage.savedVehicleWagons = {}
 	end
@@ -88,8 +98,8 @@ local function config_changed()
 		storage.FlyingTrains = {}
 	end
 
-	if (storage.MagnetRamps == nil) then
-		storage.MagnetRamps = {}
+	if (storage.TrainRamps == nil) then
+		storage.TrainRamps = {}
 	end
 
 	if (storage.BouncePadList == nil) then

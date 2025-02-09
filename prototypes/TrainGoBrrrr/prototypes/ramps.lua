@@ -55,7 +55,7 @@ local function makeRampPlacerEntity(name, icon, pictureFileName, placerItem)
 		name = name,
 		icon = icon,
 		icon_size = 64,
-		flags = {"filter-directions"},
+		flags = {"filter-directions", "not-on-map", "player-creation"},
 		minable = { mining_time = 0.5, result = placerItem },-- Minable so they can get the item back if the placer swap bugs out
 		render_layer = "elevated-object",
 		collision_mask = {layers={["train"]=true}}, -- these masks interact with the blocker
@@ -209,7 +209,7 @@ for _, variant in pairs({"ImpactUnloader", "TrainRamp", "TrainRampNoSkip", "Magn
 			icon_size = 64,
 			flags = {"player-creation", "not-on-map", "placeable-off-grid"},
 			hidden = true,
-			minable = {mining_time = 1, result = "RT"..variant.."Item"},
+			minable = {mining_time = 1, result = "RT"..variant:gsub("NoSkip", "").."Item"},
 			max_health = 500,
 			collision_box = {{-0.9, -1.9}, {0.9, 1.9}},
 			selection_box = {{-1, -2}, {1, 2}},
@@ -219,7 +219,7 @@ for _, variant in pairs({"ImpactUnloader", "TrainRamp", "TrainRampNoSkip", "Magn
 			elevated_collision_mask = {layers={["elevated_train"]=true}},
 			ground_picture_set = RampPictureSets("__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png"),
 			elevated_picture_set = RampPictureSets("__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png"),
-			placeable_by = { item = "RT"..variant.."Item", count = 1 }, -- Controls `q` and blueprint behavior
+			placeable_by = { item = "RT"..variant:gsub("NoSkip", "").."Item", count = 1 }, -- Controls `q` and blueprint behavior
 			resistances = {
 				{
 					type = "impact",
@@ -245,6 +245,26 @@ for _, variant in pairs({"ImpactUnloader", "TrainRamp", "TrainRampNoSkip", "Magn
 			),
 		CreateRampSprites("RT"..variant.."", "__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png")
 	})
+end
+-- placeholder stuff for 2.0 -> 2.1 migration
+for _, placeholder in pairs({"Up", "Down", "Left", "Right"}) do
+	for _, varient in pairs({"", "NoSkip"}) do
+		data:extend({
+			{
+				type = "simple-entity-with-owner",
+				name = "RTTrainRamp-Elevated"..placeholder..varient,
+				flags = {"not-on-map", "placeable-off-grid", "not-blueprintable", "not-deconstructable", "not-selectable-in-game"},
+				hidden = true,
+				max_health = 420,
+				picture =
+				{
+					filename = "__RenaiTransportation__/graphics/Untitled.png",
+					size = 32,
+					priority = "very-low",
+				}
+			}
+		})
+	end
 end
 
 local function makeRampItem(name, icon, placerEntity)

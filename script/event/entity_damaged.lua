@@ -167,7 +167,7 @@ local function entity_damaged(event)
 			FlyingTrainProperties.height = 3
 			FlyingTrainProperties.VerticalSpeed = 1
 		end
-		local MagnetRampProperties = storage.MagnetRamps[script.register_on_object_destroyed(event.entity)]
+		local MagnetRampProperties = storage.TrainRamps[script.register_on_object_destroyed(event.entity)]
 		if (MagneticRamps[event.entity.name] and MagnetRampProperties and MagnetRampProperties.range ~= 0 and MagnetRampProperties.power.energy/MagnetRampProperties.power.electric_buffer_size >= 0.95) then
 			FlyingTrainProperties.LandTick = math.ceil(game.tick + math.abs(MagnetRampProperties.range/(0.8*event.cause.speed)))
 			FlyingTrainProperties.MagnetComp = math.ceil(game.tick + 130*math.abs(event.cause.speed))-FlyingTrainProperties.LandTick

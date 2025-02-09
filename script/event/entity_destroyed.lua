@@ -16,12 +16,17 @@ local function entity_destroyed(event)
 		storage.PrimerThrowerLinks[event.registration_number] = nil
 	end
 
-	if (storage.MagnetRamps[event.registration_number]) then
-		for each, tile in pairs(storage.MagnetRamps[event.registration_number].tiles) do
-			tile.destroy()
+	if (storage.TrainRamps[event.registration_number]) then
+		if (storage.TrainRamps[event.registration_number].blocker.valid) then
+			storage.TrainRamps[event.registration_number].blocker.destroy()
 		end
-		storage.MagnetRamps[event.registration_number].power.destroy()
-		storage.MagnetRamps[event.registration_number] = nil
+		if (storage.TrainRamps[event.registration_number].power) then -- magent ramps
+			for each, tile in pairs(storage.TrainRamps[event.registration_number].tiles) do
+				tile.destroy()
+			end
+			storage.TrainRamps[event.registration_number].power.destroy()
+		end
+		storage.TrainRamps[event.registration_number] = nil
 	end
 
 	if (storage.OnTheWay[event.registration_number]) then

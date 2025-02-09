@@ -2,6 +2,9 @@ local ultracube_globals = require("script.ultracube.cube_global_handling")
 
 local function on_int()
 	storage.CatapultList = {}
+	storage.CatapultGroup = 1
+	storage.ThrowerGroups = 3
+	storage.ThrowerProcessing = {{}, {}, {}}
 
 	-- used for Vehicle Wagons 2 compatability
 	storage.savedVehicleWagons = {}
@@ -67,7 +70,7 @@ local function on_int()
 
 	storage.FlyingTrains = {}
 
-	storage.MagnetRamps = {}
+	storage.TrainRamps = {}
 
 	storage.BouncePadList = {}
 

@@ -1,5 +1,13 @@
 local trainHandler = require("__RenaiTransportation__/script/trains/entity_built")
 
+local function NextThrowerGroup()
+	storage.CatapultGroup = storage.CatapultGroup + 1
+	if (storage.CatapultGroup > storage.ThrowerGroups) then
+		storage.CatapultGroup = 1
+	end
+	return storage.CatapultGroup
+end
+
 local function entity_built(event)
 	local entity = event.created_entity or event.entity or event.destination
 
@@ -28,6 +36,7 @@ local function entity_built(event)
 		local OnDestroyNumber = script.register_on_object_destroyed(entity)
 		storage.CatapultList[OnDestroyNumber] = {entity=entity, targets={}, BurnerSelfRefuelCompensation=0.2, IsElectric=false, InSpace=false, RangeAdjustable=false}
 		local properties = storage.CatapultList[OnDestroyNumber]
+		storage.ThrowerProcessing[NextThrowerGroup()][OnDestroyNumber] = properties
 
 		if (string.find(entity.name, "RTThrower-") and entity.name ~= "RTThrower-PrimerThrower" and entity.force.technologies["RTFocusedFlinging"].researched == true) then
 			properties.RangeAdjustable = true
@@ -45,7 +54,7 @@ local function entity_built(event)
 		end
 
 		if (entity.name == "RTThrower-EjectorHatchRT") then
-			storage.CatapultList[OnDestroyNumber].sprite = rendering.draw_animation
+			properties.sprite = rendering.draw_animation
 				{
 					animation = "EjectorHatchFrames",
 					surface = entity.surface,
@@ -56,7 +65,7 @@ local function entity_built(event)
 					only_in_alt_mode = false
 				}
 		elseif (entity.name == "RTThrower-FilterEjectorHatchRT") then
-			storage.CatapultList[OnDestroyNumber].sprite = rendering.draw_animation
+			properties.sprite = rendering.draw_animation
 				{
 					animation = "FilterEjectorHatchFrames",
 					surface = entity.surface,
@@ -78,8 +87,8 @@ local function entity_built(event)
 				create_build_effect_smoke = false
 			}
 			sherlock.destructible = false
-			storage.CatapultList[OnDestroyNumber].entangled = {}
-			storage.CatapultList[OnDestroyNumber].entangled.detector = sherlock
+			properties.entangled = {}
+			properties.entangled.detector = sherlock
 			local OnDestroyNumber2 = script.register_on_object_destroyed(sherlock)
 			storage.PrimerThrowerLinks[OnDestroyNumber2] = {thrower = entity, ready = false}--, box = box}
 		end

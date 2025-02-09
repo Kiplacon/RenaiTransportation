@@ -136,11 +136,13 @@ function CreateThrownItem(stuff)
 
             -- Transfer items if needed
             if (stuff.stack ~= nil) then
-                local CloudStorage = game.create_inventory(1)
-                CloudStorage.insert(stuff.stack) -- inserts a copy
-                CloudStorage[1].count = stuff.ThrowFromStackAmount or stuff.stack.count
+                if (stuff.stack.item_number) then
+                    local CloudStorage = game.create_inventory(1)
+                    CloudStorage.insert(stuff.stack) -- inserts a copy
+                    CloudStorage[1].count = stuff.ThrowFromStackAmount or stuff.stack.count
+                    FlyingItem.CloudStorage = CloudStorage
+                end
                 stuff.stack.count = stuff.stack.count - (stuff.ThrowFromStackAmount or stuff.stack.count)
-                FlyingItem.CloudStorage = CloudStorage
             elseif (bounced.CloudStorage) then
                 FlyingItem.CloudStorage = bounced.CloudStorage
             end

@@ -250,7 +250,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local ElForce = player.force
 			local ElDirection = ThingHovering.direction
 			local ElSurface = ThingHovering.surface
-			local OldRange = storage.MagnetRamps[script.register_on_object_destroyed(ThingHovering)].range-3
+			local OldRange = storage.TrainRamps[script.register_on_object_destroyed(ThingHovering)].range-3
 			ThingHovering.destroy()
 			local NewKid = ElSurface.create_entity
 				({
@@ -267,7 +267,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				volume_modifier=1
 				}
 			local RampDestroyNumber = script.register_on_object_destroyed(NewKid)
-			local RampProperties = storage.MagnetRamps[RampDestroyNumber]
+			local RampProperties = storage.TrainRamps[RampDestroyNumber]
 			magnetRamps.setRange(
 					RampProperties,
 					OldRange,
@@ -278,7 +278,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local ElForce = player.force
 			local ElDirection = ThingHovering.direction
 			local ElSurface = ThingHovering.surface
-			local OldRange = storage.MagnetRamps[script.register_on_object_destroyed(ThingHovering)].range-3
+			local OldRange = storage.TrainRamps[script.register_on_object_destroyed(ThingHovering)].range-3
 			ThingHovering.destroy()
 			local NewKid = ElSurface.create_entity
 				({
@@ -295,7 +295,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				volume_modifier=1
 				}
 			local RampDestroyNumber = script.register_on_object_destroyed(NewKid)
-			local RampProperties = storage.MagnetRamps[RampDestroyNumber]
+			local RampProperties = storage.TrainRamps[RampDestroyNumber]
 			magnetRamps.setRange(
 					RampProperties,
 					OldRange,
