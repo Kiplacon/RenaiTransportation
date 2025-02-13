@@ -7,7 +7,7 @@ local function ThrowersOnTick(event)
                 local ThrowerStack = ThrowerEntity.held_stack
                 --local CatapulyDestroyNumber = script.register_on_object_destroyed(catapult)
                 -- power check. low power makes inserter arms stretch
-                --[[ if (properties.IsElectric == true and ThrowerEntity.energy/ThrowerEntity.electric_buffer_size >= 0.9) then
+                if (properties.IsElectric == true and ThrowerEntity.energy/ThrowerEntity.electric_buffer_size >= 0.9) then
                     ThrowerEntity.active = true
                 elseif (properties.IsElectric == true and ThrowerEntity.is_connected_to_electric_network() == true) then
                     ThrowerEntity.active = false
@@ -20,7 +20,7 @@ local function ThrowersOnTick(event)
                             surface = ThrowerEntity.surface,
                             time_to_live = 4
                         }
-                end ]]
+                end
 
                 if (ThrowerStack.valid_for_read) then -- if it has power
                     local HeldItem = ThrowerStack.name
@@ -139,22 +139,6 @@ local function ThrowersOnTick(event)
                                         properties.targets[HeldItem] = nil
                                     end
                                 end
-                                --[[ storage.FlyingItems[storage.FlightNumber] =
-                                    {
-                                        item=HeldItem,
-                                        count=catapult.held_stack.count,
-                                        quality=catapult.held_stack.quality.name,
-                                        --thrower=catapult, -- not used?
-                                        ThrowerPosition=catapult.position,
-                                        target={x=x, y=y},
-                                        --start=start, --ThrowerPosition now
-                                        AirTime=AirTime,
-                                        StartTick=game.tick,
-                                        LandTick=game.tick+AirTime,
-                                        destination=DestinationDestroyNumber,
-                                        space=properties.InSpace,
-                                        surface=catapult.surface,
-                                    } ]]
                                 
                                 if (properties.InSpace == false) then
                                     CreateThrownItem({
@@ -168,23 +152,6 @@ local function ThrowersOnTick(event)
                                         surface = ThrowerEntity.surface,
                                         space = false,
                                     })
-                                    --[[ if (prototypes.entity["RTItemProjectile-"..HeldItem..speed*100]) then
-                                        catapult.surface.create_entity
-                                        {
-                                            name="RTItemProjectile-"..HeldItem..speed*100,
-                                            position=catapult.held_stack_position,
-                                            source_position=ShootPosition,
-                                            target_position=catapult.drop_position
-                                        }
-                                    else
-                                        catapult.surface.create_entity
-                                        {
-                                            name="RTTestProjectile"..speed*100,
-                                            position=catapult.held_stack_position,
-                                            source_position=ShootPosition,
-                                            target_position=catapult.drop_position
-                                        }
-                                    end ]]
                                 else
                                     x = x + (-storage.OrientationUnitComponents[ThrowerEntity.orientation].x * 100)
                                     y = y + (-storage.OrientationUnitComponents[ThrowerEntity.orientation].y * 100)
@@ -216,20 +183,6 @@ local function ThrowersOnTick(event)
                                         AirTime = AirTime,
                                     })
                                 end
-                                --[[ if (catapult.held_stack.item_number ~= nil) then
-                                    local CloudStorage = game.create_inventory(1)
-                                    CloudStorage.insert(catapult.held_stack)
-                                    storage.FlyingItems[storage.FlightNumber].CloudStorage = CloudStorage
-                                end
-
-                                -- Ultracube irreplaceables detection & handling
-                                if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[HeldItem] then -- Ultracube mod is active, and the held item is an irreplaceable
-                                    -- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
-                                    CubeFlyingItems.create_token_for(storage.FlyingItems[storage.FlightNumber])
-                                end
-                                
-                                storage.FlightNumber = storage.FlightNumber + 1
-                                catapult.held_stack.clear() ]]
                             end
                         end
                     end

@@ -31,25 +31,6 @@ for _, part in pairs({"horizontal_doors", "vertical_doors"}) do
 	end
 end
 
-local NameEveryTrainStation =
-{
-	type = "simple-entity-with-owner",
-	name = "RTTrapdoorTrigger",
-	flags = {"placeable-off-grid", "player-creation"},
-	minable = {mining_time = 0.5, result = "RTTrapdoorTriggerItem"},
-	max_health = 500,
-	selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
-	collision_box = {{-0.1, -0.1}, {0.1, 0.1}},
-	collision_mask = {layers={}, not_colliding_with_itself=true},
-	render_layer = "transport-belt",
-	picture = {
-		filename = '__RenaiTransportation__/graphics/LickmawBALLS.png',
-		width = 64,
-		height = 64,
-		scale = 0.5
-	},
-}
-
 
 data:extend({
 ----wagon
@@ -90,31 +71,8 @@ OhYouLikeTrains,
 },
 
 -------------- trigger
-NameEveryTrainStation,
+--NameEveryTrainStation,
 
-{ --------- trigger item ----------
-    type = "item",
-    name = "RTTrapdoorTriggerItem",
-    icon = '__RenaiTransportation__/graphics/LickmawBALLS.png',
-    icon_size = 64,
-    subgroup = "RT",
-    order = "g",
-    place_result = "RTTrapdoorTrigger",
-    stack_size = 10,
-},
-{ --------- trigger recipe ----------
-    type = "recipe",
-    name = "RTTrapdoorTriggerRecipe",
-    enabled = true,
-    energy_required = 0.1,
-    ingredients =
-    {
-        {type="item", name="advanced-circuit", amount=10},
-    },
-    results = {
-        {type="item", name="RTTrapdoorTriggerItem", amount=1}
-    }
-},
 { -- actual collision detector
 	type = "simple-entity-with-owner",
 	name = "RTTrainDetector",

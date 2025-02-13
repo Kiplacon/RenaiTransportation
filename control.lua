@@ -1,25 +1,33 @@
 if script.active_mods["gvv"] then require("__gvv__.gvv")() end
 if script.active_mods["Ultracube"] then CubeFlyingItems = require("script.ultracube.cube_flying_items") end
 
-
+require('util')
 ---- keikaku
--- dynamic zipline, get on from anywhere and autodrive anywhere
--- better zipline driving with close connections
+------- improvements
+-- better zipline driving with close connections (unlikely)
 -- deflector pad, diagonal (w/range adjusts)
 -- director pad range adjusting
--- better system to adjust filters/range before placing thrower?
+-- remove shadows from character ghosts
+	-- animate character ghosts separately
 
+------- New features
 -- trapdoor wagon, trapdoor triggering ramp
 -- electromagnetic item cannon
 -- belt ramp
 -- vacuum hatch
+-- zipline logistic drone
+-- fluid jet/catching tank
+-- dynamic zipline, get on from anywhere and autodrive anywhere
+-- getting hit by a train/car knocks you away
 
+------- bugs
 -- crash on interact to toggle things not currently enabled
 
+------- impossible atm
 -- thrown item rework when animations can have dynamically rotated sprites
--- particle for each item
--- 10000 invisible particles with unique trigger IDs to cycle through
--- sprite and invisible particle thrown on top of each other together to create the illusion of a single entity 
+	-- particle for each item
+	-- 10000 invisible particles with unique trigger IDs to cycle through
+	-- sprite and invisible particle thrown on top of each other together to create the illusion of a single entity 
 
 
 -- Setup tables and stuff for new/existing saves ----

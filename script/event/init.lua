@@ -71,6 +71,7 @@ local function on_int()
 	storage.FlyingTrains = {}
 
 	storage.TrainRamps = {}
+	storage.TrainCollisionDetectors = {}
 
 	storage.BouncePadList = {}
 

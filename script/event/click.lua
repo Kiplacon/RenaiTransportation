@@ -44,7 +44,10 @@ local function click(event)
 				local TheRail = clicked
 				local RampDestroyNumber = script.register_on_object_destroyed(TheRamp)
 				local RampProperties = storage.TrainRamps[RampDestroyNumber]
-				if (TheRail.name == "straight-rail" or TheRail.name == "RTTrainBouncePlate" or TheRail.name == "RTTrainDirectedBouncePlate") then
+				if (TheRail.name == "straight-rail"
+				or TheRail.name == "RTTrainBouncePlate"
+				or TheRail.name == "RTTrainDirectedBouncePlate"
+				or TheRail.name == "elevated-straight-rail") then
 					--|| Vertical ramps
 					if ((PlayerProperties.SettingRampRange.point == 0 or PlayerProperties.SettingRampRange.point == 0.5)
 						and TheRamp ~= nil
@@ -59,7 +62,8 @@ local function click(event)
 							RampProperties,
 							range,
 							player,
-							true
+							true,
+							TheRail
 						)
 					--|| Horizontal ramps
 					elseif ((PlayerProperties.SettingRampRange.point == 0.25 or PlayerProperties.SettingRampRange.point == 0.75)
@@ -74,7 +78,8 @@ local function click(event)
 							RampProperties,
 							range,
 							player,
-							true
+							true,
+							TheRail
 						)
 					--out of range
 					else

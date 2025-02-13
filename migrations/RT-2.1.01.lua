@@ -42,11 +42,18 @@ end
 if (storage.TrainRamps == nil) then
 	storage.TrainRamps = {}
 end
+if (storage.TrainCollisionDetectors == nil) then
+	storage.TrainCollisionDetectors = {}
+end
 
 local math2d = require('math2d')
 local constants = require('__RenaiTransportation__/script/trains/constants')
 
 for _, RampName in pairs({"RTTrainRamp", "RTTrainRampNoSkip", "RTImpactUnloader"}) do
+	local RampType = "TrainRamp"
+	if (RampName == "RTImpactUnloader") then
+		RampType = "ImpactUnloader"
+	end
 	for _, surface in pairs(game.surfaces) do
 		local ramps = surface.find_entities_filtered
 		{
@@ -62,7 +69,7 @@ for _, RampName in pairs({"RTTrainRamp", "RTTrainRampNoSkip", "RTImpactUnloader"
 				--player = ramp.player,
 				rail_layer = ramp.rail_layer
 			})
-			RampSetup(NewRamp)
+			RampSetup(NewRamp, RampType)
 			ramp.destroy()
 		end
 	end
@@ -84,7 +91,7 @@ for _, irection in pairs({{"Up", defines.direction.south}, {"Down", defines.dire
 					rail_layer = defines.rail_layer.elevated,
 					force = ramp.force,
 				}
-				RampSetup(NewRamp, nil)
+				RampSetup(NewRamp, "TrainRamp")
 				ramp.destroy()
 			end
 		end

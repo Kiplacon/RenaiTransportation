@@ -251,7 +251,8 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local ElDirection = ThingHovering.direction
 			local ElSurface = ThingHovering.surface
 			local OldRange = storage.TrainRamps[script.register_on_object_destroyed(ThingHovering)].range-3
-			ThingHovering.destroy()
+			local ElRailLayer = ThingHovering.rail_layer
+			ThingHovering.destroy() -- rail signals cannot be on the same spot
 			local NewKid = ElSurface.create_entity
 				({
 				name = "RTMagnetTrainRampNoSkip",
@@ -260,6 +261,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				force = ElForce,
 				raise_built = true,
 				create_build_effect_smoke = false,
+				rail_layer = ElRailLayer
 				})
 			player.play_sound{
 				path="utility/rotated_large",
@@ -279,7 +281,8 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local ElDirection = ThingHovering.direction
 			local ElSurface = ThingHovering.surface
 			local OldRange = storage.TrainRamps[script.register_on_object_destroyed(ThingHovering)].range-3
-			ThingHovering.destroy()
+			local ElRailLayer = ThingHovering.rail_layer
+			ThingHovering.destroy() -- rail signals cannot be on the same spot
 			local NewKid = ElSurface.create_entity
 				({
 				name = "RTMagnetTrainRamp",
@@ -288,6 +291,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				force = ElForce,
 				raise_built = true,
 				create_build_effect_smoke = false,
+				rail_layer = ElRailLayer
 				})
 			player.play_sound{
 				path="utility/rotated_large",

@@ -1,4 +1,4 @@
-local utild = require('util')
+--local utild = require('util')
 --======= util.swap_entity_inventories and swap_inventories method copied from the Jetpacks mod cause this somehow preserves blueprints in the quickbar
 --https://mods.factorio.com/mod/jetpack
 --[[ function util.swap_entity_inventories(entity_a, entity_b, inventory)

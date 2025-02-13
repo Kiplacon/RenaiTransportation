@@ -217,7 +217,7 @@ local function entity_built(event)
 		local tag = entity.force.add_chart_tag(entity.surface, {position=entity.position, text=storage.ZiplineTerminals[OnDestroyNumber].name, icon={type="item", name="RTZiplineTerminalItem"}})
 		storage.ZiplineTerminals[OnDestroyNumber].tag = tag
 
-	elseif (entity.name == "RTTrapdoorTrigger") then
+	elseif (entity.name == "RTTrapdoorSwitch") then
 		local TriggerDestroyNumber = script.register_on_object_destroyed(entity)
 		if (storage.DestructionLinks[TriggerDestroyNumber] == nil) then
 			storage.DestructionLinks[TriggerDestroyNumber] = {}
@@ -226,15 +226,14 @@ local function entity_built(event)
 		{
 			name = "RTTrainDetector",
 			position = entity.position,
-			force = "neutral",
+			force = "neutral", -- makes it deal collision damage even if friendly fire is off
 			create_build_effect_smoke = false,
 			raise_built = true
 		}
-	elseif (entity.name == "RTTrainDetector") then -- used when a trapdoor trigger is built or rezzed
-		entity.destructible = true -- maybe this enables impact damage when friendly fire is off?
-		local trigger = entity.surface.find_entities_filtered({name="RTTrapdoorTrigger", position=entity.position})[1]
-		if (trigger) then
-			storage.DestructionLinks[script.register_on_object_destroyed(trigger)] = {entity} -- Trapdoor triggers will only ever have 1 linked detector so this is a list of 1
+	elseif (entity.name == "RTTrainDetector") then -- used when a trapdoor switch is built or rezzed
+		local switch = entity.surface.find_entities_filtered({name="RTTrapdoorSwitch", position=entity.position})[1]
+		if (switch) then
+			storage.DestructionLinks[script.register_on_object_destroyed(switch)] = {entity} -- Trapdoor switches will only ever have 1 linked detector so this is a list of 1
 		else
 			entity.destroy()
 		end

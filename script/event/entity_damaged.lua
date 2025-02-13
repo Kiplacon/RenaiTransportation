@@ -40,49 +40,54 @@ local NonSkippingRamps = {
 	RTMagnetTrainRampNoSkip = 1337,
 }
 
+local GroundToElevatedMagArcShift_constant = 0.7 -- 1 is normal jump, closer to 0 pushes out the trajectory arc so the train at the landing tick is higher
+local ElevatedRangeShift_constant = 0.125 -- 0 is normal jump, closer to 1 shortens the jump so that there's time/space for the train to fall to ground level
+
 local function entity_damaged(event)
 	if ( -- train ramps
-		(TrainRamps[event.entity.name] ~= nil)
-		and event.cause
+		event.cause
 		and (event.cause.type == "locomotive"
 			or event.cause.type == "cargo-wagon"
 			or event.cause.type == "fluid-wagon"
 			or event.cause.type == "artillery-wagon")
+		and (event.entity.name == "RTTrainRampCollisionBox"
+			or event.entity.name == "RTElevatedTrainRampCollisionBox")
+		and storage.TrainCollisionDetectors[script.register_on_object_destroyed(event.entity)].RampType ~= "ImpactUnloader"
 		and (math.abs(event.entity.orientation-event.cause.orientation) == 0.5
-			or math.abs(event.entity.orientation-event.cause.orientation) == 0
-			or string.find(event.entity.name, "-Elevated")~=nil)
+			or math.abs(event.entity.orientation-event.cause.orientation) == 0)
 		and (
-				(((event.entity.name == "RTTrainRamp-ElevatedDown" or (string.find(event.entity.name, "-Elevated")==nil and event.entity.orientation == 0)) and event.entity.position.y-event.cause.position.y>0) --down
-				or ((event.entity.name == "RTTrainRamp-ElevatedLeft" or (string.find(event.entity.name, "-Elevated")==nil and event.entity.orientation == 0.25)) and event.entity.position.x-event.cause.position.x<0) --left
-				or ((event.entity.name == "RTTrainRamp-ElevatedUp" or (string.find(event.entity.name, "-Elevated")==nil and event.entity.orientation == 0.5)) and event.entity.position.y-event.cause.position.y<0) --up
-				or ((event.entity.name == "RTTrainRamp-ElevatedRight" or (string.find(event.entity.name, "-Elevated")==nil and event.entity.orientation == 0.75)) and event.entity.position.x-event.cause.position.x>0) --right
-				)
+				(event.entity.orientation == 0 and event.entity.position.y-event.cause.position.y>0) --down
+				or (event.entity.orientation == 0.25 and event.entity.position.x-event.cause.position.x<0) --left
+				or (event.entity.orientation == 0.50 and event.entity.position.y-event.cause.position.y<0) --up
+				or (event.entity.orientation == 0.75 and event.entity.position.x-event.cause.position.x>0) --right
 			)
 	) then
-		local elevated = (string.find(event.entity.name, "-Elevated") ~= nil)
+		local carriage = event.cause
+		local elevated = (event.entity.name == "RTElevatedTrainRampCollisionBox")
+		local ramp = storage.TrainCollisionDetectors[script.register_on_object_destroyed(event.entity)].ramp
 		local HeightOffset = 0
 		if (elevated) then
 			HeightOffset = -3
 		end
 		--game.print(elevated)
-		local SpookyGhost = event.entity.surface.create_entity
+		local SpookyGhost = ramp.surface.create_entity
 			({
 				name = "RTPropCar",
-				position = event.cause.position,
-				force = event.cause.force
+				position = carriage.position,
+				force = carriage.force
 			})
-		SpookyGhost.orientation = event.cause.orientation
+		SpookyGhost.orientation = carriage.orientation
 		SpookyGhost.operable = false
-		SpookyGhost.speed = 0.8*event.cause.speed
+		SpookyGhost.speed = 0.8*carriage.speed
 		SpookyGhost.destructible = false
 
-		local base = event.cause.name
-		local way = storage.OrientationUnitComponents[event.cause.orientation].name
+		local base = carriage.name
+		local way = storage.OrientationUnitComponents[carriage.orientation].name
 
 		if (helpers.is_valid_sprite_path("RT"..base..way)) then
 			image = "RT"..base..way
 		else
-			image = "RT"..event.cause.type..way
+			image = "RT"..carriage.type..way
 		end
 		if (helpers.is_valid_sprite_path("RT"..base.."Mask"..way)) then
 			mask = "RT"..base.."Mask"..way
@@ -90,10 +95,10 @@ local function entity_damaged(event)
 			mask = "RTNoMask"
 		end
 
-		if (event.cause.type == "locomotive") then
-			maskhue = event.cause.color or {r = 255, g = 0, b = 0, a = 255}
+		if (carriage.type == "locomotive") then
+			maskhue = carriage.color or {r = 255, g = 0, b = 0, a = 255}
 		else
-			maskhue = event.cause.color
+			maskhue = carriage.color
 		end
 
 		local OwTheEdge = rendering.draw_sprite
@@ -102,7 +107,7 @@ local function entity_damaged(event)
 				tint = {a = 90},
 				target = {entity=SpookyGhost, offset={0,HeightOffset}},
 				surface = SpookyGhost.surface,
-				orientation = event.cause.orientation,
+				orientation = carriage.orientation,
 				x_scale = 0.25,
 				y_scale = 0.5,
 				render_layer = "air-object"
@@ -147,7 +152,7 @@ local function entity_damaged(event)
 			SpookyGhost.surface.create_entity
 				{
 					name="RTSaysYourCrosshairIsTooLow",
-					target={entity=SpookyGhost, offset={0,HeightOffset}},
+					target=SpookyGhost,
 					position={420,69}
 				}
 		end
@@ -155,85 +160,95 @@ local function entity_damaged(event)
 		storage.FlyingTrains[SpookyGhost.unit_number] = {}
 		local FlyingTrainProperties = storage.FlyingTrains[SpookyGhost.unit_number]
 		FlyingTrainProperties.GuideCar = SpookyGhost
-		if (event.cause.get_driver() ~= nil) then
-			--FlyingTrainProperties.passenger = event.cause.get_driver()
-			SpookyGhost.set_passenger(event.cause.get_driver())
+		if (carriage.get_driver() ~= nil) then
+			--FlyingTrainProperties.passenger = carriage.get_driver()
+			SpookyGhost.set_passenger(carriage.get_driver())
 		end
-		FlyingTrainProperties.name = event.cause.name
-		FlyingTrainProperties.type = event.cause.type
+		FlyingTrainProperties.name = carriage.name
+		FlyingTrainProperties.type = carriage.type
 		FlyingTrainProperties.LaunchTick = game.tick
 		if (elevated) then
 			FlyingTrainProperties.elevated = 3
 			FlyingTrainProperties.height = 3
 			FlyingTrainProperties.VerticalSpeed = 1
 		end
-		local MagnetRampProperties = storage.TrainRamps[script.register_on_object_destroyed(event.entity)]
-		if (MagneticRamps[event.entity.name] and MagnetRampProperties and MagnetRampProperties.range ~= 0 and MagnetRampProperties.power.energy/MagnetRampProperties.power.electric_buffer_size >= 0.95) then
-			FlyingTrainProperties.LandTick = math.ceil(game.tick + math.abs(MagnetRampProperties.range/(0.8*event.cause.speed)))
-			FlyingTrainProperties.MagnetComp = math.ceil(game.tick + 130*math.abs(event.cause.speed))-FlyingTrainProperties.LandTick
+		local MagnetRampProperties = storage.TrainRamps[script.register_on_object_destroyed(ramp)]
+		if (MagneticRamps[ramp.name] and MagnetRampProperties and MagnetRampProperties.range ~= 0 and MagnetRampProperties.power.energy/MagnetRampProperties.power.electric_buffer_size >= 0.95) then
+			local ElevatedRangeShift = 0
+			local GroundToElevatedMagArcShift = 1
+			if (ramp.get_or_create_control_behavior().circuit_condition.first_signal and ramp.get_or_create_control_behavior().circuit_condition.first_signal.name) then
+				if (ramp.get_or_create_control_behavior().circuit_condition.first_signal.name == "DirectorBouncePlateUp") then
+					GroundToElevatedMagArcShift = GroundToElevatedMagArcShift_constant
+				elseif (ramp.get_or_create_control_behavior().circuit_condition.first_signal.name == "DirectorBouncePlateDown") then
+					ElevatedRangeShift = ElevatedRangeShift_constant*(MagnetRampProperties.range)
+				end
+			end
+			FlyingTrainProperties.LandTick = math.ceil(game.tick + math.abs((MagnetRampProperties.range)/(0.8*carriage.speed)) - ElevatedRangeShift)
+			FlyingTrainProperties.MagnetComp = math.ceil(game.tick + 130*math.abs(carriage.speed))-FlyingTrainProperties.LandTick
+			FlyingTrainProperties.GroundToElevatedMagArcShift = GroundToElevatedMagArcShift
 			FlyingTrainProperties.MakeFX = "yes"
 			--game.print("power")
 
-		elseif (MagneticRamps[event.entity.name] and MagnetRampProperties and MagnetRampProperties.range ~= 0 and MagnetRampProperties.power.energy/MagnetRampProperties.power.electric_buffer_size < 0.95) then
+		elseif (MagneticRamps[ramp.name] and MagnetRampProperties and MagnetRampProperties.range ~= 0 and MagnetRampProperties.power.energy/MagnetRampProperties.power.electric_buffer_size < 0.95) then
 			FlyingTrainProperties.MakeFX = "NoEnergy"
 			--game.print("no power")
-			FlyingTrainProperties.LandTick = math.ceil(game.tick + 130*math.abs(event.cause.speed))
+			FlyingTrainProperties.LandTick = math.ceil(game.tick + 130*math.abs(carriage.speed))
 
 		elseif (elevated) then -- elevated jumps
-			FlyingTrainProperties.LandTick = math.ceil(game.tick + 130*math.abs(event.cause.speed))
+			FlyingTrainProperties.LandTick = math.ceil(game.tick + 130*math.abs(carriage.speed))
 
 		else
-			FlyingTrainProperties.LandTick = math.ceil(game.tick + 130*math.abs(event.cause.speed)) -- remember to adjust follower calculation too
+			FlyingTrainProperties.LandTick = math.ceil(game.tick + 130*math.abs(carriage.speed)) -- remember to adjust follower calculation too
 		end
 
 		FlyingTrainProperties.AirTime = FlyingTrainProperties.LandTick - FlyingTrainProperties.LaunchTick
 		--game.print(FlyingTrainProperties.AirTime)
 		FlyingTrainProperties.TrainImageID = TrainImage
 		FlyingTrainProperties.MaskID = Mask
-		FlyingTrainProperties.speed = event.cause.speed
-		FlyingTrainProperties.SpecialName = event.cause.backer_name
+		FlyingTrainProperties.speed = carriage.speed
+		FlyingTrainProperties.SpecialName = carriage.backer_name
 		FlyingTrainProperties.color = maskhue
-		FlyingTrainProperties.orientation = event.cause.orientation
-		--FlyingTrainProperties.RampOrientation = event.entity.orientation
+		FlyingTrainProperties.orientation = carriage.orientation
+		--FlyingTrainProperties.RampOrientation = ramp.orientation
 		FlyingTrainProperties.ShadowID = OwTheEdge
-		FlyingTrainProperties.ManualMode = event.cause.train.manual_mode
-		FlyingTrainProperties.length = #event.cause.train.carriages
+		FlyingTrainProperties.ManualMode = carriage.train.manual_mode
+		FlyingTrainProperties.length = #carriage.train.carriages
 
 		for number, properties in pairs(storage.FlyingTrains) do -- carriages jumping before the ends land
-			if (properties.LandedTrain ~= nil and properties.LandedTrain.valid and event.cause.unit_number == properties.LandedTrain.unit_number) then
+			if (properties.LandedTrain ~= nil and properties.LandedTrain.valid and carriage.unit_number == properties.LandedTrain.unit_number) then
 				FlyingTrainProperties.ManualMode = properties.ManualMode
 				FlyingTrainProperties.length = properties.length
 			end
 		end
 
 		local SearchBox
-		if (event.entity.name == "RTTrainRamp-ElevatedDown" or (elevated == false and event.entity.orientation == 0)) then --ramp down
+		if (ramp.orientation == 0) then --ramp down
 			FlyingTrainProperties.RampOrientation = 0
 			SearchBox =
 				{
-					{event.cause.position.x-1,event.cause.position.y-6},
-					{event.cause.position.x+1,event.cause.position.y-4}
+					{carriage.position.x-1,carriage.position.y-6},
+					{carriage.position.x+1,carriage.position.y-4}
 				}
-		elseif (event.entity.name == "RTTrainRamp-ElevatedLeft" or (elevated == false and event.entity.orientation == 0.25)) then -- ramp left
+		elseif (ramp.orientation == 0.25) then -- ramp left
 			FlyingTrainProperties.RampOrientation = 0.25
 			SearchBox =
 				{
-					{event.cause.position.x+4,event.cause.position.y-1},
-					{event.cause.position.x+6,event.cause.position.y+1}
+					{carriage.position.x+4,carriage.position.y-1},
+					{carriage.position.x+6,carriage.position.y+1}
 				}
-		elseif (event.entity.name == "RTTrainRamp-ElevatedUp" or (elevated == false and event.entity.orientation == 0.50)) then -- ramp up
+		elseif (ramp.orientation == 0.50) then -- ramp up
 			FlyingTrainProperties.RampOrientation = 0.5
 			SearchBox =
 				{
-					{event.cause.position.x-1,event.cause.position.y+4},
-					{event.cause.position.x+1,event.cause.position.y+6}
+					{carriage.position.x-1,carriage.position.y+4},
+					{carriage.position.x+1,carriage.position.y+6}
 				}
-		elseif (event.entity.name == "RTTrainRamp-ElevatedRight" or (elevated == false and event.entity.orientation == 0.75)) then -- ramp right
+		elseif (ramp.orientation == 0.75) then -- ramp right
 			FlyingTrainProperties.RampOrientation = 0.75
 			SearchBox =
 				{
-					{event.cause.position.x-6,event.cause.position.y-1},
-					{event.cause.position.x-4,event.cause.position.y+1}
+					{carriage.position.x-6,carriage.position.y-1},
+					{carriage.position.x-4,carriage.position.y+1}
 				}
 		end
 
@@ -241,7 +256,7 @@ local function entity_damaged(event)
 			color = {1,1,0},
 			left_top = SearchBox[1],
 			right_bottom = SearchBox[2],
-			surface = event.cause.surface,
+			surface = carriage.surface,
 			time_to_live = 10,
 		} ]]
 
@@ -264,34 +279,45 @@ local function entity_damaged(event)
 			}
 		end ]]
 
-		FlyingTrainProperties.schedule = event.cause.train.schedule
-		if (SkippingRamps[event.entity.name] and FlyingTrainProperties.schedule ~= nil) then
+		FlyingTrainProperties.schedule = carriage.train.schedule
+		if (SkippingRamps[ramp.name] and FlyingTrainProperties.schedule ~= nil) then
 			if (FlyingTrainProperties.schedule.current == table_size(FlyingTrainProperties.schedule.records)) then
 				FlyingTrainProperties.schedule.current = 1
 			else
 				FlyingTrainProperties.schedule.current = FlyingTrainProperties.schedule.current+1
 			end
-		elseif (NonSkippingRamps[event.entity.name] and FlyingTrainProperties.schedule ~= nil) then
-			FlyingTrainProperties.destinationStation = event.cause.train.path_end_stop
-			FlyingTrainProperties.adjustDestinationLimit = event.cause.train.path_end_stop -- manual trains don't have this, it will be nill
-			if (FlyingTrainProperties.adjustDestinationLimit and event.cause.train.path_end_stop.trains_limit > 0 and event.cause.train.path_end_stop.trains_limit < 4294967295) then -- apparently 4294967295 means train limit is disabled
+		elseif (NonSkippingRamps[ramp.name] and FlyingTrainProperties.schedule ~= nil) then
+			FlyingTrainProperties.destinationStation = carriage.train.path_end_stop
+			FlyingTrainProperties.adjustDestinationLimit = carriage.train.path_end_stop -- manual trains don't have this, it will be nill
+			if (FlyingTrainProperties.adjustDestinationLimit and carriage.train.path_end_stop.trains_limit > 0 and carriage.train.path_end_stop.trains_limit < 4294967295) then -- apparently 4294967295 means train limit is disabled
 				-- Artifically reserve the station by decrementing the available blocks
-				event.cause.train.path_end_stop.trains_limit = event.cause.train.path_end_stop.trains_limit - 1
+				carriage.train.path_end_stop.trains_limit = carriage.train.path_end_stop.trains_limit - 1
 			end
 		end
 
 		--| Follower/leader tracking
 		for number, properties in pairs(storage.FlyingTrains) do
-			if (properties.follower and properties.follower.valid and event.cause.unit_number == properties.follower.unit_number) then
+			if (properties.follower and properties.follower.valid and carriage.unit_number == properties.follower.unit_number) then
 				FlyingTrainProperties.leader = number
 				storage.FlyingTrains[number].followerID = SpookyGhost.unit_number
 				FlyingTrainProperties.schedule = storage.FlyingTrains[number].schedule
 				FlyingTrainProperties.ManualMode = storage.FlyingTrains[number].ManualMode
 				FlyingTrainProperties.destinationStation = storage.FlyingTrains[number].destinationStation
 				FlyingTrainProperties.adjustDestinationLimit = storage.FlyingTrains[number].adjustDestinationLimit
-				if (MagneticRamps[event.entity.name] and MagnetRampProperties and storage.FlyingTrains[number].MagnetComp ~= nil and (storage.FlyingTrains[number].MakeFX == "yes" or storage.FlyingTrains[number].MakeFX == "followerY")) then
-					FlyingTrainProperties.LandTick = math.ceil(game.tick + math.abs(MagnetRampProperties.range/(0.8*storage.FlyingTrains[number].speed)))
+				if (MagneticRamps[ramp.name] and MagnetRampProperties and storage.FlyingTrains[number].MagnetComp ~= nil and (storage.FlyingTrains[number].MakeFX == "yes" or storage.FlyingTrains[number].MakeFX == "followerY")) then
+					-- all this has to be repeated from the original mag ramp handling for some reason, when i dont repeat it there are dysyncs (in data no like a crash)
+					local ElevatedRangeShift = 0
+					local GroundToElevatedMagArcShift = 1
+					if (ramp.get_or_create_control_behavior().circuit_condition.first_signal and ramp.get_or_create_control_behavior().circuit_condition.first_signal.name) then
+						if (ramp.get_or_create_control_behavior().circuit_condition.first_signal.name == "DirectorBouncePlateUp") then
+							GroundToElevatedMagArcShift = GroundToElevatedMagArcShift_constant
+						elseif (ramp.get_or_create_control_behavior().circuit_condition.first_signal.name == "DirectorBouncePlateDown") then
+							ElevatedRangeShift = ElevatedRangeShift_constant*(MagnetRampProperties.range)
+						end
+					end
+					FlyingTrainProperties.LandTick = math.ceil(game.tick + math.abs((MagnetRampProperties.range)/(0.8*storage.FlyingTrains[number].speed)) - ElevatedRangeShift)
 					FlyingTrainProperties.MagnetComp = storage.FlyingTrains[number].MagnetComp
+					FlyingTrainProperties.GroundToElevatedMagArcShift = GroundToElevatedMagArcShift
 					FlyingTrainProperties.MakeFX = "followerY"
 				else
 					FlyingTrainProperties.LandTick = math.ceil(game.tick + 130*math.abs(storage.FlyingTrains[number].speed))
@@ -323,7 +349,7 @@ local function entity_damaged(event)
 		--game.print(game.tick.." JumpStartPosition: "..serpent.block(FlyingTrainProperties.JumpStartPosition))
 
 		--| Magnet Ramp GFX
-		if (MagneticRamps[event.entity.name] and MagnetRampProperties and MagnetRampProperties.range ~= 0 and FlyingTrainProperties.MakeFX == "yes") then
+		if (MagneticRamps[ramp.name] and MagnetRampProperties and MagnetRampProperties.range ~= 0 and FlyingTrainProperties.MakeFX == "yes") then
 			MagnetRampProperties.power.energy = 0
 			if (FlyingTrainProperties.MagnetComp < 0) then
 				polarity = "RTPush"
@@ -344,52 +370,52 @@ local function entity_damaged(event)
 						animation_speed = vroom,
 						animation_offset = math.random(0,99),
 						tint = shade,
-						surface = event.entity.surface,
+						surface = ramp.surface,
 						x_scale = 0.3,
 						y_scale = 0.8,
-						time_to_live = FlyingTrainProperties.AirTime+((5.9*FlyingTrainProperties.length)/(0.8*event.cause.speed))
+						time_to_live = FlyingTrainProperties.AirTime+((5.9*FlyingTrainProperties.length)/(0.8*carriage.speed))
 					}
 			end
 
-		elseif (MagneticRamps[event.entity.name] and MagnetRampProperties and MagnetRampProperties.range ~= 0 and FlyingTrainProperties.MakeFX == "NoEnergy") then
+		elseif (MagneticRamps[ramp.name] and MagnetRampProperties and MagnetRampProperties.range ~= 0 and FlyingTrainProperties.MakeFX == "NoEnergy") then
 			for each, guy in pairs(game.connected_players) do
 				guy.add_custom_alert(MagnetRampProperties.entity, {type = "item", name = "RTMagnetTrainRampItem"}, "A Magnet Ramp was used without a full buffer!", true)
 			end
 
 		end
 		-- record stuff based on wagon type
-		if (event.cause.type == "locomotive" and event.cause.burner) then
-			if (storage.About2Jump[event.cause.unit_number] ~= nil) then
-				FlyingTrainProperties.CurrentlyBurning = storage.About2Jump[event.cause.unit_number].BurningFuel
-				storage.About2Jump[event.cause.unit_number] = nil
+		if (carriage.type == "locomotive" and carriage.burner) then
+			if (storage.About2Jump[carriage.unit_number] ~= nil) then
+				FlyingTrainProperties.CurrentlyBurning = storage.About2Jump[carriage.unit_number].BurningFuel
+				storage.About2Jump[carriage.unit_number] = nil
 			else
-				FlyingTrainProperties.CurrentlyBurning = event.cause.burner.currently_burning
+				FlyingTrainProperties.CurrentlyBurning = carriage.burner.currently_burning
 			end
-			FlyingTrainProperties.RemainingFuel = event.cause.burner.remaining_burning_fuel
+			FlyingTrainProperties.RemainingFuel = carriage.burner.remaining_burning_fuel
 			
 			-- Ultracube irreplaceables handling for burner
 			if storage.Ultracube then -- Mod is active
 				-- Remove all irreplaceables (if any) from fuel/burnt inventory + currently_burning and create ownership tokens for each
 				-- The items must be removed so that they aren't destroyed with the locomotive, as Ultracube will spill them if that happens, and in this case 'duplicating' them
 				local FlyingTrain = FlyingTrainProperties
-				CubeFlyingTrains.create_tokens_for_inventory(FlyingTrain, event.cause.burner.inventory, defines.inventory.fuel)
-				CubeFlyingTrains.create_tokens_for_inventory(FlyingTrain, event.cause.burner.burnt_result_inventory, defines.inventory.burnt_result)
+				CubeFlyingTrains.create_tokens_for_inventory(FlyingTrain, carriage.burner.inventory, defines.inventory.fuel)
+				CubeFlyingTrains.create_tokens_for_inventory(FlyingTrain, carriage.burner.burnt_result_inventory, defines.inventory.burnt_result)
 				CubeFlyingTrains.create_token_for_burning(FlyingTrain) -- Must be called after FlyingTrain.RemainingFuel has been set, see cube_flying_trains.lua
 			end
 			
-			FlyingTrainProperties.FuelInventory = event.cause.burner.inventory.get_contents()
-			FlyingTrainProperties.BurntFuelInventory = event.cause.burner.burnt_result_inventory.get_contents()
-		elseif (event.cause.type == "cargo-wagon") then
+			FlyingTrainProperties.FuelInventory = carriage.burner.inventory.get_contents()
+			FlyingTrainProperties.BurntFuelInventory = carriage.burner.burnt_result_inventory.get_contents()
+		elseif (carriage.type == "cargo-wagon") then
 			-- Ultracube irreplaceables handling
 			if storage.Ultracube then -- Mod is active
 				-- Remove all irreplaceables (if any) from cargo wagon's inventory and create ownership tokens for each
 				-- The items must be removed so that they aren't destroyed with the wagon, as Ultracube will spill them if that happens, and in this case 'duplicating' them
 				local FlyingTrain = FlyingTrainProperties
-				local inventory = event.cause.get_inventory(defines.inventory.cargo_wagon)
+				local inventory = carriage.get_inventory(defines.inventory.cargo_wagon)
 				CubeFlyingTrains.create_tokens_for_inventory(FlyingTrain, inventory, defines.inventory.cargo_wagon)
 			end
 			-- record inventory and filters
-			local inventory = event.cause.get_inventory(defines.inventory.cargo_wagon)
+			local inventory = carriage.get_inventory(defines.inventory.cargo_wagon)
 			local cargo = {}
 			for i = 1, #inventory do
 				local stack = inventory[i]
@@ -402,10 +428,10 @@ local function entity_damaged(event)
 				end
 			end
 			FlyingTrainProperties.cargo = cargo
-			FlyingTrainProperties.bar = event.cause.get_inventory(defines.inventory.cargo_wagon).get_bar()
+			FlyingTrainProperties.bar = carriage.get_inventory(defines.inventory.cargo_wagon).get_bar()
 			FlyingTrainProperties.filter = {}
-			for i = 1, #event.cause.get_inventory(defines.inventory.cargo_wagon) do
-				FlyingTrainProperties.filter[i] = event.cause.get_inventory(defines.inventory.cargo_wagon).get_filter(i)
+			for i = 1, #carriage.get_inventory(defines.inventory.cargo_wagon) do
+				FlyingTrainProperties.filter[i] = carriage.get_inventory(defines.inventory.cargo_wagon).get_filter(i)
 			end
 			-- ArmoredTrains support
 			if (remote.interfaces.ArmoredTrains and remote.interfaces.ArmoredTrains.SendTurretList) then
@@ -413,7 +439,7 @@ local function entity_damaged(event)
 				if (list ~= nil) then
 					local turret = nil
 					for each, link in pairs(list) do
-						if (link.entity.unit_number == event.cause.unit_number) then
+						if (link.entity.unit_number == carriage.unit_number) then
 							turret = link.proxy
 							break
 						end
@@ -424,60 +450,66 @@ local function entity_damaged(event)
 				end
 			end
 			-- Trapdoor wagon
-			local DestroyNumber = script.register_on_object_destroyed(event.cause)
+			local DestroyNumber = script.register_on_object_destroyed(carriage)
 			if (storage.TrapdoorWagonsOpen[DestroyNumber]) then
 				FlyingTrainProperties.trapdoor = true
 			end
 			storage.TrapdoorWagonsOpen[DestroyNumber] = nil -- nil both cause it'll only be one or the other
 			storage.TrapdoorWagonsClosed[DestroyNumber] = nil
-		elseif (event.cause.type == "fluid-wagon") then
-			FlyingTrainProperties.fluids = event.cause.get_fluid_contents()
-		elseif (event.cause.type == "artillery-wagon") then
-			FlyingTrainProperties.artillery = event.cause.get_inventory(defines.inventory.artillery_wagon_ammo).get_contents()
+		elseif (carriage.type == "fluid-wagon") then
+			FlyingTrainProperties.fluids = carriage.get_fluid_contents()
+		elseif (carriage.type == "artillery-wagon") then
+			FlyingTrainProperties.artillery = carriage.get_inventory(defines.inventory.artillery_wagon_ammo).get_contents()
 		end
 		-- temporarily set all trains to burn the fastest fuel so it can keep up with the initial speed
 		if (FlyingTrainProperties.leader == nil) then
-			for each, carriage in pairs(event.cause.train.carriages) do
-				if (carriage.burner) then
-					storage.About2Jump[carriage.unit_number] = {}
-					storage.About2Jump[carriage.unit_number].BurningFuel = carriage.burner.currently_burning
-					carriage.burner.currently_burning = prototypes.item[storage.FastestFuel]
+			for each, karriage in pairs(carriage.train.carriages) do
+				if (karriage.burner) then
+					storage.About2Jump[karriage.unit_number] = {}
+					storage.About2Jump[karriage.unit_number].BurningFuel = karriage.burner.currently_burning
+					karriage.burner.currently_burning = prototypes.item[storage.FastestFuel]
 				end
 			end
 		end
 		-- record the equipment grid
-		if (event.cause.grid ~= nil) then
+		if (carriage.grid ~= nil) then
 			FlyingTrainProperties.gridd = {}
-			for j = 0, event.cause.grid.height-1 do
-				for i = 0, event.cause.grid.width-1 do
-					if (event.cause.grid.get({i,j})) then
-						table.insert(FlyingTrainProperties.gridd, {xpos = i, ypos = j, EquipName = event.cause.grid.get({i,j}).name})
+			for j = 0, carriage.grid.height-1 do
+				for i = 0, carriage.grid.width-1 do
+					if (carriage.grid.get({i,j})) then
+						table.insert(FlyingTrainProperties.gridd, {xpos = i, ypos = j, EquipName = carriage.grid.get({i,j}).name})
 					end
 				end
 			end
 		end
 		-- VehicleWagons2 support
 		if remote.interfaces.VehicleWagon2 and remote.interfaces.VehicleWagon2.get_wagon_data then
-			storage.savedVehicleWagons[event.cause.unit_number] = remote.call("VehicleWagon2", "get_wagon_data", event.cause) -- returns nil if not a vehicle wagon
-			FlyingTrainProperties.WagonUnitNumber = event.cause.unit_number
-			script.raise_event(defines.events.script_raised_destroy, {entity=event.cause, cloned=true})
-			event.cause.destroy({ raise_destroy = false })
+			storage.savedVehicleWagons[carriage.unit_number] = remote.call("VehicleWagon2", "get_wagon_data", carriage) -- returns nil if not a vehicle wagon
+			FlyingTrainProperties.WagonUnitNumber = carriage.unit_number
+			script.raise_event(defines.events.script_raised_destroy, {entity=carriage, cloned=true})
+			carriage.destroy({ raise_destroy = false })
 		else
-			event.cause.destroy({ raise_destroy = true })
+			carriage.destroy({ raise_destroy = true })
 		end
 
-	elseif (event.entity.name == "RTImpactUnloader"
+	elseif ((event.entity.name == "RTTrainRampCollisionBox"
+			or event.entity.name == "RTElevatedTrainRampCollisionBox")
+		and storage.TrainCollisionDetectors[script.register_on_object_destroyed(event.entity)].RampType == "ImpactUnloader"
 		and event.cause
 		and (event.cause.type == "locomotive" or event.cause.type == "cargo-wagon" or event.cause.type == "fluid-wagon" or event.cause.type == "artillery-wagon")
 		) then
-		if (event.cause.train and event.cause.train.cargo_wagons and math.abs(event.cause.train.speed) > 0.125) then
-			wagons = #event.cause.train.cargo_wagons
-			for each, wagon in pairs(event.cause.train.cargo_wagons) do
+		local carriage = event.cause
+		local elevated = (event.entity.name == "RTElevatedTrainRampCollisionBox")
+		local ramp = storage.TrainCollisionDetectors[script.register_on_object_destroyed(event.entity)].ramp
+		local HeightOffset = 0
+		if (elevated) then
+			HeightOffset = -3
+		end
+		if (carriage.train and carriage.train.cargo_wagons and math.abs(carriage.train.speed) > 0.125) then
+			wagons = #carriage.train.cargo_wagons
+			for each, wagon in pairs(carriage.train.cargo_wagons) do
 				if (wagon.name == "RTImpactWagon") then
-					local LaunchedPortion = math.abs(wagon.speed)/0.75
-					if (LaunchedPortion > 1) then
-						LaunchedPortion = 1
-					end
+					local LaunchedPortion = math.min(math.abs(wagon.speed)/0.75, 1)
 					local WagonInventory = wagon.get_inventory(defines.inventory.cargo_wagon)
 					for i = 1, #WagonInventory do
 						local stack = WagonInventory[i]
@@ -488,7 +520,7 @@ local function entity_damaged(event)
 							local yUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation)))/(0.5*math.pi)) - 1
 							
 							for _ = 1, math.floor(LaunchedAmount/GroupSize) do
-								local ForwardSpread = math.random(100,400)*0.1
+								local ForwardSpread = math.random(100,400)*0.1 + (-3*HeightOffset)
 								local HorizontalSpread = math.random(-35,35)*ForwardSpread*0.01
 								local TargetX = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
 								local TargetY = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
@@ -503,7 +535,7 @@ local function entity_damaged(event)
 									distance = math.sqrt((TargetX-wagon.position.x)^2 + (TargetY-wagon.position.y)^2)
 									space = true
 								end
-								local AirTime = math.floor(distance/speed)
+								local AirTime = math.floor(distance/speed) + (-6*HeightOffset)
 								local vector = {x=TargetX-wagon.position.x, y=TargetY-wagon.position.y}
 								local path = {}
 								local random1 = math.random(-10, 10)*0.1
@@ -513,12 +545,13 @@ local function entity_damaged(event)
 									path[j] =
 									{
 										x = wagon.position.x+random1+(progress*vector.x),
-										y = wagon.position.y+random2+(progress*vector.y),
+										y = wagon.position.y+random2+(progress*vector.y) + (HeightOffset*(1-progress)),
 										height = progress * (1-progress) / arc
 									}
 								end
 								CreateThrownItem({
 									type = "CustomPath",
+									render_layer = "elevated-higher-object",
 									stack = stack,
 									ThrowFromStackAmount = GroupSize,
 									start = wagon.position,
@@ -531,7 +564,7 @@ local function entity_damaged(event)
 							end
 							local remainder = LaunchedAmount-(math.floor(LaunchedAmount/GroupSize)*GroupSize)
 							if (remainder > 0) then
-								local ForwardSpread = math.random(100,400)*0.1
+								local ForwardSpread = math.random(100,400)*0.1 + (-2*HeightOffset)
 								local HorizontalSpread = math.random(-35,35)*ForwardSpread*0.01
 								local TargetX = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
 								local TargetY = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
@@ -546,7 +579,7 @@ local function entity_damaged(event)
 									distance = math.sqrt((TargetX-wagon.position.x)^2 + (TargetY-wagon.position.y)^2)
 									space = true
 								end
-								local AirTime = math.floor(distance/speed)
+								local AirTime = math.floor(distance/speed) + (-5*HeightOffset)
 								local vector = {x=TargetX-wagon.position.x, y=TargetY-wagon.position.y}
 								local path = {}
 								local random1 = math.random(-10, 10)*0.1
@@ -556,12 +589,13 @@ local function entity_damaged(event)
 									path[j] =
 									{
 										x = wagon.position.x+random1+(progress*vector.x),
-										y = wagon.position.y+random2+(progress*vector.y),
+										y = wagon.position.y+random2+(progress*vector.y) + (HeightOffset*(1-progress)),
 										height = progress * (1-progress) / arc
 									}
 								end
 								CreateThrownItem({
 									type = "CustomPath",
+									render_layer = "elevated-higher-object",
 									stack = stack,
 									ThrowFromStackAmount = remainder,
 									start = wagon.position,
@@ -574,207 +608,16 @@ local function entity_damaged(event)
 							end
 						end
 					end
-					
-					--[[ for _, stack in pairs(wagon.get_inventory(defines.inventory.cargo_wagon).get_contents()) do
-						local ItemName = stack.name
-						local amount = stack.count
-						local ItemQuality = stack.quality
-						local LaunchedAmount = math.floor(amount*LaunchedPortion)
-						if (LaunchedAmount > 0) then
-							local GroupSize = math.ceil((LaunchedAmount*wagons)/settings.global["RTImpactGrouping"].value)
-							for _ = 1, math.floor(LaunchedAmount/GroupSize) do
-								local sprite = rendering.draw_sprite
-									{
-										sprite = "item/"..ItemName,
-										x_scale = 0.5,
-										y_scale = 0.5,
-										target = wagon.position,
-										surface = wagon.surface
-									}
-								local shadow = rendering.draw_sprite
-									{
-										sprite = "item/"..ItemName,
-										tint = {0,0,0,0.5},
-										x_scale = 0.5,
-										y_scale = 0.5,
-										target = wagon.position,
-										surface = wagon.surface
-									}
-								local xUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation+0.25)))/(0.5*math.pi)) - 1
-								local yUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation)))/(0.5*math.pi)) - 1
-								local ForwardSpread = math.random(100,400)*0.1
-								local HorizontalSpread = math.random(-40,40)*ForwardSpread*0.01
-								local x = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
-								local y = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
-								local distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
-								local speed = math.abs(wagon.speed) * (distance/(35*math.abs(wagon.speed))) * math.random(45,100)*0.01
-								local arc = 0.3236*distance^-0.404 -- lower number is higher arc
-								local space = false
-								if (wagon.surface.platform or string.find(wagon.surface.name, " Orbit") or string.find(wagon.surface.name, " Field") or string.find(wagon.surface.name, " Belt")) then
-									arc = 99999999999999
-									x = x + (xUnit*wagon.speed * 200)
-									y = y + (yUnit*wagon.speed * 200)
-									distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
-									space = true
-									shadow.destroy()
-								end
-								local AirTime = math.floor(distance/speed)
-								local vector = {x=x-wagon.position.x, y=y-wagon.position.y}
-								local spin = math.random(-10,10)*0.01
-								local path = {}
-								local random1 = math.random(-10, 10)*0.1
-								local random2 = math.random(-20, 5)*0.1
-								for i = 1, AirTime do
-									local progress = i/AirTime
-									path[i] =
-									{
-										x = wagon.position.x+random1+(progress*vector.x),
-										y = wagon.position.y+random2+(progress*vector.y),
-										height = progress * (1-progress) / arc
-									}
-								end
-								storage.FlyingItems[storage.FlightNumber] =
-									{
-										sprite=sprite,
-										shadow=shadow,
-										speed=speed,
-										spin=spin,
-										item=ItemName,
-										amount=GroupSize,
-										quality=ItemQuality,
-										target={x=x, y=y},
-										ThrowerPosition={x=wagon.position.x+random1, y=wagon.position.y+random2},
-										AirTime=AirTime,
-										StartTick=game.tick,
-										LandTick=game.tick+AirTime,
-										space=space,
-										surface=wagon.surface,
-										path=path
-									}
-								if (wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack({name=ItemName, quality=ItemQuality})
-								and wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack({name=ItemName, quality=ItemQuality}).item_number ~= nil) then --quality crashes
-									local CloudStorage = game.create_inventory(1)
-									local item, index = wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack({name=ItemName, quality=ItemQuality})
-									CloudStorage.insert(item)
-									item.clear()
-									storage.FlyingItems[storage.FlightNumber].CloudStorage = CloudStorage
-								end
-
-								-- Ultracube irreplaceables detection & handling
-								if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] then -- Ultracube mod is active, and item is an irreplaceable
-									-- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
-									CubeFlyingItems.create_token_for(storage.FlyingItems[storage.FlightNumber])
-								end
-
-								storage.FlightNumber = storage.FlightNumber + 1
-							end
-							if (LaunchedAmount-(math.floor(LaunchedAmount/GroupSize)*GroupSize) > 0) then
-								local sprite = rendering.draw_sprite
-									{
-										sprite = "item/"..ItemName,
-										x_scale = 0.5,
-										y_scale = 0.5,
-										target = wagon.position,
-										surface = wagon.surface
-									}
-								local shadow = rendering.draw_sprite
-									{
-										sprite = "item/"..ItemName,
-										tint = {0,0,0,0.5},
-										x_scale = 0.5,
-										y_scale = 0.5,
-										target = wagon.position,
-										surface = wagon.surface
-									}
-								local xUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation+0.25)))/(0.5*math.pi)) - 1
-								local yUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation)))/(0.5*math.pi)) - 1
-								local ForwardSpread = math.random(100,400)*0.1
-								local HorizontalSpread = math.random(-40,40)*ForwardSpread*0.01
-								local x = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
-								local y = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
-								local distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
-								local speed = math.abs(wagon.speed) * (distance/(35*math.abs(wagon.speed))) * math.random(45,100)*0.01
-								local arc = 0.3236*distance^-0.404 -- lower number is higher arc
-								local space = false
-								if (wagon.surface.platform or string.find(wagon.surface.name, " Orbit") or string.find(wagon.surface.name, " Field") or string.find(wagon.surface.name, " Belt")) then
-									arc = 99999999999999
-									x = x + (xUnit*wagon.speed * 200)
-									y = y + (yUnit*wagon.speed * 200)
-									distance = math.sqrt((x-wagon.position.x)^2 + (y-wagon.position.y)^2)
-									space = true
-									shadow.destroy()
-								end
-								local AirTime = math.floor(distance/speed)
-								local vector = {x=x-wagon.position.x, y=y-wagon.position.y}
-								local spin = math.random(-10,10)*0.01
-								local path = {}
-								local random1 = math.random(-10, 10)*0.1
-								local random2 = math.random(-20, 5)*0.1
-								for i = 1, AirTime do
-									local progress = i/AirTime
-									path[i] =
-									{
-										x = wagon.position.x+random1+(progress*vector.x),
-										y = wagon.position.y+random2+(progress*vector.y),
-										height = progress * (1-progress) / arc
-									}
-								end
-								storage.FlyingItems[storage.FlightNumber] =
-									{
-										sprite=sprite,
-										shadow=shadow,
-										speed=speed,
-										spin=spin,
-										item=ItemName,
-										amount=LaunchedAmount-(math.floor(LaunchedAmount/GroupSize)*GroupSize),
-										quality=ItemQuality,
-										target={x=x, y=y},
-										ThrowerPosition={x=wagon.position.x+random1, y=wagon.position.y+random2},
-										AirTime=AirTime,
-										StartTick=game.tick,
-										LandTick=game.tick+AirTime,
-										space=space,
-										surface=wagon.surface,
-										path=path
-									}
-								if (wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack({name=ItemName, quality=ItemQuality})
-								and wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack({name=ItemName, quality=ItemQuality}).item_number ~= nil) then
-									local CloudStorage = game.create_inventory(1)
-									local item, index = wagon.get_inventory(defines.inventory.cargo_wagon).find_item_stack({name=ItemName, quality=ItemQuality})
-									CloudStorage.insert(item)
-									item.clear()
-									storage.FlyingItems[storage.FlightNumber].CloudStorage = CloudStorage
-								end
-								
-								-- Ultracube irreplaceables detection & handling
-								if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] then -- Ultracube mod is active, and item is an irreplaceable
-									-- Velocity calculation
-									local velocity = {x=0,y=0}
-									if storage.FlyingItems[storage.FlightNumber].AirTime >= 2 then
-										local v1 = storage.FlyingItems[storage.FlightNumber].path[1]
-										local v2 = storage.FlyingItems[storage.FlightNumber].path[2]
-										velocity.x = v2.x - v1.x
-										velocity.y = v2.y - v1.y
-									end
-									-- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
-									CubeFlyingItems.create_token_for(storage.FlyingItems[storage.FlightNumber], velocity)
-								end
-
-								storage.FlightNumber = storage.FlightNumber + 1
-							end
-							wagon.get_inventory(defines.inventory.cargo_wagon).remove({name = ItemName, count=LaunchedAmount, quality=ItemQuality})
-						end
-					end ]]
 				end
 			end
-			if (event.cause.train.schedule and event.cause.train.manual_mode == false) then
-				local stor = event.cause.train.schedule
-				if (event.cause.train.schedule.current == table_size(event.cause.train.schedule.records)) then
+			if (carriage.train.schedule and carriage.train.manual_mode == false) then
+				local stor = carriage.train.schedule
+				if (carriage.train.schedule.current == table_size(carriage.train.schedule.records)) then
 					stor.current = 1
 				else
 					stor.current = stor.current + 1
 				end
-				event.cause.train.schedule = stor
+				carriage.train.schedule = stor
 			end
 		end
 
@@ -798,7 +641,7 @@ local function entity_damaged(event)
 		end ]]
 		table.insert(storage.clock[time].rez, info)
 		-- remove the now broken detector from the destruction link of its trigger
-		local trigger = detector.surface.find_entities_filtered({name="RTTrapdoorTrigger", position=detector.position})[1]
+		local trigger = detector.surface.find_entities_filtered({name="RTTrapdoorSwitch", position=detector.position})[1]
 		if (trigger) then
 			storage.DestructionLinks[script.register_on_object_destroyed(trigger)] = {}
 		end

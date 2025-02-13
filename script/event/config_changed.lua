@@ -101,6 +101,9 @@ local function config_changed()
 	if (storage.TrainRamps == nil) then
 		storage.TrainRamps = {}
 	end
+	if (storage.TrainCollisionDetectors == nil) then
+		storage.TrainCollisionDetectors = {}
+	end
 
 	if (storage.BouncePadList == nil) then
 		storage.BouncePadList = {}

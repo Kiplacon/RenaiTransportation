@@ -90,6 +90,30 @@ data:extend({
 	animation_speed = 1/30
 },
 {
+	type = "virtual-signal",
+	name = "DirectorBouncePlateUp",
+	icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Up.png",
+	icon_size = 64,
+},
+{
+	type = "virtual-signal",
+	name = "DirectorBouncePlateRight",
+	icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Right.png",
+	icon_size = 64,
+},
+{
+	type = "virtual-signal",
+	name = "DirectorBouncePlateDown",
+	icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Down.png",
+	icon_size = 64,
+},
+{
+	type = "virtual-signal",
+	name = "DirectorBouncePlateLeft",
+	icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Left.png",
+	icon_size = 64,
+},
+{
 	type = "animation",
 	name = "RTHoojinTime",
 	filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WatchHimHooj.png",

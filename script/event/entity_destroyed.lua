@@ -29,6 +29,10 @@ local function entity_destroyed(event)
 		storage.TrainRamps[event.registration_number] = nil
 	end
 
+	if (storage.TrainCollisionDetectors[event.registration_number]) then
+		storage.TrainCollisionDetectors[event.registration_number] = nil
+	end
+
 	if (storage.OnTheWay[event.registration_number]) then
 		storage.OnTheWay[event.registration_number] = nil
 	end

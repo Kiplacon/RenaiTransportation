@@ -17,7 +17,7 @@ function CreateThrownItem(stuff)
             local bounced = stuff.bouncing or {}
             local stack = stuff.stack or {quality={}}
             local ItemName = bounced.item or stack.name or stuff.ItemName
-            local count = bounced.amount or stack.count or stuff.count
+            local count = bounced.amount or stuff.ThrowFromStackAmount or stack.count or stuff.count
             local quality = bounced.quality or stack.quality.name or stuff.quality
             local start = stuff.start -- {x=0,y=0} or {0,0} or entity
             if (type(stuff.start) == "userdata") then
@@ -79,7 +79,7 @@ function CreateThrownItem(stuff)
                     FlyingItem.sprite = rendering.draw_sprite
                     {
                         sprite = "item/"..ItemName,
-                        render_layer = "under-elevated",
+                        render_layer = stuff.render_layer or "under-elevated",
                         x_scale = 0.5,
                         y_scale = 0.5,
                         target = start,
@@ -142,7 +142,7 @@ function CreateThrownItem(stuff)
                     CloudStorage[1].count = stuff.ThrowFromStackAmount or stuff.stack.count
                     FlyingItem.CloudStorage = CloudStorage
                 end
-                stuff.stack.count = stuff.stack.count - (stuff.ThrowFromStackAmount or stuff.stack.count)
+                stuff.stack.count = stuff.stack.count - count
             elseif (bounced.CloudStorage) then
                 FlyingItem.CloudStorage = bounced.CloudStorage
             end

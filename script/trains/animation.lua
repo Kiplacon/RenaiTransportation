@@ -5,6 +5,7 @@ function Animation.updateRendering(properties)
 
 	if (properties.MagnetComp ~= nil) then
 		--if (properties.MagnetComp >= 0) then
+			--gravity = 2 / ((0.08 * properties.AirTime ^ 2) - (0.5 * properties.AirTime) + 11)
 			gravity = 2 / ((0.08 * properties.AirTime ^ 2) - (0.5 * properties.AirTime) + 11)
 
 			--SpinMagnitude = 0.05*properties.MagnetComp
@@ -16,10 +17,9 @@ function Animation.updateRendering(properties)
 	end
 
 	------------- animating -----------
-
 	local elapsed = game.tick - properties.LaunchTick;
 	local initialVerticalVelocity = -0.5 * (gravity * properties.AirTime) -- v_0 = -(1/2) * (a * t)
-	local height = (initialVerticalVelocity * elapsed) + (0.5 * gravity * (elapsed ^ 2)) -- x = (v_0 * t) + (1/2) * a * t^2
+	local height = (initialVerticalVelocity * elapsed) + (0.5 * gravity * (properties.GroundToElevatedMagArcShift or 1) * (elapsed ^ 2)) -- x = (v_0 * t) + (1/2) * a * t^2
 	local VertialSpeed = initialVerticalVelocity + gravity*elapsed
 
 	Animation.updateOffsets(properties, height - (properties.elevated or 0), elapsed)

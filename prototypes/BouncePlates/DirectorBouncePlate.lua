@@ -102,29 +102,4 @@ data:extend({
 			{type="item", name="DirectorBouncePlateItem", amount=1}
 		}
 	},
-	---------- default guide icons
-	{
-		type = "virtual-signal",
-		name = "DirectorBouncePlateUp",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Up.png",
-		icon_size = 64, --icon_mipmaps = 4,
-	},
-	{
-		type = "virtual-signal",
-		name = "DirectorBouncePlateRight",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Right.png",
-		icon_size = 64, --icon_mipmaps = 4,
-	},
-	{
-		type = "virtual-signal",
-		name = "DirectorBouncePlateDown",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Down.png",
-		icon_size = 64, --icon_mipmaps = 4,
-	},
-	{
-		type = "virtual-signal",
-		name = "DirectorBouncePlateLeft",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Left.png",
-		icon_size = 64, --icon_mipmaps = 4,
-	},
 })
