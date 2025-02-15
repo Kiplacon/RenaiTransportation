@@ -99,8 +99,6 @@ function MakeProjectile(ThingData, speed)
 			width = ThingData.icon_size,
 			height = ThingData.icon_size,
 			frame_count = 1,
-			--shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
-			--tint = data.tint,
 			priority = "high",
 			scale = 19.2/ThingData.icon_size --0.3 of a tile
 			--animation_speed = 1,

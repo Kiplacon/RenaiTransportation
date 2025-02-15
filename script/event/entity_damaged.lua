@@ -41,7 +41,7 @@ local NonSkippingRamps = {
 }
 
 local GroundToElevatedMagArcShift_constant = 0.7 -- 1 is normal jump, closer to 0 pushes out the trajectory arc so the train at the landing tick is higher
-local ElevatedRangeShift_constant = 0.125 -- 0 is normal jump, closer to 1 shortens the jump so that there's time/space for the train to fall to ground level
+local ElevatedRangeShift_constant = 0.85 -- 0 is normal jump, closer to 1 shortens the jump so that there's time/space for the train to fall to ground level
 
 local function entity_damaged(event)
 	if ( -- train ramps
@@ -174,16 +174,16 @@ local function entity_damaged(event)
 		end
 		local MagnetRampProperties = storage.TrainRamps[script.register_on_object_destroyed(ramp)]
 		if (MagneticRamps[ramp.name] and MagnetRampProperties and MagnetRampProperties.range ~= 0 and MagnetRampProperties.power.energy/MagnetRampProperties.power.electric_buffer_size >= 0.95) then
-			local ElevatedRangeShift = 0
+			local ElevatedRangeShift = 1
 			local GroundToElevatedMagArcShift = 1
 			if (ramp.get_or_create_control_behavior().circuit_condition.first_signal and ramp.get_or_create_control_behavior().circuit_condition.first_signal.name) then
 				if (ramp.get_or_create_control_behavior().circuit_condition.first_signal.name == "DirectorBouncePlateUp") then
 					GroundToElevatedMagArcShift = GroundToElevatedMagArcShift_constant
 				elseif (ramp.get_or_create_control_behavior().circuit_condition.first_signal.name == "DirectorBouncePlateDown") then
-					ElevatedRangeShift = ElevatedRangeShift_constant*(MagnetRampProperties.range)
+					ElevatedRangeShift = ElevatedRangeShift_constant
 				end
 			end
-			FlyingTrainProperties.LandTick = math.ceil(game.tick + math.abs((MagnetRampProperties.range)/(0.8*carriage.speed)) - ElevatedRangeShift)
+			FlyingTrainProperties.LandTick = math.ceil((game.tick + math.abs((MagnetRampProperties.range*ElevatedRangeShift)/(0.8*carriage.speed))))
 			FlyingTrainProperties.MagnetComp = math.ceil(game.tick + 130*math.abs(carriage.speed))-FlyingTrainProperties.LandTick
 			FlyingTrainProperties.GroundToElevatedMagArcShift = GroundToElevatedMagArcShift
 			FlyingTrainProperties.MakeFX = "yes"
@@ -306,16 +306,16 @@ local function entity_damaged(event)
 				FlyingTrainProperties.adjustDestinationLimit = storage.FlyingTrains[number].adjustDestinationLimit
 				if (MagneticRamps[ramp.name] and MagnetRampProperties and storage.FlyingTrains[number].MagnetComp ~= nil and (storage.FlyingTrains[number].MakeFX == "yes" or storage.FlyingTrains[number].MakeFX == "followerY")) then
 					-- all this has to be repeated from the original mag ramp handling for some reason, when i dont repeat it there are dysyncs (in data no like a crash)
-					local ElevatedRangeShift = 0
+					local ElevatedRangeShift = 1
 					local GroundToElevatedMagArcShift = 1
 					if (ramp.get_or_create_control_behavior().circuit_condition.first_signal and ramp.get_or_create_control_behavior().circuit_condition.first_signal.name) then
 						if (ramp.get_or_create_control_behavior().circuit_condition.first_signal.name == "DirectorBouncePlateUp") then
 							GroundToElevatedMagArcShift = GroundToElevatedMagArcShift_constant
 						elseif (ramp.get_or_create_control_behavior().circuit_condition.first_signal.name == "DirectorBouncePlateDown") then
-							ElevatedRangeShift = ElevatedRangeShift_constant*(MagnetRampProperties.range)
+							ElevatedRangeShift = ElevatedRangeShift_constant
 						end
 					end
-					FlyingTrainProperties.LandTick = math.ceil(game.tick + math.abs((MagnetRampProperties.range)/(0.8*storage.FlyingTrains[number].speed)) - ElevatedRangeShift)
+					FlyingTrainProperties.LandTick = math.ceil((game.tick + math.abs((MagnetRampProperties.range*ElevatedRangeShift)/(0.8*storage.FlyingTrains[number].speed))))
 					FlyingTrainProperties.MagnetComp = storage.FlyingTrains[number].MagnetComp
 					FlyingTrainProperties.GroundToElevatedMagArcShift = GroundToElevatedMagArcShift
 					FlyingTrainProperties.MakeFX = "followerY"
@@ -373,7 +373,7 @@ local function entity_damaged(event)
 						surface = ramp.surface,
 						x_scale = 0.3,
 						y_scale = 0.8,
-						time_to_live = FlyingTrainProperties.AirTime+((5.9*FlyingTrainProperties.length)/(0.8*carriage.speed))
+						time_to_live = math.abs(FlyingTrainProperties.AirTime+((5.9*FlyingTrainProperties.length)/(0.8*carriage.speed)))
 					}
 			end
 

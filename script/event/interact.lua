@@ -163,7 +163,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local NewKid = ElSurface.create_entity
 				({
 					name = "RTTrainRampNoSkip",
-					position = ElPosition,
+					position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1]/1.5, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]/1.5}),
 					direction = ElDirection,
 					force = ElForce,
 					raise_built = true,
@@ -186,7 +186,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local NewKid = ElSurface.create_entity
 				({
 					name = "RTTrainRamp",
-					position = ElPosition,
+					position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1]/1.5, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]/1.5}),
 					direction = ElDirection,
 					force = ElForce,
 					raise_built = true,
@@ -209,7 +209,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local NewKid = ElSurface.create_entity
 				({
 					name = ThingHovering.name.."NoSkip",
-					position = ElPosition,
+					position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1]/1.5, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]/1.5}),
 					direction = ElDirection,
 					force = ElForce,
 					raise_built = true,
@@ -230,7 +230,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local NewKid = ElSurface.create_entity
 				({
 					name = string.gsub(ThingHovering.name, "NoSkip", ""),
-					position = ElPosition,
+					position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1]/1.5, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]/1.5}),
 					direction = ElDirection,
 					force = ElForce,
 					raise_built = true,
@@ -250,13 +250,14 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local ElForce = player.force
 			local ElDirection = ThingHovering.direction
 			local ElSurface = ThingHovering.surface
-			local OldRange = storage.TrainRamps[script.register_on_object_destroyed(ThingHovering)].range-3
+			local OldRange = storage.TrainRamps[script.register_on_object_destroyed(ThingHovering)].range-6
 			local ElRailLayer = ThingHovering.rail_layer
+			local ElSignal = ThingHovering.get_or_create_control_behavior().circuit_condition
 			ThingHovering.destroy() -- rail signals cannot be on the same spot
 			local NewKid = ElSurface.create_entity
 				({
 				name = "RTMagnetTrainRampNoSkip",
-				position = ElPosition,
+				position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1]/1.5, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]/1.5}),
 				direction = ElDirection,
 				force = ElForce,
 				raise_built = true,
@@ -273,20 +274,24 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			magnetRamps.setRange(
 					RampProperties,
 					OldRange,
-					player
+					player,
+					nil,
+					nil,
+					ElSignal
 				)
 		elseif (ThingHovering.name == "RTMagnetTrainRampNoSkip") then
 			local ElPosition = ThingHovering.position
 			local ElForce = player.force
 			local ElDirection = ThingHovering.direction
 			local ElSurface = ThingHovering.surface
-			local OldRange = storage.TrainRamps[script.register_on_object_destroyed(ThingHovering)].range-3
+			local OldRange = storage.TrainRamps[script.register_on_object_destroyed(ThingHovering)].range-6
 			local ElRailLayer = ThingHovering.rail_layer
+			local ElSignal = ThingHovering.get_or_create_control_behavior().circuit_condition
 			ThingHovering.destroy() -- rail signals cannot be on the same spot
 			local NewKid = ElSurface.create_entity
 				({
 				name = "RTMagnetTrainRamp",
-				position = ElPosition,
+				position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1]/1.5, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]/1.5}),
 				direction = ElDirection,
 				force = ElForce,
 				raise_built = true,
@@ -303,7 +308,10 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			magnetRamps.setRange(
 					RampProperties,
 					OldRange,
-					player
+					player,
+					nil,
+					nil,
+					ElSignal
 				)
 
 		-- bound pad ranges

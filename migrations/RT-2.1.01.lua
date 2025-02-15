@@ -47,7 +47,6 @@ if (storage.TrainCollisionDetectors == nil) then
 end
 
 local math2d = require('math2d')
-local constants = require('__RenaiTransportation__/script/trains/constants')
 
 for _, RampName in pairs({"RTTrainRamp", "RTTrainRampNoSkip", "RTImpactUnloader"}) do
 	local RampType = "TrainRamp"
@@ -62,7 +61,7 @@ for _, RampName in pairs({"RTTrainRamp", "RTTrainRampNoSkip", "RTImpactUnloader"
 		for _, ramp in pairs(ramps) do
 			local NewRamp = surface.create_entity({
 				name = ramp.name,
-				position = math2d.position.add(ramp.position, {0.65*constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ramp.direction][1], 0.65*constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ramp.direction][2]}),
+				position = math2d.position.add(ramp.position, {-0.3*TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ramp.direction][1], -0.3*TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ramp.direction][2]}),
 				direction = ramp.direction,
 				force = ramp.force,
 				raise_built = true,
@@ -82,7 +81,7 @@ for _, irection in pairs({{"Up", defines.direction.south}, {"Down", defines.dire
 				name = "RTTrainRamp-Elevated"..irection[1]..varient
 			}
 			for _, ramp in pairs(ramps) do
-				ramp.teleport(math2d.position.add(ramp.position, {0.65*constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[irection[2]][1], 0.65*constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[irection[2]][2]}))
+				ramp.teleport(math2d.position.add(ramp.position, {-0.3*TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[irection[2]][1], -0.3*TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[irection[2]][2]}))
 				local NewRamp = surface.create_entity
 				{
 					name = "RTTrainRamp"..varient,

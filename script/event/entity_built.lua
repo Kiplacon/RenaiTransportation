@@ -10,7 +10,6 @@ end
 
 local function entity_built(event)
 	local entity = event.created_entity or event.entity or event.destination
-
 	local player = nil
 
 	if event.player_index then
@@ -249,6 +248,11 @@ local function entity_built(event)
 				surface = entity.surface,
 				only_in_alt_mode = true
 			}
+	elseif (entity.name == "entity-ghost") then
+		local RampList = {RTTrainRamp=true, RTTrainRampNoSkip=true, RTMagnetTrainRamp=true, RTMagnetTrainRampNoSkip=true, RTImpactUnloader=true}
+		if (RampList[entity.ghost_name]) then
+			entity.teleport(OffsetPosition(entity.position, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][1]/1.5, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][2]/1.5}))
+		end
 	end
 end
 

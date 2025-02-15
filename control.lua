@@ -1,6 +1,7 @@
 if script.active_mods["gvv"] then require("__gvv__.gvv")() end
 if script.active_mods["Ultracube"] then CubeFlyingItems = require("script.ultracube.cube_flying_items") end
 
+TrainConstants = require("__RenaiTransportation__/script/trains/constants")
 require('util')
 ---- keikaku
 ------- improvements
@@ -8,7 +9,7 @@ require('util')
 -- deflector pad, diagonal (w/range adjusts)
 -- director pad range adjusting
 -- remove shadows from character ghosts
-	-- animate character ghosts separately
+	-- animate character shadow separately
 
 ------- New features
 -- trapdoor wagon, trapdoor triggering ramp

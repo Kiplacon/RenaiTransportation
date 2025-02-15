@@ -1,5 +1,4 @@
 local math2d = require('math2d')
-local constants = require('constants')
 local magnetRampsStuff = require("__RenaiTransportation__/script/trains/magnet_ramps")
 
 local IgnoreRampSetup = {
@@ -23,7 +22,7 @@ function RampSetup(entity, RampType) -- RampType = "TrainRamp" or "ImpactUnloade
 	end
 	local blocker = surface.create_entity({
 		name = BlockerName,
-		position = entity.position,
+		position = math2d.position.add(entity.position, TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction]),
 		direction = direction,
 		force = "neutral", -- important so it works when friendly fire is off
 		raise_built = false,
@@ -47,13 +46,13 @@ function RampSetup(entity, RampType) -- RampType = "TrainRamp" or "ImpactUnloade
 		rendering.draw_sprite
 		{
 			sprite = name..direction,
-			target = entity,
+			target = {entity=entity, },
 			surface = surface,
 			render_layer = "elevated-object"
 		}
 	else
 		--[[ if (string.find(name, "Impact") ~= nil) then
-			rendering.draw_sprite
+			rendering.draw_sprite_clouds
 			{
 				sprite = name..direction,
 				target = entity,
@@ -67,6 +66,7 @@ function RampSetup(entity, RampType) -- RampType = "TrainRamp" or "ImpactUnloade
 	local CollisionDetectorNumber = script.register_on_object_destroyed(blocker)
 	storage.TrainCollisionDetectors[CollisionDetectorNumber] = {entity=blocker, ramp=entity, RampType=RampType, ScheduleSkip=(string.find(name, "NoSkip")==nil)}
 	entity.rotatable = false
+	entity.teleport(OffsetPosition(entity.position, {TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][1]/1.5, TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][2]/1.5}))
 end
 
 local function handleMagnetRampBuilt(entity, player)
@@ -74,7 +74,7 @@ local function handleMagnetRampBuilt(entity, player)
 	storage.TrainRamps[OnDestroyNumber].tiles = {}
 	local SUCC = entity.surface.create_entity({
 		name = "RTMagnetRampDrain",
-		position = OffsetPosition({entity.position.x, entity.position.y}, {-0.8*constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][1], -0.8*constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][2]}),
+		position = OffsetPosition({entity.position.x, entity.position.y}, {-0.8*TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][1], -0.8*TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][2]}),
 		direction = entity.direction,
 		force = entity.force
 	})
@@ -97,26 +97,29 @@ local function handleTrainRampPlacerBuilt(entity, player)
 	if (IgnoreRampSetup[name]) then
 		FourTwentyRaiseIt = true
 	end
+	local position = entity.position
 	local surface = entity.surface
 	local direction = entity.direction
 	local force = entity.force
 	local rail_layer = entity.rail_layer
+	entity.destroy({raise_destroy = true})
 	local ramp = surface.create_entity({
 		name = name,
-		position = math2d.position.add(entity.position, constants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction]),
+		position = position, --math2d.position.add(position, TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction]),
 		direction = direction,
 		force = force,
 		raise_built = FourTwentyRaiseIt,
 		player = player,
-		rail_layer = rail_layer
+		rail_layer = rail_layer,
+		create_build_effect_smoke = true
 	})
-	
+
 	if not ramp then
 		local dst = player or game
 		dst.print({"magnet-ramp-stuff.unable"})
 	elseif (FourTwentyRaiseIt == false) then -- not handled in entity_built
 		local RampType = "TrainRamp"
-		if (string.find(entity.name, 'ImpactUnloader')) then
+		if (string.find(name, 'ImpactUnloader')) then
 			RampType = "ImpactUnloader"
 		end
 		RampSetup(ramp, RampType)
@@ -124,7 +127,7 @@ local function handleTrainRampPlacerBuilt(entity, player)
 			handleMagnetRampBuilt(ramp, player)
 		end
 	end
-	entity.destroy({raise_destroy = true})
+	
 end
 
 local function on_entity_built(entity, player)

@@ -1,7 +1,3 @@
-local util = require("util")
-
-local constants = require("__RenaiTransportation__/script/trains/constants")
-
 local function RampPictureSets(FilePath)
 	return
 	{
@@ -201,7 +197,7 @@ end
 for _, variant in pairs({"ImpactUnloader", "TrainRamp", "TrainRampNoSkip", "MagnetTrainRamp", "MagnetTrainRampNoSkip", "TrapdoorSwitch"}) do
 	local GroundMask = {layers={["train"]=true}}
 	local ElevMask = {layers={["elevated_train"]=true}}
-	local CellBox = {{-1, -2}, {1, 2}}
+	local CellBox = {{-0.5, -2}, {1.5, 2}}
 	if (variant == "TrapdoorSwitch") then
 		GroundMask = {layers={}}
 		ElevMask = {layers={}}

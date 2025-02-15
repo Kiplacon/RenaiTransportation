@@ -1,4 +1,4 @@
-ConnectionPoints = 
+ConnectionPoints =
     {
       shadow =
       {

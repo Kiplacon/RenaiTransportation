@@ -21,8 +21,8 @@ local function click(event)
 					orientation = ramp.orientation+0.25,
 					target =
 						{
-							ramp.position.x-(MaxRange+1)/2*storage.OrientationUnitComponents[ramp.orientation].x,
-							ramp.position.y-(MaxRange+1)/2*storage.OrientationUnitComponents[ramp.orientation].y
+							ramp.position.x+(0.5*storage.OrientationUnitComponents[ramp.orientation+0.25].x)-(MaxRange)/2*storage.OrientationUnitComponents[ramp.orientation].x,
+							ramp.position.y+(0.5*storage.OrientationUnitComponents[ramp.orientation+0.25].y)-(MaxRange)/2*storage.OrientationUnitComponents[ramp.orientation].y
 						},
 					x_scale = MaxRange/2,
 					y_scale = 1,
