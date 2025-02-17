@@ -6,19 +6,29 @@ require('util')
 ---- keikaku
 ------- improvements
 -- director pad range adjusting
+	-- change bounde pads from simple-entity to constant combinator
+	-- change on-build to default to 10 range, or set range/indicator according to the ghost signal value
+	-- copy/paste setting change bounce range value
+	-- Bounce pad
+	-- directed bounce pad
+	-- director bounce pad
+	-- migration names
+	-- interact cycling of range
 -- remove shadows from character ghosts
+	-- remove shadow layer from character prototype
 	-- animate character shadow separately
+		-- separate shadow sprite for manual animation
 
 ------- New features
 -- trapdoor wagon
-	-- trapdoor switch (rail signal all 16 directions)
+	-- trapdoor switch (rail signal all 16 directions)✅
 	-- trapdoor switch ramp
 -- electromagnetic item cannon
 -- belt ramp
--- vacuum hatch
--- zipline logistic drone
+-- vacuum hatch ✅
 -- fluid jet/catching tank
 -- dynamic zipline, get on from anywhere and autodrive anywhere
+	-- zipline logistic drone
 -- getting hit by a train/car knocks you away
 -- items on the floor of a space platform fly away when the ship takes off/arrives
 -- deflector pad, diagonal (w/range adjusts)
