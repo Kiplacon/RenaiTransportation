@@ -1,3 +1,4 @@
+---@diagnostic disable: need-check-nil
 local magnetRamps = require("__RenaiTransportation__/script/trains/magnet_ramps")
 
 local function click(event)
@@ -48,6 +49,10 @@ local function click(event)
 				or TheRail.name == "RTTrainBouncePlate"
 				or TheRail.name == "RTTrainDirectedBouncePlate"
 				or TheRail.name == "elevated-straight-rail") then
+					local NotRail = 0
+					if (TheRail.name ~= "straight-rail") then
+						NotRail = 2
+					end
 					--|| Vertical ramps
 					if ((PlayerProperties.SettingRampRange.point == 0 or PlayerProperties.SettingRampRange.point == 0.5)
 						and TheRamp ~= nil
@@ -57,7 +62,7 @@ local function click(event)
 						and math.abs(TheRail.position.y-TheRamp.position.y) <= PlayerProperties.SettingRampRange.range
 						and TheRail.position.y
 					) then
-						local range = math.abs(TheRail.position.y-TheRamp.position.y)
+						local range = math.abs(TheRail.position.y-TheRamp.position.y) - NotRail
 						magnetRamps.setRange(
 							RampProperties,
 							range,
@@ -73,7 +78,7 @@ local function click(event)
 						and math.abs(TheRail.position.y - TheRamp.position.y-storage.OrientationUnitComponents[PlayerProperties.SettingRampRange.Setting.orientation+0.25].y) < 2
 						and math.abs(TheRail.position.x-TheRamp.position.x) <= PlayerProperties.SettingRampRange.range
 					) then
-						local range = math.abs(TheRail.position.x-TheRamp.position.x)
+						local range = math.abs(TheRail.position.x-TheRamp.position.x) - NotRail
 						magnetRamps.setRange(
 							RampProperties,
 							range,
@@ -85,21 +90,20 @@ local function click(event)
 					else
 						game.get_player(event.player_index).print({"magnet-ramp-stuff.BeyondRange", PlayerProperties.SettingRampRange.range})
 						player.play_sound{path="utility/cannot_build"}
-
 					end
-
 				else
 					game.get_player(event.player_index).print({"magnet-ramp-stuff.StraightRail"})
 					player.play_sound{path="utility/cannot_build"}
+				end
+				if (TheRamp.valid and RampProperties and RampProperties.rangeID ~= nil) then
+					RampProperties.rangeID.destroy()
 				end
 			end
 
 			if (PlayerProperties.SettingRampRange.rekt and PlayerProperties.SettingRampRange.rekt.valid) then
 				PlayerProperties.SettingRampRange.rekt.destroy()
 			end
-			if (TheRamp.valid and RampProperties and RampProperties.rangeID ~= nil) then
-				RampProperties.rangeID.destroy()
-			end
+			
 			PlayerProperties.SettingRampRange = {SettingRange=false}
 		end
 	end

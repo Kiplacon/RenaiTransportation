@@ -149,12 +149,16 @@ local function CreateRampSprites(name, FilePath)
 end
 
 -- collision boxes for the ramps
-for name, mask in pairs({RTTrainRampCollisionBox={layers={["train"]=true}}, RTElevatedTrainRampCollisionBox={layers={["elevated_train"]=true}}}) do
+for name, mask in pairs({
+	RTTrainRampCollisionBox={layers={["train"]=true}},
+	RTElevatedTrainRampCollisionBox={layers={["elevated_train"]=true}},
+	RTRailSignalBlocker={layers={["RTRampsAndPlacers"]=true}}
+}) do
 	data:extend({
 		{
 			type = "simple-entity-with-owner",
 			name = name,
-			flags = {"not-on-map", "placeable-off-grid", "not-blueprintable", "not-deconstructable", "not-selectable-in-game"},
+			flags = {"not-on-map", "placeable-off-grid", "not-blueprintable", "not-deconstructable", "not-selectable-in-game", "building-direction-16-way"},
 			hidden = true,
 			max_health = 420,
 			collision_box = {{-1.32, -1.9}, {1.32, 1.9}},
@@ -194,15 +198,10 @@ for name, mask in pairs({RTTrainRampCollisionBox={layers={["train"]=true}}, RTEl
 	})
 end
 
-for _, variant in pairs({"ImpactUnloader", "TrainRamp", "TrainRampNoSkip", "MagnetTrainRamp", "MagnetTrainRampNoSkip", "TrapdoorSwitch"}) do
+for _, variant in pairs({"ImpactUnloader", "TrainRamp", "TrainRampNoSkip", "MagnetTrainRamp", "MagnetTrainRampNoSkip"}) do
 	local GroundMask = {layers={["train"]=true}}
 	local ElevMask = {layers={["elevated_train"]=true}}
 	local CellBox = {{-0.5, -2}, {1.5, 2}}
-	if (variant == "TrapdoorSwitch") then
-		GroundMask = {layers={}}
-		ElevMask = {layers={}}
-		CellBox = {{-0.3, -0.3}, {0.3, 0.3}}
-	end
 	data:extend({
 		{
 			type = "rail-signal",
@@ -318,20 +317,7 @@ data:extend({
 		results = {
 			{type="item", name="RTImpactUnloaderItem", amount=1}
 		}
-	},
-	{ --------- Switch recipe ----------
-		type = "recipe",
-		name = "RTTrapdoorSwitchRecipe",
-		enabled = true,
-		energy_required = 0.1,
-		ingredients =
-		{
-			{type="item", name="advanced-circuit", amount=10},
-		},
-		results = {
-			{type="item", name="RTTrapdoorSwitchItem", amount=1}
-		}
-	},
+	}
 })
 
 -- Add supporting entities for the mag ramp

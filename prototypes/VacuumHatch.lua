@@ -26,7 +26,7 @@ data:extend({
 			tint = {163, 73, 164}
 		},
 		draw_on_selection = true,
-		distance = 2
+		distance = 4
 	}
 },
 { --------- The vacuum hatch recipe ----------

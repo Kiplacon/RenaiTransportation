@@ -17,7 +17,7 @@ local function entity_destroyed(event)
 	end
 
 	if (storage.TrainRamps[event.registration_number]) then
-		if (storage.TrainRamps[event.registration_number].blocker.valid) then
+		if (storage.TrainRamps[event.registration_number].blocker and storage.TrainRamps[event.registration_number].blocker.valid) then
 			storage.TrainRamps[event.registration_number].blocker.destroy()
 		end
 		if (storage.TrainRamps[event.registration_number].power) then -- magent ramps

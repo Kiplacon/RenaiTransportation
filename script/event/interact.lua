@@ -163,7 +163,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local NewKid = ElSurface.create_entity
 				({
 					name = "RTTrainRampNoSkip",
-					position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1]/1.5, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]/1.5}),
+					position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1], -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]}),
 					direction = ElDirection,
 					force = ElForce,
 					raise_built = true,
@@ -186,7 +186,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local NewKid = ElSurface.create_entity
 				({
 					name = "RTTrainRamp",
-					position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1]/1.5, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]/1.5}),
+					position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1], -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]}),
 					direction = ElDirection,
 					force = ElForce,
 					raise_built = true,
@@ -200,49 +200,6 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					volume_modifier=1
 				}
 
-		--|| Swap Elevated Ramp Modes
-		elseif (string.find(ThingHovering.name, "-Elevated") ~= nil and string.find(ThingHovering.name, "NoSkip") == nil) then
-			local ElPosition = ThingHovering.position
-			local ElForce = player.force
-			local ElDirection = ThingHovering.direction
-			local ElSurface = ThingHovering.surface
-			local NewKid = ElSurface.create_entity
-				({
-					name = ThingHovering.name.."NoSkip",
-					position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1]/1.5, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]/1.5}),
-					direction = ElDirection,
-					force = ElForce,
-					raise_built = true,
-					create_build_effect_smoke = false
-				})
-			player.play_sound
-				{
-					path="utility/rotated_large",
-					position=player.position,
-					volume_modifier=1
-				}
-			ThingHovering.destroy()
-		elseif (string.find(ThingHovering.name, "-Elevated") ~= nil and string.find(ThingHovering.name, "NoSkip") ~= nil) then
-			local ElPosition = ThingHovering.position
-			local ElForce = player.force
-			local ElDirection = ThingHovering.direction
-			local ElSurface = ThingHovering.surface
-			local NewKid = ElSurface.create_entity
-				({
-					name = string.gsub(ThingHovering.name, "NoSkip", ""),
-					position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1]/1.5, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]/1.5}),
-					direction = ElDirection,
-					force = ElForce,
-					raise_built = true,
-					create_build_effect_smoke = false
-				})
-			player.play_sound
-				{
-					path="utility/rotated_large",
-					position=player.position,
-					volume_modifier=1
-				}
-			ThingHovering.destroy()
 									
 		--|| Swap Magnet Ramp Modes
 		elseif (ThingHovering.name == "RTMagnetTrainRamp") then
@@ -257,7 +214,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local NewKid = ElSurface.create_entity
 				({
 				name = "RTMagnetTrainRampNoSkip",
-				position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1]/1.5, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]/1.5}),
+				position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1], -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]}),
 				direction = ElDirection,
 				force = ElForce,
 				raise_built = true,
@@ -291,7 +248,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local NewKid = ElSurface.create_entity
 				({
 				name = "RTMagnetTrainRamp",
-				position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1]/1.5, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]/1.5}),
+				position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1], -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]}),
 				direction = ElDirection,
 				force = ElForce,
 				raise_built = true,

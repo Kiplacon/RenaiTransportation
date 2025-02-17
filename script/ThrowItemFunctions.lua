@@ -27,6 +27,7 @@ function CreateThrownItem(stuff)
             local TargetX = target.x or target[1]
             local TargetY = target.y or target[2]
             local surface = bounced.surface or stuff.surface
+            local space = bounced.space or stuff.space or false
             local speed = bounced.speed or stuff.speed or 0.18
             local FlyingItem =
             {
@@ -37,7 +38,7 @@ function CreateThrownItem(stuff)
                 ThrowerPosition=start, -- for bounce pad redirecting
                 target={x=TargetX, y=TargetY},
                 DestinationDestroyNumber=bounced.DestinationDestroyNumber or stuff.DestinationDestroyNumber, -- for overflow prevention
-                space=bounced.space or stuff.space or false,
+                space=space,
                 surface=surface, -- to search for things by the landing zone
             }
 
@@ -85,16 +86,18 @@ function CreateThrownItem(stuff)
                         target = start,
                         surface = surface
                     }
-                    FlyingItem.shadow = rendering.draw_sprite
-                    {
-                        sprite = "item/"..ItemName,
-                        render_layer = "under-elevated",
-                        tint = {0,0,0,0.5},
-                        x_scale = 0.5,
-                        y_scale = 0.5,
-                        target = start,
-                        surface = surface
-                    }
+                    if (not space) then
+                        FlyingItem.shadow = rendering.draw_sprite
+                        {
+                            sprite = "item/"..ItemName,
+                            render_layer = "under-elevated",
+                            tint = {0,0,0,0.5},
+                            x_scale = 0.5,
+                            y_scale = 0.5,
+                            target = start,
+                            surface = surface
+                        }
+                    end
                     FlyingItem.spin = stuff.spin or math.random(-10,10)*0.01
                     local FlightNumber = "CustomPath"..NewFlightNumber()
                     FlyingItem.FlightNumber = FlightNumber
@@ -146,6 +149,12 @@ function CreateThrownItem(stuff)
             elseif (bounced.CloudStorage) then
                 FlyingItem.CloudStorage = bounced.CloudStorage
             end
+
+            -- space stuff
+            if (space and stuff.thrower and stuff.thrower.surface.platform and stuff.thrower.surface.platform.state == defines.space_platform_state.on_the_path and stuff.thrower.orientation == 0) then
+                stuff.thrower.surface.platform.speed = stuff.thrower.surface.platform.speed + (0.002*count)
+            end
+
             -- Ultracube irreplaceables detection & handling
             if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] then -- Ultracube mod is active, and the held item is an irreplaceable
                 -- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
@@ -266,6 +275,7 @@ function ResetPathComponentOverflowTracking(component)
     end
 end
 
+local VacuumHatchRange = 5
 function ResolveThrownItem(FlyingItem)
     local ClearOverflowTracking = true -- tracers and OnTheWay tracking. Dont clear if hittimg bounce pad
     local ThingLandedOn = FlyingItem.surface.find_entities_filtered
@@ -439,28 +449,6 @@ function ResolveThrownItem(FlyingItem)
                             target = {TargetX, TargetY},
                             speed = FlyingItem.speed
                         })
-                        --[[ if (prototypes.entity["RTItemProjectile-"..FlyingItem.item..FlyingItem.speed*100]) then
-                            FlyingItem.surface.create_entity
-                            {
-                                name="RTItemProjectile-"..FlyingItem.item..FlyingItem.speed*100,
-                                position=ThingLandedOn.position,
-                                source_position=ThingLandedOn.position,
-                                target_position={TargetX, TargetY}
-                            }
-                        else
-                            FlyingItem.surface.create_entity
-                            {
-                                name="RTTestProjectile"..FlyingItem.speed*100,
-                                position=ThingLandedOn.position,
-                                source_position=ThingLandedOn.position,
-                                target_position={TargetX, TargetY}
-                            }
-                        end
-
-                        -- (If applicable) Update Ultracube ownership token to keep its timeout set to just after each bounce
-                        if storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
-                            CubeFlyingItems.bounce_update(FlyingItem)
-                        end ]]
 
                     else -- the player does have a vector
                         FlyingItem.vector = {x=TargetX-ThingLandedOn.position.x, y=TargetY-ThingLandedOn.position.y}
@@ -544,7 +532,7 @@ function ResolveThrownItem(FlyingItem)
 
                 ---- If the thing it landed on has an inventory and a hatch, insert the item ----
                 elseif (ThingLandedOn.surface.find_entities_filtered({
-                    name='HatchRT',
+                    name={'HatchRT', "RTVacuumHatch"},
                     position={math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5}})[1]
                 and ThingLandedOn.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
                     if (FlyingItem.CloudStorage) then
@@ -572,6 +560,34 @@ function ResolveThrownItem(FlyingItem)
                     else
                         LandedOnCargoWagon.insert({name=FlyingItem.item, count=FlyingItem.amount, quality=FlyingItem.quality})
                     end
+
+                ---- redirect into nearby vacuum hatch
+                elseif (ThingLandedOn.surface.find_entities_filtered({
+                    name="RTVacuumHatch",
+                    position={math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5},
+                    radius=VacuumHatchRange
+                })[1]) then
+                    if (FlyingItem.sprite) then -- from impact unloader
+                        FlyingItem.sprite.destroy()
+                        FlyingItem.sprite = nil
+                    end
+                    if (FlyingItem.shadow) then -- from impact unloader
+                        FlyingItem.shadow.destroy()
+                        FlyingItem.shadow = nil
+                    end
+                    ClearOverflowTracking = false
+                    local VacuumHatch = ThingLandedOn.surface.find_entities_filtered({
+                        name="RTVacuumHatch",
+                        position={math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5},
+                        radius=VacuumHatchRange
+                    })[1]
+                    CreateThrownItem({
+                        type = "ReskinnedStream",
+                        bouncing = FlyingItem,
+                        start = FlyingItem.target,
+                        target = VacuumHatch.position,
+                        speed = FlyingItem.speed
+                    })
 
                 -- If it's an Ultracube FlyingItem, just spill it near whatever it landed on, potentially onto a belt
                 elseif storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
@@ -793,7 +809,34 @@ function ResolveThrownItem(FlyingItem)
             end
         else
             if (FlyingItem.player == nil) then
-                if (FlyingItem.CloudStorage) then
+                ---- redirect into nearby vacuum hatch
+                if (FlyingItem.surface.find_entities_filtered({
+                    name="RTVacuumHatch",
+                    position={math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5},
+                    radius=VacuumHatchRange
+                })[1]) then
+                    if (FlyingItem.sprite) then -- from impact unloader
+                        FlyingItem.sprite.destroy()
+                        FlyingItem.sprite = nil
+                    end
+                    if (FlyingItem.shadow) then -- from impact unloader
+                        FlyingItem.shadow.destroy()
+                        FlyingItem.shadow = nil
+                    end
+                    ClearOverflowTracking = false
+                    local VacuumHatch = FlyingItem.surface.find_entities_filtered({
+                        name="RTVacuumHatch",
+                        position={math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5},
+                        radius=VacuumHatchRange
+                    })[1]
+                    CreateThrownItem({
+                        type = "ReskinnedStream",
+                        bouncing = FlyingItem,
+                        start = FlyingItem.target,
+                        target = VacuumHatch.position,
+                        speed = FlyingItem.speed
+                    })
+                elseif (FlyingItem.CloudStorage) then
                     local spilt = ProjectileSurface.spill_item_stack
                         {
                             position = ProjectileSurface.find_non_colliding_position("item-on-ground", FlyingItem.target, 500, 0.1),

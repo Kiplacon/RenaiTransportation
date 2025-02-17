@@ -16,26 +16,13 @@ function RampSetup(entity, RampType) -- RampType = "TrainRamp" or "ImpactUnloade
 	else
 		RailLayer = defines.rail_layer.ground
 	end
-	local BlockerName = "RTTrainRampCollisionBox"
 	if (RailLayer == defines.rail_layer.elevated) then
-		BlockerName = "RTElevatedTrainRampCollisionBox"
-	end
-	local blocker = surface.create_entity({
-		name = BlockerName,
-		position = math2d.position.add(entity.position, TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction]),
-		direction = direction,
-		force = "neutral", -- important so it works when friendly fire is off
-		raise_built = false,
-		rail_layer = RailLayer
-	})
-	if (RailLayer == defines.rail_layer.elevated) then
-		local rail = surface.find_entities_filtered
-			({
-				position = entity.position,
-				collision_mask = {"elevated_rail"},
-				limit = 1,
-				radius = 0.25
-			})[1]
+		local RenderLayer = "elevated-object"
+		if (string.find(name, 'TrapdoorSwitch')) then
+			RenderLayer = "elevated-lower-object"
+		end
+		---@diagnostic disable-next-line: newline-call
+		local rail = entity.get_connected_rails()[1]
 		if (rail) then
 			local RailDestroyNumber = script.register_on_object_destroyed(rail)
 			if (storage.DestructionLinks[RailDestroyNumber] == nil) then
@@ -48,7 +35,7 @@ function RampSetup(entity, RampType) -- RampType = "TrainRamp" or "ImpactUnloade
 			sprite = name..direction,
 			target = {entity=entity, },
 			surface = surface,
-			render_layer = "elevated-object"
+			render_layer = RenderLayer
 		}
 	else
 		--[[ if (string.find(name, "Impact") ~= nil) then
@@ -61,12 +48,33 @@ function RampSetup(entity, RampType) -- RampType = "TrainRamp" or "ImpactUnloade
 			}
 		end ]]
 	end
-	local RampDestroyNumber = script.register_on_object_destroyed(entity)
-	storage.TrainRamps[RampDestroyNumber] = {entity=entity, blocker=blocker, RampType=RampType, ScheduleSkip=(string.find(name, "NoSkip")==nil)}
+	
+	local BlockerName = "RTTrainRampCollisionBox"
+	if (RailLayer == defines.rail_layer.elevated) then
+		BlockerName = "RTElevatedTrainRampCollisionBox"
+	end
+	if (string.find(name, 'TrapdoorSwitch')) then
+		BlockerName = "RTRailSignalBlocker"
+	end
+	local blocker = surface.create_entity({
+		name = BlockerName,
+		position = math2d.position.add(entity.position, {1.5*TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][1], 1.5*TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][2]}),
+		direction = direction,
+		force = "neutral", -- important so it works when friendly fire is off
+		raise_built = false,
+		rail_layer = RailLayer
+	})
 	local CollisionDetectorNumber = script.register_on_object_destroyed(blocker)
 	storage.TrainCollisionDetectors[CollisionDetectorNumber] = {entity=blocker, ramp=entity, RampType=RampType, ScheduleSkip=(string.find(name, "NoSkip")==nil)}
+	
+	local RampDestroyNumber = script.register_on_object_destroyed(entity)
+	storage.TrainRamps[RampDestroyNumber] = {entity=entity, blocker=blocker, RampType=RampType, ScheduleSkip=(string.find(name, "NoSkip")==nil)}
 	entity.rotatable = false
-	entity.teleport(OffsetPosition(entity.position, {TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][1]/1.5, TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][2]/1.5}))
+	local SixteenDirNudge = 1
+	--[[ if (entity.direction%2 == 0) then
+		SixteenDirNudge = 1.5
+	end ]]
+	entity.teleport(OffsetPosition(entity.position, {TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][1]*SixteenDirNudge, TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][2]*SixteenDirNudge}))
 end
 
 local function handleMagnetRampBuilt(entity, player)
@@ -74,7 +82,7 @@ local function handleMagnetRampBuilt(entity, player)
 	storage.TrainRamps[OnDestroyNumber].tiles = {}
 	local SUCC = entity.surface.create_entity({
 		name = "RTMagnetRampDrain",
-		position = OffsetPosition({entity.position.x, entity.position.y}, {-0.8*TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][1], -0.8*TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][2]}),
+		position = OffsetPosition({entity.position.x, entity.position.y}, {-1.2*TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][1], -1.2*TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][2]}),
 		direction = entity.direction,
 		force = entity.force
 	})
@@ -117,17 +125,18 @@ local function handleTrainRampPlacerBuilt(entity, player)
 	if not ramp then
 		local dst = player or game
 		dst.print({"magnet-ramp-stuff.unable"})
-	elseif (FourTwentyRaiseIt == false) then -- not handled in entity_built
+	elseif (FourTwentyRaiseIt == false) then -- prevents running RampSetup twice, here and in on_entity_built
 		local RampType = "TrainRamp"
 		if (string.find(name, 'ImpactUnloader')) then
 			RampType = "ImpactUnloader"
+		elseif (string.find(name, 'TrapdoorSwitch')) then
+			RampType = "TrapdoorSwitch"
 		end
 		RampSetup(ramp, RampType)
 		if (name == "RTMagnetTrainRamp" or name == "RTMagnetTrainRampNoSkip") then
 			handleMagnetRampBuilt(ramp, player)
 		end
 	end
-	
 end
 
 local function on_entity_built(entity, player)
@@ -135,10 +144,12 @@ local function on_entity_built(entity, player)
 		if (string.find(entity.name, '-placer$')) then
 			handleTrainRampPlacerBuilt(entity, player)
 			return true
-		elseif (IgnoreRampSetup[entity.name] == nil) then -- non placers, ie ramps placed by blueprint
+		else -- non placers, ie ramps placed by blueprint
 			local RampType = "TrainRamp"
 			if (string.find(entity.name, 'ImpactUnloader')) then
 				RampType = "ImpactUnloader"
+			elseif (string.find(entity.name, 'TrapdoorSwitch')) then
+				RampType = "TrapdoorSwitch"
 			end
 			RampSetup(entity, RampType)
 			if (entity.name == "RTMagnetTrainRamp" or entity.name == "RTMagnetTrainRampNoSkip") then

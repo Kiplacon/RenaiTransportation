@@ -9,7 +9,7 @@ local function NextThrowerGroup()
 end
 
 local function entity_built(event)
-	local entity = event.created_entity or event.entity or event.destination
+	local entity = event.created_entity or event.entity or event.destination or {name="ghost"}
 	local player = nil
 
 	if event.player_index then
@@ -27,7 +27,7 @@ local function entity_built(event)
 		player = event.robot.last_user
 	end
 
-	if trainHandler(entity, player) then
+	if entity and trainHandler(entity, player) then
 		return
 	end
 
@@ -248,10 +248,15 @@ local function entity_built(event)
 				surface = entity.surface,
 				only_in_alt_mode = true
 			}
-	elseif (entity.name == "entity-ghost") then
-		local RampList = {RTTrainRamp=true, RTTrainRampNoSkip=true, RTMagnetTrainRamp=true, RTMagnetTrainRampNoSkip=true, RTImpactUnloader=true}
-		if (RampList[entity.ghost_name]) then
-			entity.teleport(OffsetPosition(entity.position, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][1]/1.5, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][2]/1.5}))
+	elseif (event.ghost or entity.name == "entity-ghost") then -- ghosts from dying and ghosts from blueprints
+		local ghost = event.ghost or entity
+		local RampList = {RTTrainRamp=true, RTTrainRampNoSkip=true, RTMagnetTrainRamp=true, RTMagnetTrainRampNoSkip=true, RTImpactUnloader=true, RTTrapdoorSwitch=true}
+		if (RampList[ghost.ghost_name]) then
+			local SixteenDirNudge = 1
+			--[[ if (entity.ghost_name == "RTTrapdoorSwitch" and entity.direction%2 == 0) then
+				SixteenDirNudge = 1.5
+			end ]]
+			ghost.teleport(OffsetPosition(ghost.position, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ghost.direction][1]*SixteenDirNudge, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ghost.direction][2]*SixteenDirNudge}))
 		end
 	end
 end

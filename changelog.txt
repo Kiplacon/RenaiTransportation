@@ -2,12 +2,14 @@
 Version: 2.1.0
 Date: 1/21/2025
   Additions:
-    - Trapdoor wagons, a cargo wagon whose floor can be opened and closed to drop items out the bottom.
-    - Train ramp, Magnet train ramp, and Impact unloader functionality with/between ground rails and elevated rails.
+    - Trapdoor wagon. A cargo wagon whose floor can be opened and closed to drop items out the bottom. Drop your cargo down from elevated rails or mid jump.
+    - Trapdoor switch. Toggles whether a Trapdoor wagon is open or closed when it rolls over this.
+    - Proper Train ramp, Magnet train ramp, and Impact unloader functionality when built on elevated rails.
+    - Better train jumping between ground and elevated rails, especially with magnet ramps. Vanilla Rail ramps are for suckers
+    - Throwing items backwards off a space platform generates a tiny bit of thrust.
   Changes:
-    - e
+    - Magnet ramp targeting and indicators improved, especially for train bounce pads
   Bugfixes:
-    - Fixed a crash wh
     - Train ramps, Magnet train ramps, and Impact unloaders rotate properly in blueprints.
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.16

@@ -5,14 +5,14 @@ TrainConstants = require("__RenaiTransportation__/script/trains/constants")
 require('util')
 ---- keikaku
 ------- improvements
--- better zipline driving with close connections (unlikely)
--- deflector pad, diagonal (w/range adjusts)
 -- director pad range adjusting
 -- remove shadows from character ghosts
 	-- animate character shadow separately
 
 ------- New features
--- trapdoor wagon, trapdoor triggering ramp
+-- trapdoor wagon
+	-- trapdoor switch (rail signal all 16 directions)
+	-- trapdoor switch ramp
 -- electromagnetic item cannon
 -- belt ramp
 -- vacuum hatch
@@ -20,9 +20,13 @@ require('util')
 -- fluid jet/catching tank
 -- dynamic zipline, get on from anywhere and autodrive anywhere
 -- getting hit by a train/car knocks you away
+-- items on the floor of a space platform fly away when the ship takes off/arrives
+-- deflector pad, diagonal (w/range adjusts)
 
 ------- bugs
 -- crash on interact to toggle things not currently enabled
+-- rotating blueprints of trapdoor switches on angles doesnt always work due to rounding errors or something idk if you dont rotate it its fine
+-- vacuum hatch full inventory loop
 
 ------- impossible atm
 -- thrown item rework when animations can have dynamically rotated sprites
@@ -59,6 +63,7 @@ script.on_event(
 		defines.events.script_raised_built, --| built by script ----
 		defines.events.on_entity_cloned, -- | cloned by script ----
 		defines.events.script_raised_revive, -- | ghost revived by script
+		defines.events.on_post_entity_died -- | ghost created when something dies
 	},
 	require("script.event.entity_built")
 )

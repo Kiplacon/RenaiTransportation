@@ -624,8 +624,10 @@ local function entity_damaged(event)
 	elseif (event.entity.name == "RTTrainDetector") then
 		local detector = event.entity
 		-- toggle the trapdoor on the wagon if it was hit by a trapdoor wagon
+		local last
 		if (event.cause and event.cause.valid and event.cause.name == "RTTrapdoorWagon") then
 			ToggleTrapdoorWagon(event.cause)
+			last = event.cause.unit_number
 		end
 		-- start trying to res the detector
 		local time = game.tick+1
@@ -635,16 +637,13 @@ local function entity_damaged(event)
 		if (storage.clock[time].rez == nil) then
 			storage.clock[time].rez = {}
 		end
-		local info = {name=detector.name, position=detector.position, force="neutral", surface=detector.surface, LastToggled=event.cause.unit_number}
-		--[[ if (event.cause and event.cause.valid and event.cause.name == "RTTrapdoorWagon") then
-			info.LastToggled = event.cause.unit_number
-		end ]]
+		local info = {name=detector.name, position=detector.position, force="neutral", surface=detector.surface, LastToggled=last}
 		table.insert(storage.clock[time].rez, info)
 		-- remove the now broken detector from the destruction link of its trigger
-		local trigger = detector.surface.find_entities_filtered({name="RTTrapdoorSwitch", position=detector.position})[1]
-		if (trigger) then
-			storage.DestructionLinks[script.register_on_object_destroyed(trigger)] = {}
-		end
+		--[[ local switch = detector.surface.find_entities_filtered({name="RTTrapdoorSwitch", position=detector.position})[1]
+		if (switch) then
+			storage.DestructionLinks[script.register_on_object_destroyed(switch)] = {}
+		end ]]
 	end
 end
 

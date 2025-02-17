@@ -1,19 +1,6 @@
 --local utild = require('util')
 --======= util.swap_entity_inventories and swap_inventories method copied from the Jetpacks mod cause this somehow preserves blueprints in the quickbar
 --https://mods.factorio.com/mod/jetpack
---[[ function util.swap_entity_inventories(entity_a, entity_b, inventory)
-    swap_inventories(entity_a.get_inventory(inventory), entity_b.get_inventory(inventory))
-end
-function swap_inventories(inv_a, inv_b)
-    if inv_a.is_filtered() then
-        for i = 1, math.min(#inv_a, #inv_b) do
-        inv_b.set_filter(i, inv_a.get_filter(i))
-        end
-    end
-    for i = 1, math.min(#inv_a, #inv_b)do
-        inv_b[i].swap_stack(inv_a[i])
-    end
-end ]]
 function util.swap_entity_inventories(entity_a, entity_b, inventory)
     local inv_a = entity_a.get_inventory(inventory)
     local inv_b = entity_b.get_inventory(inventory)
@@ -333,11 +320,11 @@ function ToggleTrapdoorWagon(WagonEntity)
     -- properties.OpenIndicator = RenderObject
     if (storage.TrapdoorWagonsOpen[DestroyNumber] ~= nil) then
         storage.TrapdoorWagonsOpen[DestroyNumber].OpenIndicator.color = {r=1,g=0,b=0,a=1}
-        storage.TrapdoorWagonsOpen[DestroyNumber].open = false
+        --storage.TrapdoorWagonsOpen[DestroyNumber].open = false
         storage.TrapdoorWagonsClosed[DestroyNumber], storage.TrapdoorWagonsOpen[DestroyNumber] = storage.TrapdoorWagonsOpen[DestroyNumber], nil
     elseif (storage.TrapdoorWagonsClosed[DestroyNumber] ~= nil) then
         storage.TrapdoorWagonsClosed[DestroyNumber].OpenIndicator.color = {r=0,g=1,b=0,a=1}
-        storage.TrapdoorWagonsClosed[DestroyNumber].open = true
+        --storage.TrapdoorWagonsClosed[DestroyNumber].open = true
         storage.TrapdoorWagonsOpen[DestroyNumber], storage.TrapdoorWagonsClosed[DestroyNumber] = storage.TrapdoorWagonsClosed[DestroyNumber], nil
     end
 end

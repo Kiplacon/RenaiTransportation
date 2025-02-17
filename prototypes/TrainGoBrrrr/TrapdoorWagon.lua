@@ -32,6 +32,55 @@ for _, part in pairs({"horizontal_doors", "vertical_doors"}) do
 end
 
 
+local PictureSet =
+{
+	structure =
+	{
+		layers =
+		{
+			{
+				filename = "__RenaiTransportation__/graphics/TrapdoorSwitch/TrapdoorSwitch.png",
+				size = 128,
+				frame_count = 1,
+				direction_count = 16,
+				scale = 0.5
+			}
+		}
+	},
+	signal_color_to_structure_frame_index =
+	{
+		green  = 0,
+		yellow = 1,
+		red    = 2,
+	},
+	lights =
+	{
+		green  = { light = {intensity = 0, size = 4, color={r=0, g=1,   b=0 }}, shift = { 0, -0.5 }},
+		yellow = { light = {intensity = 0, size = 4, color={r=1, g=0.5, b=0 }}, shift = { 0,  0   }},
+		red    = { light = {intensity = 0, size = 4, color={r=1, g=0,   b=0 }}, shift = { 0,  0.5 }},
+	},
+	structure_align_to_animation_index =
+	{
+		0,  0,  0,  0,   0,  0,  0,  0,   0,  0,  0,  0,
+		1,  1,  1,  1,   1,  1,  1,  1,   1,  1,  1,  1,
+		2,  2,  2,  2,   2,  2,  2,  2,   2,  2,  2,  2,
+		3,  3,  3,  3,   3,  3,  3,  3,   3,  3,  3,  3,
+		4,  4,  4,  4,   4,  4,  4,  4,   4,  4,  4,  4,
+		5,  5,  5,  5,   5,  5,  5,  5,   5,  5,  5,  5,
+		6,  6,  6,  6,   6,  6,  6,  6,   6,  6,  6,  6,
+		7,  7,  7,  7,   7,  7,  7,  7,   7,  7,  7,  7,
+		8,  8,  8,  8,   8,  8,  8,  8,   8,  8,  8,  8,
+		9,  9,  9,  9,   9,  9,  9,  9,   9,  9,  9,  9,
+		10,  10,  10,  10,   10,  10,  10,  10,   10,  10,  10,  10,
+		11,  11,  11,  11,   11,  11,  11,  11,   11,  11,  11,  11,
+		12,  12,  12,  12,   12,  12,  12,  12,   12,  12,  12,  12,
+		13,  13,  13,  13,   13,  13,  13,  13,   13,  13,  13,  13,
+		14,  14,  14,  14,   14,  14,  14,  14,   14,  14,  14,  14,
+		15,  15,  15,  15,   15,  15,  15,  15,   15,  15,  15,  15,
+	}
+}
+
+
 data:extend({
 ----wagon
 OhYouLikeTrains,
@@ -58,7 +107,7 @@ OhYouLikeTrains,
 	type = "recipe",
 	name = "RTTrapdoorWagonRecipe",
 	enabled = true,
-	energy_required = 1,
+	energy_required = 8,
 	ingredients =
 		{
 			{type="item", name="advanced-circuit", amount=10},
@@ -69,26 +118,96 @@ OhYouLikeTrains,
 		{type="item", name="RTTrapdoorWagonItem", amount=1}
 	}
 },
+})
 
--------------- trigger
---NameEveryTrainStation,
 
+---------- Trapdoor switch and detector
+data:extend({
 { -- actual collision detector
 	type = "simple-entity-with-owner",
 	name = "RTTrainDetector",
 	icon = '__RenaiTransportation__/graphics/Untitled.png',
 	icon_size = 32,
-	flags = {"placeable-neutral", "placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-flammable", "no-copy-paste"},
+	flags = {"placeable-neutral", "placeable-off-grid", "not-blueprintable", "not-deconstructable", "not-flammable", "no-copy-paste"},
 	max_health = 1,
-	selection_box = {{-0.2, -0.2}, {0.2, 0.2}},
-	collision_box = {{-0.01, -0.01}, {0.01, 0.01}},
+	selection_box = nil,
+	collision_box = {{-0.2, -0.2}, {0.2, 0.2}},
 	collision_mask = {layers={["elevated_train"]=true, ["train"]=true}},
 	picture = {
 		filename = '__RenaiTransportation__/graphics/Untitled.png',
 		width = 32,
 		height = 32,
+		scale = 0.25
+	},
+},
+{ -- Switch entity
+	type = "rail-signal",
+	name = "RTTrapdoorSwitch",
+	icon = "__RenaiTransportation__/graphics/TrapdoorSwitch/TrapdoorSwitchIcon.png",
+	icon_size = 64,
+	flags = {"filter-directions", "not-on-map", "player-creation", "building-direction-16-way", "hide-alt-info", "not-flammable"},
+	minable = { mining_time = 0.5, result = "RTTrapdoorSwitchItem" },-- Minable so they can get the item back if the placer swap bugs out
+	max_health = 100,
+	collision_mask = {layers={}}, -- these masks interact with the blocker
+	elevated_collision_mask = {layers={}},
+	selection_priority = 100,
+	elevated_selection_priority = 100,
+	collision_box = {{-0.4, -0.4}, {0.4, 0.4}},
+	selection_box = {{-0.3, -0.5}, {0.7, 0.5}},
+	ground_picture_set = PictureSet,
+	elevated_picture_set = PictureSet,
+	placeable_by = { item = "RTTrapdoorSwitchItem", count = 1 },
+},
+{ -- switch placer entity
+	type = "rail-signal",
+	name = "RTTrapdoorSwitch-placer",
+	icon = "__RenaiTransportation__/graphics/TrapdoorSwitch/TrapdoorSwitchIcon.png",
+	icon_size = 64,
+	flags = {"filter-directions", "not-on-map", "player-creation", "building-direction-16-way"},
+	minable = { mining_time = 0.5, result = "RTTrapdoorSwitchItem" },-- Minable so they can get the item back if the placer swap bugs out
+	render_layer = "elevated-object",
+	collision_mask = {layers={["train"]=true}}, -- these masks interact with the blocker
+	elevated_collision_mask = {layers={["elevated_train"]=true}},
+	selection_priority = 100,
+	elevated_selection_priority = 100,
+	collision_box = {{-0.4, -0.4}, {0.4, 0.4}},
+	selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
+	ground_picture_set = PictureSet,
+	elevated_picture_set = PictureSet
+},
+{
+	type = "item",
+	name = "RTTrapdoorSwitchItem",
+	icon = "__RenaiTransportation__/graphics/TrapdoorSwitch/TrapdoorSwitchIcon.png",
+	icon_size = 64,
+	subgroup = "RT",
+	order = "g",
+	place_result = "RTTrapdoorSwitch-placer",
+	stack_size = 10
+},
+{ --------- Switch recipe ----------
+	type = "recipe",
+	name = "RTTrapdoorSwitchRecipe",
+	enabled = true,
+	energy_required = 0.1,
+	ingredients =
+	{
+		{type="item", name="advanced-circuit", amount=10},
+	},
+	results = {
+		{type="item", name="RTTrapdoorSwitchItem", amount=1}
+	}
+},
+})
+for i = 0, 15 do
+	data:extend({
+	{ -- down
+		type = "sprite",
+		name = "RTTrapdoorSwitch"..i,
+		filename = "__RenaiTransportation__/graphics/TrapdoorSwitch/TrapdoorSwitch.png",
+		size = 128,
+		y = 128*i,
 		scale = 0.5
 	},
-}
-
-})
+	})
+end

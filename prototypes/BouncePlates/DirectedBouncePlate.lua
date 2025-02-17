@@ -1,17 +1,3 @@
-ConnectionPoints =
-    {
-      shadow =
-      {
-        red = util.by_pixel(12, 14),
-        green = util.by_pixel(5, 14)
-      },
-      wire =
-      {
-        red = util.by_pixel(11, 13),
-        green = util.by_pixel(5, 12)
-      }
-    }
-
 data:extend({
 
 	{

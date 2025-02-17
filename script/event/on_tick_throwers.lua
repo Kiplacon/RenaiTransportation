@@ -170,9 +170,7 @@ local function ThrowersOnTick(event)
                                     end
                                     CreateThrownItem({
                                         type = "CustomPath",
-                                        ItemName = HeldItem,
-                                        count=ThrowerStack.count,
-                                        quality=ThrowerStack.quality.name,
+                                        stack = ThrowerStack,
                                         thrower = ThrowerEntity,
                                         start = ThrowerPosition,
                                         target={x=x, y=y},

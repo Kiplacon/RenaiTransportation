@@ -8,8 +8,8 @@ data:extend({
 		flags = {"placeable-neutral", "player-creation"},
 		minable = {mining_time = 0.5, result = "RTTrainBouncePlateItem"},
 		max_health = 400,
-	    collision_box = {{-1.75, -1.25}, {1.75, 1.75}}, --{{-0.35, -0.35}, {0.35, 0.35}},
-		selection_box = {{-2, -1.75}, {2, 2}},
+	    collision_box = {{-1.75, -1.75}, {1.75, 1.75}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+		selection_box = {{-2, -2}, {2, 2}},
 		fast_replaceable_group = "TrainBouncers",
 		picture = 
 			{
