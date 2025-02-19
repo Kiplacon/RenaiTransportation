@@ -9,6 +9,8 @@ Date: 1/21/2025
     - Throwing items backwards off a space platform generates a tiny bit of thrust.
   Changes:
     - Magnet ramp targeting and indicators improved, especially for train bounce pads
+    - Less cluttered range visuals for bounce pads
+    - Lots of behind the scenes stuff that make the back end a little less jank. Hopefully that makes it easier for me to add or change things in the future
   Bugfixes:
     - Train ramps, Magnet train ramps, and Impact unloaders rotate properly in blueprints.
 ---------------------------------------------------------------------------------------------------

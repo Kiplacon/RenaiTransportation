@@ -21,7 +21,7 @@ data:extend({
 		flags = {"placeable-neutral", "player-creation"},
 		minable = {mining_time = 0.2, result = "PrimerBouncePlateItem"},
 		max_health = 200,
-	    collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+		collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
 		picture = 
@@ -53,7 +53,7 @@ data:extend({
 						filename = "__RenaiTransportation__/graphics/PrimeRange.png",
 						size = 640
 					},
-				draw_on_selection = true,
+				draw_on_selection = false,
 				distance = 40
 			}
 	},
@@ -76,7 +76,7 @@ data:extend({
 		energy_required = 1,
 		ingredients = 
 			{
-				{type="item", name="BouncePlateItem", amount=1},
+				{type="item", name="RTBouncePlateItem", amount=1},
 				{type="item", name="electronic-circuit", amount=2},
 				{type="item", name="coal", amount=5}
 			},

@@ -97,13 +97,11 @@ local function entity_built(event)
 		entity.active = false
 
 	elseif (string.find(entity.name, "BouncePlate") and not string.find(entity.name, "Train")) then
-		storage.BouncePadList[script.register_on_object_destroyed(entity)] = {entity = entity}
+		storage.BouncePadList[script.register_on_object_destroyed(entity)] = {entity=entity, arrow=nil}
 		local PouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(entity)]
 		local ShowRange = settings.global["RTShowRange"].value
-		if (entity.name == "DirectedBouncePlate"
-		or entity.name == "DirectedBouncePlate5"
-		or entity.name == "DirectedBouncePlate15") then
-			--entity.operable = false
+		if (entity.name == "DirectedBouncePlate") then
+			local HomeOnThe = entity.get_or_create_control_behavior().get_section(1).get_slot(1).min or 10
 			if (entity.orientation == 0) then
 				direction = "UD"
 				xflip = 1
@@ -121,54 +119,44 @@ local function entity_built(event)
 				xflip = -1
 				yflip = 1
 			end
-			if (entity.name == "DirectedBouncePlate5") then
-				xflip = xflip*0.5
-				yflip = yflip*0.5
-			elseif (entity.name == "DirectedBouncePlate15") then
-				xflip = xflip*1.5
-				yflip = yflip*1.5
-			end
 			PouncePadProperties.arrow = rendering.draw_sprite
 				{
 					sprite = "RTDirectedRangeOverlay"..direction,
 					surface = entity.surface,
 					target = entity,
 					only_in_alt_mode = true,
-					x_scale = xflip,
-					y_scale = yflip,
+					x_scale = xflip*HomeOnThe/10,
+					y_scale = yflip*HomeOnThe/10,
 					tint = {r = 0.4, g = 0.4, b = 0.4, a = 0},
 					visible = ShowRange
 				}
-		elseif (entity.name == "BouncePlate"
-		or entity.name == "BouncePlate5"
-		or entity.name == "BouncePlate15"
+			PouncePadProperties.ShowArrow = ShowRange
+			entity.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=HomeOnThe})
+		elseif (entity.name == "RTBouncePlate"
 		or entity.name == "SignalBouncePlate"
 		or entity.name == "DirectorBouncePlate") then
-			local xs = 1
-			local ys = 1
-			if (entity.name == "BouncePlate5") then
-				xs = 0.5
-				ys = 0.5
-			elseif (entity.name == "BouncePlate15") then
-				xs = 1.5
-				ys = 1.5
-			end
+			local HomeOnThe = entity.get_or_create_control_behavior().get_section(1).get_slot(1).min or 10
 			PouncePadProperties.arrow = rendering.draw_sprite
 				{
 					sprite = "RTRangeOverlay",
 					surface = entity.surface,
 					target = entity,
-					x_scale = xs,
-					y_scale = ys,
+					x_scale = HomeOnThe/10,
+					y_scale = HomeOnThe/10,
 					only_in_alt_mode = true,
 					tint = {r = 0.4, g = 0.4, b = 0.4, a = 0},
 					visible = ShowRange
 				}
+			PouncePadProperties.ShowArrow = ShowRange
 			-- link trackers with director plates on build or blueprint build
-			if (entity.name == "DirectorBouncePlate") then
+			if (entity.name == "DirectorBouncePlate" and entity.get_or_create_control_behavior().sections_count == 1) then
 				entity.get_or_create_control_behavior().add_section()
 				entity.get_or_create_control_behavior().add_section()
 				entity.get_or_create_control_behavior().add_section()
+				entity.get_or_create_control_behavior().add_section()
+				entity.get_or_create_control_behavior().get_section(5).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=HomeOnThe})
+			else
+				entity.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=HomeOnThe})
 			end
 
 		elseif (entity.name == "PrimerBouncePlate") then
@@ -183,6 +171,7 @@ local function entity_built(event)
 					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0},
 					visible = ShowRange
 				}
+			PouncePadProperties.ShowArrow = ShowRange
 		elseif (entity.name == "PrimerSpreadBouncePlate") then
 			PouncePadProperties.arrow = rendering.draw_sprite
 				{
@@ -195,6 +184,7 @@ local function entity_built(event)
 					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0},
 					visible = ShowRange
 				}
+			PouncePadProperties.ShowArrow = ShowRange
 		end
 	------- make train ramp stuff unrotatable just in case
 	elseif (entity.name == "RTTrainRamp" or entity.name == "RTTrainRampNoSkip" or entity.name == "RTMagnetTrainRamp" or entity.name == "RTMagnetTrainRampNoSkip") then

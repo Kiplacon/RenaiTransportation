@@ -69,7 +69,7 @@ data:extend({
 		energy_required = 0.5,
 		ingredients = 
 			{
-				{type="item", name="BouncePlateItem", amount=1},
+				{type="item", name="RTBouncePlateItem", amount=1},
 				{type="item", name="iron-plate", amount=4}
 			},
 		results = {

@@ -8,7 +8,8 @@ local function click(event)
 	local clicked = game.get_player(event.player_index).selected
 	if (clicked) then
 		if (storage.BouncePadList[script.register_on_object_destroyed(clicked)] ~= nil) then
-			storage.BouncePadList[script.register_on_object_destroyed(clicked)].arrow.visible = not storage.BouncePadList[script.register_on_object_destroyed(clicked)].arrow.visible
+			storage.BouncePadList[script.register_on_object_destroyed(clicked)].arrow.visible = not storage.BouncePadList[script.register_on_object_destroyed(clicked)].ShowArrow
+			storage.BouncePadList[script.register_on_object_destroyed(clicked)].ShowArrow = not storage.BouncePadList[script.register_on_object_destroyed(clicked)].ShowArrow
 
 		--| Start setting range of magenet ramp
 		elseif ((clicked.name == "RTMagnetTrainRamp" or clicked.name == "RTMagnetTrainRampNoSkip") and PlayerProperties.SettingRampRange.SettingRange == false) then

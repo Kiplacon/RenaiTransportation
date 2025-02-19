@@ -1,8 +1,9 @@
 local function rotate(event)
 	local EntityDestroyNumber = script.register_on_object_destroyed(event.entity)
-	if ((event.entity.name == "DirectedBouncePlate" or event.entity.name == "DirectedBouncePlate5" or event.entity.name == "DirectedBouncePlate15")
+	if ((event.entity.name == "DirectedBouncePlate")
 	and storage.BouncePadList[EntityDestroyNumber] ~= nil) then
 		local CantSeeMe = storage.BouncePadList[EntityDestroyNumber].arrow.visible
+		local HomeOnThe = event.entity.get_or_create_control_behavior().get_section(1).get_slot(1).min
 		storage.BouncePadList[EntityDestroyNumber].arrow.destroy()
 		if (event.entity.orientation == 0) then
 			direction = "UD"
@@ -21,13 +22,6 @@ local function rotate(event)
 			xflip = -1
 			yflip = 1
 		end
-		if (event.entity.name == "DirectedBouncePlate5") then
-			xflip = xflip*0.5
-			yflip = yflip*0.5
-		elseif (event.entity.name == "DirectedBouncePlate15") then
-			xflip = xflip*1.5
-			yflip = yflip*1.5
-		end
 		storage.BouncePadList[EntityDestroyNumber].arrow = rendering.draw_sprite
 			{
 				sprite = "RTDirectedRangeOverlay"..direction,
@@ -36,8 +30,8 @@ local function rotate(event)
 				--time_to_live = 240,
 				only_in_alt_mode = true,
 				visible = CantSeeMe,
-				x_scale = xflip,
-				y_scale = yflip,
+				x_scale = xflip*HomeOnThe/10,
+				y_scale = yflip*HomeOnThe/10,
 				tint = {r = 0.4, g = 0.4, b = 0.4, a = 0}
 			}
 

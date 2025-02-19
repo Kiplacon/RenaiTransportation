@@ -6,19 +6,21 @@ data:extend({
 		filename = "__RenaiTransportation__/graphics/test.png",
 		size = 640
 	},
-
 	{ --------- Bounce plate entity --------------
-		type = "simple-entity-with-owner",
-		name = "BouncePlate",
+		type = "constant-combinator",
+		name = "RTBouncePlate",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/PlateIconn.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
-		minable = {mining_time = 0.2, result = "BouncePlateItem"},
+		minable = {mining_time = 0.2, result = "RTBouncePlateItem"},
 		max_health = 200,
-	    collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+		collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
-		picture =
+		activity_led_sprites = {filename = "__RenaiTransportation__/graphics/nothing.png", size = 1},
+		activity_led_light_offsets = {{0,0},{0,0},{0,0},{0,0}},
+		circuit_wire_connection_points = {{wire={}, shadow={}},{wire={}, shadow={}},{wire={}, shadow={}},{wire={}, shadow={}}},
+		sprites =
 			{
 			layers =
 				{
@@ -40,6 +42,7 @@ data:extend({
 					}
 				}
 			},
+		
 		radius_visualisation_specification =
 			{
 				sprite =
@@ -47,25 +50,25 @@ data:extend({
 						filename = "__RenaiTransportation__/graphics/testalt.png",
 						size = 640
 					},
-				draw_on_selection = true,
+				draw_on_selection = false,
 				distance = 10
 			}
 	},
 
 	{ --------- The Bounce plate item -------------
 		type = "item",
-		name = "BouncePlateItem",
+		name = "RTBouncePlateItem",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/PlateIconn.png",
 		icon_size = 64, --icon_mipmaps = 4,
 		subgroup = "RT",
 		order = "a",
-		place_result = "BouncePlate",
+		place_result = "RTBouncePlate",
 		stack_size = 50
 	},
 
 	{ --------- The Bounce plate recipe ----------
 		type = "recipe",
-		name = "BouncePlateRecipe",
+		name = "RTBouncePlateRecipe",
 		enabled = true,
 		energy_required = 1,
 		ingredients =
@@ -74,7 +77,7 @@ data:extend({
 				{type="item", name="automation-science-pack", amount=1}
 			},
 		results = {
-			{type="item", name="BouncePlateItem", amount=1}
+			{type="item", name="RTBouncePlateItem", amount=1}
 		}
 	},
 
@@ -168,8 +171,8 @@ data:extend({
 		icon = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/PlateIconn.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
-		minable = {mining_time = 0.2, result = "BouncePlateItem"},
-		placeable_by = {item="BouncePlateItem", count=1},
+		minable = {mining_time = 0.2, result = "RTBouncePlateItem"},
+		placeable_by = {item="RTBouncePlateItem", count=1},
 		max_health = 200,
 	   collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
@@ -213,8 +216,8 @@ data:extend({
 		icon = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/PlateIconn.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
-		minable = {mining_time = 0.2, result = "BouncePlateItem"},
-		placeable_by = {item="BouncePlateItem", count=1},
+		minable = {mining_time = 0.2, result = "RTBouncePlateItem"},
+		placeable_by = {item="RTBouncePlateItem", count=1},
 		max_health = 200,
 		collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},

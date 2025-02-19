@@ -129,7 +129,7 @@ picture =
 	ingredients =
 		{
 			{type="item", name="HatchRTItem", amount=1},
-			{type="item", name="BouncePlateItem", amount=1},
+			{type="item", name="RTBouncePlateItem", amount=1},
 			{type="item", name="electronic-circuit", amount=2}
 		},
 	results = {

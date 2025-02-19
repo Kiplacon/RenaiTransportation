@@ -103,7 +103,7 @@ data:extend({
 		ingredients = 
 			{
 				{type="item", name="constant-combinator", amount=1},
-				{type="item", name="BouncePlateItem", amount=1}
+				{type="item", name="RTBouncePlateItem", amount=1}
 			},
 		results = {
 			{type="item", name="SignalBouncePlateItem", amount=1}

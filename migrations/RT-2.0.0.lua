@@ -152,7 +152,7 @@ if (storage.BouncePadList) then
 					tint = {r = 0.4, g = 0.4, b = 0.4, a = 0},
 					visible = ShowRange
 				}
-		elseif (entity.name == "BouncePlate"
+		elseif (entity.name == "RTBouncePlate"
 		or entity.name == "BouncePlate5"
 		or entity.name == "BouncePlate15"
 		or entity.name == "SignalBouncePlate"

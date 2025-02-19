@@ -356,7 +356,7 @@ function ResolveThrownItem(FlyingItem)
                         unity = 0
                     end
                 end
-            elseif (string.find(ThingLandedOn.name, "BouncePlate")) then
+            else -- normal, primer, and train bounce pads
                 ---- determine "From" direction ----
                 local origin = FlyingItem.ThrowerPosition or FlyingItem.start
                 if (origin.y > FlyingItem.target.y
@@ -387,10 +387,33 @@ function ResolveThrownItem(FlyingItem)
             local tunez = "bounce"
             if (string.find(ThingLandedOn.name, "Train")) then
                 range = 39.9
-            elseif (ThingLandedOn.name == "BouncePlate5" or ThingLandedOn.name == "DirectedBouncePlate5") then
-                range = 4.9
-            elseif (ThingLandedOn.name == "BouncePlate15" or ThingLandedOn.name == "DirectedBouncePlate15") then
-                range = 14.9
+            elseif (string.find(ThingLandedOn.name, "Primer") == nil) then
+                range = ThingLandedOn.get_or_create_control_behavior().get_section(1).get_slot(1).min
+                if (ThingLandedOn.name == "DirectorBouncePlate") then
+                    range = ThingLandedOn.get_or_create_control_behavior().get_section(5).get_slot(1).min
+                end
+                local BouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(ThingLandedOn)]
+                if (BouncePadProperties.arrow.x_scale*10 ~= range) then
+                    local xflip = 1
+                    local yflip = 1
+                    if (ThingLandedOn.name == "DirectedBouncePlate") then
+                        if (ThingLandedOn.orientation == 0) then
+                            xflip = 1
+                            yflip = 1
+                        elseif (ThingLandedOn.orientation == 0.25) then
+                            xflip = 1
+                            yflip = 1
+                        elseif (ThingLandedOn.orientation == 0.5) then
+                            xflip = 1
+                            yflip = -1
+                        elseif (ThingLandedOn.orientation == 0.75) then
+                            xflip = -1
+                            yflip = 1
+                        end
+                    end
+                    BouncePadProperties.arrow.x_scale = xflip*range/10
+                    BouncePadProperties.arrow.y_scale = yflip*range/10
+                end
             end
 
             -- Modifiers --
@@ -403,9 +426,6 @@ function ResolveThrownItem(FlyingItem)
                 primable = "Primed"
                 tunez = "PrimeClick"
                 effect = "PrimerBouncePlateParticle"
-            elseif (ThingLandedOn.name == "SignalBouncePlate") then
-                ThingLandedOn.get_control_behavior().enabled = not ThingLandedOn.get_control_behavior().enabled
-                effect = "SignalBouncePlateParticle"
             end
 
             if (not FlyingItem.tracing) then --if its an item and not a tracer

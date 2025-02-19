@@ -5,15 +5,15 @@ TrainConstants = require("__RenaiTransportation__/script/trains/constants")
 require('util')
 ---- keikaku
 ------- improvements
--- director pad range adjusting
-	-- change bounde pads from simple-entity to constant combinator
-	-- change on-build to default to 10 range, or set range/indicator according to the ghost signal value
-	-- copy/paste setting change bounce range value
-	-- Bounce pad
-	-- directed bounce pad
-	-- director bounce pad
-	-- migration names
-	-- interact cycling of range
+-- director pad range adjusting ✅
+	-- change bounde pads from simple-entity to constant combinator ✅
+	-- change on-build to default to 10 range, or set range/indicator according to the ghost signal value ✅
+	-- copy/paste setting change bounce range value ✅
+	-- Bounce pad ✅
+	-- directed bounce pad ✅
+	-- director bounce pad ✅
+	-- migration names ✅
+	-- interact cycling of range ✅
 -- remove shadows from character ghosts
 	-- remove shadow layer from character prototype
 	-- animate character shadow separately
@@ -32,11 +32,13 @@ require('util')
 -- getting hit by a train/car knocks you away
 -- items on the floor of a space platform fly away when the ship takes off/arrives
 -- deflector pad, diagonal (w/range adjusts)
+-- orbital bombardment throwing things down from platforms
 
 ------- bugs
--- crash on interact to toggle things not currently enabled
--- rotating blueprints of trapdoor switches on angles doesnt always work due to rounding errors or something idk if you dont rotate it its fine
+-- crash on interact to toggle things not currently enabled 
+-- rotating blueprints of trapdoor switches on angles doesnt always work due to rounding errors or something idk if you dont rotate it its fine ✅
 -- vacuum hatch full inventory loop
+-- hover range indicator for bounce pads not synced with current setting ✅
 
 ------- impossible atm
 -- thrown item rework when animations can have dynamically rotated sprites
@@ -303,6 +305,19 @@ function(event)
 	and storage.HoverGFX[script.register_on_object_destroyed(player.selected)][event.player_index]) then
 		storage.HoverGFX[script.register_on_object_destroyed(player.selected)][event.player_index].visible = true
 	end
+
+	--hide the old one
+	if (event.last_entity
+	and storage.BouncePadList[script.register_on_object_destroyed(event.last_entity)]
+	and storage.BouncePadList[script.register_on_object_destroyed(event.last_entity)].arrow) then
+		storage.BouncePadList[script.register_on_object_destroyed(event.last_entity)].arrow.visible = storage.BouncePadList[script.register_on_object_destroyed(event.last_entity)].ShowArrow
+	end
+	-- show the new one
+	if (player.selected
+	and storage.BouncePadList[script.register_on_object_destroyed(player.selected)]
+	and storage.BouncePadList[script.register_on_object_destroyed(player.selected)].arrow) then
+		storage.BouncePadList[script.register_on_object_destroyed(player.selected)].arrow.visible = true
+	end
 end)
 
 script.on_event(defines.events.on_pre_surface_deleted,
@@ -451,7 +466,9 @@ function(event)
 			or selected.name == "RTTrainRampNoSkip"
 			or selected.name == "RTMagnetTrainRamp"
 			or selected.name == "RTMagnetTrainRampNoSkip"
-			or selected.name == "RTMagnetRampDrain") then
+			or selected.name == "RTMagnetRampDrain"
+			or selected.name == "RTBouncePlate"
+			or selected.name == "DirectedBouncePlate") then
 			player.opened = nil
 
 		elseif (selected.name == "DirectorBouncePlate") then

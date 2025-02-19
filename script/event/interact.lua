@@ -121,7 +121,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				end
 			end ]]
 		--|| Swap Primer Modes
-		elseif (ThingHovering.name == "PrimerBouncePlate") then
+		elseif (settings.startup["RTBounceSetting"].value == true and ThingHovering.name == "PrimerBouncePlate") then
 			ThingHovering.surface.create_entity
 				({
 				name = "PrimerSpreadBouncePlate",
@@ -136,7 +136,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				volume_modifier=1
 				}
 			ThingHovering.destroy()
-		elseif (ThingHovering.name == "PrimerSpreadBouncePlate") then
+		elseif (settings.startup["RTBounceSetting"].value == true and ThingHovering.name == "PrimerSpreadBouncePlate") then
 			ThingHovering.surface.create_entity
 				({
 				name = "PrimerBouncePlate",
@@ -272,128 +272,77 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				)
 
 		-- bound pad ranges
-		elseif (ThingHovering.name == "BouncePlate") then
-			ThingHovering.surface.create_entity
-				({
-				name = "BouncePlate15",
-				position = ThingHovering.position,
-				force = player.force,
-				create_build_effect_smoke = false,
-				raise_built = true
-				})
-			player.play_sound{
-				path="utility/rotated_medium",
-				position=player.position,
-				volume_modifier=1
-				}
-			ThingHovering.destroy()
-		elseif (ThingHovering.name == "BouncePlate15") then
-			ThingHovering.surface.create_entity
-				({
-				name = "BouncePlate5",
-				position = ThingHovering.position,
-				force = player.force,
-				create_build_effect_smoke = false,
-				raise_built = true
-				})
-			player.play_sound{
-				path="utility/rotated_medium",
-				position=player.position,
-				volume_modifier=1
-				}
-			ThingHovering.destroy()
-		elseif (ThingHovering.name == "BouncePlate5") then
-			ThingHovering.surface.create_entity
-				({
-				name = "BouncePlate",
-				position = ThingHovering.position,
-				force = player.force,
-				create_build_effect_smoke = false,
-				raise_built = true
-				})
-			player.play_sound{
-				path="utility/rotated_medium",
-				position=player.position,
-				volume_modifier=1
-				}
-			ThingHovering.destroy()
-		-- director range
-		elseif (ThingHovering.name == "DirectedBouncePlate") then
-			ThingHovering.surface.create_entity
-				({
-				name = "DirectedBouncePlate15",
-				position = ThingHovering.position,
-				direction = ThingHovering.direction,
-				force = player.force,
-				create_build_effect_smoke = false,
-				raise_built = true
-				})
-			player.play_sound{
-				path="utility/rotated_medium",
-				position=player.position,
-				volume_modifier=1
-				}
-			ThingHovering.destroy()
-		elseif (ThingHovering.name == "DirectedBouncePlate15") then
-			ThingHovering.surface.create_entity
-				({
-				name = "DirectedBouncePlate5",
-				position = ThingHovering.position,
-				direction = ThingHovering.direction,
-				force = player.force,
-				create_build_effect_smoke = false,
-				raise_built = true
-				})
-			player.play_sound{
-				path="utility/rotated_medium",
-				position=player.position,
-				volume_modifier=1
-				}
-			ThingHovering.destroy()
-		elseif (ThingHovering.name == "DirectedBouncePlate5") then
-			ThingHovering.surface.create_entity
-				({
-				name = "DirectedBouncePlate",
-				position = ThingHovering.position,
-				direction = ThingHovering.direction,
-				force = player.force,
-				create_build_effect_smoke = false,
-				raise_built = true
-				})
-			player.play_sound{
-				path="utility/rotated_medium",
-				position=player.position,
-				volume_modifier=1
-				}
-			ThingHovering.destroy()
-		--|| Zipline
-		--[[ elseif (player.character
-		and player.character.driving == false
-		and (not string.find(player.character.name, "RTGhost"))
-		and (not string.find(player.character.name, "-jetpack"))
-		and PlayerProperties.state == "default"
-		and ThingHovering.type == "electric-pole"
-		and ElectricPoleBlackList[ThingHovering.name] == nil
-		and ThingHovering.get_wire_connector(defines.wire_connector_id.pole_copper, true).connection_count > 0) then
-			if (math.sqrt((player.position.x-ThingHovering.position.x)^2+(player.position.y-ThingHovering.position.y)^2) <= 6 ) then
-				if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
-				and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineItem")
-				and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read)
-				then
-					GetOnZipline(player, PlayerProperties, ThingHovering)
-				else
-					player.print({"zipline-stuff.reqs"})
-				end
+		elseif (settings.startup["RTBounceSetting"].value == true and ThingHovering.name == "RTBouncePlate") then
+			local BouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(ThingHovering)]
+			local range = ThingHovering.get_or_create_control_behavior().get_section(1).get_slot(1).min
+			local increment = 5 -- make this a setting?
+			local possibilities = 3 -- make this a setting?
+			if (range+increment > increment*possibilities) then
+				range = increment
 			else
-				player.print({"zipline-stuff.range"})
+				range = range+increment
 			end
-
-		elseif (player.character and player.character.driving == false and PlayerProperties.state == "default" and ThingHovering.type == "electric-pole" and string.find(player.character.name, "-jetpack")) then
-			player.print({"zipline-stuff.range"})
-
-		elseif (player.character and player.character.driving == false and PlayerProperties.state == "default" and ThingHovering.type == "electric-pole" and #ThingHovering.neighbours == 0) then
-			player.print({"zipline-stuff.NotConnected"}) ]]
-
+			BouncePadProperties.arrow.x_scale = range/10
+			BouncePadProperties.arrow.y_scale = range/10
+			player.play_sound{
+				path="utility/rotated_medium",
+				position=player.position,
+				volume_modifier=1
+				}
+			ThingHovering.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=range})
+		-- directed range
+		elseif (settings.startup["RTBounceSetting"].value == true and ThingHovering.name == "DirectedBouncePlate") then
+			local BouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(ThingHovering)]
+			local range = ThingHovering.get_or_create_control_behavior().get_section(1).get_slot(1).min
+			local increment = 5 -- make this a setting?
+			local possibilities = 3 -- make this a setting?
+			if (range+increment > increment*possibilities) then
+				range = increment
+			else
+				range = range+increment
+			end
+			local xflip = 1
+			local yflip = 1
+			if (ThingHovering.orientation == 0) then
+				xflip = 1
+				yflip = 1
+			elseif (ThingHovering.orientation == 0.25) then
+				xflip = 1
+				yflip = 1
+			elseif (ThingHovering.orientation == 0.5) then
+				xflip = 1
+				yflip = -1
+			elseif (ThingHovering.orientation == 0.75) then
+				xflip = -1
+				yflip = 1
+			end
+			BouncePadProperties.arrow.x_scale = xflip*range/10
+			BouncePadProperties.arrow.y_scale = yflip*range/10
+			player.play_sound{
+				path="utility/rotated_medium",
+				position=player.position,
+				volume_modifier=1
+				}
+			ThingHovering.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=range})
+		-- director range
+		elseif (settings.startup["RTBounceSetting"].value == true and ThingHovering.name == "DirectorBouncePlate") then
+			local BouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(ThingHovering)]
+			local range = ThingHovering.get_or_create_control_behavior().get_section(5).get_slot(1).min
+			local increment = 5 -- make this a setting?
+			local possibilities = 3 -- make this a setting?
+			if (range+increment > increment*possibilities) then
+				range = increment
+			else
+				range = range+increment
+			end
+			BouncePadProperties.arrow.x_scale = range/10
+			BouncePadProperties.arrow.y_scale = range/10
+			player.play_sound{
+				path="utility/rotated_medium",
+				position=player.position,
+				volume_modifier=1
+				}
+			ThingHovering.get_or_create_control_behavior().get_section(5).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=range})
 		end
 	end
 

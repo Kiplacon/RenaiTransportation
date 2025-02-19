@@ -1,19 +1,4 @@
 data:extend({
-
-	-- {
-	-- 	type = "sprite",
-	-- 	name = "RTDirectedRangeOverlayRL",
-	-- 	filename = "__RenaiTransportation__/graphics/testRL.png",
-	-- 	size = 640
-	-- },
-   --
-	-- {
-	-- 	type = "sprite",
-	-- 	name = "RTDirectedRangeOverlayUD",
-	-- 	filename = "__RenaiTransportation__/graphics/testUD.png",
-	-- 	size = 640
-	-- },
-
 	{ --------- Bounce plate entity --------------
 		type = "constant-combinator",
 		name = "DirectorBouncePlate",
@@ -22,10 +7,10 @@ data:extend({
 		flags = {"placeable-neutral", "player-creation"},
 		minable = {mining_time = 0.2, result = "DirectorBouncePlateItem"},
 		max_health = 200,
-	    collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+		collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
-      sprites =
+		sprites =
 			{
 			layers =
 				{
@@ -47,10 +32,9 @@ data:extend({
 					}
 				}
 			},
-		item_slot_count = 40,
-      activity_led_sprites = {filename = "__RenaiTransportation__/graphics/nothing.png", size = 1},
-      activity_led_light_offsets = {{0,0},{0,0},{0,0},{0,0}},
-      circuit_wire_connection_points = {{wire={}, shadow={}},{wire={}, shadow={}},{wire={}, shadow={}},{wire={}, shadow={}}},
+		activity_led_sprites = {filename = "__RenaiTransportation__/graphics/nothing.png", size = 1},
+		activity_led_light_offsets = {{0,0},{0,0},{0,0},{0,0}},
+		circuit_wire_connection_points = {{wire={}, shadow={}},{wire={}, shadow={}},{wire={}, shadow={}},{wire={}, shadow={}}},
 		radius_visualisation_specification =
 			{
 				sprite =
@@ -58,7 +42,7 @@ data:extend({
 						filename = "__RenaiTransportation__/graphics/testalt.png",
 						size = 640
 					},
-				draw_on_selection = true,
+				draw_on_selection = false,
 				distance = 10
 			}
 	},
@@ -81,7 +65,7 @@ data:extend({
 		energy_required = 1,
 		ingredients =
 			{
-				{type="item", name="BouncePlateItem", amount=1},
+				{type="item", name="RTBouncePlateItem", amount=1},
 				{type="item", name="advanced-circuit", amount=2}
 			},
 		results = {

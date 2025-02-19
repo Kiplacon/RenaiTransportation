@@ -15,36 +15,39 @@ data:extend({
 	},
 
 	{ --------- Bounce plate entity --------------
-		type = "simple-entity-with-owner",
+		type = "constant-combinator",
 		name = "DirectedBouncePlate",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateIconn.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
 		minable = {mining_time = 0.2, result = "DirectedBouncePlateItem"},
 		max_health = 200,
-	    collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+      collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
-		picture =
+      activity_led_sprites = {filename = "__RenaiTransportation__/graphics/nothing.png", size = 1},
+		activity_led_light_offsets = {{0,0},{0,0},{0,0},{0,0}},
+		circuit_wire_connection_points = {{wire={}, shadow={}},{wire={}, shadow={}},{wire={}, shadow={}},{wire={}, shadow={}}},
+		sprites =
 			{
-			  sheets =
-			  {
-				{
-					filename = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateShadow.png",
-					priority = "medium",
-					width = 64,
-					height = 64,
-					shift = util.by_pixel(14,-0.5),
-					scale = 0.5
-				},
-				{
-					filename = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlate.png",
-					priority = "medium",
-					width = 64,
-					height = 64,
-					scale = 0.5
-				}
-			  }
+            sheets =
+            {
+               {
+                  filename = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateShadow.png",
+                  priority = "medium",
+                  width = 64,
+                  height = 64,
+                  shift = util.by_pixel(14,-0.5),
+                  scale = 0.5
+               },
+               {
+                  filename = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlate.png",
+                  priority = "medium",
+                  width = 64,
+                  height = 64,
+                  scale = 0.5
+               }
+            }
 			},
 		radius_visualisation_specification =
 			{
@@ -53,57 +56,43 @@ data:extend({
 						filename = "__RenaiTransportation__/graphics/testalt.png",
 						size = 640
 					},
-				draw_on_selection = true,
+				draw_on_selection = false,
 				distance = 10
 			}
 	},
-   { --------- Bounce plate entity --------------
+   { --------- left for migration
       type = "simple-entity-with-owner",
       name = "DirectedBouncePlate5",
       icon = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateIconn.png",
       icon_size = 64,
       flags = {"placeable-neutral", "player-creation"},
-      minable = {mining_time = 0.2, result = "DirectedBouncePlateItem"},
-      placeable_by = {item="DirectedBouncePlateItem", count=1},
       max_health = 200,
-       collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+      collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
       selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
       fast_replaceable_group = "bouncers",
-      --item_slot_count = 18,
-      --circuit_wire_max_distance = 9,
       picture =
          {
-           sheets =
-           {
+            sheets =
             {
-               filename = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateShadow.png",
-               priority = "medium",
-               width = 64,
-               height = 64,
-               shift = util.by_pixel(14,-0.5),
-               scale = 0.5
-            },
-            {
-               filename = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlate.png",
-               priority = "medium",
-               width = 64,
-               height = 64,
-               scale = 0.5
-            }
-           }
-         },
-      radius_visualisation_specification =
-         {
-            sprite =
                {
-                  filename = "__RenaiTransportation__/graphics/testalt.png",
-                  size = 640
+                  filename = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateShadow.png",
+                  priority = "medium",
+                  width = 64,
+                  height = 64,
+                  shift = util.by_pixel(14,-0.5),
+                  scale = 0.5
                },
-            draw_on_selection = true,
-            distance = 5
-         }
+               {
+                  filename = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlate.png",
+                  priority = "medium",
+                  width = 64,
+                  height = 64,
+                  scale = 0.5
+               }
+            }
+         },
    },
-   { --------- Bounce plate entity --------------
+   { --------- left for migration
       type = "simple-entity-with-owner",
       name = "DirectedBouncePlate15",
       icon = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateIconn.png",
@@ -112,44 +101,31 @@ data:extend({
       minable = {mining_time = 0.2, result = "DirectedBouncePlateItem"},
       placeable_by = {item="DirectedBouncePlateItem", count=1},
       max_health = 200,
-       collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+      collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
       selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
       fast_replaceable_group = "bouncers",
-      --item_slot_count = 18,
-      --circuit_wire_max_distance = 9,
       picture =
          {
-           sheets =
-           {
+            sheets =
             {
-               filename = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateShadow.png",
-               priority = "medium",
-               width = 64,
-               height = 64,
-               shift = util.by_pixel(14,-0.5),
-               scale = 0.5
-            },
-            {
-               filename = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlate.png",
-               priority = "medium",
-               width = 64,
-               height = 64,
-               scale = 0.5
-            }
-           }
-         },
-      radius_visualisation_specification =
-         {
-            sprite =
                {
-                  filename = "__RenaiTransportation__/graphics/testalt.png",
-                  size = 640
+                  filename = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateShadow.png",
+                  priority = "medium",
+                  width = 64,
+                  height = 64,
+                  shift = util.by_pixel(14,-0.5),
+                  scale = 0.5
                },
-            draw_on_selection = true,
-            distance = 15
-         }
+               {
+                  filename = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlate.png",
+                  priority = "medium",
+                  width = 64,
+                  height = 64,
+                  scale = 0.5
+               }
+            }
+         },
    },
-
 	{ --------- The Bounce plate item -------------
 		type = "item",
 		name = "DirectedBouncePlateItem",

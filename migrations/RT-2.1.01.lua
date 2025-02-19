@@ -96,3 +96,174 @@ for _, irection in pairs({{"Up", defines.direction.south}, {"Down", defines.dire
 		end
 	end
 end
+
+local ShowRange = settings.global["RTShowRange"].value
+-- normal bounce pads
+for _, surface in pairs(game.surfaces) do
+	local bofa = surface.find_entities_filtered
+	{
+		name = "RTBouncePlate"
+	}
+	for _, deez in pairs(bofa) do
+		storage.BouncePadList[script.register_on_object_destroyed(deez)] = {entity=deez}
+		local PouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(deez)]
+		PouncePadProperties.arrow = rendering.draw_sprite
+		{
+			sprite = "RTRangeOverlay",
+			surface = surface,
+			target = deez,
+			only_in_alt_mode = true,
+			tint = {r = 0.4, g = 0.4, b = 0.4, a = 0},
+			visible = ShowRange
+		}
+		PouncePadProperties.ShowArrow = ShowRange
+		deez.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=10})
+	end
+end
+for _, variant in pairs({5, 15}) do
+	for _, surface in pairs(game.surfaces) do
+		local sugondese = surface.find_entities_filtered
+		{
+			name = "BouncePlate"..variant
+		}
+		for _, BouncePad in pairs(sugondese) do
+			local TheSpot = BouncePad.position
+			local UseThe = BouncePad.force
+			BouncePad.destroy()
+			local NewKid = surface.create_entity
+			{
+				name = "RTBouncePlate",
+				position = TheSpot,
+				force = UseThe
+			}
+			if (NewKid) then
+				storage.BouncePadList[script.register_on_object_destroyed(NewKid)] = {entity=NewKid}
+				local PouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(NewKid)]
+				PouncePadProperties.arrow = rendering.draw_sprite
+				{
+					sprite = "RTRangeOverlay",
+					surface = surface,
+					target = NewKid,
+					x_scale = variant/10,
+					y_scale = variant/10,
+					only_in_alt_mode = true,
+					tint = {r = 0.4, g = 0.4, b = 0.4, a = 0},
+					visible = ShowRange
+				}
+				PouncePadProperties.ShowArrow = ShowRange
+				NewKid.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=variant})
+			end
+		end
+	end
+end
+-- directed
+for _, surface in pairs(game.surfaces) do
+	local bofa = surface.find_entities_filtered
+	{
+		name = "DirectedBouncePlate"
+	}
+	for _, deez in pairs(bofa) do
+		storage.BouncePadList[script.register_on_object_destroyed(deez)] = {entity=deez}
+		local PouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(deez)]
+		if (deez.orientation == 0) then
+			direction = "UD"
+			xflip = 1
+			yflip = 1
+		elseif (deez.orientation == 0.25) then
+			direction = "RL"
+			xflip = 1
+			yflip = 1
+		elseif (deez.orientation == 0.5) then
+			direction = "UD"
+			xflip = 1
+			yflip = -1
+		elseif (deez.orientation == 0.75) then
+			direction = "RL"
+			xflip = -1
+			yflip = 1
+		end
+		PouncePadProperties.arrow = rendering.draw_sprite
+			{
+				sprite = "RTDirectedRangeOverlay"..direction,
+				surface = deez.surface,
+				target = deez,
+				only_in_alt_mode = true,
+				x_scale = xflip,
+				y_scale = yflip,
+				tint = {r = 0.4, g = 0.4, b = 0.4, a = 0},
+				visible = ShowRange
+			}
+		PouncePadProperties.ShowArrow = ShowRange
+		deez.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=10})
+	end
+end
+for _, variant in pairs({5, 15}) do
+	for _, surface in pairs(game.surfaces) do
+		local sugondese = surface.find_entities_filtered
+		{
+			name = "DirectedBouncePlate"..variant
+		}
+		for _, BouncePad in pairs(sugondese) do
+			local TheSpot = BouncePad.position
+			local UseThe = BouncePad.force
+			local direct = BouncePad.direction
+			BouncePad.destroy()
+			local NewKid = surface.create_entity
+			{
+				name = "DirectedBouncePlate",
+				position = TheSpot,
+				force = UseThe,
+				direction = direct
+			}
+			if (NewKid) then
+				storage.BouncePadList[script.register_on_object_destroyed(NewKid)] = {entity=NewKid}
+				local PouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(NewKid)]
+				if (NewKid.orientation == 0) then
+					direction = "UD"
+					xflip = 1
+					yflip = 1
+				elseif (NewKid.orientation == 0.25) then
+					direction = "RL"
+					xflip = 1
+					yflip = 1
+				elseif (NewKid.orientation == 0.5) then
+					direction = "UD"
+					xflip = 1
+					yflip = -1
+				elseif (NewKid.orientation == 0.75) then
+					direction = "RL"
+					xflip = -1
+					yflip = 1
+				end
+				PouncePadProperties.arrow = rendering.draw_sprite
+					{
+						sprite = "RTDirectedRangeOverlay"..direction,
+						surface = surface,
+						target = NewKid,
+						only_in_alt_mode = true,
+						x_scale = xflip*variant/10,
+						y_scale = yflip*variant/10,
+						tint = {r = 0.4, g = 0.4, b = 0.4, a = 0},
+						visible = ShowRange
+					}
+				PouncePadProperties.ShowArrow = ShowRange
+				NewKid.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=variant})
+			end
+		end
+	end
+end
+-- other ones with arrows
+for _, surface in pairs(game.surfaces) do
+	local bofa = surface.find_entities_filtered
+	{
+		name = {"DirectorBouncePlate", "PrimerBouncePlate", "PrimerSpreadBouncePlate"}
+	}
+	for _, deez in pairs(bofa) do
+		local PouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(deez)]
+		PouncePadProperties.ShowArrow = PouncePadProperties.arrow.visible
+		if (deez.name == "DirectorBouncePlate") then
+			deez.get_or_create_control_behavior().add_section()
+			deez.get_or_create_control_behavior().get_section(5).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=10})
+		end
+	end
+end
