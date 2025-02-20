@@ -23,7 +23,7 @@ require('util')
 -- trapdoor wagon
 	-- trapdoor switch (rail signal all 16 directions)✅
 	-- trapdoor switch ramp
--- electromagnetic item cannon
+-- electromagnetic item cannon (rail gun)?
 -- belt ramp
 -- vacuum hatch ✅
 -- fluid jet/catching tank
