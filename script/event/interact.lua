@@ -19,39 +19,14 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 	and (not string.find(player.character.name, "RTGhost"))
 	and PlayerProperties.state == "default") then
 		PlayerProperties.state = "jumping"
-		local OG = SwapToGhost(player)
+		local OG, shadow = SwapToGhost(player)
 		player.teleport(PlayerLauncher.position) -- align player on the launch pad
-		--[[ local shadow = rendering.draw_circle
-			{
-				color = {0,0,0,0.5},
-				radius = 0.25,
-				filled = true,
-				target = player.position,
-				surface = player.surface
-			} ]]
 		local x = PlayerLauncher.drop_position.x
 		local y = PlayerLauncher.drop_position.y
 		local distance = DistanceBetween(PlayerLauncher.position, PlayerLauncher.drop_position)
 		local speed = 0.15
 		local AirTime = math.floor(distance/speed)
 		local vector = {x=x-player.position.x, y=y-player.position.y}
-		--[[ storage.FlyingItems[FlightNumber] =
-			{
-				shadow=shadow,
-				speed=speed,
-				arc=arc,
-				player=player,
-				IAmSpeed=player.character.character_running_speed_modifier,
-				SwapBack=OG,
-				target={x=x, y=y},
-				ThrowerPosition=player.position,
-				AirTime=AirTime,
-				StartTick=game.tick,
-				LandTick=game.tick+AirTime,
-				vector=vector,
-				space=false,
-				surface=player.surface
-			} ]]
 		local FlyingItem = CreateThrownItem({
 			type = "PlayerGuide",
 			player = player,
@@ -59,7 +34,6 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			vector = vector,
 			SwapBack = OG,
 			IAmSpeed = player.character.character_running_speed_modifier,
-			--speed = speed,
 			ItemName = "wood", -- just need something
 			count = 0,-- just need something
 			quality = "normal",-- just need something

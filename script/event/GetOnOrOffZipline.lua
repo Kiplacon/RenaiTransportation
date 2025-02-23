@@ -1,7 +1,7 @@
 ---@diagnostic disable: need-check-nil
 function GetOnZipline(player, PlayerProperties, pole)
 	---------- get on zipline -----------------
-	local OG = SwapToGhost(player)
+	local OG, shadow = SwapToGhost(player)
 	local TheGuy = player
 	local FromXWireOffset = prototypes.recipe["RTGetTheGoods-"..pole.name.."X"].emissions_multiplier
 	local FromYWireOffset = prototypes.recipe["RTGetTheGoods-"..pole.name.."Y"].emissions_multiplier
@@ -102,6 +102,7 @@ function GetOnZipline(player, PlayerProperties, pole)
 	PlayerProperties.zipline.WhereDidYouComeFrom = pole
 	PlayerProperties.zipline.AreYouStillThere = true
 	PlayerProperties.zipline.succ = drain
+	PlayerProperties.zipline.shadow = shadow
 	--game.print("Attached to track")
 	PlayerProperties.state = "zipline"
 	PlayerProperties.zipline.StartingSurface = TheGuy.surface

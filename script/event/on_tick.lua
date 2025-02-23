@@ -64,6 +64,27 @@ local function on_tick(event)
 		end
 		storage.clock[game.tick] = nil
 	end
+
+	for _, BeltRampProperties in pairs(storage.BeltRamps) do
+		local BeltRamp = BeltRampProperties.entity
+		if (BeltRamp.valid) then
+			local line = BeltRamp.get_transport_line(game.tick%2 + 1)
+			if (#line>0) then
+				local start = line.get_line_item_position(1)
+				local StartShiftTileCenter = {x=math.floor(start.x)+0.5, y=math.floor(start.y)+0.5}
+				CreateThrownItem({
+					type = "ReskinnedStream",
+					stack = line[1],
+					ThrowFromStackAmount = 1,
+					start = start,
+					target = OffsetPosition(StartShiftTileCenter, {20*storage.OrientationUnitComponents[BeltRamp.orientation].x, 20*storage.OrientationUnitComponents[BeltRamp.orientation].y}),
+					speed = 0.25,
+					surface = BeltRamp.surface,
+					space = false,
+				})
+			end
+		end
+	end
 end
 
 return on_tick

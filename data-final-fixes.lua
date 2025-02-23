@@ -879,11 +879,29 @@ for Category, ThingsTable in pairs(data.raw) do
 			local casper = table.deepcopy(ThingData)
 			casper.name = casper.name.."RTGhost"
 			casper.collision_mask = {layers={}}
+			-- remove shadows
+			for q = 1, #casper.animations do
+				for ActionCategory, sprites in pairs(casper.animations[q]) do
+					if (type(sprites) == "table" and sprites.layers) then
+						for i, sprite in pairs(sprites.layers) do
+							if (sprite.draw_as_shadow) then
+								sprite.filename = "__RenaiTransportation__/graphics/nothing.png"
+								sprite.size = 1
+							end
+						end
+					end
+				end
+			end
+			-- remove reflection
+			if (casper.water_reflection) then
+				casper.water_reflection = nil
+			end
+
 			if (casper.resistances) then
 				table.insert(casper.resistances,
 					{
 						type = "fire",
-						percent = 100
+						percent = 80
 					}
 				)
 			else
@@ -891,47 +909,11 @@ for Category, ThingsTable in pairs(data.raw) do
 				{
 					{
 						type = "fire",
-						percent = 99
+						percent = 80
 					}
 				}
 			end
 			data:extend({casper})
-
-			--[[ for each, set in pairs(ThingData.animations) do
-				if (set.armors ~= nil) then
-					for every, armor in pairs(set.armors) do
-						local sprites = set.running or set.running_with_gun
-						if (armor == "mech-armor") then
-							sprites = set.idle_with_gun_in_air
-						end
-						local MLG = table.deepcopy(data.raw.car["RTPropCar"])
-						MLG.name = ThingData.name..armor.."RTGhostCar"
-						MLG.working_sound = nil
-						MLG.animation =
-							{
-								layers =
-								{
-									sprites
-								}
-							}
-						MLG.light_animation = MLG.animation
-						data:extend({MLG})
-					end
-				else
-					local MLG = table.deepcopy(data.raw.car["RTPropCar"])
-					MLG.name = ThingData.name.."RTGhostCar"
-					MLG.working_sound = nil
-					MLG.animation =
-						{
-							layers =
-							{
-								set.running or set.running_with_gun
-							}
-						}
-					MLG.light_animation = MLG.animation
-					data:extend({MLG})
-				end
-			end ]]
 		end
 	end
 end

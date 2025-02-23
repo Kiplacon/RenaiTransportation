@@ -4,15 +4,17 @@ Date: 1/21/2025
   Additions:
     - Trapdoor wagon. A cargo wagon whose floor can be opened and closed to drop items out the bottom. Drop your cargo down from elevated rails or mid jump.
     - Trapdoor switch. Toggles whether a Trapdoor wagon is open or closed when it rolls over this.
-    - Proper Train ramp, Magnet train ramp, and Impact unloader functionality when built on elevated rails.
-    - Better train jumping between ground and elevated rails, especially with magnet ramps. Vanilla Rail ramps are for suckers
+    - Better Train ramp, Magnet train ramp, and Impact unloader functionality when built on elevated rails.
+    - Better train jumping between ground and elevated rails and vice versa. Vanilla Rail ramps are for suckers
     - Throwing items backwards off a space platform generates a tiny bit of thrust.
   Changes:
-    - Magnet ramp targeting and indicators improved, especially for train bounce pads
+    - Magnet ramp targeting improved, especially for train bounce pads and elevated rails
     - Less cluttered range visuals for bounce pads
     - Lots of behind the scenes stuff that make the back end a little less jank. Hopefully that makes it easier for me to add or change things in the future
+    - Player shadow separates while ziplining
   Bugfixes:
     - Train ramps, Magnet train ramps, and Impact unloaders rotate properly in blueprints.
+    - Fixed that setting range of throwers through circuit signal only worked on the red wire line.
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.16
 Date: 1/21/2025

@@ -45,6 +45,7 @@ end
 
 require("prototypes.TrainGoBrrrr.TrapdoorWagon")
 require("prototypes.VacuumHatch")
+require("prototypes.BeltRamp")
 
 data:extend({
 {
@@ -79,6 +80,20 @@ data:extend({
 	name = "RTBlank",
 	filename = "__RenaiTransportation__/graphics/nothing.png",
 	size = 1
+},
+{
+	type = "sprite",
+	name = "RTCharacterGhostStanding",
+	filename = "__RenaiTransportation__/graphics/zipline/StandingShadow.png",
+	width = 190,
+	height = 72
+},
+{
+	type = "sprite",
+	name = "RTCharacterGhostMoving",
+	filename = "__RenaiTransportation__/graphics/zipline/DrivingShadow.png",
+	width = 190,
+	height = 72
 },
 {
 	type = "animation",

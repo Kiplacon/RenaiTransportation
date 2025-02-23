@@ -26,6 +26,15 @@ function SwapToGhost(player)
         force = OG.force,
         direction = OG.direction
     }
+    local OwTheEdge = rendering.draw_sprite{
+        sprite = "RTCharacterGhostStanding",
+        target = {entity=NEWHOST, offset={3, 0.25}},
+        tint = {r=1,g=1,b=1,a=0.3},
+        surface = NEWHOST.surface,
+        render_layer = "wires",
+        x_scale = 0.5,
+        y_scale = 0.5
+    }
     local zhonyas = OG.surface.create_entity{
         name = "RTPropCar",
         position = OG.position,
@@ -144,7 +153,7 @@ function SwapToGhost(player)
     zhonyas.force = "enemy"
     zhonyas.destructible = false
 
-	return OG
+	return OG, OwTheEdge
 end
 
 ---- swapping back from character ghost copy from using the ziplines or player launcher

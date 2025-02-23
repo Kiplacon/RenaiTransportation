@@ -6,10 +6,10 @@ local magnetRamps = {}
 magnetRamps.setRange = function (RampProperties, range, player, message, rail, LastSignal)
 	if (range == nil) then -- new ramp or ghost built
 		local CurrentRange = RampProperties.entity.get_or_create_control_behavior().circuit_condition.constant
-		if (CurrentRange > 0) then -- new ramps won't have a range set
+		if (CurrentRange > 0) then -- ghosts will have range/elevated modifiers copied on them
 			range = CurrentRange-6
-			RampProperties.range = CurrentRange
-		else -- ghosts will have range/elevated modifiers copied on them
+			RampProperties.range = CurrentRange -- so long as .range is not 0, the magnet ramp hit detection knows it has a range set. I could also change it to look for the existance of an associated power buffer and potentially i could take .range out i guess
+		else -- new ramps won't have a range set
 			RampProperties.range = 0
 		end
 	else -- range adjusted by player or swap between schedule skipping

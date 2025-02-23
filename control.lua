@@ -15,24 +15,25 @@ require('util')
 	-- migration names ✅
 	-- interact cycling of range ✅
 -- remove shadows from character ghosts
-	-- remove shadow layer from character prototype
-	-- animate character shadow separately
-		-- separate shadow sprite for manual animation
+	-- remove shadow layer from character prototype ✅
+	-- animate character shadow separately ✅
+		-- separate shadow sprite for manual animation ✅
 
 ------- New features
 -- trapdoor wagon
 	-- trapdoor switch (rail signal all 16 directions)✅
 	-- trapdoor switch ramp
 -- electromagnetic item cannon (rail gun)?
--- belt ramp
+-- belt ramp ✅
+	-- fast, express, and tungsten variants
 -- vacuum hatch ✅
 -- fluid jet/catching tank
 -- dynamic zipline, get on from anywhere and autodrive anywhere
 	-- zipline logistic drone
 -- getting hit by a train/car knocks you away
--- items on the floor of a space platform fly away when the ship takes off/arrives
+-- items on the floor of a space platform fly away when the ship takes off ✅
 -- deflector pad, diagonal (w/range adjusts)
--- orbital bombardment throwing things down from platforms
+-- techs for the above
 
 ------- bugs
 -- crash on interact to toggle things not currently enabled 
@@ -52,7 +53,7 @@ script.on_init(
 	require("script.event.init")
 )
 
--- game version changes, prototypes change, startup mod settings change, and any time mod versions change including adding or removing mods
+-- game version changes, prototypes change, startup mod settings change, adding or removing mods, mod version changes
 script.on_configuration_changed(
 	require("script.event.config_changed")
 )
@@ -188,13 +189,6 @@ script.on_event(
 		and player.cursor_stack
 		and player.cursor_stack.valid_for_read == true) then
 			if (DistanceBetween(player.character.position, CursorPosition) <= player.character.reach_distance) then
-				--[[ local stack
-				if (player.cursor_stack.item_number ~= nil) then
-					stack = player.cursor_stack
-				end
-				CreateThrownItem(player.character, CursorPosition, player.cursor_stack.name, 1, player.cursor_stack.quality.name, player.surface, {0,-1}, stack, true)
-				player.cursor_stack.count = player.cursor_stack.count-1 ]]
-				
 				CreateThrownItem({
 					type = "ReskinnedStream",
 					stack = player.cursor_stack,
@@ -504,5 +498,10 @@ function(event)
 		end
 	end
 end)
+
+script.on_event(
+defines.events.on_space_platform_changed_state,
+require("script.event.platform_change_state")
+)
 
 ElectricPoleBlackList = {PoleName="windows", ["factory-power-connection"]=true, ["factory-power-pole"]=true, ["factory-overflow-pole"]=true}

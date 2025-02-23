@@ -238,6 +238,17 @@ local function entity_built(event)
 				surface = entity.surface,
 				only_in_alt_mode = true
 			}
+	elseif (entity.name == "RTBeltRamp") then
+		storage.BeltRamps[script.register_on_object_destroyed(entity)] = {entity=entity, source=nil}
+		--[[ local source = entity.surface.find_entities_filtered
+		({
+				type = "transport-belt",
+				position = OffsetPosition(entity.position, {-1, 0}),
+		})[1]
+		if (source) then
+			storage.BeltRamps[script.register_on_object_destroyed(entity)].source = source
+		end ]]
+
 	elseif (event.ghost or entity.name == "entity-ghost") then -- ghosts from dying and ghosts from blueprints
 		local ghost = event.ghost or entity
 		local RampList = {RTTrainRamp=true, RTTrainRampNoSkip=true, RTMagnetTrainRamp=true, RTMagnetTrainRampNoSkip=true, RTImpactUnloader=true, RTTrapdoorSwitch=true}

@@ -18,7 +18,7 @@ function CreateThrownItem(stuff)
             local stack = stuff.stack or {quality={}}
             local ItemName = bounced.item or stack.name or stuff.ItemName
             local count = bounced.amount or stuff.ThrowFromStackAmount or stack.count or stuff.count
-            local quality = bounced.quality or stack.quality.name or stuff.quality
+            local quality = bounced.quality or stack.quality.name or stuff.quality or "normal"
             local start = stuff.start -- {x=0,y=0} or {0,0} or entity
             if (type(stuff.start) == "userdata") then
                 start = stuff.start.position
@@ -618,7 +618,7 @@ function ResolveThrownItem(FlyingItem)
                     if (FlyingItem.CloudStorage) then -- for "real" item stacks and things with data/tags
                         if (ThingLandedOn.type == "transport-belt") then
                             for l = 1, 2 do
-                                for i = 0, 0.9, 0.1 do
+                                for i = 1, 0, -0.1 do
                                     if (FlyingItem.CloudStorage[1].count > 0 and ThingLandedOn.get_transport_line(l).can_insert_at(i) == true) then
                                         ThingLandedOn.get_transport_line(l).insert_at(i, FlyingItem.CloudStorage[1])
                                         FlyingItem.CloudStorage[1].count = FlyingItem.CloudStorage[1].count - 1

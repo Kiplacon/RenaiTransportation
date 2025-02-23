@@ -116,6 +116,8 @@ local function on_int()
 	storage.TrapdoorWagonsOpen = {}
 	storage.TrapdoorWagonsClosed = {}
 
+	storage.BeltRamps = {}
+
 	-- Ultracube=specific globals
 	if script.active_mods["Ultracube"] then
 		ultracube_globals.setup_prototypes()

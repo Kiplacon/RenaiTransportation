@@ -32,11 +32,12 @@ data:extend({
 { --------- The vacuum hatch recipe ----------
 	type = "recipe",
 	name = "RTVacuumHatchRecipe",
-	enabled = true,
+	enabled = false,
 	energy_required = 1,
 	ingredients =
 		{
 			{type="item", name="HatchRTItem", amount=1},
+			{type="item", name="pump", amount=1},
 			{type="item", name="electronic-circuit", amount=2}
 		},
 	results = {
@@ -50,7 +51,7 @@ data:extend({
 	icon = "__RenaiTransportation__/graphics/hatch/vacuumhatchicon.png",
 	icon_size = 64,
 	subgroup = "RT",
-	order = "g",
+	order = "f-c",
 	place_result = "RTVacuumHatch",
 	stack_size = 50
 },

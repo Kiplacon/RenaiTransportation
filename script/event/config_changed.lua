@@ -181,6 +181,10 @@ local function config_changed()
 		storage.TrapdoorWagons = nil
 	end
 
+	if (storage.BeltRamps == nil) then
+		storage.BeltRamps = {}
+	end
+
 	-- Ultracube-specific globals
 	if script.active_mods["Ultracube"] then
 		-- Prototype data should be reset on config change just in case Ultracube has updated to add new types

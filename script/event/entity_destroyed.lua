@@ -80,6 +80,10 @@ local function entity_destroyed(event)
 	if (storage.TrapdoorWagonsClosed[event.registration_number]) then
 		storage.TrapdoorWagonsClosed[event.registration_number] = nil
 	end
+
+	if (storage.BeltRamps[event.registration_number]) then
+		storage.BeltRamps[event.registration_number] = nil
+	end
 end
 
 return entity_destroyed

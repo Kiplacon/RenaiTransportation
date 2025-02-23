@@ -203,7 +203,7 @@ local function on_tick(event)
 						ZiplineStuff.LetMeGuideYou.speed = 0
 						--game.print("not pressing a valid direction")
 					end
-
+					
 				else
 					ZiplineStuff.LetMeGuideYou.speed = 0
 					--game.print("not pressing movement key")
@@ -239,6 +239,12 @@ local function on_tick(event)
 							ZiplineStuff.LetMeGuideYou.position.x,
 							2+ZiplineStuff.LetMeGuideYou.position.y-FollowZip
 						})
+					if (player.character.walking_state.walking == true) then
+						ZiplineStuff.shadow.sprite = "RTCharacterGhostMoving"
+					else
+						ZiplineStuff.shadow.sprite = "RTCharacterGhostStanding"
+					end
+					ZiplineStuff.shadow.target = {entity=player.character, offset={3+FollowZip, 0.25}}
 					ZiplineStuff.ChuggaChugga.teleport
 						({
 							ZiplineStuff.LetMeGuideYou.position.x,
