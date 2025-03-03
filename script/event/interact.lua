@@ -21,28 +21,52 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		PlayerProperties.state = "jumping"
 		local OG, shadow = SwapToGhost(player)
 		player.teleport(PlayerLauncher.position) -- align player on the launch pad
-		local x = PlayerLauncher.drop_position.x
-		local y = PlayerLauncher.drop_position.y
+		local TargetX = PlayerLauncher.drop_position.x
+		local TargetY = PlayerLauncher.drop_position.y
 		local distance = DistanceBetween(PlayerLauncher.position, PlayerLauncher.drop_position)
 		local speed = 0.15
 		local AirTime = math.floor(distance/speed)
-		local vector = {x=x-player.position.x, y=y-player.position.y}
+		local arc = 0.3236*distance^-0.404 -- lower number is higher arc
+		local vector = {x=TargetX-player.position.x, y=TargetY-player.position.y}
+		local path = {}
+		for j = 0, AirTime do
+			local progress = j/AirTime
+			path[j] =
+			{
+				x = player.character.position.x+(progress*vector.x),
+				y = player.character.position.y+(progress*vector.y),
+				height = progress * (1-progress) / arc
+			}
+		end
 		local FlyingItem = CreateThrownItem({
 			type = "PlayerGuide",
 			player = player,
+			shadow = shadow,
 			AirTime = AirTime,
-			vector = vector,
 			SwapBack = OG,
 			IAmSpeed = player.character.character_running_speed_modifier,
-			ItemName = "wood", -- just need something
-			count = 0,-- just need something
-			quality = "normal",-- just need something
+			path = path,
 			start = player.position,
-			target={x=x, y=y},
+			target={x=TargetX, y=TargetY},
 			surface=player.surface,
 		})
 		PlayerProperties.PlayerLauncher.tracker = FlyingItem.FlightNumber
 		PlayerProperties.PlayerLauncher.direction = storage.OrientationUnitComponents[PlayerLauncher.orientation].name
+		PlayerLauncher.surface.create_particle
+		({
+			name = "PlayerLauncherParticle",
+			position = PlayerLauncher.position,
+			movement = {0,0},
+			height = 0,
+			vertical_speed = 0.1,
+			frame_speed = 1
+		})
+		PlayerLauncher.surface.play_sound
+		{
+			path = "bounce",
+			position = PlayerLauncher.position,
+			volume = 0.7
+		}
 	end
 
 	--| Drop from ziplining
@@ -84,16 +108,6 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				}
 			storage.CatapultList[DestroyNumber].range = NewRange
 			ResetThrowerOverflowTracking(ThingHovering)
-			--[[ if (storage.CatapultList[DestroyNumber]) then
-				storage.CatapultList[DestroyNumber].targets = {}
-				for componentUN, PathsItsPartOf in pairs(storage.ThrowerPaths) do
-					for ThrowerUN, TrackedItems in pairs(PathsItsPartOf) do
-						if (ThrowerUN == DestroyNumber) then
-							storage.ThrowerPaths[componentUN][ThrowerUN] = {}
-						end
-					end
-				end
-			end ]]
 		--|| Swap Primer Modes
 		elseif (settings.startup["RTBounceSetting"].value == true and ThingHovering.name == "PrimerBouncePlate") then
 			ThingHovering.surface.create_entity

@@ -3,19 +3,16 @@ local function on_tick(event)
 	for ThePlayer, PlayerProperties in pairs(storage.AllPlayers) do
 		local player = game.players[ThePlayer]
 		--|| Player Launchers
-		if (PlayerProperties.state == "jumping" and player.character and PlayerProperties.sliding ~= true) then
+		if (PlayerProperties.state == "jumping" and player.character) then
 			player.character_running_speed_modifier = -0.75
-			local arc = -0.13 -- closer to 0 is higher arc
 			local FlyingItem = storage.FlyingItems[PlayerProperties.PlayerLauncher.tracker]
-			local duration = game.tick-FlyingItem.StartTick
-			local progress = duration/FlyingItem.AirTime
-			local height = (duration/(arc*FlyingItem.AirTime))-(duration^2/(arc*FlyingItem.AirTime^2))
-			player.character.teleport -- predefined bounce "animation"
-				(
-					{FlyingItem.ThrowerPosition.x+(progress*FlyingItem.vector.x), FlyingItem.ThrowerPosition.y+(progress*FlyingItem.vector.y)+height}
-				)
+			local duration = event.tick-FlyingItem.StartTick
+			local x_coord = FlyingItem.path[duration].x
+			local y_coord = FlyingItem.path[duration].y
+			local height = -FlyingItem.path[duration].height -- negative because in factorio +y is south
+			player.character.teleport({x_coord, y_coord + height})
 			local shadow = FlyingItem.shadow
-			shadow.target = {FlyingItem.ThrowerPosition.x+(progress*FlyingItem.vector.x)-height, FlyingItem.ThrowerPosition.y+(progress*FlyingItem.vector.y)}
+			shadow.target = {x_coord+1-height, y_coord}
 			shadow.color = {0, 0, 0, 2.5/(5-height)}
 			if (PlayerProperties.PlayerLauncher.direction == "right") then
 				player.character.walking_state = {walking = true, direction = defines.direction.east}
@@ -161,7 +158,7 @@ local function on_tick(event)
 						ZiplineStuff.LetMeGuideYou.teleport({current.position.x+FromXWireOffset, current.position.y+FromYWireOffset})
 						local angle = math.deg(math.atan2((ZiplineStuff.LetMeGuideYou.position.y-(FD.position.y+ToYWireOffset)),(ZiplineStuff.LetMeGuideYou.position.x-(FD.position.x+ToXWireOffset))))
 						ZiplineStuff.LetMeGuideYou.orientation = (angle/360)-0.25 -- I think because Factorio's grid is x-axis flipped compared to a traditional graph, it needs this -0.25 adjustment
-						ZiplineStuff.DaWhey = ZiplineStuff.LetMeGuideYou.orientation
+						--ZiplineStuff.DaWhey = ZiplineStuff.LetMeGuideYou.orientation
 						--storage.AllPlayers[ThePlayer].WhereDidYouComeFrom = arrived
 						ZiplineStuff.WhereDidYouGo = FD
 						ZiplineStuff.distance = math.sqrt(
@@ -250,7 +247,7 @@ local function on_tick(event)
 							ZiplineStuff.LetMeGuideYou.position.x,
 							0.5+ZiplineStuff.LetMeGuideYou.position.y-(3*(FromStart^2-FromStart*ZiplineStuff.distance)/ZiplineStuff.distance^2)
 						})
-					ZiplineStuff.LetMeGuideYou.orientation = ZiplineStuff.DaWhey
+					--ZiplineStuff.LetMeGuideYou.orientation = ZiplineStuff.DaWhey
 					-- Braking
 					if (ZiplineStuff.braking ~= nil) then
 						local BrakeForce = 0.15

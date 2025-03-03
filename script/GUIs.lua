@@ -117,6 +117,10 @@ function ShowZiplineTerminalGUI(player, clicked)
    player.opened = frame
 end
 
+function ShowTerminalList(player, CurrentPole)
+
+end
+
 
 function ShowDirectorGUI(player, DirectorPad)
    if (player.gui.screen.RTDirectorPadGUI) then

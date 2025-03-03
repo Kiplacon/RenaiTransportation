@@ -1,4 +1,4 @@
-local function FindPath(finish, start)
+function FindPath(finish, start)
    local possibilities = {}
          possibilities[start.unit_number] = {entity=start, FromStart=0, FromFinish=DistanceBetween(start.position, finish.position), difficulty=DistanceBetween(start.position, finish.position)}
    local analyzed = {}
@@ -52,7 +52,7 @@ local function FindPath(finish, start)
    end
 end
 
-ClickableStuff = {
+local ClickableStuff = {
 	RTCloseGUI = function(event, player)
 		event.element.parent.parent.destroy()
 	end,
@@ -104,7 +104,7 @@ ClickableStuff = {
       else
          local entity = storage.ZiplineTerminals[event.element.parent.parent.tags.ID].entity
          local tag = entity.force.add_chart_tag(entity.surface, {position=entity.position, text=storage.ZiplineTerminals[event.element.parent.parent.tags.ID].name, icon={type="item", name="RTZiplineTerminalItem"}})
-		   storage.ZiplineTerminals[event.element.parent.parent.tags.ID].tag = tag
+         storage.ZiplineTerminals[event.element.parent.parent.tags.ID].tag = tag
       end
 		event.element.parent.TerminalName.destroy()
 		event.element.destroy()
@@ -126,13 +126,13 @@ ClickableStuff = {
       local layout = event.element.parent.parent.scroller.layout
       local clicked = storage.ZiplineTerminals[event.element.parent.parent.tags.ID].entity
       local a = {}
-      for each, terminal in pairs(storage.ZiplineTerminals) do
+      for _, terminal in pairs(storage.ZiplineTerminals) do
          table.insert(a, string.lower(copy(terminal.name)))
       end
       table.sort(a)
       local sorted = {}
-      for each, name in pairs(a) do
-         for each, terminal in pairs(storage.ZiplineTerminals) do
+      for _, name in pairs(a) do
+         for _, terminal in pairs(storage.ZiplineTerminals) do
             if (string.lower(copy(terminal.name)) == name) then
                table.insert(sorted, terminal)
                break
@@ -167,8 +167,8 @@ ClickableStuff = {
       end
       table.sort(a)
       local sorted = {}
-      for each, name in pairs(a) do
-         for each, terminal in pairs(storage.ZiplineTerminals) do
+      for _, name in pairs(a) do
+         for _, terminal in pairs(storage.ZiplineTerminals) do
             if (string.lower(copy(terminal.name)) == name) then
                table.insert(sorted, terminal)
                break
@@ -240,13 +240,3 @@ local player = game.players[event.player_index]
 end
 
 return ClickGUI
-
--- RTZiplineTerminalGUI
-	-- TerminalHeader
-		-- Terminal
-		-- name
-		-- rename button
-	-- scroller
-		-- layout table
-			-- button
-			-- camera

@@ -96,6 +96,12 @@ data:extend({
 	height = 72
 },
 {
+	type = "sound",
+	name = "RTImpactPlayerLaunch",
+	filename = "__base__/sound/car-metal-impact-6.ogg",
+	volume = 0.5
+},
+{
 	type = "animation",
 	name = "RTMOREPOWER",
 	filename = "__RenaiTransportation__/graphics/NoPowerBlink.png",

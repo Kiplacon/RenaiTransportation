@@ -11,7 +11,7 @@ function CreateThrownItem(stuff)
     if (ProjectileType == nil) then
         error("CreateThrownItem: type is nil")
     else
-        if ((stuff.ItemName and stuff.count and stuff.quality) or (stuff.stack) or (ProjectileType == "tracer" and stuff.ItemName and stuff.tracing) or stuff.bouncing or (stuff.player and stuff.AirTime and stuff.vector and stuff.SwapBack and stuff.IAmSpeed))
+        if ((stuff.ItemName and stuff.count and stuff.quality) or (stuff.stack) or (ProjectileType == "tracer" and stuff.ItemName and stuff.tracing) or stuff.bouncing or (stuff.player and stuff.AirTime and stuff.SwapBack and stuff.IAmSpeed))
         and (stuff.start and stuff.target and (stuff.surface or stuff.bouncing)) then
             -- setup the flying item data
             local bounced = stuff.bouncing or {}
@@ -120,17 +120,11 @@ function CreateThrownItem(stuff)
                 FlyingItem.StartTick = game.tick
                 FlyingItem.LandTick = game.tick+stuff.AirTime
                 FlyingItem.player = stuff.player
-                FlyingItem.vector = stuff.vector
+                FlyingItem.path = stuff.path
                 FlyingItem.SwapBack = stuff.SwapBack
                 FlyingItem.IAmSpeed = stuff.IAmSpeed
-                FlyingItem.shadow = rendering.draw_circle
-                {
-                    color = {0,0,0,0.5},
-                    radius = 0.25,
-                    filled = true,
-                    target = start,
-                    surface = surface
-                }
+                FlyingItem.shadow = stuff.shadow
+                FlyingItem.shadow.sprite = "RTCharacterGhostMoving"
                 local FlightNumber = "PlayerGuide"..NewFlightNumber()
                 FlyingItem.FlightNumber = FlightNumber
                 storage.FlyingItems[FlightNumber] = FlyingItem
@@ -307,9 +301,9 @@ function ResolveThrownItem(FlyingItem)
             if (string.find(ThingLandedOn.name, "DirectedBouncePlate")) then
                 unitx = storage.OrientationUnitComponents[ThingLandedOn.orientation].x
                 unity = storage.OrientationUnitComponents[ThingLandedOn.orientation].y
-                if (FlyingItem.player) then
+                --[[ if (FlyingItem.player) then
                     storage.AllPlayers[FlyingItem.player.index].PlayerLauncher.direction = storage.OrientationUnitComponents[ThingLandedOn.orientation].name
-                end
+                end ]]
             elseif (string.find(ThingLandedOn.name, "DirectorBouncePlate")) then
                 for section = 1, 4 do
                     for slot = 1, 10 do
@@ -456,7 +450,7 @@ function ResolveThrownItem(FlyingItem)
                     end
                     local AirTime = math.floor(distance/FlyingItem.speed)
                     FlyingItem.target={x=TargetX, y=TargetY}
-                    --FlyingItem.start=ThingLandedOn.position
+                    FlyingItem.start=ThingLandedOn.position
                     FlyingItem.ThrowerPosition=ThingLandedOn.position
                     FlyingItem.StartTick=game.tick
                     FlyingItem.AirTime=AirTime
@@ -469,9 +463,21 @@ function ResolveThrownItem(FlyingItem)
                             target = {TargetX, TargetY},
                             speed = FlyingItem.speed
                         })
-
-                    else -- the player does have a vector
-                        FlyingItem.vector = {x=TargetX-ThingLandedOn.position.x, y=TargetY-ThingLandedOn.position.y}
+                    else
+                        storage.AllPlayers[FlyingItem.player.index].PlayerLauncher.direction = storage.OrientationUnitComponents[ThingLandedOn.orientation].name
+                        local arc = 0.3236*distance^-0.404 -- lower number is higher arc
+                        local vector = {x=TargetX-ThingLandedOn.position.x, y=TargetY-ThingLandedOn.position.y}
+                        local path = {}
+                        for j = 0, AirTime do
+                            local progress = j/AirTime
+                            path[j] =
+                            {
+                                x = ThingLandedOn.position.x+(progress*vector.x),
+                                y = ThingLandedOn.position.y+(progress*vector.y),
+                                height = progress * (1-progress) / arc
+                            }
+                        end
+                        FlyingItem.path = path
                     end
 
                 end
@@ -527,7 +533,7 @@ function ResolveThrownItem(FlyingItem)
                 ---- Doesn't make sense for player landingit ----
                 if (ThingLandedOn.name == "cliff") then
                     FlyingItem.player.teleport(ThingLandedOn.surface.find_non_colliding_position("iron-chest", FlyingItem.target, 0, 0.5))
-                elseif (ThingLandedOn.name ~= "PlayerLauncher") then
+                elseif (ThingLandedOn.name ~= "PlayerLauncher" and ThingLandedOn.prototype.collision_mask["player"]) then
                     ---- Damage the player based on thing's size and destroy what they landed on to prevent getting stuck ----
                     FlyingItem.player.character.damage(10*(ThingLandedOn.bounding_box.right_bottom.x-ThingLandedOn.bounding_box.left_top.x)*(ThingLandedOn.bounding_box.right_bottom.y-ThingLandedOn.bounding_box.left_top.y), "neutral", "impact", ThingLandedOn)
                     ThingLandedOn.die()

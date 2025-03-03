@@ -18,33 +18,33 @@ brrr.radius_minimap_visualisation_color = { r = 0.059, g = 0.092, b = 0.235, a =
 brrr.rotation_speed = 0.1
 brrr.pictures =
 	{
-	  filename = "__RenaiTransportation__/graphics/zipline/ZipUnderPlayer.png",
-	  priority = "high",
-	  width = 128,
-	  height = 128,
-	  scale = 0.5,
-	  apply_projection = false,
-	  direction_count = 2,
-	  line_length = 2
-    }
+      filename = "__RenaiTransportation__/graphics/zipline/ZipUnderPlayer.png",
+      priority = "high",
+      width = 128,
+      height = 128,
+      scale = 0.5,
+      apply_projection = false,
+      direction_count = 2,
+      line_length = 2
+   }
 -- brrr.render_layer = "higher-object-under" -- doesnt work
 brrr.integration_patch = nil
 brrr.water_reflection = nil
 brrr.working_sound =
-    {
+   {
       sound =
       {
-        {
-          --filename = "__base__/sound/transport-belt-working.ogg",
-		  filename = "__RenaiTransportation__/sickw0bs/zapline.ogg",
-          volume = 0.35
-        }
+         {
+            --filename = "__base__/sound/transport-belt-working.ogg",
+            filename = "__RenaiTransportation__/sickw0bs/zapline.ogg",
+            volume = 0.35
+         }
       },
-	fade_in_ticks = 35,
-    max_sounds_per_type = 3,
-    audible_distance_modifier = 0.75,
-    use_doppler_shift = false
-    }
+      fade_in_ticks = 35,
+      max_sounds_per_type = 3,
+      audible_distance_modifier = 0.75,
+      use_doppler_shift = false
+   }
 
 data:extend({
 
@@ -52,7 +52,7 @@ brrr,
 
 {
 	type = "ammo-category",
-	name = "ZiplineMotor",
+	name = "ZiplineController",
 },
 
 { --------- zipline item -------------
@@ -66,7 +66,7 @@ brrr,
    attack_parameters =
    {
       type = "projectile",
-      ammo_category = "ZiplineMotor",
+      ammo_category = "ZiplineController",
       cooldown = 60,
       movement_slow_down_factor = 0,
       range = 0
@@ -85,9 +85,9 @@ brrr,
 	stack_size = 1,
 	ammo_type =
    {
-      category = "ZiplineMotor"
+      category = "ZiplineController"
 	},
-   ammo_category = "ZiplineMotor"
+   ammo_category = "ZiplineController"
 },
 { --------- zipline controls recipe ----------
 	type = "recipe",
@@ -117,7 +117,7 @@ brrr,
 	magazine_size = 1000,
 	ammo_type =
     {
-      category = "ZiplineMotor",
+      category = "ZiplineController",
 	  target_type = "position",
 	  clamp_position = true,
 	  cooldown_modifier = 0.2,
@@ -141,7 +141,7 @@ brrr,
 			}
 		}
 	},
-   ammo_category = "ZiplineMotor"
+   ammo_category = "ZiplineController"
 },
 { --------- zipline crank controls recipe ----------
 	type = "recipe",
@@ -169,9 +169,9 @@ brrr,
 	stack_size = 1,
 	ammo_type =
    {
-      category = "ZiplineMotor"
+      category = "ZiplineController"
 	},
-   ammo_category = "ZiplineMotor"
+   ammo_category = "ZiplineController"
 },
 { --------- programmable zipline controls recipe ----------
 	type = "recipe",
@@ -309,7 +309,7 @@ data:extend({
        attack_parameters =
        {
          type = "projectile",
-   	  ammo_category = "ZiplineMotor",
+   	  ammo_category = "ZiplineController",
          cooldown = 60,
          movement_slow_down_factor = 0,
          range = 0
@@ -360,7 +360,7 @@ data:extend({
        attack_parameters =
        {
          type = "projectile",
-   	  ammo_category = "ZiplineMotor",
+   	  ammo_category = "ZiplineController",
          cooldown = 60,
          movement_slow_down_factor = 0,
          range = 0
@@ -412,7 +412,7 @@ data:extend({
        attack_parameters =
        {
          type = "projectile",
-   	  ammo_category = "ZiplineMotor",
+   	  ammo_category = "ZiplineController",
          cooldown = 60,
          movement_slow_down_factor = 0,
          range = 0
@@ -464,7 +464,7 @@ data:extend({
        attack_parameters =
        {
          type = "projectile",
-   	  ammo_category = "ZiplineMotor",
+   	  ammo_category = "ZiplineController",
          cooldown = 60,
          movement_slow_down_factor = 0,
          range = 0
@@ -491,7 +491,6 @@ data:extend({
 local RTZiplineTerminal = table.deepcopy(data.raw["electric-pole"]["medium-electric-pole"])
    RTZiplineTerminal.icon = "__RenaiTransportation__/graphics/zipline/terminalicon.png"
    RTZiplineTerminal.icon_size = 64
-   RTZiplineTerminal.icon_mipmaps = 1
    RTZiplineTerminal.name = "RTZiplineTerminal"
    RTZiplineTerminal.minable = {mining_time = 0.5, result = "RTZiplineTerminalItem"}
    RTZiplineTerminal.collision_box = {{-0.9, -0.3}, {0.9, 0.9}}
@@ -545,7 +544,6 @@ local RTZiplineTerminalItem = table.deepcopy(data.raw.item["medium-electric-pole
    RTZiplineTerminalItem.name = "RTZiplineTerminalItem"
    RTZiplineTerminalItem.icon = "__RenaiTransportation__/graphics/zipline/terminalicon.png"
    RTZiplineTerminalItem.icon_size = 64
-   RTZiplineTerminalItem.icon_mipmaps = 1
    RTZiplineTerminalItem.place_result = "RTZiplineTerminal"
    RTZiplineTerminalItem.order = "a[energy]-x[ZiplineTerminal]"
 local RTZiplineTerminalRecipe =
@@ -569,4 +567,45 @@ data:extend({
    RTZiplineTerminal,
    RTZiplineTerminalItem,
    RTZiplineTerminalRecipe
+})
+
+
+local AISource = "fish"
+if (data.raw.item["pentapod-egg"]) then
+   AISource = "pentapod-egg"
+end
+data:extend({
+   { --------- AI zipline controls -------------
+      type = "ammo",
+      name = "RTAIZiplineControlsItem",
+      icons = {
+         {
+            icon = "__RenaiTransportation__/graphics/zipline/AIcontrols.png",
+            tint = {0.5, 1, 0.5}
+         }
+      },
+      subgroup = "gun",
+      order = "hl",
+      stack_size = 1,
+      ammo_type =
+      {
+         category = "ZiplineController"
+      },
+      ammo_category = "ZiplineController"
+   },
+   { --------- AI zipline controls recipe ----------
+      type = "recipe",
+      name = "RTAIZiplineControlsRecipe",
+      enabled = true,
+      energy_required = 1,
+      ingredients =
+         {
+            {type="item", name="RTProgrammableZiplineControlsItem", amount=1},
+            {type="item", name="advanced-circuit", amount=5},
+            {type="item", name=AISource, amount=5}
+         },
+      results = {
+         {type="item", name="RTAIZiplineControlsItem", amount=1}
+      }
+   },
 })

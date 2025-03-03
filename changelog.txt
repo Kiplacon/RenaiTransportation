@@ -2,18 +2,24 @@
 Version: 2.1.0
 Date: 1/21/2025
   Additions:
-    - Trapdoor wagon. A cargo wagon whose floor can be opened and closed to drop items out the bottom. Drop your cargo down from elevated rails or mid jump.
-    - Trapdoor switch. Toggles whether a Trapdoor wagon is open or closed when it rolls over this.
-    - Better Train ramp, Magnet train ramp, and Impact unloader functionality when built on elevated rails.
+    - Trapdoor wagon. A cargo wagon whose floor can be opened and closed to drop items out the bottom. Drop your cargo down from elevated rails or in midair during a jump.
+    - Trapdoor switch. Toggles whether a Trapdoor wagon is open or closed when it rolls over it.
+    - Trapdoor ramp.
+    - Belt ramps. An inclined belt that continually lauches all its items off the end at hyper speed! Graphics by Bow Tied Ghost
+    - AI zipline controller. A zipline controller that can auto pilot you between any two power poles, not just between Zipline terminals.
+    - Vacuum hatch. Sucks up items off the ground and into its connected inventory.
+    - Better Train ramp, Magnet train ramp, and Impact unloader functionality when built on elevated rails
     - Better train jumping between ground and elevated rails and vice versa. Vanilla Rail ramps are for suckers
-    - Throwing items backwards off a space platform generates a tiny bit of thrust.
+    - Getting hit by a car or train knocks you back based on how hard you were hit (and assuming it didn't kill you lol)
+    - Throwing items backwards off a space platform generates a tiny bit of thrust
   Changes:
     - Magnet ramp targeting improved, especially for train bounce pads and elevated rails
-    - Less cluttered range visuals for bounce pads
-    - Lots of behind the scenes stuff that make the back end a little less jank. Hopefully that makes it easier for me to add or change things in the future
-    - Player shadow separates while ziplining
+    - Less cluttered range visuals for Directed bounce pads
+    - Player shadow separates while ziplining/jumping
+    - Player launchers are rotatable after placing
   Bugfixes:
     - Train ramps, Magnet train ramps, and Impact unloaders rotate properly in blueprints.
+    - Fixed that items flung out of an Impact wagon at an angle weren't spread out very much.
     - Fixed that setting range of throwers through circuit signal only worked on the red wire line.
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.16

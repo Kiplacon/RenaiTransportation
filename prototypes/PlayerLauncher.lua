@@ -2,8 +2,7 @@
 local PikachuFace = table.deepcopy(data.raw.inserter["inserter"])
 	PikachuFace.name = "PlayerLauncher"
 	PikachuFace.icon = "__RenaiTransportation__/graphics/PlayerLauncher/icon.png"
-	PikachuFace.icon_size = 32 
-	PikachuFace.icon_mipmaps = 4
+	PikachuFace.icon_size = 32
 	PikachuFace.minable = {mining_time = 0.2, result = "PlayerLauncherItem"}
 	PikachuFace.insert_position = {0, -9.9}
 	PikachuFace.pickup_position = {0, -0.1}
@@ -23,7 +22,7 @@ local PikachuFace = table.deepcopy(data.raw.inserter["inserter"])
         width = 32,
         height = 32,
         scale = 0.25
-		}	
+		}
 	PikachuFace.hand_base_picture = nothing
 	PikachuFace.hand_closed_picture = nothing
 	PikachuFace.hand_open_picture = nothing
@@ -38,16 +37,8 @@ local PikachuFace = table.deepcopy(data.raw.inserter["inserter"])
 			height = 79,
 			shift = nil, -- originally util.by_pixel(1.5, 7.5-1),
 			scale = 0.5,
---[[ 			hr_version =
-			{
-				filename = "__RenaiTransportation__/graphics/PlayerLauncher/PlayerLauncher.png",
-				priority = "extra-high",
-				width = 105,
-				height = 79,
-				shift = nil, -- originally util.by_pixel(1.5, 7.5-1),
-				scale = 0.5
-			} ]]
 		}
+	PikachuFace.circuit_connector = nil
 
 data:extend({ 	
 	{ --------- The thrower item -------------
@@ -55,7 +46,6 @@ data:extend({
 		name = "PlayerLauncherItem",
 		icon = "__RenaiTransportation__/graphics/PlayerLauncher/icon.png",
 		icon_size = 32,
-		icon_mipmaps = 4,
 		subgroup = "RT",
 		order = "c",
 		place_result = "PlayerLauncher",
@@ -80,17 +70,17 @@ data:extend({
 	{ --------- bounce effect ----------
 		type = "optimized-particle",
 		name = "PlayerLauncherParticle",
-		life_time = 8,	
+		life_time = 8,
 		pictures =
 			{
-			  filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Particle.png",
-			  --width = 64,
-			  --height = 64,
-			  size = 32,
-			  priority = "extra-high",
-			  line_length = 4, -- frames per row
-			  frame_count = 4, -- total frames
-			  animation_speed = 0.5
+				filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Particle.png",
+				--width = 64,
+				--height = 64,
+				size = 32,
+				priority = "extra-high",
+				line_length = 4, -- frames per row
+				frame_count = 4, -- total frames
+				animation_speed = 0.5
 			}
 	},
 	

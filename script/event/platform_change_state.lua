@@ -1,6 +1,6 @@
 --platform	:: LuaSpacePlatform	
 --old_state	:: defines.space_platform_state	
-local function nineandthreequarters(event)
+local function NineAndThreeQuarters(event)
     local platform = event.platform
     local fwoosh = false
     local verticallity
@@ -50,4 +50,4 @@ local function nineandthreequarters(event)
     end
 end
 
-return nineandthreequarters
+return NineAndThreeQuarters

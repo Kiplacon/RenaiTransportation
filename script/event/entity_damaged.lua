@@ -516,14 +516,17 @@ local function entity_damaged(event)
 						if (stack.valid_for_read) then
 							local LaunchedAmount = math.ceil(stack.count*LaunchedPortion)
 							local GroupSize = math.ceil((stack.count/17)*wagons) -- each stack will launch out as maximum 17 projectiles per wagon
-							local xUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation+0.25)))/(0.5*math.pi)) - 1
-							local yUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation)))/(0.5*math.pi)) - 1
+							--[[ local xUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation+0.25)))/(0.5*math.pi)) - 1
+							local yUnit = (math.acos(math.cos(2*math.pi*(wagon.orientation)))/(0.5*math.pi)) - 1 ]]
 							
 							for _ = 1, math.floor(LaunchedAmount/GroupSize) do
-								local ForwardSpread = math.random(100,400)*0.1 + (-3*HeightOffset)
-								local HorizontalSpread = math.random(-35,35)*ForwardSpread*0.01
-								local TargetX = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
-								local TargetY = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
+								local AngleSpread = math.random(-60,60)*0.001
+								local xUnit = math.cos(2*math.pi*(wagon.orientation-0.25+AngleSpread))
+								local yUnit = math.sin(2*math.pi*(wagon.orientation-0.25+AngleSpread))
+								local ForwardSpread = math.random(1000,4000)*0.01 + (-2*HeightOffset)
+								--local HorizontalSpread = math.random(-35,35)*ForwardSpread*0.01
+								local TargetX = wagon.position.x + (ForwardSpread*wagon.speed*xUnit)-- + (HorizontalSpread*wagon.speed*yUnit)
+								local TargetY = wagon.position.y + (ForwardSpread*wagon.speed*yUnit)-- + (HorizontalSpread*wagon.speed*xUnit)
 								local distance = math.sqrt((TargetX-wagon.position.x)^2 + (TargetY-wagon.position.y)^2)
 								local speed = math.abs(wagon.speed) * (distance/(35*math.abs(wagon.speed))) * math.random(45,100)*0.01
 								local arc = 0.3236*distance^-0.404 -- lower number is higher arc
@@ -564,10 +567,13 @@ local function entity_damaged(event)
 							end
 							local remainder = LaunchedAmount-(math.floor(LaunchedAmount/GroupSize)*GroupSize)
 							if (remainder > 0) then
-								local ForwardSpread = math.random(100,400)*0.1 + (-2*HeightOffset)
-								local HorizontalSpread = math.random(-35,35)*ForwardSpread*0.01
-								local TargetX = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) + (HorizontalSpread*wagon.speed*yUnit)
-								local TargetY = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) + (HorizontalSpread*wagon.speed*xUnit)
+								local AngleSpread = math.random(-55,55)*0.001
+								local xUnit = math.cos(2*math.pi*(wagon.orientation-0.25+AngleSpread))
+								local yUnit = math.sin(2*math.pi*(wagon.orientation-0.25+AngleSpread))
+								local ForwardSpread = math.random(1000,4000)*0.01 + (-2*HeightOffset)
+								--local HorizontalSpread = math.random(-35,35)*ForwardSpread*0.01
+								local TargetX = wagon.position.x + (ForwardSpread*wagon.speed*xUnit) --+ (HorizontalSpread*wagon.speed*yUnit)
+								local TargetY = wagon.position.y + (ForwardSpread*wagon.speed*yUnit) --+ (HorizontalSpread*wagon.speed*xUnit)
 								local distance = math.sqrt((TargetX-wagon.position.x)^2 + (TargetY-wagon.position.y)^2)
 								local speed = math.abs(wagon.speed) * (distance/(35*math.abs(wagon.speed))) * math.random(45,100)*0.01
 								local arc = 0.3236*distance^-0.404 -- lower number is higher arc
@@ -644,6 +650,70 @@ local function entity_damaged(event)
 		if (switch) then
 			storage.DestructionLinks[script.register_on_object_destroyed(switch)] = {}
 		end ]]
+
+	elseif ( -- character hit by vehicle
+	event.cause
+	and (event.cause.type == "locomotive"
+		or event.cause.type == "cargo-wagon"
+		or event.cause.type == "fluid-wagon"
+		or event.cause.type == "artillery-wagon"
+		or event.cause.type == "car")
+	and event.entity.type == "character"
+	and string.find(event.cause.name, "RTGhost") == nil
+	and event.entity.health > 0
+	and event.entity.player
+	) then
+		local character = event.entity
+		local player = event.entity.player
+		local PlayerProperties = storage.AllPlayers[player.index]
+		PlayerProperties.state = "jumping"
+		local OG, shadow = SwapToGhost(player)
+		-- unit vector between vehicle and character
+		local x = event.entity.position.x - event.cause.position.x
+		local y = event.entity.position.y - event.cause.position.y
+		local distance = math.sqrt(x^2 + y^2)
+		local xUnit = x/distance
+		local yUnit = y/distance
+		-- launch the character based on the vehicle's speed and direction
+		local speed = math.abs(event.cause.speed)
+		local AirTime = math.max(1, math.floor(speed*45))
+		local TargetX = event.entity.position.x + (xUnit*speed*AirTime)
+		local TargetY = event.entity.position.y + (yUnit*speed*AirTime)
+		local vector = {x=TargetX-event.entity.position.x, y=TargetY-event.entity.position.y}
+		local MaxHeight = event.cause.speed
+		local path = {}
+		for j = 0, AirTime do
+			local progress = j/AirTime
+			path[j] =
+			{
+				x = character.position.x+(progress*vector.x),
+				y = character.position.y+(progress*vector.y),
+				height = 4*(progress * (1-progress)) * MaxHeight
+			}
+		end
+		local FlyingItem = CreateThrownItem({
+			type = "PlayerGuide",
+			player = player,
+			shadow = shadow,
+			AirTime = AirTime,
+			SwapBack = OG,
+			IAmSpeed = player.character.character_running_speed_modifier,
+			path = path,
+			start = player.position,
+			target={x=TargetX, y=TargetY},
+			surface=player.surface,
+		})
+		PlayerProperties.PlayerLauncher.tracker = FlyingItem.FlightNumber
+		if (storage.OrientationUnitComponents[character.orientation]) then
+			PlayerProperties.PlayerLauncher.direction = storage.OrientationUnitComponents[character.orientation].name
+		else
+			local rand = {"up", "down", "left", "right"}
+			PlayerProperties.PlayerLauncher.direction = rand[math.random(1,4)]
+		end
+		player.play_sound
+		{
+			path = "RTImpactPlayerLaunch",
+		}
 	end
 end
 

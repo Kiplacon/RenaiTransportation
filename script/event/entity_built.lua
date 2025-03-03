@@ -93,7 +93,6 @@ local function entity_built(event)
 		end
 
 	elseif (entity.name == "PlayerLauncher") then
-		entity.operable = false
 		entity.active = false
 
 	elseif (string.find(entity.name, "BouncePlate") and not string.find(entity.name, "Train")) then

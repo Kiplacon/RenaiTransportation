@@ -643,8 +643,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTBeltRampTech",
-		icon = "__RenaiTransportation__/graphics/BeltRamp/BeltRampIcon.png",
-		icon_size = 90,
+		icon = "__RenaiTransportation__/graphics/BeltRamp/BeltRampTech.png",
+		icon_size = 150,
 		effects =
 		{
 			{
@@ -652,7 +652,7 @@ data:extend({
 				recipe = "RTBeltRampRecipe"
 			},
 		},
-		prerequisites = {"se-no", "engine", "logistics"},
+		prerequisites = {"se-no", "electric-engine", "logistics"},
 		unit =
 		{
 			count = 50,

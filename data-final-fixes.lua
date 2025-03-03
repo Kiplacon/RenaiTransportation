@@ -915,6 +915,30 @@ for Category, ThingsTable in pairs(data.raw) do
 			end
 			data:extend({casper})
 		end
+
+		--[[ if (Category == "fluid") then
+			data:extend({
+				{
+					type = "item",
+					name = "RT"..ThingID.."SplashCapsule",
+					icons =
+					{
+						{
+							icon = "__RenaiTransportation__/graphics/SplashCapsule/SplashCapsuleFluid.png",
+							tint = ThingData.base_color,
+							icon_size = 64,
+						},
+						{
+							icon = "__RenaiTransportation__/graphics/SplashCapsule/EmptySplashCapsule.png",
+							icon_size = 64,
+						}
+					},
+					subgroup = "intermediate-product",
+					order = "z-a",
+					stack_size = 50
+				}
+			})
+		end ]]
 	end
 end
 

@@ -55,7 +55,7 @@ local function finalizeLandedTrain(PropUnitNumber, properties) -- happens when t
 		if schedule and schedule.current then
 			local dst = schedule.records[schedule.current]
 
-			if dst and dst.wait_conditions then
+			if dst and dst.wait_conditions and dst.wait_conditions[1] then
 				local firstWaitCond = dst.wait_conditions[1]
 
 				if firstWaitCond.condition and firstWaitCond.condition.first_signal and firstWaitCond.condition.first_signal.name == 'RTPropCarItem' then
@@ -707,48 +707,6 @@ local function on_tick(event)
 									surface=wagon.surface,
 								})
 							end
-							--[[ storage.FlyingItems[storage.FlightNumber] =
-								{
-									sprite=sprite,
-									shadow=shadow,
-									--speed=speed,
-									spin=math.random(-2,2)*0.01,
-									item=ItemName,
-									amount=stack.count,
-									quality=stack.quality,
-									target={x=LandX, y=LandY},
-									ThrowerPosition={x=wagon.position.x, y=wagon.position.y},
-									AirTime=AirTime,
-									StartTick=game.tick,
-									LandTick=game.tick+AirTime,
-									space=false,
-									surface=wagon.surface,
-									path=path
-								}
-							if (stack.item_number) then
-								local CloudStorage = game.create_inventory(1)
-								CloudStorage.insert(stack)
-								storage.FlyingItems[storage.FlightNumber].CloudStorage = CloudStorage
-								stack.count = stack.count - math.min(stack.count, ItemsPerDrop)
-								if (stack.count <= 0) then
-									items[slot].destroy()
-									table.remove(items, slot)
-								end
-							end
-							-- Ultracube irreplaceables detection & handling
-							if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] then -- Ultracube mod is active, and item is an irreplaceable
-								-- Velocity calculation
-								local velocity = {x=0,y=0}
-								if storage.FlyingItems[storage.FlightNumber].AirTime >= 2 then
-									local v1 = storage.FlyingItems[storage.FlightNumber].path[1]
-									local v2 = storage.FlyingItems[storage.FlightNumber].path[2]
-									velocity.x = v2.x - v1.x
-									velocity.y = v2.y - v1.y
-								end
-								-- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
-								CubeFlyingItems.create_token_for(storage.FlyingItems[storage.FlightNumber], velocity)
-							end
-							storage.FlightNumber = storage.FlightNumber + 1 ]]
 						end
 					end
 				end

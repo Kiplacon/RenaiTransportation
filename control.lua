@@ -4,7 +4,7 @@ if script.active_mods["Ultracube"] then CubeFlyingItems = require("script.ultrac
 TrainConstants = require("__RenaiTransportation__/script/trains/constants")
 require('util')
 ---- keikaku
-------- improvements
+------- improvements ✅
 -- director pad range adjusting ✅
 	-- change bounde pads from simple-entity to constant combinator ✅
 	-- change on-build to default to 10 range, or set range/indicator according to the ghost signal value ✅
@@ -14,32 +14,42 @@ require('util')
 	-- director bounce pad ✅
 	-- migration names ✅
 	-- interact cycling of range ✅
--- remove shadows from character ghosts
+-- remove shadows from character ghosts ✅
 	-- remove shadow layer from character prototype ✅
 	-- animate character shadow separately ✅
 		-- separate shadow sprite for manual animation ✅
+-- generalize player launching with cusom path ✅
 
-------- New features
--- trapdoor wagon
-	-- trapdoor switch (rail signal all 16 directions)✅
+------- New stuff
+-- trapdoor wagon ✅
+	-- trapdoor switch (rail signal all 16 directions) ✅
 	-- trapdoor switch ramp
 -- electromagnetic item cannon (rail gun)?
+	-- seal 1 stack of an item into a shell
+	-- can bounce off of reinforced plates that can be rotated at 10 degree increments
+	-- slam into a wall and explode contents forward
+	-- falls to the ground if nothing hit after X tiles
+	-- catching chest 3x3 box with chimney thing that catches shells
 -- belt ramp ✅
-	-- fast, express, and tungsten variants
--- vacuum hatch ✅
--- fluid jet/catching tank
--- dynamic zipline, get on from anywhere and autodrive anywhere
+	-- fast, express, and tungsten variants ✅
+	-- player can be launched by it
+-- vacuum hatch 
+-- dynamic zipline, get on from anywhere and autodrive anywhere ✅
 	-- zipline logistic drone
--- getting hit by a train/car knocks you away
+-- getting hit by a train/car knocks you away ✅
 -- items on the floor of a space platform fly away when the ship takes off ✅
--- deflector pad, diagonal (w/range adjusts)
 -- techs for the above
+-- items in destroyed chests/containers fly out ✅
 
 ------- bugs
 -- crash on interact to toggle things not currently enabled 
 -- rotating blueprints of trapdoor switches on angles doesnt always work due to rounding errors or something idk if you dont rotate it its fine ✅
--- vacuum hatch full inventory loop
+-- vacuum hatch full inventory loop (is fine actually) ✅
 -- hover range indicator for bounce pads not synced with current setting ✅
+-- magnet ramp migration
+
+------- possible future stuff
+-- deflector pad, diagonal (w/range adjusts)
 
 ------- impossible atm
 -- thrown item rework when animations can have dynamically rotated sprites
@@ -81,6 +91,55 @@ script.on_event(
 	require("script.event.entity_built")
 )
 
+script.on_event(defines.events.on_entity_died ,
+function(event)
+	if (event.entity.type == "container"
+	or event.entity.type == "logistic-container"
+	or event.entity.type == "cargo-wagon"
+	or event.entity.type == "car") then
+		local container = event.entity
+		local scale = ((container.bounding_box.right_bottom.x-container.bounding_box.left_top.x)+(container.bounding_box.right_bottom.y-container.bounding_box.left_top.y))
+		for i = 1, #container.get_output_inventory() do
+			local stack = container.get_output_inventory()[i]
+			for _ = 1, stack.count do
+				-- unit vector
+				local angle = math.random(0, 100)*0.01
+				local xUnit = math.cos(2*math.pi*angle)
+				local yUnit = math.sin(2*math.pi*angle)
+				-- flight arc
+				local speed = math.random(10, 90)*0.0008 + (scale*0.01)
+				local AirTime = math.max(1, math.floor(speed*800))
+				local TargetX = event.entity.position.x + (xUnit*speed*AirTime)
+				local TargetY = event.entity.position.y + (yUnit*speed*AirTime)
+				local distance = DistanceBetween(container.position, {x=TargetX, y=TargetY})
+				local vector = {x=TargetX-container.position.x, y=TargetY-container.position.y}
+				local arc = 5/(distance^2)
+				local path = {}
+				for j = 0, AirTime do
+					local progress = j/AirTime
+					path[j] =
+					{
+						x = container.position.x+(progress*vector.x),
+						y = container.position.y+(progress*vector.y),
+						height = progress * (1-progress) / arc
+					}
+				end
+				CreateThrownItem({
+					type = "CustomPath",
+					render_layer = "elevated-higher-object",
+					stack = stack,
+					ThrowFromStackAmount = 1,
+					start = container.position,
+					target = {x=TargetX, y=TargetY},
+					path = path,
+					AirTime = AirTime,
+					surface=container.surface,
+				})
+			end
+		end
+	end
+end
+)
 
 -- On Rotate
 script.on_event(
@@ -444,7 +503,9 @@ function(event)
 				if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
 				and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "ZiplineItem")
 				and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
-				and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTProgrammableZiplineControlsItem") then
+				and (player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTProgrammableZiplineControlsItem"
+					or player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTAIZiplineControlsItem")
+				) then
 					player.opened = nil
 					if (DistanceBetween(player.character.position, selected.position) <= 7) then
 						ShowZiplineTerminalGUI(player, selected)
@@ -462,7 +523,8 @@ function(event)
 			or selected.name == "RTMagnetTrainRampNoSkip"
 			or selected.name == "RTMagnetRampDrain"
 			or selected.name == "RTBouncePlate"
-			or selected.name == "DirectedBouncePlate") then
+			or selected.name == "DirectedBouncePlate"
+			or selected.name == "PlayerLauncher") then
 			player.opened = nil
 
 		elseif (selected.name == "DirectorBouncePlate") then

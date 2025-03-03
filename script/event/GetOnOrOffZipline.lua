@@ -155,27 +155,56 @@ local function GetOnOrOffZipline(event) -- has .name = event ID number, .tick = 
 	local ThingHovering = player.selected
 
     --| Drop from ziplining
-	if (PlayerProperties.state == "zipline" and (player.selected == nil or player.selected.type ~= "electric-pole")) then
-        if (player.character.get_inventory(defines.inventory.character_armor)
-        and player.character.get_inventory(defines.inventory.character_armor).is_full()
-        and player.character.get_inventory(defines.inventory.character_armor)[1].prototype.provides_flight == true) then
-            GetOffZipline(player, PlayerProperties)
+	if (PlayerProperties.state == "zipline") then
+		if (player.selected == nil or player.selected.type ~= "electric-pole") then
+			if (player.character.get_inventory(defines.inventory.character_armor)
+			and player.character.get_inventory(defines.inventory.character_armor).is_full()
+			and player.character.get_inventory(defines.inventory.character_armor)[1].prototype.provides_flight == true) then
+				GetOffZipline(player, PlayerProperties)
 
-        elseif (player.surface.find_non_colliding_position("character", {player.position.x, player.position.y+2}, 5, 0.01)
-        and player.character.get_inventory(defines.inventory.character_armor)
-        and (
-                (player.character.get_inventory(defines.inventory.character_armor).is_full()
-                and player.character.get_inventory(defines.inventory.character_armor)[1].prototype.provides_flight == false)
-            or
-                (player.character.get_inventory(defines.inventory.character_armor).is_empty())
-            )
-        ) then
-            GetOffZipline(player, PlayerProperties)
-
-        else
-            player.print({"zipline-stuff.NoFreeSpot"})
-        end
-		--game.print("manually detached")
+			elseif (player.surface.find_non_colliding_position("character", {player.position.x, player.position.y+2}, 5, 0.01)
+			and player.character.get_inventory(defines.inventory.character_armor)
+			and (
+					(player.character.get_inventory(defines.inventory.character_armor).is_full()
+					and player.character.get_inventory(defines.inventory.character_armor)[1].prototype.provides_flight == false)
+				or
+					(player.character.get_inventory(defines.inventory.character_armor).is_empty())
+				)
+			) then
+				GetOffZipline(player, PlayerProperties)
+				--game.print("manually detached")
+			else
+				player.print({"zipline-stuff.NoFreeSpot"})
+			end
+			
+		elseif (PlayerProperties.zipline.path == nil and player.selected and player.selected.type == "electric-pole"
+		and player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
+		and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "ZiplineItem")
+		and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
+		and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTAIZiplineControlsItem"
+		) then
+			local ZiplineStuff = PlayerProperties.zipline
+			if (ZiplineStuff.WhereDidYouComeFrom.electric_network_id == player.selected.electric_network_id) then
+				ZiplineStuff.path = FindPath(ZiplineStuff.WhereDidYouComeFrom, player.selected)
+				local FD = ZiplineStuff.path[1]
+				ZiplineStuff.FinalStop = player.selected
+				local current = ZiplineStuff.WhereDidYouComeFrom
+				local FromXWireOffset = prototypes.recipe["RTGetTheGoods-"..current.name.."X"].emissions_multiplier
+				local FromYWireOffset = prototypes.recipe["RTGetTheGoods-"..current.name.."Y"].emissions_multiplier
+				local ToXWireOffset = prototypes.recipe["RTGetTheGoods-"..FD.name.."X"].emissions_multiplier
+				local ToYWireOffset = prototypes.recipe["RTGetTheGoods-"..FD.name.."Y"].emissions_multiplier
+				ZiplineStuff.LetMeGuideYou.teleport({current.position.x+FromXWireOffset, current.position.y+FromYWireOffset})
+				local angle = math.deg(math.atan2((ZiplineStuff.LetMeGuideYou.position.y-(FD.position.y+ToYWireOffset)),(ZiplineStuff.LetMeGuideYou.position.x-(FD.position.x+ToXWireOffset))))
+				ZiplineStuff.LetMeGuideYou.orientation = (angle/360)-0.25
+				player.print({"zipline-stuff.InitiateSelfDriving"})
+				if (player.controller_type == defines.controllers.remote) then
+					player.set_controller{type=defines.controllers.character, character=player.character}
+				end
+			elseif (ZiplineStuff.WhereDidYouComeFrom.electric_network_id ~= player.selected.electric_network_id) then
+				player.print({"zipline-stuff.NotOnSameNetwork"})
+			end
+			
+		end
 	end
 
     --| Hovering something

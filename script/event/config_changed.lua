@@ -137,19 +137,6 @@ local function config_changed()
 	if (storage.CustomPathFlyingItemSprites == nil) then
 		storage.CustomPathFlyingItemSprites = {}
 	end
-	
-
---[[ 	if (game.surfaces["RTStasisRealm"] == nil) then
-		game.create_surface("RTStasisRealm",
-		{
-			peaceful_mode = true,
-			water = "none",
-			starting_area = "none",
-			autoplace_controls = {},
-			default_enable_all_autoplace_controls = false,
-			cliff_settings = {name = "cliff", cliff_elevation_0 = 0, richness = 0}
-		})
-	end ]]
 
 	if (storage.ThrowerPaths == nil) then
 		storage.ThrowerPaths = {}
@@ -183,6 +170,10 @@ local function config_changed()
 
 	if (storage.BeltRamps == nil) then
 		storage.BeltRamps = {}
+	end
+
+	if (storage.ZiplineBots == nil) then
+		storage.ZiplineBots = {}
 	end
 
 	-- Ultracube-specific globals
