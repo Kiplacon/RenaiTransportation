@@ -32,7 +32,7 @@ local function NineAndThreeQuarters(event)
                     height = 0
                 }
             end
-            CreateThrownItem({
+            InvokeThrownItem({
                 type = "CustomPath",
                 ItemName = item.stack.name,
                 count = 1,

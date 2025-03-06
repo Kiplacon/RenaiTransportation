@@ -137,7 +137,7 @@ if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt t
             minable = {mining_time = 0.5, result = "RTturboBeltRampItem"},
             max_health = 200,
             collision_box = {{-0.4, -0.4}, {0.4, 0.4}},
-            collision_mask = {layers={["item"]=true, ["object"]=true, ["water_tile"]=true}},
+            collision_mask = {layers={["item"]=true, ["object"]=true, ["player"]=true, ["water_tile"]=true}},
             selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
             speed = 0.125,
             animation_speed_coefficient = 32,

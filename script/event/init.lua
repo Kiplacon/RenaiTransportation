@@ -106,7 +106,7 @@ local function on_int()
 
 	storage.BeltRamps = {}
 
-	storage.ZiplineBots = {}
+	storage.VacuumHatches = {}
 
 	-- Ultracube=specific globals
 	if script.active_mods["Ultracube"] then

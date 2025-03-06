@@ -552,7 +552,7 @@ local function entity_damaged(event)
 										height = progress * (1-progress) / arc
 									}
 								end
-								CreateThrownItem({
+								InvokeThrownItem({
 									type = "CustomPath",
 									render_layer = "elevated-higher-object",
 									stack = stack,
@@ -599,7 +599,7 @@ local function entity_damaged(event)
 										height = progress * (1-progress) / arc
 									}
 								end
-								CreateThrownItem({
+								InvokeThrownItem({
 									type = "CustomPath",
 									render_layer = "elevated-higher-object",
 									stack = stack,
@@ -691,7 +691,7 @@ local function entity_damaged(event)
 				height = 4*(progress * (1-progress)) * MaxHeight
 			}
 		end
-		local FlyingItem = CreateThrownItem({
+		local FlyingItem = InvokeThrownItem({
 			type = "PlayerGuide",
 			player = player,
 			shadow = shadow,

@@ -172,8 +172,8 @@ local function config_changed()
 		storage.BeltRamps = {}
 	end
 
-	if (storage.ZiplineBots == nil) then
-		storage.ZiplineBots = {}
+	if (storage.VacuumHatches == nil) then
+		storage.VacuumHatches = {}
 	end
 
 	-- Ultracube-specific globals

@@ -2,12 +2,17 @@ local handle_players = require("__RenaiTransportation__.script.players.on_tick")
 local handle_trains = require("__RenaiTransportation__.script.trains.on_tick")
 local handle_items = require("__RenaiTransportation__.script.event.FlyingItems")
 local handle_throwers = require("__RenaiTransportation__.script.event.on_tick_throwers")
+local handle_belt_ramps = require("script.event.on_tick_BeltRamps")
+local handle_vacuum_hatches = require("script.event.on_tick_VacuumHatches")
 
 local function on_tick(event)
 	handle_players(event)
 	handle_trains(event)
 	handle_items(event)
 	handle_throwers(event)
+	handle_belt_ramps(event)
+	handle_vacuum_hatches(event)
+	
 	if (storage.clock[game.tick]) then
 		--=== destroy
 		if (storage.clock[game.tick].destroy) then
@@ -65,26 +70,7 @@ local function on_tick(event)
 		storage.clock[game.tick] = nil
 	end
 
-	for _, BeltRampProperties in pairs(storage.BeltRamps) do
-		local BeltRamp = BeltRampProperties.entity
-		if (BeltRamp.valid) then
-			local line = BeltRamp.get_transport_line(game.tick%2 + 1)
-			if (#line>0) then
-				local start = line.get_line_item_position(1)
-				local StartShiftTileCenter = {x=math.floor(start.x)+0.5, y=math.floor(start.y)+0.5}
-				CreateThrownItem({
-					type = "ReskinnedStream",
-					stack = line[1],
-					ThrowFromStackAmount = 1,
-					start = start,
-					target = OffsetPosition(StartShiftTileCenter, {20*storage.OrientationUnitComponents[BeltRamp.orientation].x, 20*storage.OrientationUnitComponents[BeltRamp.orientation].y}),
-					speed = 0.25,
-					surface = BeltRamp.surface,
-					space = false,
-				})
-			end
-		end
-	end
+	
 end
 
 return on_tick

@@ -38,7 +38,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				height = progress * (1-progress) / arc
 			}
 		end
-		local FlyingItem = CreateThrownItem({
+		local FlyingItem = InvokeThrownItem({
 			type = "PlayerGuide",
 			player = player,
 			shadow = shadow,

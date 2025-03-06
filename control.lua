@@ -44,7 +44,7 @@ require('util')
 ------- bugs
 -- crash on interact to toggle things not currently enabled 
 -- rotating blueprints of trapdoor switches on angles doesnt always work due to rounding errors or something idk if you dont rotate it its fine ✅
--- vacuum hatch full inventory loop (is fine actually) ✅
+-- vacuum hatch full inventory loop (is fine actually, just bounce them off a short distance and only suck up 1 item per tick)
 -- hover range indicator for bounce pads not synced with current setting ✅
 -- magnet ramp migration
 
@@ -124,7 +124,7 @@ function(event)
 						height = progress * (1-progress) / arc
 					}
 				end
-				CreateThrownItem({
+				InvokeThrownItem({
 					type = "CustomPath",
 					render_layer = "elevated-higher-object",
 					stack = stack,
@@ -248,11 +248,11 @@ script.on_event(
 		and player.cursor_stack
 		and player.cursor_stack.valid_for_read == true) then
 			if (DistanceBetween(player.character.position, CursorPosition) <= player.character.reach_distance) then
-				CreateThrownItem({
+				InvokeThrownItem({
 					type = "ReskinnedStream",
 					stack = player.cursor_stack,
 					ThrowFromStackAmount = 1,
-					start = player.character.position,
+					start = OffsetPosition(player.character.position, {0, -1}),
 					target = CursorPosition,
 					surface = player.surface,
 				})

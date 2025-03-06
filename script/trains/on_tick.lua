@@ -680,7 +680,7 @@ local function on_tick(event)
 								}
 							end
 							if (stack.item_number) then
-								CreateThrownItem({
+								InvokeThrownItem({
 									type = "CustomPath",
 									stack = stack,
 									ThrowFromStackAmount = math.min(stack.count, ItemsPerDrop),
@@ -695,7 +695,7 @@ local function on_tick(event)
 									table.remove(items, slot)
 								end
 							else
-								CreateThrownItem({
+								InvokeThrownItem({
 									type = "CustomPath",
 									ItemName = ItemName,
 									count = stack.count, -- take value
@@ -816,7 +816,7 @@ local function on_tick(event)
 									}
 								end
 								if (stack.item_number) then
-									CreateThrownItem({
+									InvokeThrownItem({
 										type = "CustomPath",
 										stack = stack,
 										ThrowFromStackAmount = math.min(stack.count, ItemsPerDrop),
@@ -827,7 +827,7 @@ local function on_tick(event)
 										surface=wagon.surface,
 									})
 								else
-									CreateThrownItem({
+									InvokeThrownItem({
 										type = "CustomPath",
 										ItemName = ItemName,
 										count = stack.count, -- take value

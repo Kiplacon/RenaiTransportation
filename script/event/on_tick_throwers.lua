@@ -78,7 +78,7 @@ local function ThrowersOnTick(event)
                             if (properties.ImAlreadyTracer == nil or properties.ImAlreadyTracer == "traced") then
                                 properties.ImAlreadyTracer = "tracing"
                                 -- set tracer "projectile"
-                                CreateThrownItem({
+                                InvokeThrownItem({
                                     type = "tracer",
                                     ItemName = HeldItem,
                                     count = 0, -- just to pacify the function
@@ -162,7 +162,7 @@ local function ThrowersOnTick(event)
                             end
                             
                             if (properties.InSpace == false) then
-                                CreateThrownItem({
+                                InvokeThrownItem({
                                     type = "ReskinnedStream",
                                     stack = ThrowerStack,
                                     thrower = ThrowerEntity, -- for thrower hand position
@@ -189,7 +189,7 @@ local function ThrowersOnTick(event)
                                         height = 0
                                     }
                                 end
-                                CreateThrownItem({
+                                InvokeThrownItem({
                                     type = "CustomPath",
                                     stack = ThrowerStack,
                                     thrower = ThrowerEntity,

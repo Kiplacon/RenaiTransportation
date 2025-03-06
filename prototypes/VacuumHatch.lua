@@ -1,32 +1,44 @@
 data:extend({
 ---- vacuum hatch ----
 {
-	type = "simple-entity-with-owner",
+	type = "electric-energy-interface",
 	name = "RTVacuumHatch",
 	icon = "__RenaiTransportation__/graphics/hatch/vacuumhatchicon.png",
 	icon_size = 64,
-	flags = {"placeable-neutral", "player-creation",  "not-rotatable"},
+	flags = {"placeable-neutral", "player-creation"},
+	max_health = 150,
 	collision_mask = {layers={["RTHatches"]=true}},
-	collision_box = {{-0.35, -0.3}, {0.35, 0.55}},
-	selection_box = {{-0.35, -0.3}, {0.35, 0.55}},
+	collision_box = {{-0.4, -0.4}, {0.4, 0.5}},
+	selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 	selection_priority = 255,
 	minable = {mining_time = 0.2, result = "RTVacuumHatchItem"},
-	render_layer = "arrow",
-	picture =
+	energy_source =
+		{
+			type = "electric",
+			usage_priority = "secondary-input",
+			buffer_capacity = "3kJ",
+		},
+	energy_usage = "200kW",
+	gui_mode = "none",
+	pictures =
+	{
+		sheet=
 		{
 			filename = "__RenaiTransportation__/graphics/hatch/vacuumhatch.png",
-			width = 28,
-			height = 42,
-			scale = 0.75
+			size = 64,
+			scale = 0.5
 		},
+	},
+	render_layer = "arrow",
 	radius_visualisation_specification = {
 		sprite = {
 			filename = "__RenaiTransportation__/graphics/TrainRamp/range.png",
 			size = 64,
-			tint = {163, 73, 164}
+			tint = {1, 0.5, 0}
 		},
 		draw_on_selection = true,
-		distance = 4
+		distance = 2.5,
+		offset = {0, -3},
 	}
 },
 { --------- The vacuum hatch recipe ----------

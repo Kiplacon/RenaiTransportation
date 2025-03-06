@@ -65,6 +65,10 @@ local function rotate(event)
 		storage.PrimerThrowerLinks[OnDestroyNumber] = {thrower = event.entity, ready = false}--, box = box}
 		
 	end
+
+	if (string.find(event.entity.name, "VacuumHatch")) then
+		storage.VacuumHatches[EntityDestroyNumber].ToSucc = nil
+	end
 end
 
 return rotate
