@@ -767,7 +767,13 @@ local function on_tick(event)
 		if (properties.entity.valid) then
 			local wagon = properties.entity
 			local inventory = wagon.get_inventory(defines.inventory.cargo_wagon)
-			if (inventory.is_empty() == false) then
+			if (properties.timeout) then
+				if (properties.timeout - 1 <= 0) then
+                    properties.timeout = nil
+                else
+                    properties.timeout = properties.timeout - 1
+                end
+			elseif (inventory.is_empty() == false) then
 				local ItemsPerDrop = 2
 				for drop = 1, 4 do
 					-- Get the inventory of the cargo wagon
@@ -850,6 +856,8 @@ local function on_tick(event)
 						end
 					end
 				end
+			else
+				properties.timeout = 60
 			end
 		end
 	end

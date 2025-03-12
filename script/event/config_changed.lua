@@ -175,7 +175,10 @@ local function config_changed()
 	if (storage.VacuumHatches == nil) then
 		storage.VacuumHatches = {}
 	end
-
+	
+	if (storage.ItemCannons == nil) then
+		storage.ItemCannons = {}
+	end
 	-- Ultracube-specific globals
 	if script.active_mods["Ultracube"] then
 		-- Prototype data should be reset on config change just in case Ultracube has updated to add new types

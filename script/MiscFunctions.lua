@@ -328,12 +328,14 @@ function ToggleTrapdoorWagon(WagonEntity)
     -- properties.open = true/false
     -- properties.OpenIndicator = RenderObject
     if (storage.TrapdoorWagonsOpen[DestroyNumber] ~= nil) then
-        storage.TrapdoorWagonsOpen[DestroyNumber].OpenIndicator.color = {r=1,g=0,b=0,a=1}
+        storage.TrapdoorWagonsOpen[DestroyNumber].OpenIndicator.sprite = "RTTrapdoorWagonClosed"
         --storage.TrapdoorWagonsOpen[DestroyNumber].open = false
         storage.TrapdoorWagonsClosed[DestroyNumber], storage.TrapdoorWagonsOpen[DestroyNumber] = storage.TrapdoorWagonsOpen[DestroyNumber], nil
+        WagonEntity.surface.play_sound{path="RTTrapdoorCloseSound", position=WagonEntity.position}
     elseif (storage.TrapdoorWagonsClosed[DestroyNumber] ~= nil) then
-        storage.TrapdoorWagonsClosed[DestroyNumber].OpenIndicator.color = {r=0,g=1,b=0,a=1}
+        storage.TrapdoorWagonsClosed[DestroyNumber].OpenIndicator.sprite = "RTTrapdoorWagonOpen"
         --storage.TrapdoorWagonsClosed[DestroyNumber].open = true
         storage.TrapdoorWagonsOpen[DestroyNumber], storage.TrapdoorWagonsClosed[DestroyNumber] = storage.TrapdoorWagonsClosed[DestroyNumber], nil
+        WagonEntity.surface.play_sound{path="RTTrapdoorOpenSound", position=WagonEntity.position}
     end
 end

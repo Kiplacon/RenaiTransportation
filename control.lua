@@ -24,27 +24,30 @@ require('util')
 -- trapdoor wagon ✅
 	-- trapdoor switch (rail signal all 16 directions) ✅
 	-- trapdoor switch ramp
+	-- trapdoor switch placer graphics ✅
+	-- trapdoor open/close sound ✅
+	-- trapdoor open/close graphic ✅
 -- electromagnetic item cannon (rail gun)?
 	-- seal 1 stack of an item into a shell
-	-- can bounce off of reinforced plates that can be rotated at 10 degree increments
+	-- can bounce off of reinforced plates that can be rotated to face the 4 cardinal directions. up/down and left/right are basically the same thing for this ✅
 	-- slam into a wall and explode contents forward
 	-- falls to the ground if nothing hit after X tiles
 	-- catching chest 3x3 box with chimney thing that catches shells
 -- belt ramp ✅
 	-- fast, express, and tungsten variants ✅
 	-- player can be launched by it
--- vacuum hatch 
+-- vacuum hatch ✅
 -- dynamic zipline, get on from anywhere and autodrive anywhere ✅
-	-- zipline logistic drone
+	-- include terminal list pop up
 -- getting hit by a train/car knocks you away ✅
 -- items on the floor of a space platform fly away when the ship takes off ✅
 -- techs for the above
 -- items in destroyed chests/containers fly out ✅
 
 ------- bugs
--- crash on interact to toggle things not currently enabled 
+-- crash on interact to toggle things not currently enabled ✅
 -- rotating blueprints of trapdoor switches on angles doesnt always work due to rounding errors or something idk if you dont rotate it its fine ✅
--- vacuum hatch full inventory loop (is fine actually, just bounce them off a short distance and only suck up 1 item per tick)
+-- vacuum hatch full inventory loop (is fine actually, just bounce them off a short distance and only suck up 1 item per tick) ✅
 -- hover range indicator for bounce pads not synced with current setting ✅
 -- magnet ramp migration
 
@@ -439,15 +442,6 @@ function(event)
 				target=player.character,
 				position={420,69},
 			}.time_to_live=120
-		--[[ player.surface.create_particle(
-		{
-			name = "RTTestParticle",
-			position = player.character.position,
-			movement = {-0.1, 0},
-			height = 1,
-			vertical_speed = 0.1,
-			frame_speed = 1,
-		}) ]]
 	end
 end)
 
@@ -530,6 +524,9 @@ function(event)
 		elseif (selected.name == "DirectorBouncePlate") then
 			player.opened = nil
 			ShowDirectorGUI(player, selected)
+
+		elseif (selected.name == "RTItemCannon") then
+			player.opened = storage.ItemCannons[script.register_on_object_destroyed(selected)].chest
 		end
     end
 end)

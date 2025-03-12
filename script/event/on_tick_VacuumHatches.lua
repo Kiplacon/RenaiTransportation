@@ -3,18 +3,28 @@ local function werew(event)
 		for _, VacuumHatchStuff in pairs(storage.VacuumHatches) do
 			if (VacuumHatchStuff.entity.valid and VacuumHatchStuff.entity.energy > 0) then
 				local VacuumHatch = VacuumHatchStuff.entity
-				if (VacuumHatchStuff.ToSucc == nil or #VacuumHatchStuff.ToSucc == 0) then
+				if (VacuumHatchStuff.Timeout ~= nil) then
+					if (VacuumHatchStuff.Timeout-1 <= 0) then
+						VacuumHatchStuff.Timeout = nil
+					else
+						VacuumHatchStuff.Timeout = VacuumHatchStuff.Timeout - 1
+					end
+				elseif (VacuumHatchStuff.ToSucc == nil or #VacuumHatchStuff.ToSucc == 0) then
 					local XShift = 3*storage.OrientationUnitComponents[VacuumHatch.orientation].x
 					local YShift = 3*storage.OrientationUnitComponents[VacuumHatch.orientation].y
 					local spills = VacuumHatch.surface.find_entities_filtered({
 						type="item-entity",
 						area={{VacuumHatch.position.x-2.5+XShift, VacuumHatch.position.y-2.5+YShift}, {VacuumHatch.position.x+2.5+XShift, VacuumHatch.position.y+2.5+YShift}}
 					})
-					for i = #spills, 2, -1 do
-						local j = math.random(i)
-						spills[i], spills[j] = spills[j], spills[i]
+					if (#spills > 0) then
+						for i = #spills, 2, -1 do
+							local j = math.random(i)
+							spills[i], spills[j] = spills[j], spills[i]
+						end
+						VacuumHatchStuff.ToSucc = spills
+					else
+						VacuumHatchStuff.Timeout = 60/3 -- cause this function runs every 3 ticks
 					end
-					VacuumHatchStuff.ToSucc = spills
 				else
 					for i, item in pairs(VacuumHatchStuff.ToSucc) do
 						if (item.valid) then

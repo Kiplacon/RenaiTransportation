@@ -210,29 +210,39 @@ local function entity_built(event)
 		if (storage.DestructionLinks[TriggerDestroyNumber] == nil) then
 			storage.DestructionLinks[TriggerDestroyNumber] = {}
 		end
-		local detector = entity.surface.create_entity
-		{
-			name = "RTTrainDetector",
-			position = entity.position,
-			force = "neutral", -- makes it deal collision damage even if friendly fire is off
-			create_build_effect_smoke = false,
-			raise_built = true
-		}
-	elseif (entity.name == "RTTrainDetector") then -- used when a trapdoor switch is built or rezzed
+		if (entity.rail_layer == defines.rail_layer.ground) then
+			local detector = entity.surface.create_entity
+			{
+				name = "RTTrainDetector",
+				position = entity.position,
+				force = "neutral", -- makes it deal collision damage even if friendly fire is off
+				create_build_effect_smoke = false,
+				raise_built = true
+			}
+		elseif (entity.rail_layer == defines.rail_layer.elevated) then
+			local detector = entity.surface.create_entity
+			{
+				name = "RTTrainDetectorElevated",
+				position = entity.position,
+				force = "neutral", -- makes it deal collision damage even if friendly fire is off
+				create_build_effect_smoke = false,
+				raise_built = true
+			}
+		end
+	elseif (entity.name == "RTTrainDetector" or entity.name == "RTTrainDetectorElevated") then -- used when a trapdoor switch is built or rezzed
 		local switch = entity.surface.find_entities_filtered({name="RTTrapdoorSwitch", position=entity.position})[1]
 		if (switch) then
 			storage.DestructionLinks[script.register_on_object_destroyed(switch)] = {entity} -- Trapdoor switches will only ever have 1 linked detector so this is a list of 1
 		else
 			entity.destroy()
 		end
+		
 	elseif (entity.name == "RTTrapdoorWagon") then
 		storage.TrapdoorWagonsClosed[script.register_on_object_destroyed(entity)] = {entity=entity, OpenIndicator=nil}
 		-- draw a red circle to show the trapdoor starts closed
-		storage.TrapdoorWagonsClosed[script.register_on_object_destroyed(entity)].OpenIndicator = rendering.draw_circle
+		storage.TrapdoorWagonsClosed[script.register_on_object_destroyed(entity)].OpenIndicator = rendering.draw_sprite
 			{
-				color = {r = 1, g = 0, b = 0},
-				radius = 0.5,
-				filled = true,
+				sprite = "RTTrapdoorWagonClosed",
 				target = entity,
 				surface = entity.surface,
 				only_in_alt_mode = true
@@ -244,25 +254,26 @@ local function entity_built(event)
 
 	elseif (entity.name == "RTVacuumHatch") then
 		storage.VacuumHatches[script.register_on_object_destroyed(entity)] = {entity=entity, source=nil}
-		--[[ local source = entity.surface.find_entities_filtered
-		({
-				type = "transport-belt",
-				position = OffsetPosition(entity.position, {-1, 0}),
-		})[1]
-		if (source) then
-			storage.BeltRamps[script.register_on_object_destroyed(entity)].source = source
-		end ]]
 
 	elseif (event.ghost or entity.name == "entity-ghost") then -- ghosts from dying and ghosts from blueprints
 		local ghost = event.ghost or entity
 		local RampList = {RTTrainRamp=true, RTTrainRampNoSkip=true, RTMagnetTrainRamp=true, RTMagnetTrainRampNoSkip=true, RTImpactUnloader=true, RTTrapdoorSwitch=true}
 		if (RampList[ghost.ghost_name]) then
 			local SixteenDirNudge = 1
-			--[[ if (entity.ghost_name == "RTTrapdoorSwitch" and entity.direction%2 == 0) then
-				SixteenDirNudge = 1.5
-			end ]]
 			ghost.teleport(OffsetPosition(ghost.position, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ghost.direction][1]*SixteenDirNudge, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ghost.direction][2]*SixteenDirNudge}))
 		end
+
+	elseif (entity.name == "RTItemCannon") then
+		storage.ItemCannons[script.register_on_object_destroyed(entity)] = {entity=entity}
+		local chest = entity.surface.create_entity
+		{
+			name = "RTItemCannonChest",
+			position = entity.position,
+			force = entity.force,
+			create_build_effect_smoke = false
+		}
+		chest.destructible = false
+		storage.ItemCannons[script.register_on_object_destroyed(entity)].chest = chest
 	end
 end
 

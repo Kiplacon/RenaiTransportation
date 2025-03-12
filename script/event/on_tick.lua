@@ -4,6 +4,7 @@ local handle_items = require("__RenaiTransportation__.script.event.FlyingItems")
 local handle_throwers = require("__RenaiTransportation__.script.event.on_tick_throwers")
 local handle_belt_ramps = require("script.event.on_tick_BeltRamps")
 local handle_vacuum_hatches = require("script.event.on_tick_VacuumHatches")
+local handle_item_cannons = require("script.event.on_tick_ItemCannons")
 
 local function on_tick(event)
 	handle_players(event)
@@ -12,6 +13,7 @@ local function on_tick(event)
 	handle_throwers(event)
 	handle_belt_ramps(event)
 	handle_vacuum_hatches(event)
+	handle_item_cannons(event)
 	
 	if (storage.clock[game.tick]) then
 		--=== destroy

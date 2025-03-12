@@ -33,3 +33,5 @@ for each, signal in pairs(data.raw["rail-chain-signal"]) do
     signal.collision_mask.layers["RTRampsAndPlacers"] = true
     signal.elevated_collision_mask.layers["RTRampsAndPlacers"] = true
 end
+
+data.raw["land-mine"]["land-mine"].trigger_radius = 0

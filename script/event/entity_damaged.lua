@@ -627,11 +627,16 @@ local function entity_damaged(event)
 			end
 		end
 
-	elseif (event.entity.name == "RTTrainDetector") then
+	elseif (event.entity.name == "RTTrainDetector" or event.entity.name == "RTTrainDetectorElevated") then
 		local detector = event.entity
 		-- toggle the trapdoor on the wagon if it was hit by a trapdoor wagon
 		local last
 		if (event.cause and event.cause.valid and event.cause.name == "RTTrapdoorWagon") then
+			detector.surface.play_sound
+			{
+				path = "RTTrapdoorSwitchSound",
+				position = detector.position
+			}
 			ToggleTrapdoorWagon(event.cause)
 			last = event.cause.unit_number
 		end

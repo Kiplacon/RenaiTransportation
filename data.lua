@@ -46,6 +46,8 @@ end
 require("prototypes.TrainGoBrrrr.TrapdoorWagon")
 require("prototypes.VacuumHatch")
 require("prototypes.BeltRamp")
+require("prototypes.ItemCannon.ItemShell")
+require("prototypes.ItemCannon.ItemCannon")
 
 data:extend({
 {

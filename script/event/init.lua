@@ -108,6 +108,8 @@ local function on_int()
 
 	storage.VacuumHatches = {}
 
+	storage.ItemCannons = {}
+	
 	-- Ultracube=specific globals
 	if script.active_mods["Ultracube"] then
 		ultracube_globals.setup_prototypes()

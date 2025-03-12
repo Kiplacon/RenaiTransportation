@@ -79,45 +79,115 @@ local PictureSet =
 		15,  15,  15,  15,   15,  15,  15,  15,   15,  15,  15,  15,
 	}
 }
+local PictureSetPlacer =
+{
+	structure =
+	{
+		layers =
+		{
+			{
+				filename = "__RenaiTransportation__/graphics/TrapdoorSwitch/TrapdoorSwitchPlacer.png",
+				size = 192,
+				frame_count = 1,
+				direction_count = 16,
+			}
+		}
+	},
+	signal_color_to_structure_frame_index =
+	{
+		green  = 0,
+		yellow = 1,
+		red    = 2,
+	},
+	lights =
+	{
+		green  = { light = {intensity = 0, size = 4, color={r=0, g=1,   b=0 }}, shift = { 0, -0.5 }},
+		yellow = { light = {intensity = 0, size = 4, color={r=1, g=0.5, b=0 }}, shift = { 0,  0   }},
+		red    = { light = {intensity = 0, size = 4, color={r=1, g=0,   b=0 }}, shift = { 0,  0.5 }},
+	},
+	structure_align_to_animation_index =
+	{
+		0,  0,  0,  0,   0,  0,  0,  0,   0,  0,  0,  0,
+		1,  1,  1,  1,   1,  1,  1,  1,   1,  1,  1,  1,
+		2,  2,  2,  2,   2,  2,  2,  2,   2,  2,  2,  2,
+		3,  3,  3,  3,   3,  3,  3,  3,   3,  3,  3,  3,
+		4,  4,  4,  4,   4,  4,  4,  4,   4,  4,  4,  4,
+		5,  5,  5,  5,   5,  5,  5,  5,   5,  5,  5,  5,
+		6,  6,  6,  6,   6,  6,  6,  6,   6,  6,  6,  6,
+		7,  7,  7,  7,   7,  7,  7,  7,   7,  7,  7,  7,
+		8,  8,  8,  8,   8,  8,  8,  8,   8,  8,  8,  8,
+		9,  9,  9,  9,   9,  9,  9,  9,   9,  9,  9,  9,
+		10,  10,  10,  10,   10,  10,  10,  10,   10,  10,  10,  10,
+		11,  11,  11,  11,   11,  11,  11,  11,   11,  11,  11,  11,
+		12,  12,  12,  12,   12,  12,  12,  12,   12,  12,  12,  12,
+		13,  13,  13,  13,   13,  13,  13,  13,   13,  13,  13,  13,
+		14,  14,  14,  14,   14,  14,  14,  14,   14,  14,  14,  14,
+		15,  15,  15,  15,   15,  15,  15,  15,   15,  15,  15,  15,
+	}
+}
 
 
 data:extend({
-----wagon
-OhYouLikeTrains,
-
-{ --------- wagon item -------------
-	type = "item",
-	name = "RTTrapdoorWagonItem",
-	icon_size = 64,
-	icons =
-	{
+	----wagon
+	OhYouLikeTrains,
+	{ --------- wagon item -------------
+		type = "item",
+		name = "RTTrapdoorWagonItem",
+		icon_size = 64,
+		icons =
 		{
-			icon = "__base__/graphics/icons/cargo-wagon.png",
-			icon_mipmaps = 4,
-			tint = color
+			{
+				icon = "__base__/graphics/icons/cargo-wagon.png",
+				icon_mipmaps = 4,
+				tint = color
+			}
+		},
+		subgroup = "train-transport",
+		order = "aj",
+		place_result = "RTTrapdoorWagon",
+		stack_size = 5
+	},
+	{ --------- wagon recipe ----------
+		type = "recipe",
+		name = "RTTrapdoorWagonRecipe",
+		enabled = true,
+		energy_required = 8,
+		ingredients =
+			{
+				{type="item", name="advanced-circuit", amount=10},
+				{type="item", name="steel-plate", amount=50},
+				{type="item", name="cargo-wagon", amount=1}
+			},
+		results = {
+			{type="item", name="RTTrapdoorWagonItem", amount=1}
 		}
 	},
-	subgroup = "train-transport",
-	order = "aj",
-	place_result = "RTTrapdoorWagon",
-	stack_size = 5
-},
-
-{ --------- wagon recipe ----------
-	type = "recipe",
-	name = "RTTrapdoorWagonRecipe",
-	enabled = true,
-	energy_required = 8,
-	ingredients =
-		{
-			{type="item", name="advanced-circuit", amount=10},
-			{type="item", name="steel-plate", amount=50},
-			{type="item", name="cargo-wagon", amount=1}
-		},
-	results = {
-		{type="item", name="RTTrapdoorWagonItem", amount=1}
-	}
-},
+	{
+		type = "sprite",
+		name = "RTTrapdoorWagonOpen",
+		filename = "__RenaiTransportation__/graphics/TrapdoorSwitch/open.png",
+		size = 100,
+		scale = 0.5
+	},
+	{
+		type = "sprite",
+		name = "RTTrapdoorWagonClosed",
+		filename = "__RenaiTransportation__/graphics/TrapdoorSwitch/closed.png",
+		size = 100,
+		scale = 0.5
+	},
+	{
+        type = "sound",
+        name = "RTTrapdoorOpenSound",
+        filename = "__RenaiTransportation__/sickw0bs/TrapdoorOpen.ogg",
+		volume = 0.5
+    },
+	{
+        type = "sound",
+        name = "RTTrapdoorCloseSound",
+        filename = "__RenaiTransportation__/sickw0bs/TrapdoorClose.ogg",
+		volume = 0.3
+    }
 })
 
 
@@ -132,9 +202,27 @@ data:extend({
 	max_health = 1,
 	selection_box = nil,
 	collision_box = {{-0.2, -0.2}, {0.2, 0.2}},
-	collision_mask = {layers={["elevated_train"]=true, ["train"]=true}},
+	collision_mask = {layers={["train"]=true}},
 	picture = {
 		filename = '__RenaiTransportation__/graphics/Untitled.png',
+		width = 32,
+		height = 32,
+		scale = 0.25
+	},
+},
+{ -- actual collision detector
+	type = "simple-entity-with-owner",
+	name = "RTTrainDetectorElevated",
+	icon = '__RenaiTransportation__/graphics/Untitled.png',
+	icon_size = 32,
+	flags = {"placeable-neutral", "placeable-off-grid", "not-blueprintable", "not-deconstructable", "not-flammable", "no-copy-paste"},
+	max_health = 1,
+	selection_box = nil,
+	collision_box = {{-0.2, -0.2}, {0.2, 0.2}},
+	collision_mask = {layers={["elevated_train"]=true}},
+	picture = {
+		filename = '__RenaiTransportation__/graphics/Untitled.png',
+		tint = {r=0, g=0, b=1},
 		width = 32,
 		height = 32,
 		scale = 0.25
@@ -172,8 +260,8 @@ data:extend({
 	elevated_selection_priority = 100,
 	collision_box = {{-0.4, -0.4}, {0.4, 0.4}},
 	selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
-	ground_picture_set = PictureSet,
-	elevated_picture_set = PictureSet
+	ground_picture_set = PictureSetPlacer,
+	elevated_picture_set = PictureSetPlacer
 },
 {
 	type = "item",
@@ -198,6 +286,12 @@ data:extend({
 		{type="item", name="RTTrapdoorSwitchItem", amount=1}
 	}
 },
+{
+	type = "sound",
+	name = "RTTrapdoorSwitchSound",
+	filename = "__RenaiTransportation__/sickw0bs/TrapdoorSwitch.ogg",
+	volume = 0.5
+}
 })
 for i = 0, 15 do
 	data:extend({

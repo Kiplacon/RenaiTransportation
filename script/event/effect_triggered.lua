@@ -92,10 +92,66 @@ local function effect_triggered(event)
 				thrower.held_stack.clear()
 			end
 			storage.PrimerThrowerLinks[DetectorNumber].ready = false
-		else
-			--box.get_output_inventory().clear()
 		end
 
+	elseif (event.effect_id == "ItemShellTest" and event.target_entity) then
+		-- the following code was brought to you by ChatGPT cause im way too dumb to come up with this
+			local start = event.source_position
+			local HitPosition = event.target_position
+			local object = event.target_entity
+			-- positions
+			local p_x, p_y = start.x, start.y
+			local o_x, o_y = HitPosition.x, HitPosition.y
+			local orientation = object.orientation  -- 0..1
+
+			-- 1) Compute the projectile's incoming direction (v_x, v_y).
+			--    Let's assume we want center-to-center for simplicity:
+			local v_x = o_x - p_x
+			local v_y = o_y - p_y
+			local v_len = math.sqrt(v_x*v_x + v_y*v_y)
+			if v_len > 0 then
+			v_x = v_x / v_len
+			v_y = v_y / v_len
+			end
+
+			-- 2) Compute the normal from Factorio orientation
+			local theta = 2 * math.pi * orientation
+			local n_x = math.cos(theta - math.pi/2)
+			local n_y = math.sin(theta - math.pi/2)
+
+			-- 3) Reflect v about n
+			local dot = (v_x * n_x) + (v_y * n_y)
+			local r_x = v_x - 2 * dot * n_x
+			local r_y = v_y - 2 * dot * n_y
+
+			-- r_x, r_y now points in the bounced (reflected) direction.
+		surface.create_entity
+		{
+			name="RTItemShellwood",
+			source = event.target_entity,
+			position = HitPosition,
+			target = OffsetPosition(HitPosition, {100*r_x, 100*r_y}),
+			speed=3.5,
+			max_range = 100
+		}
+		surface.play_sound
+		{
+			path = "RTRicochetPanelSound",
+			position = HitPosition,
+		}
+	elseif (event.effect_id == "ItemShellTest") then
+		-- drop shell on ground
+
+
+		--[[ rendering.draw_line
+		{
+			color = {r = 1, g = 0.6, b = 0, a=1},
+			width = 5,
+			from = start,
+			to = HitPosition,
+			surface = surface,
+			time_to_live = 5
+		} ]]
 	--[[ elseif (event.effect_id == "RTTestProjectileRegularEffect") then
 		game.print(game.tick.." Regular effect triggered")
 	elseif (event.effect_id == "RTTestProjectileWaterEffect") then

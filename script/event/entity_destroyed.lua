@@ -88,6 +88,11 @@ local function entity_destroyed(event)
 	if (storage.VacuumHatches[event.registration_number]) then
 		storage.VacuumHatches[event.registration_number] = nil
 	end
+
+	if (storage.ItemCannons[event.registration_number]) then
+		storage.ItemCannons[event.registration_number].chest.destroy()
+		storage.ItemCannons[event.registration_number] = nil
+	end
 end
 
 return entity_destroyed
