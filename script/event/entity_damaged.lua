@@ -1,43 +1,35 @@
 if script.active_mods["Ultracube"] then CubeFlyingItems = require("script.ultracube.cube_flying_items") end
 if script.active_mods["Ultracube"] then CubeFlyingTrains = require("script.ultracube.cube_flying_trains") end
 
-local TrainRamps = {
+--[[ local TrainRamps = {
 	RTTrainRamp = "lickmaw",
 	RTTrainRampNoSkip = 69,
 	RTMagnetTrainRamp = 420,
 	RTMagnetTrainRampNoSkip = 1337,
-	["RTTrainRamp-ElevatedUp"] = 4,
-	["RTTrainRamp-ElevatedDown"] = 20,
-	["RTTrainRamp-ElevatedLeft"] = 60,
-	["RTTrainRamp-ElevatedRight"] = 9,
 }
 
 local NonMagneticRamps = {
 	RTTrainRamp = "lickmaw",
 	RTTrainRampNoSkip = 69,
-	["RTTrainRamp-ElevatedUp"] = 4,
-	["RTTrainRamp-ElevatedDown"] = 20,
-	["RTTrainRamp-ElevatedLeft"] = 60,
-	["RTTrainRamp-ElevatedRight"] = 9,
-}
+} ]]
 
 local MagneticRamps = {
 	RTMagnetTrainRamp = 420,
 	RTMagnetTrainRampNoSkip = 1337,
+	RTMagnetSwitchTrainRamp = 420,
+	RTMagnetSwitchTrainRampNoSkip = 1337,
 }
 
 local SkippingRamps = {
 	RTTrainRamp = "lickmaw",
 	RTMagnetTrainRamp = 420,
-	["RTTrainRamp-ElevatedUp"] = 4,
-	["RTTrainRamp-ElevatedDown"] = 20,
-	["RTTrainRamp-ElevatedLeft"] = 60,
-	["RTTrainRamp-ElevatedRight"] = 9,
+	RTMagnetSwitchTrainRamp = 420,
 }
 
 local NonSkippingRamps = {
 	RTTrainRampNoSkip = 69,
 	RTMagnetTrainRampNoSkip = 1337,
+	RTMagnetSwitchTrainRampNoSkip = 1337,
 }
 
 local GroundToElevatedMagArcShift_constant = 0.7 -- 1 is normal jump, closer to 0 pushes out the trajectory arc so the train at the landing tick is higher
@@ -450,12 +442,19 @@ local function entity_damaged(event)
 				end
 			end
 			-- Trapdoor wagon
-			local DestroyNumber = script.register_on_object_destroyed(carriage)
-			if (storage.TrapdoorWagonsOpen[DestroyNumber]) then
-				FlyingTrainProperties.trapdoor = true
+			if (string.find(ramp.name, "Switch") ~= nil and carriage.name == "RTTrapdoorWagon") then
+				carriage.surface.play_sound({
+					path = "RTTrapdoorSwitchSound",
+					position = carriage.position
+				})
+				ToggleTrapdoorWagon(carriage)
+				local DestroyNumber = script.register_on_object_destroyed(carriage)
+				if (storage.TrapdoorWagonsOpen[DestroyNumber]) then
+					FlyingTrainProperties.trapdoor = true
+				end
+				storage.TrapdoorWagonsOpen[DestroyNumber] = nil -- nil both cause it'll only be one or the other
+				storage.TrapdoorWagonsClosed[DestroyNumber] = nil
 			end
-			storage.TrapdoorWagonsOpen[DestroyNumber] = nil -- nil both cause it'll only be one or the other
-			storage.TrapdoorWagonsClosed[DestroyNumber] = nil
 		elseif (carriage.type == "fluid-wagon") then
 			FlyingTrainProperties.fluids = carriage.get_fluid_contents()
 		elseif (carriage.type == "artillery-wagon") then

@@ -3,7 +3,7 @@ if script.active_mods["Ultracube"] then CubeFlyingItems = require("script.ultrac
 
 TrainConstants = require("__RenaiTransportation__/script/trains/constants")
 require('util')
----- keikaku
+---- Space Age keikaku
 ------- improvements ✅
 -- director pad range adjusting ✅
 	-- change bounde pads from simple-entity to constant combinator ✅
@@ -23,7 +23,7 @@ require('util')
 ------- New stuff
 -- trapdoor wagon ✅
 	-- trapdoor switch (rail signal all 16 directions) ✅
-	-- trapdoor switch ramp
+	-- trapdoor switch ramp ✅
 	-- trapdoor switch placer graphics ✅
 	-- trapdoor open/close sound ✅
 	-- trapdoor open/close graphic ✅
@@ -38,10 +38,11 @@ require('util')
 	-- player can be launched by it
 -- vacuum hatch ✅
 -- dynamic zipline, get on from anywhere and autodrive anywhere ✅
-	-- include terminal list pop up
+	-- include terminal list pop up ✅
 -- getting hit by a train/car knocks you away ✅
 -- items on the floor of a space platform fly away when the ship takes off ✅
 -- techs for the above
+	-- check with vanilla start
 -- items in destroyed chests/containers fly out ✅
 
 ------- bugs
@@ -494,13 +495,14 @@ function(event)
 			and player.character
 			and (not string.find(player.character.name, "-jetpack"))
 			and player.is_cursor_empty() == true) then
+				player.opened = nil
 				if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
 				and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "ZiplineItem")
 				and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
 				and (player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTProgrammableZiplineControlsItem"
 					or player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTAIZiplineControlsItem")
 				) then
-					player.opened = nil
+					
 					if (DistanceBetween(player.character.position, selected.position) <= 7) then
 						ShowZiplineTerminalGUI(player, selected)
 					else
@@ -508,6 +510,7 @@ function(event)
 					end
 				else
 					player.print({"zipline-stuff.terminalReqs"})
+					
 				end
 			end
 

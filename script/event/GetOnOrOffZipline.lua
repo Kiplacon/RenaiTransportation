@@ -146,6 +146,9 @@ function GetOffZipline(player, PlayerProperties)
 	PlayerProperties.state = "default"
 	--player.character.character_running_speed_modifier = PlayerProperties.OGSpeed
 	PlayerProperties.OGSpeed = nil
+	if (player.gui.screen.RTZiplineTerminalGUI) then
+		player.gui.screen.RTZiplineTerminalGUI.destroy()
+	end
 end
 
 local function GetOnOrOffZipline(event) -- has .name = event ID number, .tick = tick number, .player_index, and .input_name = custom input name
@@ -178,6 +181,7 @@ local function GetOnOrOffZipline(event) -- has .name = event ID number, .tick = 
 			end
 			
 		elseif (PlayerProperties.zipline.path == nil and player.selected and player.selected.type == "electric-pole"
+		and player.selected.unit_number ~= PlayerProperties.zipline.WhereDidYouComeFrom.unit_number
 		and player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
 		and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "ZiplineItem")
 		and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
@@ -224,6 +228,7 @@ local function GetOnOrOffZipline(event) -- has .name = event ID number, .tick = 
 				and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read)
 				then
 					GetOnZipline(player, PlayerProperties, ThingHovering)
+					AIZiplineControllerTerminalList(player, ThingHovering)
 				else
 					player.print({"zipline-stuff.reqs"})
 				end

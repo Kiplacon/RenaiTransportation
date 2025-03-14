@@ -198,7 +198,14 @@ for name, mask in pairs({
 	})
 end
 
-for _, variant in pairs({"ImpactUnloader", "TrainRamp", "TrainRampNoSkip", "MagnetTrainRamp", "MagnetTrainRampNoSkip"}) do
+for _, variants in pairs(
+	{
+		{"ImpactUnloader", "z"},
+		{"TrainRamp", "a"}, {"TrainRampNoSkip", "ab"}, {"MagnetTrainRamp", "b"}, {"MagnetTrainRampNoSkip", "bb"},
+		{"SwitchTrainRamp", "aa"}, {"SwitchTrainRampNoSkip", "ab"}, {"MagnetSwitchTrainRamp", "ba"}, {"MagnetSwitchTrainRampNoSkip", "bb"}
+	}) do
+	local variant = variants[1]
+	local order = variants[2]
 	local GroundMask = {layers={["train"]=true}}
 	local ElevMask = {layers={["elevated_train"]=true}}
 	local CellBox = {{-0.5, -2}, {1.5, 2}}
@@ -234,7 +241,7 @@ for _, variant in pairs({"ImpactUnloader", "TrainRamp", "TrainRampNoSkip", "Magn
 			icon = "__RenaiTransportation__/graphics/TrainRamp/icons/"..variant.."Icon.png",
 			icon_size = 64,
 			subgroup = "RT",
-			order = "g",
+			order = "g"..order,
 			place_result = "RT"..variant.."-placer",
 			stack_size = 10
 		},
@@ -303,7 +310,8 @@ data:extend({
 			{type="item", name="RTMagnetTrainRampItem", amount=1}
 		}
 	},
-	{ --------- ramp recipe ----------
+
+	{ --------- impact recipe ----------
 		type = "recipe",
 		name = "RTImpactUnloaderRecipe",
 		enabled = false,
@@ -317,7 +325,36 @@ data:extend({
 		results = {
 			{type="item", name="RTImpactUnloaderItem", amount=1}
 		}
-	}
+	},
+
+	{ --------- switch ramp recipe ----------
+		type = "recipe",
+		name = "RTSwitchTrainRampRecipe",
+		enabled = true,
+		energy_required = 2,
+		ingredients =
+			{
+				{type="item", name="RTTrainRampItem", amount=1},
+				{type="item", name="RTTrapdoorSwitchItem", amount=1}
+			},
+		results = {
+			{type="item", name="RTSwitchTrainRampItem", amount=1}
+		}
+	},
+	{ --------- magnet switch ramp recipe ----------
+		type = "recipe",
+		name = "RTMagnetSwitchTrainRampRecipe",
+		enabled = true,
+		energy_required = 2,
+		ingredients =
+			{
+				{type="item", name="RTMagnetTrainRampItem", amount=1},
+				{type="item", name="RTTrapdoorSwitchItem", amount=1}
+			},
+		results = {
+			{type="item", name="RTMagnetSwitchTrainRampItem", amount=1}
+		}
+	},
 })
 
 -- Add supporting entities for the mag ramp

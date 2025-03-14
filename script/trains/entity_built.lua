@@ -133,7 +133,7 @@ local function handleTrainRampPlacerBuilt(entity, player)
 			RampType = "TrapdoorSwitch"
 		end
 		RampSetup(ramp, RampType)
-		if (name == "RTMagnetTrainRamp" or name == "RTMagnetTrainRampNoSkip") then
+		if (name == "RTMagnetTrainRamp" or name == "RTMagnetTrainRampNoSkip" or name == "RTMagnetSwitchTrainRamp" or name == "RTMagnetSwitchTrainRampNoSkip") then
 			handleMagnetRampBuilt(ramp, player)
 		end
 	end
@@ -152,7 +152,7 @@ local function on_entity_built(entity, player)
 				RampType = "TrapdoorSwitch"
 			end
 			RampSetup(entity, RampType)
-			if (entity.name == "RTMagnetTrainRamp" or entity.name == "RTMagnetTrainRampNoSkip") then
+			if (entity.name == "RTMagnetTrainRamp" or entity.name == "RTMagnetTrainRampNoSkip" or entity.name == "RTMagnetSwitchTrainRamp" or entity.name == "RTMagnetSwitchTrainRampNoSkip") then
 				handleMagnetRampBuilt(entity, player)
 			end
 		end

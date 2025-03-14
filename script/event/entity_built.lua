@@ -186,8 +186,8 @@ local function entity_built(event)
 			PouncePadProperties.ShowArrow = ShowRange
 		end
 	------- make train ramp stuff unrotatable just in case
-	elseif (entity.name == "RTTrainRamp" or entity.name == "RTTrainRampNoSkip" or entity.name == "RTMagnetTrainRamp" or entity.name == "RTMagnetTrainRampNoSkip") then
-		entity.rotatable = false
+	--[[ elseif (entity.name == "RTTrainRamp" or entity.name == "RTTrainRampNoSkip" or entity.name == "RTMagnetTrainRamp" or entity.name == "RTMagnetTrainRampNoSkip") then
+		entity.rotatable = false ]]
 
 	elseif (string.find(entity.name, "RTPrimerThrowerShooter-")) then
 		local time = 2
@@ -257,7 +257,7 @@ local function entity_built(event)
 
 	elseif (event.ghost or entity.name == "entity-ghost") then -- ghosts from dying and ghosts from blueprints
 		local ghost = event.ghost or entity
-		local RampList = {RTTrainRamp=true, RTTrainRampNoSkip=true, RTMagnetTrainRamp=true, RTMagnetTrainRampNoSkip=true, RTImpactUnloader=true, RTTrapdoorSwitch=true}
+		local RampList = {RTTrainRamp=true, RTTrainRampNoSkip=true, RTMagnetTrainRamp=true, RTMagnetTrainRampNoSkip=true, RTImpactUnloader=true, RTTrapdoorSwitch=true, RTSwitchTrainRamp=true, RTSwitchTrainRampNoSkip=true, RTMagnetSwitchTrainRamp=true, RTMagnetSwitchTrainRampNoSkip=true}
 		if (RampList[ghost.ghost_name]) then
 			local SixteenDirNudge = 1
 			ghost.teleport(OffsetPosition(ghost.position, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ghost.direction][1]*SixteenDirNudge, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ghost.direction][2]*SixteenDirNudge}))

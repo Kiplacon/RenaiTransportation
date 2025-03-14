@@ -450,7 +450,7 @@ local function on_tick(event)
 							--restore trapdoor wagon tracking, existing tracking table in storage.TrapdoorWagonsClosed[script.register_on_object_destroyed(NewTrain)], created from raise_built in wagon respawning
 							if (properties.trapdoor ~= nil) then
 								local NewTrainDestoyNumber = script.register_on_object_destroyed(NewTrain)
-								storage.TrapdoorWagonsClosed[NewTrainDestoyNumber].OpenIndicator.color = {r=0,g=1,b=0,a=1}
+								storage.TrapdoorWagonsClosed[NewTrainDestoyNumber].OpenIndicator.sprite = "RTTrapdoorWagonOpen"
 								storage.TrapdoorWagonsOpen[NewTrainDestoyNumber] = storage.TrapdoorWagonsClosed[NewTrainDestoyNumber]
 								storage.TrapdoorWagonsClosed[NewTrainDestoyNumber] = nil
 							end -- if trapdoor is closed, it will be tracked correctly by the default raise_built

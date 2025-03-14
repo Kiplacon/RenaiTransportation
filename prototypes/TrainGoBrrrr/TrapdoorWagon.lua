@@ -220,13 +220,13 @@ data:extend({
 	selection_box = nil,
 	collision_box = {{-0.2, -0.2}, {0.2, 0.2}},
 	collision_mask = {layers={["elevated_train"]=true}},
-	picture = {
+	--[[ picture = {
 		filename = '__RenaiTransportation__/graphics/Untitled.png',
 		tint = {r=0, g=0, b=1},
 		width = 32,
 		height = 32,
 		scale = 0.25
-	},
+	}, ]]
 },
 { -- Switch entity
 	type = "rail-signal",

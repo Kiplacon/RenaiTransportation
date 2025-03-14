@@ -141,7 +141,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			ThingHovering.destroy()
 
 		--|| Swap Ramp Modes
-		elseif (ThingHovering.name == "RTTrainRamp") then
+		elseif (ThingHovering.name == "RTTrainRamp" or ThingHovering.name == "RTSwitchTrainRamp") then
+			local switch = ""
+			if (string.find(ThingHovering.name, "Switch")) then
+				switch = "Switch"
+			end
 			local ElPosition = ThingHovering.position
 			local ElForce = player.force
 			local ElDirection = ThingHovering.direction
@@ -150,7 +154,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			ThingHovering.destroy()
 			local NewKid = ElSurface.create_entity
 				({
-					name = "RTTrainRampNoSkip",
+					name = "RT"..switch.."TrainRampNoSkip",
 					position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1], -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]}),
 					direction = ElDirection,
 					force = ElForce,
@@ -164,7 +168,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					position=player.position,
 					volume_modifier=1
 				}
-		elseif (ThingHovering.name == "RTTrainRampNoSkip") then
+		elseif (ThingHovering.name == "RTTrainRampNoSkip" or ThingHovering.name == "RTSwitchTrainRampNoSkip") then
+			local switch = ""
+			if (string.find(ThingHovering.name, "Switch")) then
+				switch = "Switch"
+			end
 			local ElPosition = ThingHovering.position
 			local ElForce = player.force
 			local ElDirection = ThingHovering.direction
@@ -173,7 +181,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			ThingHovering.destroy()
 			local NewKid = ElSurface.create_entity
 				({
-					name = "RTTrainRamp",
+					name = "RT"..switch.."TrainRamp",
 					position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1], -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]}),
 					direction = ElDirection,
 					force = ElForce,
@@ -190,7 +198,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 
 									
 		--|| Swap Magnet Ramp Modes
-		elseif (ThingHovering.name == "RTMagnetTrainRamp") then
+		elseif (ThingHovering.name == "RTMagnetTrainRamp" or ThingHovering.name == "RTMagnetSwitchTrainRamp") then
+			local switch = ""
+			if (string.find(ThingHovering.name, "Switch")) then
+				switch = "Switch"
+			end
 			local ElPosition = ThingHovering.position
 			local ElForce = player.force
 			local ElDirection = ThingHovering.direction
@@ -201,7 +213,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			ThingHovering.destroy() -- rail signals cannot be on the same spot
 			local NewKid = ElSurface.create_entity
 				({
-				name = "RTMagnetTrainRampNoSkip",
+				name = "RTMagnet"..switch.."TrainRampNoSkip",
 				position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1], -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]}),
 				direction = ElDirection,
 				force = ElForce,
@@ -224,7 +236,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					nil,
 					ElSignal
 				)
-		elseif (ThingHovering.name == "RTMagnetTrainRampNoSkip") then
+		elseif (ThingHovering.name == "RTMagnetTrainRampNoSkip" or ThingHovering.name == "RTMagnetSwitchTrainRampNoSkip") then
+			local switch = ""
+			if (string.find(ThingHovering.name, "Switch")) then
+				switch = "Switch"
+			end
 			local ElPosition = ThingHovering.position
 			local ElForce = player.force
 			local ElDirection = ThingHovering.direction
@@ -235,7 +251,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			ThingHovering.destroy() -- rail signals cannot be on the same spot
 			local NewKid = ElSurface.create_entity
 				({
-				name = "RTMagnetTrainRamp",
+				name = "RTMagnet"..switch.."TrainRamp",
 				position = OffsetPosition(ElPosition, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][1], -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ElDirection][2]}),
 				direction = ElDirection,
 				force = ElForce,

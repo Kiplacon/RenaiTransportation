@@ -12,7 +12,7 @@ local function click(event)
 			storage.BouncePadList[script.register_on_object_destroyed(clicked)].ShowArrow = not storage.BouncePadList[script.register_on_object_destroyed(clicked)].ShowArrow
 
 		--| Start setting range of magenet ramp
-		elseif ((clicked.name == "RTMagnetTrainRamp" or clicked.name == "RTMagnetTrainRampNoSkip") and PlayerProperties.SettingRampRange.SettingRange == false) then
+		elseif ((clicked.name == "RTMagnetTrainRamp" or clicked.name == "RTMagnetTrainRampNoSkip" or clicked.name == "RTMagnetSwitchTrainRamp" or clicked.name == "RTMagnetSwitchTrainRampNoSkip") and PlayerProperties.SettingRampRange.SettingRange == false) then
 			local ramp = clicked
 			local MaxRange = settings.global["RTMagRampRange"].value
 			game.get_player(event.player_index).print({"magnet-ramp-stuff.Step2"})
