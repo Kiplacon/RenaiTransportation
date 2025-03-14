@@ -19,6 +19,7 @@ require('util')
 	-- animate character shadow separately ✅
 		-- separate shadow sprite for manual animation ✅
 -- generalize player launching with cusom path ✅
+-- better unloading of impact wagons at non-cardinal angles ✅
 
 ------- New stuff
 -- trapdoor wagon ✅
@@ -28,6 +29,7 @@ require('util')
 	-- trapdoor open/close sound ✅
 	-- trapdoor open/close graphic ✅
 -- electromagnetic item cannon (rail gun)?
+	-- not placable in space
 	-- seal 1 stack of an item into a shell
 	-- can bounce off of reinforced plates that can be rotated to face the 4 cardinal directions. up/down and left/right are basically the same thing for this ✅
 	-- slam into a wall and explode contents forward
@@ -35,18 +37,27 @@ require('util')
 	-- catching chest 3x3 box with chimney thing that catches shells
 -- belt ramp ✅
 	-- fast, express, and tungsten variants ✅
+	-- items fly off into space at an angle
 	-- player can be launched by it
 -- vacuum hatch ✅
 -- dynamic zipline, get on from anywhere and autodrive anywhere ✅
 	-- include terminal list pop up ✅
--- getting hit by a train/car knocks you away ✅
+	-- pentapod egg for SA, fish for base
 -- items on the floor of a space platform fly away when the ship takes off ✅
 -- techs for the above
+	-- nauvis: belt ramp, vacuum hatch
+	-- Fulgora: item cannon, ricochet panels, chutes
+	-- Gleba: AI zipline controller
+	-- Vulcanus: trapdoor wagon and switches and switch ramps
+	-- Aquilo: nothing
 	-- check with vanilla start
--- items in destroyed chests/containers fly out ✅
+-- straight up grief ✅
+	-- items in destroyed chests/containers fly out ✅
+	-- getting hit by a train/car knocks you away assuming you survive the hit ✅
+	-- loose items on space platforms float away when you take off ✅
 
 ------- bugs
--- crash on interact to toggle things not currently enabled ✅
+-- crash on interact to toggle things not currently enabled 
 -- rotating blueprints of trapdoor switches on angles doesnt always work due to rounding errors or something idk if you dont rotate it its fine ✅
 -- vacuum hatch full inventory loop (is fine actually, just bounce them off a short distance and only suck up 1 item per tick) ✅
 -- hover range indicator for bounce pads not synced with current setting ✅
