@@ -57,6 +57,23 @@ local function config_changed()
 	storage.OrientationNumberToDefinition[slice*14] = defines.direction.northwest
 	storage.OrientationNumberToDefinition[slice*15] = defines.direction.northnorthwest
 
+	storage.InsertInventory = {}
+	storage.InsertInventory["ammo-turret"] = defines.inventory.turret_ammo
+	storage.InsertInventory["artillery-turret"] = defines.inventory.artillery_turret_ammo
+	storage.InsertInventory["assembling-machine"] = defines.inventory.assembling_machine_input
+	storage.InsertInventory["beacon"] = defines.inventory.beacon_modules
+	storage.InsertInventory["boiler"] = defines.inventory.fuel
+	storage.InsertInventory["burner-generator"] = defines.inventory.fuel
+	storage.InsertInventory["container"] = defines.inventory.chest
+	storage.InsertInventory["furnace"] = defines.inventory.furnace_source
+	storage.InsertInventory["lab"] = defines.inventory.lab_input
+	storage.InsertInventory["linked-container"] = defines.inventory.chest
+	storage.InsertInventory["logistic-container"] = defines.inventory.chest
+	storage.InsertInventory["reactor"] = defines.inventory.fuel
+	storage.InsertInventory["roboport"] = defines.inventory.roboport_robot
+	storage.InsertInventory["rocket-silo"] = defines.inventory.rocket_silo_input
+	storage.InsertInventory["proxy-container"] = defines.inventory.proxy_main
+
 	storage.Dir2Ori = {}
 	storage.Dir2Ori[0] = 0
 	storage.Dir2Ori[2] = 0.125
@@ -179,6 +196,8 @@ local function config_changed()
 	if (storage.ItemCannons == nil) then
 		storage.ItemCannons = {}
 	end
+	storage.ItemCannonSpeed = 3
+	
 	-- Ultracube-specific globals
 	if script.active_mods["Ultracube"] then
 		-- Prototype data should be reset on config change just in case Ultracube has updated to add new types

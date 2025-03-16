@@ -203,12 +203,12 @@ data:extend({
 	selection_box = nil,
 	collision_box = {{-0.2, -0.2}, {0.2, 0.2}},
 	collision_mask = {layers={["train"]=true}},
-	picture = {
+	--[[ picture = {
 		filename = '__RenaiTransportation__/graphics/Untitled.png',
 		width = 32,
 		height = 32,
 		scale = 0.25
-	},
+	}, ]]
 },
 { -- actual collision detector
 	type = "simple-entity-with-owner",

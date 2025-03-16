@@ -48,6 +48,23 @@ local function on_int()
 	storage.Dir2Ori[14] = 0.875
 	storage.Dir2Ori[16] = 0
 
+	storage.InsertInventory = {}
+	storage.InsertInventory["ammo-turret"] = defines.inventory.turret_ammo
+	storage.InsertInventory["artillery-turret"] = defines.inventory.artillery_turret_ammo
+	storage.InsertInventory["assembling-machine"] = defines.inventory.assembling_machine_input
+	storage.InsertInventory["beacon"] = defines.inventory.beacon_modules
+	storage.InsertInventory["boiler"] = defines.inventory.fuel
+	storage.InsertInventory["burner-generator"] = defines.inventory.fuel
+	storage.InsertInventory["container"] = defines.inventory.chest
+	storage.InsertInventory["furnace"] = defines.inventory.furnace_source
+	storage.InsertInventory["lab"] = defines.inventory.lab_input
+	storage.InsertInventory["linked-container"] = defines.inventory.chest
+	storage.InsertInventory["logistic-container"] = defines.inventory.chest
+	storage.InsertInventory["reactor"] = defines.inventory.fuel
+	storage.InsertInventory["roboport"] = defines.inventory.roboport_robot
+	storage.InsertInventory["rocket-silo"] = defines.inventory.rocket_silo_input
+	storage.InsertInventory["proxy-container"] = defines.inventory.proxy_main
+
 	storage.EjectorPointing = {}
 	storage.EjectorPointing[0] = 2
 	storage.EjectorPointing[4] = 3
@@ -109,6 +126,7 @@ local function on_int()
 	storage.VacuumHatches = {}
 
 	storage.ItemCannons = {}
+	storage.ItemCannonSpeed = 3
 	
 	-- Ultracube=specific globals
 	if script.active_mods["Ultracube"] then

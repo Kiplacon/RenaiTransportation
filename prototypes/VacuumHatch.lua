@@ -7,11 +7,11 @@ data:extend({
 	icon_size = 64,
 	flags = {"placeable-neutral", "player-creation"},
 	max_health = 150,
-	collision_mask = {layers={["RTHatches"]=true}},
-	collision_box = {{-0.4, -0.4}, {0.4, 0.5}},
+	--collision_mask = {layers={["RTHatches"]=true}},
+	collision_box = {{-0.49, -0.49}, {0.49, 0.49}},
 	selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
-	selection_priority = 255,
-	minable = {mining_time = 0.2, result = "RTVacuumHatchItem"},
+	--selection_priority = 255,
+	minable = {mining_time = 0.5, result = "RTVacuumHatchItem"},
 	energy_source =
 		{
 			type = "electric",
@@ -29,7 +29,7 @@ data:extend({
 			scale = 0.5
 		},
 	},
-	render_layer = "arrow",
+	--render_layer = "arrow",
 	radius_visualisation_specification = {
 		sprite = {
 			filename = "__RenaiTransportation__/graphics/TrainRamp/range.png",
@@ -68,4 +68,40 @@ data:extend({
 	stack_size = 50
 },
 
+{
+	type = "sprite",
+	name = "VacuumHatchConnectorup",
+	filename = "__base__/graphics/entity/assembling-machine-3/assembling-machine-3-pipe-N.png",
+	width = 71,
+	height = 38,
+	shift = {0, 0.5},
+	scale = 0.5
+},
+{
+	type = "sprite",
+	name = "VacuumHatchConnectorright",
+	filename = "__base__/graphics/entity/assembling-machine-3/assembling-machine-3-pipe-E.png",
+	width = 42,
+	height = 76,
+	shift = {-0.5, 0},
+	scale = 0.5
+},
+{
+	type = "sprite",
+	name = "VacuumHatchConnectordown",
+	filename = "__base__/graphics/entity/assembling-machine-3/assembling-machine-3-pipe-S.png",
+	width = 88,
+	height = 61,
+	shift = {0, -0.5},
+	scale = 0.5
+},
+{
+	type = "sprite",
+	name = "VacuumHatchConnectorleft",
+	filename = "__base__/graphics/entity/assembling-machine-3/assembling-machine-3-pipe-W.png",
+	width = 39,
+	height = 73,
+	shift = {0.5, 0},
+	scale = 0.5
+},
 })

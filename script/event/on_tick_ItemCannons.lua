@@ -23,7 +23,7 @@ local function PersonalFitness(event)
                     source = cannon,
                     position = cannon.position,
                     target = OffsetPosition(cannon.position, targets[cannon.orientation]),
-                    speed=3.5,
+                    speed=storage.ItemCannonSpeed,
                     max_range = 100
                 }
                 ItemCannonProperties.chest.get_output_inventory()[1].clear()

@@ -556,12 +556,14 @@ function ResolveThrownItem(FlyingItem)
                     }
 
                 ---- If the thing it landed on has an inventory and a hatch, insert the item ----
-                elseif (ThingLandedOn.type ~= "transport-belt" and ThingLandedOn.surface.find_entities_filtered(
-                {
-                name={'HatchRT', "RTVacuumHatch"},
-                position={math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5},
-                limit = 1
-                })[1]) then
+                elseif (ThingLandedOn.type ~= "transport-belt"
+                and ThingLandedOn.surface.find_entities_filtered(
+                    {
+                    name='HatchRT',
+                    position={math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5},
+                    limit = 1
+                    })[1]
+                ) then
                     if (ThingLandedOn.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
                         if (FlyingItem.CloudStorage) then
                             ThingLandedOn.insert(FlyingItem.CloudStorage[1])
@@ -578,28 +580,59 @@ function ResolveThrownItem(FlyingItem)
                             volume_modifier = 0.7
                         }
                     else
-                        local hatch = ThingLandedOn.surface.find_entities_filtered(
-                            {
-                            name={'HatchRT', "RTVacuumHatch"},
-                            position={math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5},
-                            limit = 1
-                            })[1]
-                        local XBounce
-                        local YBounce
-                        if (hatch.name == "RTVacuumHatch") then
-                            XBounce = FlyingItem.target.x + storage.OrientationUnitComponents[hatch.orientation].x
-                            YBounce = FlyingItem.target.y + storage.OrientationUnitComponents[hatch.orientation].y
-                        else
-                            local bounce = math.random(10, 20)*0.1
-                            XBounce = FlyingItem.target.x + (bounce*math.random(-1, 1))
-                            YBounce = FlyingItem.target.y + (bounce*math.random(-1, 1))
-                        end
+                        local bounce = math.random(10, 20)*0.1
+                        local XBounce = FlyingItem.target.x + (bounce*math.random(-2, 2))
+                        local YBounce = FlyingItem.target.y + (bounce*math.random(-2, 2))
                         InvokeThrownItem({
                             type = "ReskinnedStream",
                             bouncing = FlyingItem,
                             start = FlyingItem.target,
                             target = {XBounce, YBounce},
-                            speed = FlyingItem.speed
+                            speed = 0.25
+                        })
+                    end
+
+                elseif (ThingLandedOn.name=='RTVacuumHatch') then
+                    local properties = storage.VacuumHatches[script.register_on_object_destroyed(ThingLandedOn)]
+                    if (properties.output == nil or properties.output.valid == false) then
+                        properties.output = ThingLandedOn.surface.find_entities_filtered
+                        ({
+                            collision_mask = "object",
+                            position = OffsetPosition(ThingLandedOn.position, {-1*storage.OrientationUnitComponents[ThingLandedOn.orientation].x, -1*storage.OrientationUnitComponents[ThingLandedOn.orientation].y}),
+                            limit = 1
+                        })[1]
+                    end
+                    local deposited = false
+                    if (properties.output and properties.output.valid) then
+                        if (properties.output.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
+                            if (FlyingItem.CloudStorage) then
+                                properties.output.insert(FlyingItem.CloudStorage[1])
+                                FlyingItem.CloudStorage.destroy()
+                            elseif storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
+                                CubeFlyingItems.release_and_insert(FlyingItem, properties.output)
+                            else
+                                properties.output.insert({name=FlyingItem.item, count=FlyingItem.amount, quality=FlyingItem.quality})
+                            end
+                            ThingLandedOn.surface.play_sound
+                            {
+                                path = "RTClunk",
+                                position = ThingLandedOn.position,
+                                volume_modifier = 0.7
+                            }
+                            deposited = true
+                        end
+                    else
+                        properties.output = nil
+                    end
+                    if (not deposited) then
+                        local XBounce = FlyingItem.target.x + storage.OrientationUnitComponents[ThingLandedOn.orientation].x
+                        local YBounce = FlyingItem.target.y + storage.OrientationUnitComponents[ThingLandedOn.orientation].y
+                        InvokeThrownItem({
+                            type = "ReskinnedStream",
+                            bouncing = FlyingItem,
+                            start = FlyingItem.target,
+                            target = {XBounce, YBounce},
+                            speed = 0.25
                         })
                     end
 

@@ -34,27 +34,27 @@ require('util')
 	-- can bounce off of reinforced plates that can be rotated to face the 4 cardinal directions. up/down and left/right are basically the same thing for this ✅
 	-- slam into a wall and explode contents forward
 	-- falls to the ground if nothing hit after X tiles
-	-- catching chest 3x3 box with chimney thing that catches shells
 -- belt ramp ✅
 	-- fast, express, and tungsten variants ✅
-	-- items fly off into space at an angle
+	-- items fly off into space at an angle ✅
 	-- player can be launched by it
+		-- landmine for each direction
 -- vacuum hatch ✅
+	-- connection to entity behind it
 -- dynamic zipline, get on from anywhere and autodrive anywhere ✅
 	-- include terminal list pop up ✅
-	-- pentapod egg for SA, fish for base
--- items on the floor of a space platform fly away when the ship takes off ✅
+	-- pentapod egg for SA, fish for vanilla ✅
 -- techs for the above
 	-- nauvis: belt ramp, vacuum hatch
 	-- Fulgora: item cannon, ricochet panels, chutes
-	-- Gleba: AI zipline controller
+	-- Gleba: AI zipline controller, primer throwers
 	-- Vulcanus: trapdoor wagon and switches and switch ramps
-	-- Aquilo: nothing
+	-- Aquilo: launch trains iterplanetary
 	-- check with vanilla start
 -- straight up grief ✅
 	-- items in destroyed chests/containers fly out ✅
 	-- getting hit by a train/car knocks you away assuming you survive the hit ✅
-	-- loose items on space platforms float away when you take off ✅
+	-- items on the floor of a space platform fly away when the ship takes off ✅
 
 ------- bugs
 -- crash on interact to toggle things not currently enabled 

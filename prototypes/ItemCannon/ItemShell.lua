@@ -70,7 +70,8 @@ data.extend({
     { --------- entity
         type = "simple-entity-with-owner",
         name = "RTReinforcedRicochetPanel",
-        icon = "__RenaiTransportation__/graphics/hatch/vacuumhatchicon.png",
+        icon = "__RenaiTransportation__/graphics/ItemCannon/RicochetPanelIcon.png",
+        icon_size = 128,
         flags = {"placeable-neutral", "player-creation"},
         minable = {mining_time = 0.2, result = "RTReinforcedRicochetPanelItem"},
         hidden = true,
@@ -120,8 +121,8 @@ data.extend({
     { --------- item -------------
         type = "item",
         name = "RTReinforcedRicochetPanelItem",
-        icon = "__RenaiTransportation__/graphics/hatch/vacuumhatchicon.png",
-        icon_size = 64,
+        icon = "__RenaiTransportation__/graphics/ItemCannon/RicochetPanelIcon.png",
+        icon_size = 128,
         subgroup = "RT",
         order = "f-c",
         place_result = "RTReinforcedRicochetPanel",

@@ -66,8 +66,15 @@ local function rotate(event)
 		
 	end
 
-	if (string.find(event.entity.name, "VacuumHatch")) then
-		storage.VacuumHatches[EntityDestroyNumber].ToSucc = nil
+	if (event.entity.name == "RTVacuumHatch") then
+		local entity = event.entity
+		local properties = storage.VacuumHatches[script.register_on_object_destroyed(entity)]
+		properties.output = entity.surface.find_entities_filtered
+		({
+			collision_mask = "object",
+			position = OffsetPosition(entity.position, {-1*storage.OrientationUnitComponents[entity.orientation].x, -1*storage.OrientationUnitComponents[entity.orientation].y}),
+			limit = 1
+		})[1]
 	end
 end
 

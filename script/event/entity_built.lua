@@ -250,10 +250,20 @@ local function entity_built(event)
 	elseif (string.find(entity.name, '^RT') and string.find(entity.name, "BeltRamp")) then
 		local ranges = {["RTBeltRamp"]=10, ["RTfastBeltRamp"]=20, ["RTexpressBeltRamp"]=30, ["RTturboBeltRamp"]=40}
 		local speeds = {["RTBeltRamp"]=0.18, ["RTfastBeltRamp"]=0.18, ["RTexpressBeltRamp"]=0.25, ["RTturboBeltRamp"]=0.25}
-		storage.BeltRamps[script.register_on_object_destroyed(entity)] = {entity=entity, range=(ranges[entity.name] or 5), speed=(speeds[entity.name] or 0.18)}
+		storage.BeltRamps[script.register_on_object_destroyed(entity)] = {entity=entity, range=(ranges[entity.name] or 10), speed=(speeds[entity.name] or 0.18), InSpace=false}
+		if (entity.surface.platform or string.find(entity.surface.name, " Orbit") or string.find(entity.surface.name, " Field") or string.find(entity.surface.name, " Belt")) then
+			storage.BeltRamps[script.register_on_object_destroyed(entity)].InSpace = true
+		end
 
 	elseif (entity.name == "RTVacuumHatch") then
-		storage.VacuumHatches[script.register_on_object_destroyed(entity)] = {entity=entity, source=nil}
+		storage.VacuumHatches[script.register_on_object_destroyed(entity)] = {entity=entity, output=nil}
+		local properties = storage.VacuumHatches[script.register_on_object_destroyed(entity)]
+		properties.output = entity.surface.find_entities_filtered
+		({
+			collision_mask = "object",
+			position = OffsetPosition(entity.position, {-1*storage.OrientationUnitComponents[entity.orientation].x, -1*storage.OrientationUnitComponents[entity.orientation].y}),
+			limit = 1
+		})[1]
 
 	elseif (event.ghost or entity.name == "entity-ghost") then -- ghosts from dying and ghosts from blueprints
 		local ghost = event.ghost or entity

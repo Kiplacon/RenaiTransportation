@@ -601,7 +601,7 @@ data:extend({
       ingredients =
          {
             {type="item", name="RTProgrammableZiplineControlsItem", amount=1},
-            {type="item", name="advanced-circuit", amount=5},
+            {type="item", name="processing-unit", amount=5},
             {type="item", name=AISource, amount=5}
          },
       results = {

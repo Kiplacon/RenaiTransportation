@@ -13,7 +13,7 @@ data:extend({
 			buffer_capacity = "5MJ",
             drain = "100kW"
 		},
-        gui_mode = "none",
+        gui_mode = "all",
         collision_box = {{-1.4, -1.4}, {1.4, 1.4}},
         selection_box = {{-1.5, -1.5}, {1.5, 1.5}},
         resistances = {

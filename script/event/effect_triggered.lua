@@ -131,7 +131,7 @@ local function effect_triggered(event)
 			source = event.target_entity,
 			position = HitPosition,
 			target = OffsetPosition(HitPosition, {100*r_x, 100*r_y}),
-			speed=3.5,
+			speed=storage.ItemCannonSpeed,
 			max_range = 100
 		}
 		surface.play_sound
