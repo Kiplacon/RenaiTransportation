@@ -18,7 +18,7 @@ require('util')
 	-- remove shadow layer from character prototype ✅
 	-- animate character shadow separately ✅
 		-- separate shadow sprite for manual animation ✅
--- generalize player launching with cusom path ✅
+-- generalize player launching with custom path ✅
 -- better unloading of impact wagons at non-cardinal angles ✅
 
 ------- New stuff
@@ -37,10 +37,9 @@ require('util')
 -- belt ramp ✅
 	-- fast, express, and tungsten variants ✅
 	-- items fly off into space at an angle ✅
-	-- player can be launched by it
-		-- landmine for each direction
+	-- player can be launched by it ✅
 -- vacuum hatch ✅
-	-- connection to entity behind it
+	-- connection to entity behind it ✅
 -- dynamic zipline, get on from anywhere and autodrive anywhere ✅
 	-- include terminal list pop up ✅
 	-- pentapod egg for SA, fish for vanilla ✅
@@ -116,7 +115,8 @@ function(event)
 		local scale = ((container.bounding_box.right_bottom.x-container.bounding_box.left_top.x)+(container.bounding_box.right_bottom.y-container.bounding_box.left_top.y))
 		for i = 1, #container.get_output_inventory() do
 			local stack = container.get_output_inventory()[i]
-			for _ = 1, stack.count do
+			local GroupSize = math.ceil((stack.count/17))
+			for _ = 1, math.floor(stack.count/GroupSize) do
 				-- unit vector
 				local angle = math.random(0, 100)*0.01
 				local xUnit = math.cos(2*math.pi*angle)
@@ -143,7 +143,7 @@ function(event)
 					type = "CustomPath",
 					render_layer = "elevated-higher-object",
 					stack = stack,
-					ThrowFromStackAmount = 1,
+					ThrowFromStackAmount = GroupSize,
 					start = container.position,
 					target = {x=TargetX, y=TargetY},
 					path = path,

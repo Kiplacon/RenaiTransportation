@@ -1,3 +1,4 @@
+---@diagnostic disable: newline-call
 function NewFlightNumber()
     storage.FlightNumber = storage.FlightNumber + 1
     if (storage.FlightNumber > 1000000) then -- maybe unnecessary

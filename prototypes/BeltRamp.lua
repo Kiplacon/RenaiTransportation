@@ -32,8 +32,9 @@ for _, tier in pairs(tiers) do
             minable = {mining_time = 0.5, result = "RT"..TierName.."BeltRampItem"},
             max_health = 200,
             collision_box = {{-0.4, -0.4}, {0.4, 0.4}},
-            collision_mask = {layers={["item"]=true, ["object"]=true, ["player"]=true, ["water_tile"]=true}},
+            collision_mask = {layers={["item"]=true, ["object"]=true, ["water_tile"]=true}},
             selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
+            fast_replaceable_group = "BeltRamps",
             speed = 0.03125,
             animation_speed_coefficient = TierSpeed,
             belt_animation_set =
@@ -117,6 +118,36 @@ for _, tier in pairs(tiers) do
     })
 end
 
+--for orient, stuff in pairs({[0]="up", [0.75]="left", [0.5]="down", [0.25]="right"}) do
+    data:extend({
+        {
+            type = "land-mine",
+            name = "RTBeltRampPlayerTrigger",
+            flags = {"not-on-map", "placeable-off-grid", "not-selectable-in-game", "no-copy-paste", "not-blueprintable", "not-deconstructable"},
+            trigger_collision_mask = {layers={["player"]=true}},
+            trigger_radius = 0.5,
+            timeout = 0,
+            action = {
+                type = "direct",
+                action_delivery = {
+                    type = "instant",
+                    source_effects = {
+                        type = "script",
+                        effect_id = "BeltRampPlayer"
+                    }
+                }
+            },
+            force_die_on_attack = false,
+            picture_set = {
+                filename = '__RenaiTransportation__/graphics/Untitled.png',
+                width = 32,
+                height = 32,
+            }
+        }
+    })
+
+--end
+
 if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt tier
     data:extend({
         { --------- Bounce plate entity --------------
@@ -137,7 +168,7 @@ if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt t
             minable = {mining_time = 0.5, result = "RTturboBeltRampItem"},
             max_health = 200,
             collision_box = {{-0.4, -0.4}, {0.4, 0.4}},
-            collision_mask = {layers={["item"]=true, ["object"]=true, ["player"]=true, ["water_tile"]=true}},
+            collision_mask = {layers={["item"]=true, ["object"]=true, ["water_tile"]=true}},
             selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
             speed = 0.125,
             animation_speed_coefficient = 32,

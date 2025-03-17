@@ -293,6 +293,10 @@ data:extend({
 },
 })
 
+if (data.raw["fluid"]["thruster-fuel"]) then
+    data.raw["fluid"]["thruster-fuel"].auto_barrel = true
+    data.raw["fluid"]["thruster-oxidizer"].auto_barrel = true
+end
 if (data.raw.tree.lickmaw and data.raw["item-subgroup"]["agriculture-processes"]) then
 	data:extend({
 		{

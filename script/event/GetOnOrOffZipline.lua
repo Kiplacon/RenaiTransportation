@@ -207,6 +207,9 @@ local function GetOnOrOffZipline(event) -- has .name = event ID number, .tick = 
 			elseif (ZiplineStuff.WhereDidYouComeFrom.electric_network_id ~= player.selected.electric_network_id) then
 				player.print({"zipline-stuff.NotOnSameNetwork"})
 			end
+
+		elseif (PlayerProperties.zipline.path ~= nil and player.selected and player.selected.type == "electric-pole") then
+			player.print({"zipline-stuff.AlreadyAutodriving"})
 			
 		end
 	end

@@ -82,6 +82,9 @@ local function entity_destroyed(event)
 	end
 
 	if (storage.BeltRamps[event.registration_number]) then
+		if (storage.BeltRamps[event.registration_number].PlayerTrigger and storage.BeltRamps[event.registration_number].PlayerTrigger.valid) then
+			storage.BeltRamps[event.registration_number].PlayerTrigger.destroy()
+		end
 		storage.BeltRamps[event.registration_number] = nil
 	end
 
@@ -90,7 +93,9 @@ local function entity_destroyed(event)
 	end
 
 	if (storage.ItemCannons[event.registration_number]) then
-		storage.ItemCannons[event.registration_number].chest.destroy()
+		if (storage.ItemCannons[event.registration_number].chest and storage.ItemCannons[event.registration_number].chest.valid) then
+			storage.ItemCannons[event.registration_number].chest.destroy()
+		end
 		storage.ItemCannons[event.registration_number] = nil
 	end
 end
