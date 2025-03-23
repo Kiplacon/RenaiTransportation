@@ -123,6 +123,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				position=player.position,
 				volume_modifier=1
 				}
+			player.create_local_flying_text
+			{
+				position = ThingHovering.position,
+				text = {"interact-toggling.PrimerPadSpread"}
+			}
 			ThingHovering.destroy()
 		elseif (settings.startup["RTBounceSetting"].value == true and ThingHovering.name == "PrimerSpreadBouncePlate") then
 			ThingHovering.surface.create_entity
@@ -138,6 +143,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				position=player.position,
 				volume_modifier=1
 				}
+			player.create_local_flying_text
+			{
+				position = ThingHovering.position,
+				text = {"interact-toggling.PrimerPadPrecise"}
+			}
 			ThingHovering.destroy()
 
 		--|| Swap Ramp Modes
@@ -168,6 +178,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					position=player.position,
 					volume_modifier=1
 				}
+			player.create_local_flying_text
+			{
+				position = ThingHovering.position,
+				text = {"interact-toggling.RampScheduleSkipOn"}
+			}
 		elseif (ThingHovering.name == "RTTrainRampNoSkip" or ThingHovering.name == "RTSwitchTrainRampNoSkip") then
 			local switch = ""
 			if (string.find(ThingHovering.name, "Switch")) then
@@ -195,6 +210,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					position=player.position,
 					volume_modifier=1
 				}
+			player.create_local_flying_text
+			{
+				position = ThingHovering.position,
+				text = {"interact-toggling.RampScheduleSkipOn"}
+			}
 
 									
 		--|| Swap Magnet Ramp Modes
@@ -236,6 +256,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					nil,
 					ElSignal
 				)
+			player.create_local_flying_text
+			{
+				position = ThingHovering.position,
+				text = {"interact-toggling.RampScheduleSkipOff"}
+			}
 		elseif (ThingHovering.name == "RTMagnetTrainRampNoSkip" or ThingHovering.name == "RTMagnetSwitchTrainRampNoSkip") then
 			local switch = ""
 			if (string.find(ThingHovering.name, "Switch")) then
@@ -274,6 +299,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					nil,
 					ElSignal
 				)
+			player.create_local_flying_text
+			{
+				position = ThingHovering.position,
+				text = {"interact-toggling.RampScheduleSkipOn"}
+			}
 
 		-- bound pad ranges
 		elseif (settings.startup["RTBounceSetting"].value == true and ThingHovering.name == "RTBouncePlate") then
@@ -294,6 +324,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				volume_modifier=1
 				}
 			ThingHovering.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=range})
+			player.create_local_flying_text
+			{
+				position = ThingHovering.position,
+				text = {"interact-toggling.SetBounceRange", range}
+			}
 		-- directed range
 		elseif (settings.startup["RTBounceSetting"].value == true and ThingHovering.name == "DirectedBouncePlate") then
 			local BouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(ThingHovering)]
@@ -328,10 +363,15 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				volume_modifier=1
 				}
 			ThingHovering.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=range})
+			player.create_local_flying_text
+			{
+				position = ThingHovering.position,
+				text = {"interact-toggling.SetBounceRange", range}
+			}
 		-- director range
 		elseif (settings.startup["RTBounceSetting"].value == true and ThingHovering.name == "DirectorBouncePlate") then
 			local BouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(ThingHovering)]
-			local range = ThingHovering.get_or_create_control_behavior().get_section(5).get_slot(1).min
+			local range = ThingHovering.get_or_create_control_behavior().get_section(1).get_slot(1).min
 			local increment = 5 -- make this a setting?
 			local possibilities = 3 -- make this a setting?
 			if (range+increment > increment*possibilities) then
@@ -346,7 +386,12 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				position=player.position,
 				volume_modifier=1
 				}
-			ThingHovering.get_or_create_control_behavior().get_section(5).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=range})
+			ThingHovering.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=range})
+			player.create_local_flying_text
+			{
+				position = ThingHovering.position,
+				text = {"interact-toggling.SetBounceRange", range}
+			}
 
 		elseif (ThingHovering.name == "RTItemCannon") then
 			storage.ItemCannons[script.register_on_object_destroyed(ThingHovering)].LaserPointer = not storage.ItemCannons[script.register_on_object_destroyed(ThingHovering)].LaserPointer
@@ -355,6 +400,15 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				position=player.position,
 				volume_modifier=1
 				}
+			local text = "ItemCannonLaserPointerOn"
+			if (storage.ItemCannons[script.register_on_object_destroyed(ThingHovering)].LaserPointer == false) then
+				text = "ItemCannonLaserPointerOff"
+			end
+			player.create_local_flying_text
+			{
+				position = ThingHovering.position,
+				text = {"interact-toggling."..text}
+			}
 		end
 	end
 

@@ -20,6 +20,7 @@ require('util')
 		-- separate shadow sprite for manual animation ✅
 -- generalize player launching with custom path ✅
 -- better unloading of impact wagons at non-cardinal angles ✅
+-- messages when toggling stuff ✅
 
 ------- New stuff
 -- trapdoor wagon ✅
@@ -37,8 +38,8 @@ require('util')
 		-- damages things in a small area ✅
 		-- vomits out the contents of the shell (lose some?) ✅
 	-- catcher chute catches shell and drops contents into chest ✅
-	-- merging chute. X-shaped, shells enter from differnet directions and leave from one ✅
-	-- diverging chure. T-shaped, shells enter from one and can leave from the others ✅
+	-- merging chute. X-shaped, shells can enter from different directions and leave from one ✅
+	-- diverging chure. T-shaped, shells enter from one and alternate leaving from the other two ✅
 	-- laser pointer to test trail ✅
 -- belt ramp ✅
 	-- fast, express, and tungsten variants ✅
@@ -61,13 +62,15 @@ require('util')
 	-- items in destroyed chests/containers fly out ✅
 	-- getting hit by a train/car knocks you away assuming you survive the hit ✅
 	-- items on the floor of a space platform fly away when the ship takes off ✅
+	-- settings to turn these off
 
 ------- bugs
--- crash on interact to toggle things not currently enabled 
+-- crash on interact to toggle things not currently enabled ✅
 -- rotating blueprints of trapdoor switches on angles doesnt always work due to rounding errors or something idk if you dont rotate it its fine ✅
 -- vacuum hatch full inventory loop (is fine actually, just bounce them off a short distance and only suck up 1 item per tick) ✅
 -- hover range indicator for bounce pads not synced with current setting ✅
--- magnet ramp migration
+-- magnet ramp migration 
+-- director pad migration ✅
 
 ------- possible future stuff
 -- deflector pad, diagonal
@@ -123,41 +126,44 @@ function(event)
 		local scale = ((container.bounding_box.right_bottom.x-container.bounding_box.left_top.x)+(container.bounding_box.right_bottom.y-container.bounding_box.left_top.y))
 		for i = 1, #container.get_output_inventory() do
 			local stack = container.get_output_inventory()[i]
-			local GroupSize = math.ceil((stack.count/17))
-			for _ = 1, math.floor(stack.count/GroupSize) do
-				-- unit vector
-				local angle = math.random(0, 100)*0.01
-				local xUnit = math.cos(2*math.pi*angle)
-				local yUnit = math.sin(2*math.pi*angle)
-				-- flight arc
-				local speed = math.random(10, 90)*0.0008 + (scale*0.01)
-				local AirTime = math.max(1, math.floor(speed*800))
-				local TargetX = event.entity.position.x + (xUnit*speed*AirTime)
-				local TargetY = event.entity.position.y + (yUnit*speed*AirTime)
-				local distance = DistanceBetween(container.position, {x=TargetX, y=TargetY})
-				local vector = {x=TargetX-container.position.x, y=TargetY-container.position.y}
-				local arc = 5/(distance^2)
-				local path = {}
-				for j = 0, AirTime do
-					local progress = j/AirTime
-					path[j] =
-					{
-						x = container.position.x+(progress*vector.x),
-						y = container.position.y+(progress*vector.y),
-						height = progress * (1-progress) / arc
-					}
+			if (stack.valid_for_read == true) then
+				stack.count = math.ceil(stack.count*0.5) -- half the items lost in the destruction
+				local GroupSize = math.ceil((stack.count/17))
+				for _ = 1, math.floor(stack.count/GroupSize) do
+					-- unit vector
+					local angle = math.random(0, 100)*0.01
+					local xUnit = math.cos(2*math.pi*angle)
+					local yUnit = math.sin(2*math.pi*angle)
+					-- flight arc
+					local speed = math.random(10, 90)*0.0008 + (scale*0.01)
+					local AirTime = math.max(1, math.floor(speed*800))
+					local TargetX = event.entity.position.x + (xUnit*speed*AirTime)
+					local TargetY = event.entity.position.y + (yUnit*speed*AirTime)
+					local distance = DistanceBetween(container.position, {x=TargetX, y=TargetY})
+					local vector = {x=TargetX-container.position.x, y=TargetY-container.position.y}
+					local arc = 5/(distance^2)
+					local path = {}
+					for j = 0, AirTime do
+						local progress = j/AirTime
+						path[j] =
+						{
+							x = container.position.x+(progress*vector.x),
+							y = container.position.y+(progress*vector.y),
+							height = progress * (1-progress) / arc
+						}
+					end
+					InvokeThrownItem({
+						type = "CustomPath",
+						render_layer = "elevated-higher-object",
+						stack = stack,
+						ThrowFromStackAmount = GroupSize,
+						start = container.position,
+						target = {x=TargetX, y=TargetY},
+						path = path,
+						AirTime = AirTime,
+						surface=container.surface,
+					})
 				end
-				InvokeThrownItem({
-					type = "CustomPath",
-					render_layer = "elevated-higher-object",
-					stack = stack,
-					ThrowFromStackAmount = GroupSize,
-					start = container.position,
-					target = {x=TargetX, y=TargetY},
-					path = path,
-					AirTime = AirTime,
-					surface=container.surface,
-				})
 			end
 		end
 	end

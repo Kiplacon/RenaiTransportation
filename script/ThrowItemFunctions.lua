@@ -319,7 +319,7 @@ function ResolveThrownItem(FlyingItem)
                     storage.AllPlayers[FlyingItem.player.index].PlayerLauncher.direction = storage.OrientationUnitComponents[ThingLandedOn.orientation].name
                 end ]]
             elseif (string.find(ThingLandedOn.name, "DirectorBouncePlate")) then
-                for section = 1, 4 do
+                for section = 2, 5 do
                     for slot = 1, 10 do
                         local setting = ThingLandedOn.get_or_create_control_behavior().get_section(section).get_slot(slot).value
                         if (setting and setting.name and setting.name == FlyingItem.item) then
@@ -397,9 +397,6 @@ function ResolveThrownItem(FlyingItem)
                 range = 39.9
             elseif (string.find(ThingLandedOn.name, "Primer") == nil) then
                 range = ThingLandedOn.get_or_create_control_behavior().get_section(1).get_slot(1).min
-                if (ThingLandedOn.name == "DirectorBouncePlate") then
-                    range = ThingLandedOn.get_or_create_control_behavior().get_section(5).get_slot(1).min
-                end
                 local BouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(ThingLandedOn)]
                 if (BouncePadProperties.arrow.x_scale*10 ~= range) then
                     local xflip = 1

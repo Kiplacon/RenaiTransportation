@@ -215,7 +215,7 @@ function ShowDirectorGUI(player, DirectorPad)
    frame.force_auto_center()
    add_titlebar(player.gui.screen.RTDirectorPadGUI, "Director Bounce Pad Filters", "stigma")
 
-   local sets = {{"Up",1}, {"Right",2}, {"Down",3}, {"Left",4}}
+   local sets = {{"Up",2}, {"Right",3}, {"Down",4}, {"Left",5}}
    for ligma, balls in pairs(sets) do
       local direction = balls[1]
       local section = balls[2]

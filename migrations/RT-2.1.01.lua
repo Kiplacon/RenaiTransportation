@@ -263,7 +263,15 @@ for _, surface in pairs(game.surfaces) do
 		PouncePadProperties.ShowArrow = PouncePadProperties.arrow.visible
 		if (deez.name == "DirectorBouncePlate") then
 			deez.get_or_create_control_behavior().add_section()
-			deez.get_or_create_control_behavior().get_section(5).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=10})
+			for i = 5, 2, -1 do
+				for j = 1, 10 do
+					deez.get_or_create_control_behavior().get_section(i).set_slot(j, deez.get_or_create_control_behavior().get_section(i-1).get_slot(j))
+				end
+			end
+			for i = 1, 10 do
+				deez.get_or_create_control_behavior().get_section(1).clear_slot(i)
+			end
+			deez.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=10})
 		end
 	end
 end
