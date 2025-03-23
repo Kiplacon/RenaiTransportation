@@ -4,9 +4,10 @@ Date: 1/21/2025
   Additions:
     - Trapdoor wagon. A cargo wagon whose floor can be opened and closed to drop items out the bottom. Drop your cargo down from elevated rails or in midair during a jump.
     - Trapdoor switch. Toggles whether a Trapdoor wagon is open or closed when it rolls over it.
-    - Trapdoor ramp.
+    - Trapdoor ramps. Variations of normal and magnet train ramps that additionally toggle whether a Trapdoor wagon is open or closed when it rolls over it.
     - Belt ramps. An inclined belt that continually lauches all its items off the end at hyper speed! Graphics by Bow Tied Ghost
     - AI zipline controller. A zipline controller that can auto pilot you between any two power poles, not just between Zipline terminals.
+    - Electromagnetic item cannons. 
     - Vacuum hatch. Sucks up items off the ground and into its connected inventory.
     - Better Train ramp, Magnet train ramp, and Impact unloader functionality when built on elevated rails
     - Better train jumping between ground and elevated rails and vice versa. Vanilla Rail ramps are for suckers
@@ -14,13 +15,16 @@ Date: 1/21/2025
     - Throwing items backwards off a space platform generates a tiny bit of thrust
   Changes:
     - Magnet ramp targeting improved, especially for train bounce pads and elevated rails
-    - Less cluttered range visuals for Directed bounce pads
+    - Removing a Hatch gives a short mining speed debuff to help avoid also removing whatever the Hatch was on top of
+    - Less cluttered range visuals for Bounce pads
     - Player shadow separates while ziplining/jumping
     - Player launchers are rotatable after placing
+    - The clunk sound of something falling into a Hatch is a bit quieter
   Bugfixes:
     - Train ramps, Magnet train ramps, and Impact unloaders rotate properly in blueprints.
     - Fixed that items flung out of an Impact wagon at an angle weren't spread out very much.
     - Fixed that setting range of throwers through circuit signal only worked on the red wire line.
+    - Fixed that Thrower bulk inserters wouldn't generate if modded thrower inserter generation was disabled.
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.16
 Date: 1/21/2025

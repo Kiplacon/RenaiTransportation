@@ -26,6 +26,7 @@ for _, tier in pairs(tiers) do
                 {
                     icon = "__RenaiTransportation__/graphics/BeltRamp/BeltRampIconArrows.png",
                     icon_size = 150,
+                    tint = TierTint
                 },
             },
             flags = {"placeable-neutral", "player-creation"},

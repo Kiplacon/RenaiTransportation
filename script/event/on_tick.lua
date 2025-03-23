@@ -69,6 +69,12 @@ local function on_tick(event)
 				end
 			end
 		end
+		-- revert hatch mining speed debuff
+		if (storage.clock[game.tick].MiningSpeedRevert) then
+			for _, revert in pairs(storage.clock[game.tick].MiningSpeedRevert) do
+				revert.character.character_mining_speed_modifier = revert.back
+			end
+		end
 		storage.clock[game.tick] = nil
 	end
 

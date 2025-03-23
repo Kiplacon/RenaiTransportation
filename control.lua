@@ -29,17 +29,24 @@ require('util')
 	-- trapdoor open/close sound ✅
 	-- trapdoor open/close graphic ✅
 -- electromagnetic item cannon (rail gun)?
-	-- not placable in space
-	-- seal 1 stack of an item into a shell
+	-- not placable in space ✅
+	-- seal 1 stack of an item into a shell ✅
+		-- procedural recipe/shell for every game item. Failsafe for items loaded after ✅
 	-- can bounce off of reinforced plates that can be rotated to face the 4 cardinal directions. up/down and left/right are basically the same thing for this ✅
-	-- slam into a wall and explode contents forward
-	-- falls to the ground if nothing hit after X tiles
+	-- falls to the ground if nothing hit after X tiles ✅
+		-- damages things in a small area ✅
+		-- vomits out the contents of the shell (lose some?) ✅
+	-- catcher chute catches shell and drops contents into chest ✅
+	-- merging chute. X-shaped, shells enter from differnet directions and leave from one ✅
+	-- diverging chure. T-shaped, shells enter from one and can leave from the others ✅
+	-- laser pointer to test trail ✅
 -- belt ramp ✅
 	-- fast, express, and tungsten variants ✅
 	-- items fly off into space at an angle ✅
 	-- player can be launched by it ✅
 -- vacuum hatch ✅
 	-- connection to entity behind it ✅
+	-- SUCC particles
 -- dynamic zipline, get on from anywhere and autodrive anywhere ✅
 	-- include terminal list pop up ✅
 	-- pentapod egg for SA, fish for vanilla ✅
@@ -48,7 +55,7 @@ require('util')
 	-- Fulgora: item cannon, ricochet panels, chutes
 	-- Gleba: AI zipline controller, primer throwers
 	-- Vulcanus: trapdoor wagon and switches and switch ramps
-	-- Aquilo: launch trains iterplanetary
+	-- Aquilo: nothing yet
 	-- check with vanilla start
 -- straight up grief ✅
 	-- items in destroyed chests/containers fly out ✅
@@ -63,7 +70,8 @@ require('util')
 -- magnet ramp migration
 
 ------- possible future stuff
--- deflector pad, diagonal (w/range adjusts)
+-- deflector pad, diagonal
+-- Aquilo: launch trains iterplanetary
 
 ------- impossible atm
 -- thrown item rework when animations can have dynamically rotated sprites
@@ -576,5 +584,23 @@ script.on_event(
 defines.events.on_space_platform_changed_state,
 require("script.event.platform_change_state")
 )
+
+script.on_event(
+defines.events.on_player_mined_entity,
+function(event)
+	local player = game.players[event.player_index]
+	if (player.character and player.character.character_mining_speed_modifier > 0.1 and string.find(event.entity.name, "HatchRT")) then
+		local back = player.character.character_mining_speed_modifier
+		if (storage.clock[game.tick+30] == nil) then
+			storage.clock[game.tick+30] = {MiningSpeedRevert={}}
+		else
+			if (storage.clock[game.tick+30].MiningSpeedRevert == nil) then
+				storage.clock[game.tick+30].MiningSpeedRevert = {}
+			end
+		end
+		table.insert(storage.clock[game.tick+30].MiningSpeedRevert, {character=player.character, back=back})
+		player.character.character_mining_speed_modifier = 0.1
+	end
+end)
 
 ElectricPoleBlackList = {PoleName="windows", ["factory-power-connection"]=true, ["factory-power-pole"]=true, ["factory-overflow-pole"]=true}

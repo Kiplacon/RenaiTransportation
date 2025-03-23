@@ -46,8 +46,9 @@ end
 require("prototypes.TrainGoBrrrr.TrapdoorWagon")
 require("prototypes.VacuumHatch")
 require("prototypes.BeltRamp")
-require("prototypes.ItemCannon.ItemShell")
+require("prototypes.ItemCannon.RicochetPanel")
 require("prototypes.ItemCannon.ItemCannon")
+require("prototypes.ItemCannon.chutes")
 
 data:extend({
 {
@@ -293,10 +294,10 @@ data:extend({
 },
 })
 
-if (data.raw["fluid"]["thruster-fuel"]) then
+--[[ if (data.raw["fluid"]["thruster-fuel"]) then
     data.raw["fluid"]["thruster-fuel"].auto_barrel = true
     data.raw["fluid"]["thruster-oxidizer"].auto_barrel = true
-end
+end ]]
 if (data.raw.tree.lickmaw and data.raw["item-subgroup"]["agriculture-processes"]) then
 	data:extend({
 		{

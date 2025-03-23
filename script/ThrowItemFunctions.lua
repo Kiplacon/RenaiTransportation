@@ -116,6 +116,20 @@ function InvokeThrownItem(stuff)
                 FlyingItem.FlightNumber = FlightNumber
                 storage.FlyingItems[FlightNumber] = FlyingItem
                 storage.CustomPathFlyingItemSprites[FlightNumber] = true
+            elseif (ProjectileType == "ItemShell") then
+                local projectile = FlyingItem.surface.create_entity
+                {
+                    name="RTItemShell"..FlyingItem.item,
+                    source = stuff.cannon, -- so it doesnt clip the cannon
+                    position = stuff.cannon.position, -- start position
+                    target = FlyingItem.target,
+                    speed=storage.ItemCannonSpeed,
+                    max_range = 100
+                }
+                local ProjectileDestroyNumber = script.register_on_object_destroyed(projectile)
+                FlyingItem.StreamDestroyNumber = ProjectileDestroyNumber
+                storage.FlyingItems[ProjectileDestroyNumber] = FlyingItem
+
             elseif (ProjectileType == "PlayerGuide") then
                 FlyingItem.AirTime = stuff.AirTime
                 FlyingItem.StartTick = game.tick
@@ -136,7 +150,7 @@ function InvokeThrownItem(stuff)
             if (stuff.stack ~= nil) then
                 if (stuff.stack.item_number) then
                     local CloudStorage = game.create_inventory(1)
-                    CloudStorage.insert(stuff.stack) -- inserts a copy
+                    CloudStorage.insert(stuff.stack) -- inserts a copy, doesnt transfer
                     CloudStorage[1].count = stuff.ThrowFromStackAmount or stuff.stack.count
                     FlyingItem.CloudStorage = CloudStorage
                 end
@@ -285,7 +299,7 @@ function ResolveThrownItem(FlyingItem)
     -- landed on something
     if (ThingLandedOn) then
         --game.print(ThingLandedOn.name)
-        if (string.find(ThingLandedOn.name, "BouncePlate")) then -- if that thing was a bounce plate
+        if (string.find(ThingLandedOn.name, "BouncePlate") and FlyingItem.type ~= "ItemShell") then -- if that thing was a bounce plate
             if (FlyingItem.sprite) then -- from impact unloader
                 FlyingItem.sprite.destroy()
                 FlyingItem.sprite = nil
@@ -538,7 +552,9 @@ function ResolveThrownItem(FlyingItem)
                     FlyingItem.player.character.damage(10*(ThingLandedOn.bounding_box.right_bottom.x-ThingLandedOn.bounding_box.left_top.x)*(ThingLandedOn.bounding_box.right_bottom.y-ThingLandedOn.bounding_box.left_top.y), "neutral", "impact", ThingLandedOn)
                     ThingLandedOn.die()
                 end
-            -- items falling on something
+            elseif (FlyingItem.type == "ItemShell") then
+                -- items falling on something
+                game.print("item shell expired on something")
             else
                 if (ThingLandedOn.name == "OpenContainer" and ThingLandedOn.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
                     if (FlyingItem.CloudStorage) then
@@ -553,7 +569,7 @@ function ResolveThrownItem(FlyingItem)
                     {
                         path = "RTClunk",
                         position = ThingLandedOn.position,
-                        volume_modifier = 0.9
+                        volume_modifier = 0.7
                     }
 
                 ---- If the thing it landed on has an inventory and a hatch, insert the item ----
@@ -882,6 +898,18 @@ function ResolveThrownItem(FlyingItem)
                     FlyingItem.CloudStorage.destroy()
                 elseif storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
                     CubeFlyingItems.release_and_spill(FlyingItem)
+                elseif (FlyingItem.type == "ItemShell") then
+                    -- the contents of the shell fly out over the ground
+                    local spilt = ProjectileSurface.spill_item_stack
+                        {
+                            position = ProjectileSurface.find_non_colliding_position("item-on-ground", FlyingItem.target, 500, 0.1),
+                            stack = {name=FlyingItem.item, count=FlyingItem.amount, quality=FlyingItem.quality}
+                        }
+                    if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
+                        for every, thing in pairs(spilt) do
+                            thing.order_deconstruction("player")
+                        end
+                    end
                 else
                     local spilt = ProjectileSurface.spill_item_stack
                         {
@@ -904,6 +932,7 @@ function ResolveThrownItem(FlyingItem)
     end
     
     -- cleanup
+    -- overflow tracking
     if (FlyingItem.tracing == nil and ClearOverflowTracking == true and FlyingItem.DestinationDestroyNumber ~= nil and storage.OnTheWay[FlyingItem.DestinationDestroyNumber]) then
         storage.OnTheWay[FlyingItem.DestinationDestroyNumber][FlyingItem.item] = storage.OnTheWay[FlyingItem.DestinationDestroyNumber][FlyingItem.item] - FlyingItem.amount
     end

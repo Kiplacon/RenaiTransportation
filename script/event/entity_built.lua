@@ -281,7 +281,7 @@ local function entity_built(event)
 		end
 
 	elseif (entity.name == "RTItemCannon") then
-		storage.ItemCannons[script.register_on_object_destroyed(entity)] = {entity=entity}
+		storage.ItemCannons[script.register_on_object_destroyed(entity)] = {entity=entity, LaserPointer=false}
 		local chest = entity.surface.create_entity
 		{
 			name = "RTItemCannonChest",

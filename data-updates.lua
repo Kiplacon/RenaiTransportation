@@ -33,3 +33,5 @@ for each, signal in pairs(data.raw["rail-chain-signal"]) do
     signal.collision_mask.layers["RTRampsAndPlacers"] = true
     signal.elevated_collision_mask.layers["RTRampsAndPlacers"] = true
 end
+
+table.insert(data.raw["assembling-machine"]["assembling-machine-3"].crafting_categories, "RTItemShellPacking")

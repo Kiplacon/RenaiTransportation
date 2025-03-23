@@ -46,27 +46,20 @@ function MakeProjectile(ThingData, speed)
 		}
 
 	if (ThingData.icons) then
-		if (ThingData.icon_size) then
-			TheProjectile.particle.size = ThingData.icon_size
-		else
-			TheProjectile.particle.size = ThingData.icons[1].icon_size
-		end
-
 		TheProjectile.particle.layers = {}
 		TheProjectile.shadow.layers = {}
 		for iconlayer, iconspecs in pairs(ThingData.icons) do
-			local eeee
+			local eeee = 64
 			local rrrr
+			local shiftt = {0,0}
+			if (iconspecs.shift) then
+				shiftt = {iconspecs.shift[1]/32, iconspecs.shift[2]/32}
+			end
 			if (iconspecs.icon_size) then
 				eeee = iconspecs.icon_size
-			else
-				eeee = TheProjectile.particle.size
 			end
-
 			if (iconspecs.tint) then
 				rrrr = iconspecs.tint
-			else
-				rrrr = nil
 			end
 
 			table.insert(TheProjectile.particle.layers,
@@ -75,9 +68,10 @@ function MakeProjectile(ThingData, speed)
 					line_length = 1,
 					frame_count = 1,
 					priority = "high",
-					scale = 19.2/eeee,
+					scale = (iconspecs.scale or 1) * (19.2/eeee),
 					size = eeee,
-					tint = rrrr
+					tint = rrrr,
+					--shift = shiftt
 				})
 			table.insert(TheProjectile.shadow.layers,
 				{
@@ -85,7 +79,7 @@ function MakeProjectile(ThingData, speed)
 					line_length = 1,
 					frame_count = 1,
 					priority = "high",
-					scale = 19.2/eeee,
+					scale = (iconspecs.scale or 1) * (19.2/eeee),
 					size = eeee,
 					tint = {0,0,0,0.5}
 				})
@@ -132,6 +126,171 @@ function MakeProjectile(ThingData, speed)
 		}
 	end
 	data:extend({TheProjectile})
+
+end
+
+function MakeItemShellStuff(ThingData)
+	for QualityName, quality in pairs(data.raw.quality) do
+		data:extend({
+			{
+				type = "projectile",
+				name = "RTItemShell"..ThingData.name.."-Q-"..QualityName,
+				acceleration = 0,
+				direction_only = true,
+				collision_box = {{-0.1, -0.1}, {0.1, 0.1}},
+				--hit_collision_mask = {layers={object=true, player=true, train=true}},
+				piercing_damage = 9999999999,
+				--hit_at_collision_position = true,
+				height = 1,
+				animation =
+				{
+					layers =
+					{
+						{
+							filename = "__RenaiTransportation__/graphics/ItemCannon/EmptyItemShell.png",
+							size = 64,
+							frame_count = 1,
+							priority = "high",
+							scale = 0.5
+						},
+					}
+				},
+				shadow =
+				{
+					filename = "__RenaiTransportation__/graphics/ItemCannon/EmptyItemShell.png",
+					size = 64,
+					frame_count = 1,
+					priority = "high",
+					draw_as_shadow = true,
+					scale = 0.5
+				},
+				action =
+				{
+					type = "direct",
+					action_delivery =
+					{
+						type = "instant",
+						target_effects =
+						{
+							{
+								type = "damage",
+								damage = {amount = 9999999999, type = "impact"}
+							}
+						}
+					}
+				},
+				final_action =
+				{
+					type = "direct",
+					action_delivery =
+					{
+						type = "instant",
+						target_effects =
+						{
+							{
+								type = "script",
+								effect_id = "RTItemShell"..ThingData.name.."-Q-"..QualityName
+							},
+						}
+					}
+				},
+				smoke =
+				{
+					{
+						name = "smoke-fast",
+						frequency = 1,
+					}
+				},
+			}
+		})
+	end
+	local TheItemShellItem =
+	{
+		type = "item",
+		name = "RTItemShell"..ThingData.name,
+		icons =
+		{
+			{icon = "__RenaiTransportation__/graphics/ItemCannon/EmptyItemShell.png"}
+		},
+		subgroup = "RT",
+		order = "f-b",
+		stack_size = 1
+	}
+	local TheItemShellRecipe =
+	{
+		type = "recipe",
+		name = "RTItemShellRecipe"..ThingData.name,
+		enabled = true,
+		energy_required = 1,
+		category = "RTItemShellPacking",
+		hide_from_player_crafting = true,
+		ingredients =
+			{
+				{type="item", name=ThingData.name, amount=math.min((ThingData.stack_size or 1), 65535)},
+				{type="item", name="RTItemShellItem", amount=1}
+			},
+		results = {
+			{type="item", name=TheItemShellItem.name, amount=1}
+		}
+	}
+	if (ThingData.icons) then
+		for iconlayer, iconspecs in pairs(ThingData.icons) do
+			local eeee = 64
+			local rrrr = nil
+			if (iconspecs.icon_size) then
+				eeee = iconspecs.icon_size
+			end
+			if (iconspecs.tint) then
+				rrrr = iconspecs.tint
+			end
+			--[[ table.insert(TheItemShell.animation.layers,
+			{
+				filename = iconspecs.icon,
+				line_length = 1,
+				frame_count = 1,
+				priority = "high",
+				scale = 19.2/eeee,
+				size = eeee,
+				tint = rrrr
+			}) ]]
+			table.insert(TheItemShellItem.icons,
+			{
+				icon = iconspecs.icon,
+				icon_size = eeee,
+				scale = (iconspecs.scale or 1) * 19.2/eeee,
+				tint = rrrr,
+				shift = {-7, 10}
+			})
+		end
+	elseif (ThingData.icon) then
+		local eeee = 64
+		local rrrr = nil
+		if (ThingData.icon_size) then
+			eeee = ThingData.icon_size
+		end
+		if (ThingData.tint) then
+			rrrr = ThingData.tint
+		end
+		--[[ table.insert(TheItemShell.animation.layers,
+		{
+			filename = ThingData.icon,
+			line_length = 1,
+			frame_count = 1,
+			priority = "high",
+			scale = 19.2/eeee,
+			size = eeee,
+			tint = rrrr
+		}) ]]
+		table.insert(TheItemShellItem.icons,
+		{
+			icon = ThingData.icon,
+			icon_size = eeee,
+			scale = 19.2/eeee,
+			tint = rrrr,
+			shift = {-7, 10}
+		})
+	end
+	data:extend({TheItemShellItem, TheItemShellRecipe})
 end
 
 function MakePrimedProjectile(ThingData, ProjectileType)-------------------------------------------
@@ -760,11 +919,20 @@ for ThingID, ThingData in pairs(data.raw.inserter) do
 		or ThingData.name == "inserter"
 		or ThingData.name == "fast-inserter"
 		or ThingData.name == "long-handed-inserter"
-		or ThingData.name == "filter-inserter"
-		or ThingData.name == "stack-filter-inserter"
+		or ThingData.name == "bulk-inserter"
 		or ThingData.name == "stack-inserter")
 		then
 			MakeThrowerVariant(ThingData)
+		end
+	end
+end
+
+-- item cannon shell projectils
+for Category, ThingsTable in pairs(data.raw) do
+	for ThingID, ThingData in pairs(ThingsTable) do
+		if (ThingData.stack_size and not string.find(ThingID, "RTItemShell")) then
+			log("==========Creating item cannon projectile for "..ThingData.type..": "..ThingData.name.."===========")
+			MakeItemShellStuff(table.deepcopy(ThingData))
 		end
 	end
 end

@@ -93,54 +93,185 @@ local function effect_triggered(event)
 			end
 			storage.PrimerThrowerLinks[DetectorNumber].ready = false
 		end
-
-	elseif (event.effect_id == "ItemShellTest" and event.target_entity) then
-		-- the following code was brought to you by ChatGPT cause im way too dumb to come up with this
+		
+	elseif (string.find(event.effect_id, "RTItemShell")) then
+		local ItemName, QualityName = string.match(event.effect_id, "^RTItemShell(.+)%-Q%-(.*)$")
+		--[[ rendering.draw_line
+		{
+			color = {r = 1, g = 0.6, b = 0, a=1},
+			width = 5,
+			from = event.source_position,
+			to = event.target_position,
+			surface = surface,
+			time_to_live = 120
+		} ]]
+		local eject = false
+		local inserted = 0
+		local debris = true
+		local speed = storage.ItemCannonSpeed
+		if (ItemName == "LaserPointer") then
+			speed = 1
+		end
+		if (event.target_entity) then
+			local HitEntity = event.target_entity
+			if (HitEntity.name == "RTRicochetPanel") then
+				-- the following code was brought to you by ChatGPT cause im way too dumb to come up with this but basically it reflects the item shell off the panel in an angle in = angle out way based on whether the panel is vertical or horizontal. It's actually good enough to handle the panel being at any angle but that sounds like a pain to actually use in game
+					local start = event.source_position
+					local HitPosition = event.target_position
+					local object = HitEntity
+					-- positions
+					local p_x, p_y = start.x, start.y
+					local o_x, o_y = HitPosition.x, HitPosition.y
+					local PanelOrientation = object.orientation  -- [0, 1)
+					-- 1) Compute the projectile's incoming direction (v_x, v_y).
+					--    Let's assume we want center-to-center for simplicity:
+					local v_x = o_x - p_x
+					local v_y = o_y - p_y
+					local v_len = math.sqrt(v_x*v_x + v_y*v_y)
+					if v_len > 0 then
+						v_x = v_x / v_len
+						v_y = v_y / v_len
+					end
+					-- 2) Compute the normal from Factorio orientation
+					local theta = 2 * math.pi * PanelOrientation
+					local n_x = math.cos(theta - math.pi/2)
+					local n_y = math.sin(theta - math.pi/2)
+					-- 3) Reflect v about n
+					local dot = (v_x * n_x) + (v_y * n_y)
+					local r_x = v_x - 2 * dot * n_x
+					local r_y = v_y - 2 * dot * n_y
+					-- r_x, r_y now points in the bounced (reflected) direction.
+				surface.create_entity
+				{
+					name=event.effect_id,
+					source = HitEntity,
+					position = HitPosition,
+					target = OffsetPosition(HitPosition, {100*r_x, 100*r_y}),
+					speed=speed,
+					max_range = 100
+				}
+			elseif (HitEntity.name == "RTCatchingChute" and ItemName ~= "LaserPointer") then
+				surface.play_sound
+				{
+					path = "RTClunk",
+					position = HitEntity.position
+				}
+				inserted = HitEntity.insert({name=ItemName, count=prototypes.item[ItemName].stack_size, quality=QualityName})
+				if (inserted < prototypes.item[ItemName].stack_size) then
+					eject = true
+					debris = false
+				end
+			elseif (HitEntity.name == "RTMergingChute") then
+				local OutVector = storage.ChuteOrientationComponents[HitEntity.orientation]
+				surface.create_entity
+				{
+					name=event.effect_id,
+					source = HitEntity,
+					position = HitEntity.position,
+					target = OffsetPosition(HitEntity.position, {100*OutVector.x, 100*OutVector.y}),
+					speed=speed,
+					max_range = 100
+				}
+			elseif (HitEntity.name == "RTDivergingChute") then
+				local start = event.source_position
+				local HitPosition = event.target_position
+				local deltaX = HitPosition.x - start.x
+				local deltaY = HitPosition.y - start.y
+				local angle = math.atan2(deltaY, deltaX) - 3*math.pi/4 -- to align with the 45 degree tilt of the chute
+				local ProjectileOrientation = (angle / (2 * math.pi)) % 1
+				--game.print(ProjectileOrientation.." | "..HitEntity.orientation)
+				--if (math.floor((ProjectileOrientation*100) + 0.5) == math.floor((HitEntity.orientation*100) + 0.5)) then
+				if (ProjectileOrientation == HitEntity.orientation) then
+					local OutX = storage.ChuteOrientationComponents[HitEntity.orientation].x
+					local OutY = storage.ChuteOrientationComponents[HitEntity.orientation].y
+					-- flips either X or Y direction to bounce out one way or the other. destructible isn't relavent 99% of the time so i use it to track the direction it deflected last
+					if (HitEntity.destructible) then
+						OutX = -OutX
+						HitEntity.destructible = false
+					else
+						OutY = -OutY
+						HitEntity.destructible = true
+					end
+					surface.create_entity
+					{
+						name=event.effect_id,
+						source = HitEntity,
+						position = HitEntity.position,
+						target = OffsetPosition(HitEntity.position, {100*OutX, 100*OutY}),
+						speed=speed,
+						max_range = 100
+					}
+					
+				else
+					eject = true
+					debris = false
+				end
+				
+			else
+				eject = true
+			end
+		else
+			eject = true
+		end
+		if (eject == true and ItemName ~= "LaserPointer") then
 			local start = event.source_position
 			local HitPosition = event.target_position
-			local object = event.target_entity
-			-- positions
-			local p_x, p_y = start.x, start.y
-			local o_x, o_y = HitPosition.x, HitPosition.y
-			local orientation = object.orientation  -- 0..1
-
-			-- 1) Compute the projectile's incoming direction (v_x, v_y).
-			--    Let's assume we want center-to-center for simplicity:
-			local v_x = o_x - p_x
-			local v_y = o_y - p_y
-			local v_len = math.sqrt(v_x*v_x + v_y*v_y)
-			if v_len > 0 then
-			v_x = v_x / v_len
-			v_y = v_y / v_len
+			local deltaX = HitPosition.x - start.x
+			local deltaY = HitPosition.y - start.y
+			local angle = math.atan2(deltaY, deltaX)
+			local ProjectileOrientation = (angle / (2 * math.pi)) % 1
+			local StartOffset = {0, 0}
+			if (debris == false) then
+				StartOffset = {0, -1}
 			end
-
-			-- 2) Compute the normal from Factorio orientation
-			local theta = 2 * math.pi * orientation
-			local n_x = math.cos(theta - math.pi/2)
-			local n_y = math.sin(theta - math.pi/2)
-
-			-- 3) Reflect v about n
-			local dot = (v_x * n_x) + (v_y * n_y)
-			local r_x = v_x - 2 * dot * n_x
-			local r_y = v_y - 2 * dot * n_y
-
-			-- r_x, r_y now points in the bounced (reflected) direction.
-		surface.create_entity
-		{
-			name="RTItemShellwood",
-			source = event.target_entity,
-			position = HitPosition,
-			target = OffsetPosition(HitPosition, {100*r_x, 100*r_y}),
-			speed=storage.ItemCannonSpeed,
-			max_range = 100
-		}
-		surface.play_sound
-		{
-			path = "RTRicochetPanelSound",
-			position = HitPosition,
-		}
-	elseif (event.effect_id == "ItemShellTest") then
-		-- drop shell on ground
+			local count = prototypes.item[ItemName].stack_size - inserted
+			local GroupSize = math.ceil(count/17) -- each stack will launch out as maximum 17 projectiles per wagon
+			for _ = 1, math.floor(count/GroupSize) do
+				local AngleSpread = math.random(-40,40)*0.001
+				local xUnit = math.cos(2*math.pi*(ProjectileOrientation+AngleSpread))
+				local yUnit = math.sin(2*math.pi*(ProjectileOrientation+AngleSpread))
+				local ForwardSpread = math.random(1000,3000)*0.01
+				local TargetX = HitPosition.x + (ForwardSpread*0.6*xUnit)-- + (HorizontalSpread*wagon.speed*yUnit)
+				local TargetY = HitPosition.y + (ForwardSpread*0.6*yUnit)-- + (HorizontalSpread*wagon.speed*xUnit)
+				InvokeThrownItem({
+					type = "ReskinnedStream",
+					ItemName = ItemName,
+					count = GroupSize,
+					quality = QualityName,
+					speed = 0.6,
+					start = OffsetPosition(HitPosition, StartOffset),
+					target = {TargetX, TargetY},
+					surface = surface,
+					space = false,
+				})
+			end
+			if (debris) then
+				surface.create_entity
+				({
+					name = "RTItemShellImpact",
+					position = HitPosition,
+					target = HitPosition,
+					speed = 5
+				})
+				surface.create_entity
+				({
+					name = "wall-explosion",
+					position = HitPosition
+				})
+			else
+				surface.play_sound
+				{
+					path = "RTHitWrongAngle",
+					position = HitPosition,
+				}
+			end
+		elseif (eject == false and ItemName ~= "LaserPointer") then
+			surface.play_sound
+			{
+				path = "RTRicochetPanelSound",
+				position = event.target_position
+			}
+		end
 
 
 	elseif (event.effect_id == "BeltRampPlayer") then

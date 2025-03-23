@@ -347,6 +347,14 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				volume_modifier=1
 				}
 			ThingHovering.get_or_create_control_behavior().get_section(5).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=range})
+
+		elseif (ThingHovering.name == "RTItemCannon") then
+			storage.ItemCannons[script.register_on_object_destroyed(ThingHovering)].LaserPointer = not storage.ItemCannons[script.register_on_object_destroyed(ThingHovering)].LaserPointer
+			player.play_sound{
+				path="utility/rotated_medium",
+				position=player.position,
+				volume_modifier=1
+				}
 		end
 	end
 
