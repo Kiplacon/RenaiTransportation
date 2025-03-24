@@ -101,9 +101,32 @@ for _, MagnetRampName in pairs({"RTMagnetTrainRamp", "RTMagnetTrainRampNoSkip"})
 			name = MagnetRampName
 		}
 		for _, ramp in pairs(ramps) do
-			local OldRange
-			if (storage.MagnetRamps[script.register_on_object_destroyed(ramp)] and storage.MagnetRamps[script.register_on_object_destroyed(ramp)].range) then
-				OldRange = storage.MagnetRamps[script.register_on_object_destroyed(ramp)].range
+			local StartTile = surface.find_entities_filtered
+			{
+				name = "RTMagnetRail",
+				position = ramp.position,
+				radius = 1.5,
+				limit = 1
+			}[1]
+			local OldRange = nil
+			if (StartTile) then
+				local AnotherOne = true
+				OldRange = 1
+				while AnotherOne do
+					local NextTile = surface.find_entities_filtered
+					{
+						name = "RTMagnetRail",
+						position = OffsetPosition(StartTile.position),
+						limit = 1
+					}[1]
+					if (NextTile) then
+						StartTile = NextTile
+						OldRange = OldRange + 1
+					else
+						AnotherOne = false
+					end
+				end
+				OldRange = OldRange + 3
 			end
 			local NewRamp = surface.create_entity({
 				name = ramp.name,
