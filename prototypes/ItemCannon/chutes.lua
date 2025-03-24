@@ -38,7 +38,7 @@ data.extend({
     { --------- recipe ----------
         type = "recipe",
         name = "RTCatchingChuteRecipe",
-        enabled = true,
+        enabled = false,
         energy_required = 1,
         ingredients =
             {
@@ -100,7 +100,7 @@ data.extend({
     { --------- recipe ----------
         type = "recipe",
         name = "RTDivergingChuteRecipe",
-        enabled = true,
+        enabled = false,
         energy_required = 1,
         ingredients =
             {
@@ -162,7 +162,7 @@ data.extend({
     { --------- recipe ----------
         type = "recipe",
         name = "RTMergingChuteRecipe",
-        enabled = true,
+        enabled = false,
         energy_required = 1,
         ingredients =
             {

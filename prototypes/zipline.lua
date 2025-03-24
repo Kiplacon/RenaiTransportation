@@ -10,9 +10,9 @@ brrr.max_distance_of_sector_revealed = 0
 brrr.max_distance_of_nearby_sector_revealed = 1
 brrr.energy_per_nearby_scan = "420TJ"
 brrr.energy_source =
-    {
+   {
       type = "void"
-    }
+   }
 brrr.energy_usage = "420kW"
 brrr.radius_minimap_visualisation_color = { r = 0.059, g = 0.092, b = 0.235, a = 0.275 }
 brrr.rotation_speed = 0.1
@@ -116,28 +116,28 @@ brrr,
 	stack_size = 1,
 	magazine_size = 1000,
 	ammo_type =
-    {
+   {
       category = "ZiplineController",
-	  target_type = "position",
-	  clamp_position = true,
-	  cooldown_modifier = 0.2,
-	  action =
+      target_type = "position",
+      clamp_position = true,
+      cooldown_modifier = 0.2,
+      action =
 		{
 			{
-			  type = "direct",
-			  action_delivery =
-			  {
-				{
-				  type = "instant",
-				  source_effects =
-				  {
-					{
-					  type = "script",
-					  effect_id = "RTCrank"
-					}
-				  }
-				}
-			  }
+            type = "direct",
+            action_delivery =
+            {
+               {
+                  type = "instant",
+                  source_effects =
+                  {
+                     {
+                     type = "script",
+                     effect_id = "RTCrank"
+                     }
+                  }
+               }
+            }
 			}
 		}
 	},
@@ -197,14 +197,12 @@ brrr,
 	line_length = 2,
 	animation_speed = 0.3
 },
-
 {
 	type = "sprite",
 	name = "RTZiplineHarnessGFX",
 	filename = "__RenaiTransportation__/graphics/zipline/ZipHarness.png",
 	size = 70
 },
-
 })
 
 local succ = table.deepcopy(data.raw.radar["RTZipline"])
@@ -216,24 +214,24 @@ succ.energy_per_nearby_scan = "420TJ"
 succ.max_distance_of_sector_revealed = 0
 succ.max_distance_of_nearby_sector_revealed = 1
 succ.energy_source =
-    {
+   {
       type = "electric",
-	  usage_priority = "primary-input"
-	  --render_no_power_icon = false,
-	  --render_no_network_icon = false
-    }
+      usage_priority = "primary-input"
+      --render_no_power_icon = false,
+      --render_no_network_icon = false
+   }
 succ.energy_usage = "450kW"
 succ.pictures =
 	{
-	  filename = "__RenaiTransportation__/graphics/nothing.png",
-	  priority = "low",
-	  width = 32,
-	  height = 32,
-	  scale = 0.5,
-	  apply_projection = false,
-	  direction_count = 1,
-	  line_length = 1
-    }
+      filename = "__RenaiTransportation__/graphics/nothing.png",
+      priority = "low",
+      width = 32,
+      height = 32,
+      scale = 0.5,
+      apply_projection = false,
+      direction_count = 1,
+      line_length = 1
+   }
 succ.working_sound = nil
 
 data:extend({ succ })
@@ -294,26 +292,26 @@ succ2.energy_usage = "1MW"
 data:extend({ succ2 })
 data:extend({
    { --------- zipline item -------------
-   	type = "gun",
-   	name = "RTZiplineItem2",
+      type = "gun",
+      name = "RTZiplineItem2",
       icons = {
          {
-         	icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-         	icon_size = 64,
+            icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+            icon_size = 64,
             tint = {1,0.9,0},
          }
       },
-   	subgroup = "gun",
-   	order = "hha",
-   	stack_size = 1,
-       attack_parameters =
-       {
+      subgroup = "gun",
+      order = "hha",
+      stack_size = 1,
+      attack_parameters =
+      {
          type = "projectile",
-   	  ammo_category = "ZiplineController",
+         ammo_category = "ZiplineController",
          cooldown = 60,
          movement_slow_down_factor = 0,
          range = 0
-       },
+      },
    },
    { --------- zipline recipe ----------
       type = "recipe",
@@ -345,26 +343,26 @@ succ3.energy_usage = "5MW"
 data:extend({ succ3 })
 data:extend({
    { --------- zipline item -------------
-   	type = "gun",
-   	name = "RTZiplineItem3",
+      type = "gun",
+      name = "RTZiplineItem3",
       icons = {
          {
-         	icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-         	icon_size = 64,
+            icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+            icon_size = 64,
             tint = {255,35,35},
          }
       },
-   	subgroup = "gun",
-   	order = "hhb",
-   	stack_size = 1,
-       attack_parameters =
-       {
+      subgroup = "gun",
+      order = "hhb",
+      stack_size = 1,
+      attack_parameters =
+      {
          type = "projectile",
-   	  ammo_category = "ZiplineController",
+         ammo_category = "ZiplineController",
          cooldown = 60,
          movement_slow_down_factor = 0,
          range = 0
-       },
+      },
    },
    { --------- zipline recipe ----------
       type = "recipe",
@@ -397,26 +395,26 @@ succ4.energy_usage = "10MW"
 data:extend({ succ4 })
 data:extend({
    { --------- zipline item -------------
-   	type = "gun",
-   	name = "RTZiplineItem4",
+      type = "gun",
+      name = "RTZiplineItem4",
       icons = {
          {
-         	icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-         	icon_size = 64,
+            icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+            icon_size = 64,
             tint = {18,201,233},
          }
       },
-   	subgroup = "gun",
-   	order = "hhc",
-   	stack_size = 1,
-       attack_parameters =
-       {
+      subgroup = "gun",
+      order = "hhc",
+      stack_size = 1,
+      attack_parameters =
+      {
          type = "projectile",
-   	  ammo_category = "ZiplineController",
+         ammo_category = "ZiplineController",
          cooldown = 60,
          movement_slow_down_factor = 0,
          range = 0
-       },
+      },
    },
    { --------- zipline recipe ----------
       type = "recipe",
@@ -449,26 +447,26 @@ succ5.energy_usage = "50MW"
 data:extend({ succ5 })
 data:extend({
    { --------- zipline item -------------
-   	type = "gun",
-   	name = "RTZiplineItem5",
+      type = "gun",
+      name = "RTZiplineItem5",
       icons = {
          {
-         	icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-         	icon_size = 64,
+            icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+            icon_size = 64,
             tint = {83,255,26},
          }
       },
-   	subgroup = "gun",
-   	order = "hhd",
-   	stack_size = 1,
-       attack_parameters =
-       {
+      subgroup = "gun",
+      order = "hhd",
+      stack_size = 1,
+      attack_parameters =
+      {
          type = "projectile",
-   	  ammo_category = "ZiplineController",
+         ammo_category = "ZiplineController",
          cooldown = 60,
          movement_slow_down_factor = 0,
          range = 0
-       },
+      },
    },
    { --------- zipline recipe ----------
       type = "recipe",
@@ -496,46 +494,46 @@ local RTZiplineTerminal = table.deepcopy(data.raw["electric-pole"]["medium-elect
    RTZiplineTerminal.collision_box = {{-0.9, -0.3}, {0.9, 0.9}}
    RTZiplineTerminal.selection_box = {{-1, -0.5}, {1, 1}}
    RTZiplineTerminal.pictures =
-    {
+   {
       layers =
       {
-        {
-          filename = "__RenaiTransportation__/graphics/zipline/terminal.png",
-          priority = "extra-high",
-          width = 125,
-          height = 250,
-          direction_count = 1,
-          shift = {0, -1},
-          scale = 0.5
-        },
-        {
-          filename = "__RenaiTransportation__/graphics/zipline/OwTheEdge.png",
-          priority = "extra-high",
-          width = 212,
-          height = 48,
-          direction_count = 1,
-          shift = {2.6, 0.6},
-          scale = 0.5,
-          draw_as_shadow = true
-        }
+         {
+            filename = "__RenaiTransportation__/graphics/zipline/terminal.png",
+            priority = "extra-high",
+            width = 125,
+            height = 250,
+            direction_count = 1,
+            shift = {0, -1},
+            scale = 0.5
+         },
+         {
+            filename = "__RenaiTransportation__/graphics/zipline/OwTheEdge.png",
+            priority = "extra-high",
+            width = 212,
+            height = 48,
+            direction_count = 1,
+            shift = {2.6, 0.6},
+            scale = 0.5,
+            draw_as_shadow = true
+         }
       }
-    }
+   }
    RTZiplineTerminal.connection_points =
    {
-     {
-       shadow =
-       {
-         copper = {3.9, 0.5},
-         red = {4.25, 0.7},
-         green = {3.5, 0.65}
-       },
-       wire =
-       {
-         copper = util.by_pixel(0.0, -93),
-         red = util.by_pixel(18, -85.0),
-         green = util.by_pixel(-14, -85.0)
-       }
-     }
+      {
+         shadow =
+         {
+            copper = {3.9, 0.5},
+            red = {4.25, 0.7},
+            green = {3.5, 0.65}
+         },
+         wire =
+         {
+            copper = util.by_pixel(0.0, -93),
+            red = util.by_pixel(18, -85.0),
+            green = util.by_pixel(-14, -85.0)
+         }
+      }
    }
    RTZiplineTerminal.supply_area_distance = 0
    RTZiplineTerminal.next_upgrade = nil
@@ -596,7 +594,7 @@ data:extend({
    { --------- AI zipline controls recipe ----------
       type = "recipe",
       name = "RTAIZiplineControlsRecipe",
-      enabled = true,
+      enabled = false,
       energy_required = 1,
       ingredients =
          {
@@ -608,4 +606,231 @@ data:extend({
          {type="item", name="RTAIZiplineControlsItem", amount=1}
       }
    },
+})
+
+
+data:extend({
+   {
+		type = "technology",
+		name = "RTZiplineTech",
+		icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+		icon_size = 64,
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "RTZiplineRecipe"
+			},
+			{
+				type = "unlock-recipe",
+				recipe = "RTZiplineControlsRecipe"
+			}
+		},
+		prerequisites = {"se-no", "steel-processing"},
+		unit =
+		{
+			count = 100,
+			ingredients =
+			{
+			{"automation-science-pack", 1}
+			},
+			time = 30
+		}
+	},
+	{
+		type = "technology",
+		name = "RTZiplineControlTech1",
+		icon = "__RenaiTransportation__/graphics/zipline/crankcontrols.png",
+		icon_size = 64,
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "RTZiplineCrankControlsRecipe"
+			}
+		},
+		prerequisites = {"RTZiplineTech"},
+		unit =
+		{
+			count = 50,
+			ingredients =
+			{
+			{"automation-science-pack", 1}
+			},
+			time = 30
+		}
+	},
+	{
+		type = "technology",
+		name = "RTZiplineTech2",
+		icons = {
+			{
+				icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+				icon_size = 64,
+				tint = {1,0.9,0},
+			}
+		},
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "RTZiplineRecipe2"
+			}
+		},
+		prerequisites = {"RTZiplineTech", "engine"},
+		unit =
+		{
+			count = 100,
+			ingredients =
+			{
+				{"automation-science-pack", 1},
+				{"logistic-science-pack", 1}
+			},
+			time = 15
+		}
+	},
+	{
+		type = "technology",
+		name = "RTZiplineTech3",
+		icons = {
+			{
+				icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+				icon_size = 64,
+				tint = {255,35,35},
+			}
+		},
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "RTZiplineRecipe3"
+			}
+		},
+		prerequisites = {"RTZiplineTech2", "electric-engine"},
+		unit =
+		{
+			count = 100,
+			ingredients =
+			{
+				{"automation-science-pack", 1},
+				{"logistic-science-pack", 1},
+				{"chemical-science-pack", 1}
+			},
+			time = 30
+		}
+	},
+	{
+		type = "technology",
+		name = "RTZiplineTech4",
+		icons = {
+			{
+				icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+				icon_size = 64,
+				tint = {18,201,233},
+			}
+		},
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "RTZiplineRecipe4"
+			}
+		},
+		prerequisites = {"RTZiplineTech3", "rocket-fuel", "processing-unit"},
+		unit =
+		{
+			count = 150,
+			ingredients =
+			{
+				{"automation-science-pack", 1},
+				{"logistic-science-pack", 1},
+				{"chemical-science-pack", 1}
+			},
+			time = 30
+		}
+	},
+	{
+		type = "technology",
+		name = "RTZiplineTech5",
+		icons = {
+			{
+				icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+				icon_size = 64,
+				tint = {83,255,26},
+			}
+		},
+		effects =
+		{
+			{	
+				type = "unlock-recipe",
+				recipe = "RTZiplineRecipe5"
+			}
+		},
+		prerequisites = {"RTZiplineTech4", "kovarex-enrichment-process", "fission-reactor-equipment"},
+		unit =
+		{
+			count = 200,
+			ingredients =
+			{
+				{"automation-science-pack", 1},
+				{"logistic-science-pack", 1},
+				{"chemical-science-pack", 1},
+				{"production-science-pack", 1},
+				{"utility-science-pack", 1},
+				},
+			time = 30
+		}
+	},
+	{
+		type = "technology",
+		name = "RTProgrammableZiplineControlTech",
+		icon = "__RenaiTransportation__/graphics/zipline/terminaltech.png",
+		icon_size = 128,
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "RTProgrammableZiplineControlsRecipe"
+			},
+			{
+				type = "unlock-recipe",
+				recipe = "RTZiplineTerminalRecipe"
+			}
+		},
+		prerequisites = {"RTZiplineTech", "electric-energy-distribution-1", "concrete"},
+		unit =
+		{
+			count = 150,
+			ingredients =
+			{
+			{"automation-science-pack", 1},
+			{"logistic-science-pack", 1}
+			},
+			time = 30
+		}
+	},
+   {
+		type = "technology",
+		name = "RTAIZiplineControlTech",
+		icon = "__RenaiTransportation__/graphics/tech/AIZiplineTech.png",
+		icon_size = 128,
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "RTAIZiplineControlsRecipe"
+			},
+		},
+		prerequisites = {"RTProgrammableZiplineControlTech"},
+		unit =
+		{
+			count = 150,
+			ingredients =
+			{
+			{"automation-science-pack", 1},
+			{"logistic-science-pack", 1}
+			},
+			time = 30
+		}
+	},
 })

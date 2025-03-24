@@ -69,39 +69,27 @@ data:extend({
 },
 
 {
-	type = "sprite",
-	name = "VacuumHatchConnectorup",
-	filename = "__base__/graphics/entity/assembling-machine-3/assembling-machine-3-pipe-N.png",
-	width = 71,
-	height = 38,
-	shift = {0, 0.5},
-	scale = 0.5
-},
-{
-	type = "sprite",
-	name = "VacuumHatchConnectorright",
-	filename = "__base__/graphics/entity/assembling-machine-3/assembling-machine-3-pipe-E.png",
-	width = 42,
-	height = 76,
-	shift = {-0.5, 0},
-	scale = 0.5
-},
-{
-	type = "sprite",
-	name = "VacuumHatchConnectordown",
-	filename = "__base__/graphics/entity/assembling-machine-3/assembling-machine-3-pipe-S.png",
-	width = 88,
-	height = 61,
-	shift = {0, -0.5},
-	scale = 0.5
-},
-{
-	type = "sprite",
-	name = "VacuumHatchConnectorleft",
-	filename = "__base__/graphics/entity/assembling-machine-3/assembling-machine-3-pipe-W.png",
-	width = 39,
-	height = 73,
-	shift = {0.5, 0},
-	scale = 0.5
+	type = "technology",
+	name = "RTVacuumHatchTech",
+	icon = "__RenaiTransportation__/graphics/tech/VacuumHatchTech.png",
+	icon_size = 128,
+	effects =
+	{
+		{
+			type = "unlock-recipe",
+			recipe = "RTVacuumHatchRecipe"
+		},
+	},
+	prerequisites = {"HatchRTTech", "fluid-handling"},
+	unit =
+	{
+		count = 50,
+		ingredients =
+		{
+			{"automation-science-pack", 1},
+			{"logistic-science-pack", 1}
+		},
+		time = 15
+	}
 },
 })

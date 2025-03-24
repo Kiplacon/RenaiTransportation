@@ -104,7 +104,7 @@ for _, tier in pairs(tiers) do
         {
             type = "recipe",
             name = "RT"..TierName.."BeltRampRecipe",
-            enabled = true,
+            enabled = false,
             energy_required = 1,
             ingredients =
                 {
@@ -119,35 +119,32 @@ for _, tier in pairs(tiers) do
     })
 end
 
---for orient, stuff in pairs({[0]="up", [0.75]="left", [0.5]="down", [0.25]="right"}) do
-    data:extend({
-        {
-            type = "land-mine",
-            name = "RTBeltRampPlayerTrigger",
-            flags = {"not-on-map", "placeable-off-grid", "not-selectable-in-game", "no-copy-paste", "not-blueprintable", "not-deconstructable"},
-            trigger_collision_mask = {layers={["player"]=true}},
-            trigger_radius = 0.5,
-            timeout = 0,
-            action = {
-                type = "direct",
-                action_delivery = {
-                    type = "instant",
-                    source_effects = {
-                        type = "script",
-                        effect_id = "BeltRampPlayer"
-                    }
+data:extend({
+    {
+        type = "land-mine",
+        name = "RTBeltRampPlayerTrigger",
+        flags = {"not-on-map", "placeable-off-grid", "not-selectable-in-game", "no-copy-paste", "not-blueprintable", "not-deconstructable"},
+        trigger_collision_mask = {layers={["player"]=true}},
+        trigger_radius = 0.5,
+        timeout = 0,
+        action = {
+            type = "direct",
+            action_delivery = {
+                type = "instant",
+                source_effects = {
+                    type = "script",
+                    effect_id = "BeltRampPlayer"
                 }
-            },
-            force_die_on_attack = false,
-            picture_set = {
-                filename = '__RenaiTransportation__/graphics/Untitled.png',
-                width = 32,
-                height = 32,
             }
+        },
+        force_die_on_attack = false,
+        picture_set = {
+            filename = '__RenaiTransportation__/graphics/Untitled.png',
+            width = 32,
+            height = 32,
         }
-    })
-
---end
+    }
+})
 
 if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt tier
     data:extend({
@@ -225,7 +222,7 @@ if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt t
         {
             type = "recipe",
             name = "RTturboBeltRampRecipe",
-            enabled = true,
+            enabled = false,
             energy_required = 1,
             ingredients =
                 {
@@ -239,3 +236,42 @@ if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt t
         },
     })
 end
+
+local unlocks =
+{
+    {
+        type = "unlock-recipe",
+        recipe = "RTBeltRampRecipe"
+    },
+    {
+        type = "unlock-recipe",
+        recipe = "RTfastBeltRampRecipe"
+    },
+    {
+        type = "unlock-recipe",
+        recipe = "RTexpressBeltRampRecipe"
+    },
+}
+if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt tier
+    table.insert(unlocks, {type = "unlock-recipe", recipe = "RTturboBeltRampRecipe"})
+end
+
+data:extend({
+{
+    type = "technology",
+    name = "RTBeltRampTech",
+    icon = "__RenaiTransportation__/graphics/tech/BeltRampTech.png",
+    icon_size = 150,
+    effects = unlocks,
+    prerequisites = {"se-no", "electric-engine", "logistics"},
+    unit =
+    {
+        count = 50,
+        ingredients =
+        {
+            {"automation-science-pack", 1},
+        },
+        time = 20
+    }
+},
+})

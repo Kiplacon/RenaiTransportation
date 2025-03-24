@@ -330,7 +330,7 @@ data:extend({
 	{ --------- switch ramp recipe ----------
 		type = "recipe",
 		name = "RTSwitchTrainRampRecipe",
-		enabled = true,
+		enabled = false,
 		energy_required = 2,
 		ingredients =
 			{
@@ -344,7 +344,7 @@ data:extend({
 	{ --------- magnet switch ramp recipe ----------
 		type = "recipe",
 		name = "RTMagnetSwitchTrainRampRecipe",
-		enabled = true,
+		enabled = false,
 		energy_required = 2,
 		ingredients =
 			{
@@ -353,6 +353,84 @@ data:extend({
 			},
 		results = {
 			{type="item", name="RTMagnetSwitchTrainRampItem", amount=1}
+		}
+	},
+
+	{
+		type = "technology",
+		name = "RTFlyingFreight",
+		icon = "__RenaiTransportation__/graphics/tech/FlyingFreight.png",
+		icon_size = 128,
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "RTTrainRampRecipe"
+			}
+		},
+		prerequisites = {"se-no", "railway", "concrete"},
+		unit =
+		{
+			count = 200,
+			ingredients =
+			{
+			{"automation-science-pack", 1},
+			{"logistic-science-pack", 1}
+			},
+			time = 30
+		}
+	},
+	{
+		type = "technology",
+		name = "RTMagnetTrainRamps",
+		icon = "__RenaiTransportation__/graphics/tech/MagnetFreight.png",
+		icon_size = 128,
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "RTMagnetTrainRampRecipe"
+			}
+		},
+		prerequisites = {"RTFlyingFreight", "electric-energy-accumulators", "electric-energy-distribution-2"},
+		unit =
+		{
+			count = 250,
+			ingredients =
+			{
+			{"automation-science-pack", 1},
+			{"logistic-science-pack", 1},
+			{"chemical-science-pack", 1}
+			},
+			time = 45
+		}
+	},
+	{
+		type = "technology",
+		name = "RTImpactTech",
+		icon = "__RenaiTransportation__/graphics/tech/Impact.png",
+		icon_size = 128,
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "RTImpactWagonRecipe"
+			},
+			{
+				type = "unlock-recipe",
+				recipe = "RTImpactUnloaderRecipe"
+			}
+		},
+		prerequisites = {"se-no", "railway", "concrete", "advanced-circuit"},
+		unit =
+		{
+			count = 200,
+			ingredients =
+			{
+			{"automation-science-pack", 1},
+			{"logistic-science-pack", 1}
+			},
+			time = 45
 		}
 	},
 })

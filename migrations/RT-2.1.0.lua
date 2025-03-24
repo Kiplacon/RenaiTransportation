@@ -116,7 +116,8 @@ for _, MagnetRampName in pairs({"RTMagnetTrainRamp", "RTMagnetTrainRampNoSkip"})
 					local NextTile = surface.find_entities_filtered
 					{
 						name = "RTMagnetRail",
-						position = OffsetPosition(StartTile.position),
+						position = OffsetPosition(StartTile.position, {-1*storage.OrientationUnitComponents[ramp.orientation].x, -1*storage.OrientationUnitComponents[ramp.orientation].y}),
+						radius = 0.25,
 						limit = 1
 					}[1]
 					if (NextTile) then
@@ -126,7 +127,7 @@ for _, MagnetRampName in pairs({"RTMagnetTrainRamp", "RTMagnetTrainRampNoSkip"})
 						AnotherOne = false
 					end
 				end
-				OldRange = OldRange + 3
+				OldRange = OldRange - 2
 			end
 			local NewRamp = surface.create_entity({
 				name = ramp.name,

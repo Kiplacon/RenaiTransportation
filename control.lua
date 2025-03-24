@@ -69,7 +69,7 @@ require('util')
 -- rotating blueprints of trapdoor switches on angles doesnt always work due to rounding errors or something idk if you dont rotate it its fine ✅
 -- vacuum hatch full inventory loop (is fine actually, just bounce them off a short distance and only suck up 1 item per tick) ✅
 -- hover range indicator for bounce pads not synced with current setting ✅
--- magnet ramp migration 
+-- magnet ramp migration ✅
 -- director pad migration ✅
 
 ------- possible future stuff

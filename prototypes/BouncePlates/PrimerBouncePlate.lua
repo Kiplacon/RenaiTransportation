@@ -5,7 +5,6 @@ data:extend({
 		filename = "__RenaiTransportation__/graphics/PrimeRange.png",
 		size = 640
 	},
-	
 	{
 		type = "sprite",
 		name = "RTPrimerSpreadRangeOverlay",
@@ -57,7 +56,6 @@ data:extend({
 				distance = 40
 			}
 	},
-	
 	{ --------- The Bounce plate item -------------
 		type = "item",
 		name = "PrimerBouncePlateItem",
@@ -68,7 +66,6 @@ data:extend({
 		place_result = "PrimerBouncePlate",
 		stack_size = 50
 	},
-	
 	{ --------- The Bounce plate recipe ----------
 		type = "recipe",
 		name = "PrimerBouncePlateRecipe",
@@ -92,17 +89,17 @@ data:extend({
 		render_layer = "higher-object-above",		
 		pictures =
 			{
-			  filename = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerParticle.png",
-			  --width = 64,
-			  --height = 64,
-			  size = 32,
-			  priority = "extra-high",
-			  line_length = 4, -- frames per row
-			  frame_count = 4, -- total frames
-			  animation_speed = 0.5
+				filename = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerParticle.png",
+				--width = 64,
+				--height = 64,
+				size = 32,
+				priority = "extra-high",
+				line_length = 4, -- frames per row
+				frame_count = 4, -- total frames
+				animation_speed = 0.5
 			}
 	},
---------------------------- Spread mode -------------
+	--------------------------- Spread mode -------------
 	{ --------- Spread mode entity --------------
 		type = "simple-entity-with-owner",
 		name = "PrimerSpreadBouncePlate",
@@ -112,7 +109,7 @@ data:extend({
 		minable = {mining_time = 0.2, result = "PrimerBouncePlateItem"},
 		placeable_by = {item = "PrimerBouncePlateItem", count = 1},
 		max_health = 200,
-	    collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+		collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
 		picture = 
@@ -147,5 +144,30 @@ data:extend({
 				draw_on_selection = true,
 				distance = 40
 			}
-	}
+	},
+
+	{
+		type = "technology",
+		name = "PrimerPlateTech",
+		icon = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerPlateIconn.png",
+		icon_size = 64,
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "PrimerBouncePlateRecipe"
+			}
+		},
+		prerequisites = {"se-no", "military-2"},
+		unit =
+		{
+			count = 25,
+			ingredients =
+			{
+			{"automation-science-pack", 1},
+			{"logistic-science-pack", 1}
+			},
+			time = 25
+		}
+	},
 })

@@ -38,7 +38,7 @@ data:extend({
     { --------- recipe ----------
         type = "recipe",
         name = "RTItemCannonRecipe",
-        enabled = true,
+        enabled = false,
         energy_required = 1,
         ingredients =
             {
@@ -90,7 +90,7 @@ data:extend({
     { --------- recipe ----------
         type = "recipe",
         name = "RTItemShellRecipe",
-        enabled = true,
+        enabled = false,
         energy_required = 1,
         ingredients =
             {
@@ -199,5 +199,70 @@ data:extend({
                 }
             }
         },
-    }
+    },
+
+    {
+        type = "technology",
+        name = "RTItemCannonTech",
+        icon = "__RenaiTransportation__/graphics/tech/ItemCannonTech.png",
+        icon_size = 128,
+        effects =
+        {
+            {
+                type = "unlock-recipe",
+                recipe = "RTItemShellRecipe"
+            },
+            {
+                type = "unlock-recipe",
+                recipe = "RTItemCannonRecipe"
+            },
+        },
+        prerequisites = {"se-no", "electromagnetic-science-pack"},
+        unit =
+        {
+            count = 50,
+            ingredients =
+            {
+                {"automation-science-pack", 1},
+                {"logistic-science-pack", 1}
+            },
+            time = 15
+        }
+    },
+    {
+        type = "technology",
+        name = "RTItemCannonLogisticsTech",
+        icon = "__RenaiTransportation__/graphics/tech/ItemCannonLogisticsTech.png",
+        icon_size = 128,
+        effects =
+        {
+            {
+                type = "unlock-recipe",
+                recipe = "RTRicochetPanelRecipe"
+            },
+            {
+                type = "unlock-recipe",
+                recipe = "RTCatchingChuteRecipe"
+            },
+            {
+                type = "unlock-recipe",
+                recipe = "RTDivergingChuteRecipe"
+            },
+            {
+                type = "unlock-recipe",
+                recipe = "RTMergingChuteRecipe"
+            },
+        },
+        prerequisites = {"RTItemCannonTech"},
+        unit =
+        {
+            count = 50,
+            ingredients =
+            {
+                {"automation-science-pack", 1},
+                {"logistic-science-pack", 1}
+            },
+            time = 15
+        }
+    },
 })

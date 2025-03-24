@@ -150,7 +150,7 @@ data:extend({
 	{ --------- wagon recipe ----------
 		type = "recipe",
 		name = "RTTrapdoorWagonRecipe",
-		enabled = true,
+		enabled = false,
 		energy_required = 8,
 		ingredients =
 			{
@@ -276,7 +276,7 @@ data:extend({
 { --------- Switch recipe ----------
 	type = "recipe",
 	name = "RTTrapdoorSwitchRecipe",
-	enabled = true,
+	enabled = false,
 	energy_required = 0.1,
 	ingredients =
 	{
@@ -305,3 +305,61 @@ for i = 0, 15 do
 	},
 	})
 end
+
+
+data:extend({
+	{
+		type = "technology",
+		name = "RTTrapdoorWagonTech",
+		icon = "__RenaiTransportation__/graphics/tech/TrapdoorWagonTech.png",
+		icon_size = 128,
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "RTTrapdoorWagonRecipe"
+			},
+			{
+				type = "unlock-recipe",
+				recipe = "RTTrapdoorSwitchRecipe"
+			},
+		},
+		prerequisites = {"se-no", "railway", "tungsten-steel"},
+		unit =
+		{
+			count = 50,
+			ingredients =
+			{
+				{"automation-science-pack", 1},
+			},
+			time = 20
+		}
+	},
+	{
+		type = "technology",
+		name = "RTSwitchRampTech",
+		icon = "__RenaiTransportation__/graphics/tech/SwitchRampTech.png",
+		icon_size = 128,
+		effects =
+		{
+			{
+				type = "unlock-recipe",
+				recipe = "RTMagnetSwitchTrainRampRecipe"
+			},
+			{
+				type = "unlock-recipe",
+				recipe = "RTSwitchTrainRampRecipe"
+			},
+		},
+		prerequisites = {"RTMagnetTrainRamps", "RTTrapdoorWagonTech"},
+		unit =
+		{
+			count = 50,
+			ingredients =
+			{
+				{"automation-science-pack", 1},
+			},
+			time = 20
+		}
+	}
+})

@@ -25,7 +25,7 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 
 	if (settings.startup["RTTrainBounceSetting"].value == true and settings.startup["RTTrainRampSetting"].value == true) then
 		require("prototypes.BouncePlates.TrainBouncePlate")
-		require("prototypes.BouncePlates.TrainDirectedBouncePlate")
+		--require("prototypes.BouncePlates.TrainDirectedBouncePlate")
 	end
 end
 

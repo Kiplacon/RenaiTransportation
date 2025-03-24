@@ -43,7 +43,7 @@ data.extend({
     { --------- recipe ----------
         type = "recipe",
         name = "RTRicochetPanelRecipe",
-        enabled = true,
+        enabled = false,
         energy_required = 1,
         ingredients =
             {
