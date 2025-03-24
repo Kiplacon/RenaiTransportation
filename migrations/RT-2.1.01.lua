@@ -36,9 +36,6 @@ if (storage.CatapultList) then
 	end
 end
 
-if (storage.MagnetRamps) then
-	storage.MagnetRamps = nil
-end
 if (storage.TrainRamps == nil) then
 	storage.TrainRamps = {}
 end
@@ -96,6 +93,35 @@ for _, irection in pairs({{"Up", defines.direction.south}, {"Down", defines.dire
 		end
 	end
 end
+for _, MagnetRampName in pairs({"RTMagnetTrainRamp", "RTMagnetTrainRampNoSkip"}) do
+	local RampType = "TrainRamp"
+	for _, surface in pairs(game.surfaces) do
+		local ramps = surface.find_entities_filtered
+		{
+			name = MagnetRampName
+		}
+		for _, ramp in pairs(ramps) do
+			local OldRange
+			if (storage.MagnetRamps[script.register_on_object_destroyed(ramp)] and storage.MagnetRamps[script.register_on_object_destroyed(ramp)].range) then
+				OldRange = storage.MagnetRamps[script.register_on_object_destroyed(ramp)].range
+			end
+			local NewRamp = surface.create_entity({
+				name = ramp.name,
+				position = math2d.position.add(ramp.position, {-0.5*TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ramp.direction][1], -0.5*TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ramp.direction][2]}),
+				direction = ramp.direction,
+				force = ramp.force,
+				raise_built = true,
+				rail_layer = ramp.rail_layer
+			})
+			RampSetup(NewRamp, RampType)
+			handleMagnetRampBuilt(NewRamp, nil, OldRange)
+			ramp.destroy()
+		end
+	end
+end
+--[[ if (storage.MagnetRamps) then
+	storage.MagnetRamps = nil
+end ]]
 
 local ShowRange = settings.global["RTShowRange"].value
 -- normal bounce pads

@@ -28,6 +28,14 @@ local function entity_destroyed(event)
 		end
 		storage.TrainRamps[event.registration_number] = nil
 	end
+	-- storage.MagnetRamps isnt used anymore but this section is kept for migration
+	if (storage.MagnetRamps[event.registration_number]) then
+		for each, tile in pairs(storage.MagnetRamps[event.registration_number].tiles) do
+			tile.destroy()
+		end
+		storage.MagnetRamps[event.registration_number].power.destroy()
+		storage.MagnetRamps[event.registration_number] = nil
+	end
 
 	if (storage.TrainCollisionDetectors[event.registration_number]) then
 		storage.TrainCollisionDetectors[event.registration_number] = nil

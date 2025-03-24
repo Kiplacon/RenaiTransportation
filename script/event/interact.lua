@@ -161,6 +161,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local ElDirection = ThingHovering.direction
 			local ElSurface = ThingHovering.surface
 			local RailLayer = ThingHovering.rail_layer
+			player.create_local_flying_text
+			{
+				position = ThingHovering.position,
+				text = {"interact-toggling.RampScheduleSkipOff"}
+			}
 			ThingHovering.destroy()
 			local NewKid = ElSurface.create_entity
 				({
@@ -178,11 +183,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					position=player.position,
 					volume_modifier=1
 				}
-			player.create_local_flying_text
-			{
-				position = ThingHovering.position,
-				text = {"interact-toggling.RampScheduleSkipOn"}
-			}
+			
 		elseif (ThingHovering.name == "RTTrainRampNoSkip" or ThingHovering.name == "RTSwitchTrainRampNoSkip") then
 			local switch = ""
 			if (string.find(ThingHovering.name, "Switch")) then
@@ -193,6 +194,11 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			local ElDirection = ThingHovering.direction
 			local ElSurface = ThingHovering.surface
 			local RailLayer = ThingHovering.rail_layer
+			player.create_local_flying_text
+			{
+				position = ThingHovering.position,
+				text = {"interact-toggling.RampScheduleSkipOn"}
+			}
 			ThingHovering.destroy()
 			local NewKid = ElSurface.create_entity
 				({
@@ -210,12 +216,6 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					position=player.position,
 					volume_modifier=1
 				}
-			player.create_local_flying_text
-			{
-				position = ThingHovering.position,
-				text = {"interact-toggling.RampScheduleSkipOn"}
-			}
-
 									
 		--|| Swap Magnet Ramp Modes
 		elseif (ThingHovering.name == "RTMagnetTrainRamp" or ThingHovering.name == "RTMagnetSwitchTrainRamp") then
@@ -258,7 +258,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				)
 			player.create_local_flying_text
 			{
-				position = ThingHovering.position,
+				position = ElPosition,
 				text = {"interact-toggling.RampScheduleSkipOff"}
 			}
 		elseif (ThingHovering.name == "RTMagnetTrainRampNoSkip" or ThingHovering.name == "RTMagnetSwitchTrainRampNoSkip") then
@@ -301,7 +301,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				)
 			player.create_local_flying_text
 			{
-				position = ThingHovering.position,
+				position = ElPosition,
 				text = {"interact-toggling.RampScheduleSkipOn"}
 			}
 

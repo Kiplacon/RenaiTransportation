@@ -5,7 +5,7 @@ local IgnoreRampSetup = {
 	RTTrapdoorSwitch = true
 }
 
-function RampSetup(entity, RampType) -- RampType = "TrainRamp" or "ImpactUnloader"
+function RampSetup(entity, RampType, MagRange) -- RampType = "TrainRamp" or "ImpactUnloader"
 	local surface = entity.surface
 	local name = entity.name
 	local direction = entity.direction
@@ -77,7 +77,7 @@ function RampSetup(entity, RampType) -- RampType = "TrainRamp" or "ImpactUnloade
 	entity.teleport(OffsetPosition(entity.position, {TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][1]*SixteenDirNudge, TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[entity.direction][2]*SixteenDirNudge}))
 end
 
-local function handleMagnetRampBuilt(entity, player)
+function handleMagnetRampBuilt(entity, player, MigrationRange)
 	local OnDestroyNumber = script.register_on_object_destroyed(entity)
 	storage.TrainRamps[OnDestroyNumber].tiles = {}
 	local SUCC = entity.surface.create_entity({
@@ -92,7 +92,7 @@ local function handleMagnetRampBuilt(entity, player)
 	storage.TrainRamps[OnDestroyNumber].power = SUCC
 	magnetRampsStuff.setRange(
 			storage.TrainRamps[OnDestroyNumber],
-			nil,
+			MigrationRange,
 			player
 		)
 	
