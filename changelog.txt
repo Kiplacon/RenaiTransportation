@@ -14,8 +14,12 @@ Date: 1/21/2025
     - Diverging chute. Diverts incoming item shells alternating between two output directions.
     - Vacuum hatch. Sucks up items off the ground and into whatever is behind it.
     - Train ramp, Magnet train ramp, and Impact unloader functionality when built on elevated rails.
-    - Getting hit by a vehicle knocks you back based on how hard you were hit (and assuming it didn't kill you ofc).
     - Throwing items backwards off a space platform generates a tiny bit of thrust.
+  Dumb(er than normal) additions:
+    - Getting hit by a vehicle knocks you back based on how hard you were hit (and assuming it didn't kill you ofc).
+    - Destroying a chest or vehicle causes half of its contents to pop out.
+    - Loose items out on the floor of a space platform float away when the platform takes off.
+    - Settings added to turn these off.
   Changes:
     - Better train jumping between ground and elevated rails and vice versa. Vanilla Rail ramps are for suckers.
     - Magnet ramp targeting improved, especially for train bounce pads and elevated rails.
