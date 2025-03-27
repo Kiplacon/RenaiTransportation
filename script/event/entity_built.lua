@@ -265,6 +265,16 @@ local function entity_built(event)
 	elseif (entity.name == "RTVacuumHatch") then
 		storage.VacuumHatches[script.register_on_object_destroyed(entity)] = {entity=entity, output=nil}
 		local properties = storage.VacuumHatches[script.register_on_object_destroyed(entity)]
+		local succc = rendering.draw_animation
+		{
+			animation = "VacuumHatchSucc",
+			orientation = entity.orientation,
+			surface = entity.surface,
+			target = {entity=entity, offset={0.6*storage.OrientationUnitComponents[entity.orientation].x, 0.6*storage.OrientationUnitComponents[entity.orientation].y}},
+			y_scale = 1.1,
+			--animation_speed = 0.5,
+		}
+		properties.ParticleAnimation = succc
 		properties.output = entity.surface.find_entities_filtered
 		({
 			collision_mask = "object",

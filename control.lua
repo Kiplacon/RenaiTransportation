@@ -26,9 +26,11 @@ require('util')
 -- trapdoor wagon ✅
 	-- trapdoor switch (rail signal all 16 directions) ✅
 	-- trapdoor switch ramp ✅
+		-- toggles trapdoor only while train is in flight, switches back upon landing ✅
 	-- trapdoor switch placer graphics ✅
 	-- trapdoor open/close sound ✅
 	-- trapdoor open/close graphic ✅
+	-- trapdoor toggles when stopping/leaving a station with a certain signal fed into it ✅
 -- electromagnetic item cannon (rail gun)?
 	-- not placable in space ✅
 	-- seal 1 stack of an item into a shell ✅
@@ -47,7 +49,7 @@ require('util')
 	-- player can be launched by it ✅
 -- vacuum hatch ✅
 	-- connection to entity behind it ✅
-	-- SUCC particles
+	-- SUCC particles ✅
 -- dynamic zipline, get on from anywhere and autodrive anywhere ✅
 	-- include terminal list pop up ✅
 	-- pentapod egg for SA, fish for vanilla ✅
@@ -71,6 +73,7 @@ require('util')
 -- hover range indicator for bounce pads not synced with current setting ✅
 -- magnet ramp migration ✅
 -- director pad migration ✅
+-- losing train groups when incrementing schedules. Use train.get_schedule() and use go_to_station(schedule_index) if train had a group ✅
 
 ------- possible future stuff
 -- deflector pad, diagonal
@@ -111,7 +114,8 @@ script.on_event(
 		defines.events.script_raised_built, --| built by script ----
 		defines.events.on_entity_cloned, -- | cloned by script ----
 		defines.events.script_raised_revive, -- | ghost revived by script
-		defines.events.on_post_entity_died -- | ghost created when something dies
+		defines.events.on_post_entity_died, -- | ghost created when something dies
+		defines.events.on_space_platform_built_entity -- | built by space platform
 	},
 	require("script.event.entity_built")
 )
@@ -586,10 +590,24 @@ function(event)
 	end
 end)
 
-script.on_event(
-defines.events.on_space_platform_changed_state,
-require("script.event.platform_change_state")
+script.on_event(defines.events.on_space_platform_changed_state,
+	require("script.event.platform_change_state")
 )
+
+script.on_event(defines.events.on_train_changed_state,
+--train		:: LuaTrain	
+--old_state	:: defines.train_state
+function(event)
+	local train = event.train
+	if (train.state == defines.train_state.wait_station and train.station ~= nil and train.station.get_signal({type="virtual", name="StationTrapdoorWagonSignal"}, defines.wire_connector_id.circuit_red, defines.wire_connector_id.circuit_green) > 0)
+	or (event.old_state == defines.train_state.wait_station) then
+		for _, wagon in pairs(train.cargo_wagons) do
+			if (wagon.name == "RTTrapdoorWagon") then
+				ToggleTrapdoorWagon(wagon)
+			end
+		end
+	end
+end)
 
 script.on_event(
 defines.events.on_player_mined_entity,

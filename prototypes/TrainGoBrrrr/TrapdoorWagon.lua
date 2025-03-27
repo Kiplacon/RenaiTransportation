@@ -291,7 +291,13 @@ data:extend({
 	name = "RTTrapdoorSwitchSound",
 	filename = "__RenaiTransportation__/sickw0bs/TrapdoorSwitch.ogg",
 	volume = 0.5
-}
+},
+{
+	type = "virtual-signal",
+	name = "StationTrapdoorWagonSignal",
+	icon = "__RenaiTransportation__/graphics/TrapdoorSignal.png",
+	icon_size = 64,
+},
 })
 for i = 0, 15 do
 	data:extend({

@@ -2,6 +2,9 @@ local function werew(event)
     if (game.tick%3 == 0) then
 		for _, VacuumHatchStuff in pairs(storage.VacuumHatches) do
 			if (VacuumHatchStuff.entity.valid and VacuumHatchStuff.entity.energy > 0) then
+				if (not VacuumHatchStuff.ParticleAnimation.visible) then -- is this faster than just setting it to true every time?
+					VacuumHatchStuff.ParticleAnimation.visible = true
+				end
 				local VacuumHatch = VacuumHatchStuff.entity
 				if (VacuumHatchStuff.Timeout ~= nil) then
 					if (VacuumHatchStuff.Timeout-1 <= 0) then
@@ -43,6 +46,10 @@ local function werew(event)
                             VacuumHatchStuff.ToSucc[i] = nil
 						end
 					end
+				end
+			else
+				if (VacuumHatchStuff.ParticleAnimation.visible) then
+					VacuumHatchStuff.ParticleAnimation.visible = false
 				end
 			end
 		end

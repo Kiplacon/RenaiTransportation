@@ -284,6 +284,121 @@ function ResetPathComponentOverflowTracking(component)
     end
 end
 
+local function DropOntoGround(FlyingItem)
+    if (FlyingItem.CloudStorage) then
+        if (settings.global["RTSpillSetting"].value == "Destroy") then
+            FlyingItem.surface.pollute(FlyingItem.target, FlyingItem.amount*0.5)
+            FlyingItem.surface.create_entity
+            ({
+                name = "water-splash",
+                position = FlyingItem.target
+            })
+        else
+            local spilt = FlyingItem.surface.spill_item_stack
+                {
+                    position = FlyingItem.surface.find_non_colliding_position("item-on-ground", FlyingItem.target, 500, 0.1),
+                    stack = FlyingItem.CloudStorage[1]
+                }
+            if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
+                for every, thing in pairs(spilt) do
+                    thing.order_deconstruction("player")
+                end
+            end
+        end
+        FlyingItem.CloudStorage.destroy()
+    else
+        if (settings.global["RTSpillSetting"].value == "Destroy") then
+            FlyingItem.surface.pollute(FlyingItem.target, FlyingItem.amount*0.5)
+            FlyingItem.surface.create_entity
+            ({
+                name = "water-splash",
+                position = FlyingItem.target
+            })
+        else
+            local spilt = FlyingItem.surface.spill_item_stack
+            {
+                position = FlyingItem.surface.find_non_colliding_position("item-on-ground",FlyingItem.target, 500, 0.1),
+                stack = {name=FlyingItem.item, count=FlyingItem.amount, quality=FlyingItem.quality}
+            }
+            if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
+                for every, thing in pairs(spilt) do
+                    thing.order_deconstruction("player")
+                end
+            end
+        end
+    end
+end
+local function DropOntoBelt(FlyingItem, belt)
+    local deposited = false
+    if (FlyingItem.CloudStorage) then
+        for l = 1, 2 do
+            for i = 1, 0, -0.1 do
+                if (FlyingItem.CloudStorage[1].count > 0 and belt.get_transport_line(l).can_insert_at(i) == true) then
+                    belt.get_transport_line(l).insert_at(i, FlyingItem.CloudStorage[1])
+                    FlyingItem.CloudStorage[1].count = FlyingItem.CloudStorage[1].count - 1
+                    deposited = true
+                end
+            end
+        end
+        if (FlyingItem.CloudStorage[1].count > 0) then
+            if (settings.global["RTSpillSetting"].value == "Destroy") then
+                FlyingItem.surface.pollute(FlyingItem.target, FlyingItem.CloudStorage[1].count*0.5)
+                FlyingItem.surface.create_entity
+                ({
+                    name = "water-splash",
+                    position = FlyingItem.target
+                })
+            else
+                local spilt = FlyingItem.surface.spill_item_stack
+                    {
+                        position = FlyingItem.surface.find_non_colliding_position("item-on-ground", FlyingItem.target, 500, 0.1),
+                        stack = FlyingItem.CloudStorage[1]
+                    }
+                if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
+                    for every, thing in pairs(spilt) do
+                        thing.order_deconstruction("player")
+                    end
+                end
+            end
+        end
+        FlyingItem.CloudStorage.destroy()
+    else
+        local total = FlyingItem.amount
+        if (belt.type == "transport-belt") then
+            for l = 1, 2 do
+                for i = 0, 0.9, 0.1 do
+                    if (total > 0 and belt.get_transport_line(l).can_insert_at(i) == true) then
+                        belt.get_transport_line(l).insert_at(i, {name=FlyingItem.item, count=1, quality=FlyingItem.quality})
+                        total = total - 1
+                        deposited = true
+                    end
+                end
+            end
+        end
+        if (total > 0) then
+            if (settings.global["RTSpillSetting"].value == "Destroy") then
+                FlyingItem.surface.pollute(FlyingItem.target, total*0.5)
+                FlyingItem.surface.create_entity
+                ({
+                    name = "water-splash",
+                    position = FlyingItem.target
+                })
+            else
+                local spilt = FlyingItem.surface.spill_item_stack
+                {
+                    position = FlyingItem.surface.find_non_colliding_position("item-on-ground",FlyingItem.target, 500, 0.1),
+                    stack = {name=FlyingItem.item, count=total, quality=FlyingItem.quality}
+                }
+                if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
+                    for every, thing in pairs(spilt) do
+                        thing.order_deconstruction("player")
+                    end
+                end
+            end
+        end
+    end
+    return deposited
+end
 function ResolveThrownItem(FlyingItem)
     local ClearOverflowTracking = true -- tracers and OnTheWay tracking. Dont clear if hittimg bounce pad
     local ThingLandedOn = FlyingItem.surface.find_entities_filtered
@@ -618,7 +733,9 @@ function ResolveThrownItem(FlyingItem)
                     end
                     local deposited = false
                     if (properties.output and properties.output.valid) then
-                        if (properties.output.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
+                        if (properties.output.type == "transport-belt") then
+                            deposited = DropOntoBelt(FlyingItem, properties.output)
+                        elseif (properties.output.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
                             if (FlyingItem.CloudStorage) then
                                 properties.output.insert(FlyingItem.CloudStorage[1])
                                 FlyingItem.CloudStorage.destroy()
@@ -627,12 +744,6 @@ function ResolveThrownItem(FlyingItem)
                             else
                                 properties.output.insert({name=FlyingItem.item, count=FlyingItem.amount, quality=FlyingItem.quality})
                             end
-                            ThingLandedOn.surface.play_sound
-                            {
-                                path = "RTClunk",
-                                position = ThingLandedOn.position,
-                                volume_modifier = 0.7
-                            }
                             deposited = true
                         end
                     else
@@ -649,6 +760,12 @@ function ResolveThrownItem(FlyingItem)
                             speed = 0.25
                         })
                     end
+                    ThingLandedOn.surface.play_sound
+                    {
+                        path = "RTClunk",
+                        position = ThingLandedOn.position,
+                        volume_modifier = 0.4
+                    }
 
                 ---- If it landed on something but there's also a cargo wagon there
                 elseif (LandedOnCargoWagon ~= nil and LandedOnCargoWagon.draw_data.height==0 and LandedOnCargoWagon.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
@@ -665,86 +782,13 @@ function ResolveThrownItem(FlyingItem)
                 elseif storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
                     CubeFlyingItems.release_and_spill(FlyingItem, ThingLandedOn)
 
+                -- transport belt
+                elseif (ThingLandedOn.type == "transport-belt") then
+                    DropOntoBelt(FlyingItem, ThingLandedOn)
+
                 ---- otherwise it bounces off whatever it landed on and lands as an item on the nearest empty space within 10 tiles. destroyed if no space ----
                 else
-                    if (FlyingItem.CloudStorage) then -- for "real" item stacks and things with data/tags
-                        if (ThingLandedOn.type == "transport-belt") then
-                            for l = 1, 2 do
-                                for i = 1, 0, -0.1 do
-                                    if (FlyingItem.CloudStorage[1].count > 0 and ThingLandedOn.get_transport_line(l).can_insert_at(i) == true) then
-                                        ThingLandedOn.get_transport_line(l).insert_at(i, FlyingItem.CloudStorage[1])
-                                        FlyingItem.CloudStorage[1].count = FlyingItem.CloudStorage[1].count - 1
-                                    end
-                                end
-                            end
-                            if (FlyingItem.CloudStorage[1].count > 0) then
-                                if (settings.global["RTSpillSetting"].value == "Destroy") then
-                                    FlyingItem.surface.pollute(FlyingItem.target, FlyingItem.CloudStorage[1].count*0.5)
-                                    FlyingItem.surface.create_entity
-                                    ({
-                                        name = "water-splash",
-                                        position = FlyingItem.target
-                                    })
-                                else
-                                    local spilt = FlyingItem.surface.spill_item_stack
-                                        {
-                                            position = FlyingItem.surface.find_non_colliding_position("item-on-ground", FlyingItem.target, 500, 0.1),
-                                            stack = FlyingItem.CloudStorage[1]
-                                        }
-                                    if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
-                                        for every, thing in pairs(spilt) do
-                                            thing.order_deconstruction("player")
-                                        end
-                                    end
-                                end
-                            end
-                        else
-                            local spilt = FlyingItem.surface.spill_item_stack
-                                {
-                                    position = FlyingItem.surface.find_non_colliding_position("item-on-ground", FlyingItem.target, 500, 0.1),
-                                    stack = FlyingItem.CloudStorage[1]
-                                }
-                            if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
-                                for every, thing in pairs(spilt) do
-                                    thing.order_deconstruction("player")
-                                end
-                            end
-                        end
-                        FlyingItem.CloudStorage.destroy()
-                    else -- for "fake" item stacks
-                        local total = FlyingItem.amount
-                        if (ThingLandedOn.type == "transport-belt") then
-                            for l = 1, 2 do
-                                for i = 0, 0.9, 0.1 do
-                                    if (total > 0 and ThingLandedOn.get_transport_line(l).can_insert_at(i) == true) then
-                                        ThingLandedOn.get_transport_line(l).insert_at(i, {name=FlyingItem.item, count=1, quality=FlyingItem.quality})
-                                        total = total - 1
-                                    end
-                                end
-                            end
-                        end
-                        if (total > 0) then
-                            if (settings.global["RTSpillSetting"].value == "Destroy") then
-                                FlyingItem.surface.pollute(FlyingItem.target, total*0.5)
-                                FlyingItem.surface.create_entity
-                                ({
-                                    name = "water-splash",
-                                    position = FlyingItem.target
-                                })
-                            else
-                                local spilt = FlyingItem.surface.spill_item_stack
-                                {
-                                    position = FlyingItem.surface.find_non_colliding_position("item-on-ground",FlyingItem.target, 500, 0.1),
-                                    stack = {name=FlyingItem.item, count=total, quality=FlyingItem.quality}
-                                }
-                                if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
-                                    for every, thing in pairs(spilt) do
-                                        thing.order_deconstruction("player")
-                                    end
-                                end
-                            end
-                        end
-                    end
+                    DropOntoGround(FlyingItem)
                 end
             end
         -- tracers falling on something
@@ -881,19 +925,7 @@ function ResolveThrownItem(FlyingItem)
             end
         else
             if (FlyingItem.player == nil) then
-                if (FlyingItem.CloudStorage) then
-                    local spilt = ProjectileSurface.spill_item_stack
-                        {
-                            position = ProjectileSurface.find_non_colliding_position("item-on-ground", FlyingItem.target, 500, 0.1),
-                            stack = FlyingItem.CloudStorage[1]
-                        }
-                    if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
-                        for every, thing in pairs(spilt) do
-                            thing.order_deconstruction("player")
-                        end
-                    end
-                    FlyingItem.CloudStorage.destroy()
-                elseif storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
+                if storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
                     CubeFlyingItems.release_and_spill(FlyingItem)
                 elseif (FlyingItem.type == "ItemShell") then
                     -- the contents of the shell fly out over the ground
@@ -908,16 +940,7 @@ function ResolveThrownItem(FlyingItem)
                         end
                     end
                 else
-                    local spilt = ProjectileSurface.spill_item_stack
-                        {
-                            position = ProjectileSurface.find_non_colliding_position("item-on-ground", FlyingItem.target, 500, 0.1),
-                            stack = {name=FlyingItem.item, count=FlyingItem.amount, quality=FlyingItem.quality}
-                        }
-                    if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
-                        for every, thing in pairs(spilt) do
-                            thing.order_deconstruction("player")
-                        end
-                    end
+                    DropOntoGround(FlyingItem)
                 end
             end
         end

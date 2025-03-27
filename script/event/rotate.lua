@@ -75,6 +75,8 @@ local function rotate(event)
 			position = OffsetPosition(entity.position, {-1*storage.OrientationUnitComponents[entity.orientation].x, -1*storage.OrientationUnitComponents[entity.orientation].y}),
 			limit = 1
 		})[1]
+		properties.ParticleAnimation.orientation = entity.orientation
+		properties.ParticleAnimation.target = {entity=entity, offset={0.6*storage.OrientationUnitComponents[entity.orientation].x, 0.6*storage.OrientationUnitComponents[entity.orientation].y}}
 	end
 end
 

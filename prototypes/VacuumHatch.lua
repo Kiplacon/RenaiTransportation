@@ -69,6 +69,16 @@ data:extend({
 },
 
 {
+	type = "animation",
+	name = "VacuumHatchSucc",
+	filename = "__RenaiTransportation__/graphics/hatch/VacuumHatchParticles.png",
+	size = {160, 285},
+	frame_count = 105,
+	line_length = 5,
+	animation_speed = 1
+},
+
+{
 	type = "technology",
 	name = "RTVacuumHatchTech",
 	icon = "__RenaiTransportation__/graphics/tech/VacuumHatchTech.png",

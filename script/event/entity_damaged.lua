@@ -271,6 +271,12 @@ local function entity_damaged(event)
 			}
 		end ]]
 
+		if (carriage.train.group ~= "") then -- it is specifically "" that means no group, not nil
+			FlyingTrainProperties.TrainGroup = carriage.train.group
+			--[[ if (carriage.train.get_schedule().get_record(carriage.train.get_schedule().current).temporary == true) then
+				FlyingTrainProperties.TemporaryStop = carriage.train.get_schedule().get_record(carriage.train.get_schedule().current)
+			end ]]
+		end
 		FlyingTrainProperties.schedule = carriage.train.schedule
 		if (SkippingRamps[ramp.name] and FlyingTrainProperties.schedule ~= nil) then
 			if (FlyingTrainProperties.schedule.current == table_size(FlyingTrainProperties.schedule.records)) then
@@ -286,6 +292,7 @@ local function entity_damaged(event)
 				carriage.train.path_end_stop.trains_limit = carriage.train.path_end_stop.trains_limit - 1
 			end
 		end
+		
 
 		--| Follower/leader tracking
 		for number, properties in pairs(storage.FlyingTrains) do
@@ -293,6 +300,7 @@ local function entity_damaged(event)
 				FlyingTrainProperties.leader = number
 				storage.FlyingTrains[number].followerID = SpookyGhost.unit_number
 				FlyingTrainProperties.schedule = storage.FlyingTrains[number].schedule
+				FlyingTrainProperties.TrainGroup = storage.FlyingTrains[number].TrainGroup
 				FlyingTrainProperties.ManualMode = storage.FlyingTrains[number].ManualMode
 				FlyingTrainProperties.destinationStation = storage.FlyingTrains[number].destinationStation
 				FlyingTrainProperties.adjustDestinationLimit = storage.FlyingTrains[number].adjustDestinationLimit
@@ -448,9 +456,14 @@ local function entity_damaged(event)
 					position = carriage.position
 				})
 				ToggleTrapdoorWagon(carriage)
+				FlyingTrainProperties.ToggleTrapdoorBack = true
+			end
+			if (carriage.name == "RTTrapdoorWagon") then
 				local DestroyNumber = script.register_on_object_destroyed(carriage)
 				if (storage.TrapdoorWagonsOpen[DestroyNumber]) then
 					FlyingTrainProperties.trapdoor = true
+				else
+					FlyingTrainProperties.trapdoor = false -- if its not open it has to be closed
 				end
 				storage.TrapdoorWagonsOpen[DestroyNumber] = nil -- nil both cause it'll only be one or the other
 				storage.TrapdoorWagonsClosed[DestroyNumber] = nil
@@ -616,13 +629,19 @@ local function entity_damaged(event)
 				end
 			end
 			if (carriage.train.schedule and carriage.train.manual_mode == false) then
-				local stor = carriage.train.schedule
+				--local stor = carriage.train.schedule
 				if (carriage.train.schedule.current == table_size(carriage.train.schedule.records)) then
-					stor.current = 1
+					--stor.current = 1
+					carriage.train.get_schedule().go_to_station(1)
 				else
-					stor.current = stor.current + 1
+					--stor.current = stor.current + 1
+					carriage.train.get_schedule().go_to_station(carriage.train.get_schedule().current+1)
 				end
-				carriage.train.schedule = stor
+				--[[ carriage.train.schedule = stor
+				if (group) then
+					game.print(group)
+					carriage.train.get_schedule().go_to_station()
+				end ]]
 			end
 		end
 
