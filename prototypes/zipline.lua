@@ -181,7 +181,7 @@ brrr,
 	ingredients =
 		{
          {type="item", name="RTZiplineControlsItem", amount=1},
-			{type="item", name="electronic-circuit", amount=5}
+			{type="item", name="advanced-circuit", amount=5}
 		},
    results = {
       {type="item", name="RTProgrammableZiplineControlsItem", amount=1}
@@ -553,7 +553,7 @@ local RTZiplineTerminalRecipe =
       ingredients =
          {
             {type="item", name="medium-electric-pole", amount=1},
-            {type="item", name="electronic-circuit", amount=10},
+            {type="item", name="advanced-circuit", amount=10},
             {type="item", name="steel-plate", amount=20},
             {type="item", name="concrete", amount=25}
          },
@@ -778,14 +778,15 @@ data:extend({
 				recipe = "RTZiplineTerminalRecipe"
 			}
 		},
-		prerequisites = {"RTZiplineTech", "electric-energy-distribution-1", "concrete"},
+		prerequisites = {"RTZiplineTech", "electric-energy-distribution-1", "concrete", "chemical-science-pack"},
 		unit =
 		{
-			count = 150,
+			count = 200,
 			ingredients =
 			{
-			{"automation-science-pack", 1},
-			{"logistic-science-pack", 1}
+            {"automation-science-pack", 1},
+            {"logistic-science-pack", 1},
+            {"chemical-science-pack", 1},
 			},
 			time = 30
 		}
@@ -822,15 +823,17 @@ if (data.raw.item["carbon-fiber"] and data.raw.item["pentapod-egg"] and data.raw
                recipe = "RTAIZiplineControlsRecipe"
             },
          },
-         prerequisites = {"RTProgrammableZiplineControlTech", "carbon-fiber"},
+         prerequisites = {"RTProgrammableZiplineControlTech", "carbon-fiber", "utility-science-pack"},
          unit =
          {
-            count = 250,
+            count = 500,
             ingredients =
             {
                {"automation-science-pack", 1},
                {"logistic-science-pack", 1},
                {"chemical-science-pack", 1},
+               {"utility-science-pack", 1},
+               {"space-science-pack", 1},
                {"agricultural-science-pack", 1}
             },
             time = 60
@@ -848,7 +851,7 @@ else
             {
                {type="item", name="RTProgrammableZiplineControlsItem", amount=1},
                {type="item", name="processing-unit", amount=10},
-               {type="item", name="fish", amount=5}
+               {type="item", name="raw-fish", amount=5}
             },
          results = {
             {type="item", name="RTAIZiplineControlsItem", amount=1}
@@ -866,15 +869,16 @@ else
                recipe = "RTAIZiplineControlsRecipe"
             },
          },
-         prerequisites = {"RTProgrammableZiplineControlTech"},
+         prerequisites = {"RTProgrammableZiplineControlTech", "utility-science-pack"},
          unit =
          {
-            count = 250,
+            count = 500,
             ingredients =
             {
                {"automation-science-pack", 1},
                {"logistic-science-pack", 1},
-               {"chemical-science-pack", 1}
+               {"chemical-science-pack", 1},
+               {"utility-science-pack", 1},
             },
             time = 60
          }

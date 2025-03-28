@@ -1,3 +1,12 @@
+local SpaceConditions
+if (mods["space-age"]) then
+    SpaceConditions = {
+        {
+            property = "gravity",
+            min = 1
+        }
+    }
+end
 data:extend({
     { --------- entity
         type = "electric-energy-interface",
@@ -16,12 +25,7 @@ data:extend({
         gui_mode = "none",
         collision_box = {{-1.4, -1.4}, {1.4, 1.4}},
         selection_box = {{-1.5, -1.5}, {1.5, 1.5}},
-        surface_conditions  = {
-            {
-                property = "gravity",
-                min = 1
-            }
-        },
+        surface_conditions = SpaceConditions,
         pictures =
         {
             sheet =
@@ -33,21 +37,6 @@ data:extend({
                 priority = "high",
                 scale = 0.5
             }
-        }
-    },
-    { --------- recipe ----------
-        type = "recipe",
-        name = "RTItemCannonRecipe",
-        enabled = false,
-        energy_required = 1,
-        ingredients =
-            {
-                {type="item", name="HatchRTItem", amount=1},
-                {type="item", name="pump", amount=1},
-                {type="item", name="electronic-circuit", amount=2}
-            },
-        results = {
-            {type="item", name="RTItemCannonItem", amount=1}
         }
     },
     { --------- item -------------
@@ -200,69 +189,183 @@ data:extend({
             }
         },
     },
-
-    {
-        type = "technology",
-        name = "RTItemCannonTech",
-        icon = "__RenaiTransportation__/graphics/tech/ItemCannonTech.png",
-        icon_size = 128,
-        effects =
-        {
-            {
-                type = "unlock-recipe",
-                recipe = "RTItemShellRecipe"
-            },
-            {
-                type = "unlock-recipe",
-                recipe = "RTItemCannonRecipe"
-            },
-        },
-        prerequisites = {"se-no", "electromagnetic-science-pack"},
-        unit =
-        {
-            count = 50,
-            ingredients =
-            {
-                {"automation-science-pack", 1},
-                {"logistic-science-pack", 1}
-            },
-            time = 15
-        }
-    },
-    {
-        type = "technology",
-        name = "RTItemCannonLogisticsTech",
-        icon = "__RenaiTransportation__/graphics/tech/ItemCannonLogisticsTech.png",
-        icon_size = 128,
-        effects =
-        {
-            {
-                type = "unlock-recipe",
-                recipe = "RTRicochetPanelRecipe"
-            },
-            {
-                type = "unlock-recipe",
-                recipe = "RTCatchingChuteRecipe"
-            },
-            {
-                type = "unlock-recipe",
-                recipe = "RTDivergingChuteRecipe"
-            },
-            {
-                type = "unlock-recipe",
-                recipe = "RTMergingChuteRecipe"
-            },
-        },
-        prerequisites = {"RTItemCannonTech"},
-        unit =
-        {
-            count = 50,
-            ingredients =
-            {
-                {"automation-science-pack", 1},
-                {"logistic-science-pack", 1}
-            },
-            time = 15
-        }
-    },
 })
+
+
+if (data.raw.item["holmium-plate"] and data.raw.tool["electromagnetic-science-pack"]) then
+	data:extend({
+        { --------- recipe ----------
+            type = "recipe",
+            name = "RTItemCannonRecipe",
+            enabled = false,
+            energy_required = 1,
+            ingredients =
+                {
+                    {type="item", name="refined-concrete", amount=100},
+                    {type="item", name="steel-plate", amount=50},
+                    {type="item", name="superconductor", amount=10},
+                    {type="item", name="discharge-defense-equipment", amount=5}
+                },
+            results = {
+                {type="item", name="RTItemCannonItem", amount=1}
+            }
+        },
+		{
+            type = "technology",
+            name = "RTItemCannonTech",
+            icon = "__RenaiTransportation__/graphics/tech/ItemCannonTech.png",
+            icon_size = 128,
+            effects =
+            {
+                {
+                    type = "unlock-recipe",
+                    recipe = "RTItemShellRecipe"
+                },
+                {
+                    type = "unlock-recipe",
+                    recipe = "RTItemCannonRecipe"
+                },
+                {
+                    type = "unlock-recipe",
+                    recipe = "RTRicochetPanelRecipe"
+                },
+                {
+                    type = "unlock-recipe",
+                    recipe = "RTCatchingChuteRecipe"
+                },
+            },
+            prerequisites = {"se-no", "concrete", "logistics-2", "discharge-defense-equipment", "electromagnetic-science-pack"},
+            unit =
+            {
+                count = 1000,
+                ingredients =
+                {
+                    {"automation-science-pack", 1},
+                    {"logistic-science-pack", 1},
+                    {"chemical-science-pack", 1},
+                    {"space-science-pack", 1},
+                    {"electromagnetic-science-pack", 1},
+                },
+                time = 60
+            }
+        },
+        {
+            type = "technology",
+            name = "RTItemCannonLogisticsTech",
+            icon = "__RenaiTransportation__/graphics/tech/ItemCannonLogisticsTech.png",
+            icon_size = 128,
+            effects =
+            {
+                {
+                    type = "unlock-recipe",
+                    recipe = "RTDivergingChuteRecipe"
+                },
+                {
+                    type = "unlock-recipe",
+                    recipe = "RTMergingChuteRecipe"
+                },
+            },
+            prerequisites = {"RTItemCannonTech"},
+            unit =
+            {
+                count = 500,
+                ingredients =
+                {
+                    {"automation-science-pack", 1},
+                    {"logistic-science-pack", 1},
+                    {"chemical-science-pack", 1},
+                    {"space-science-pack", 1},
+                    {"electromagnetic-science-pack", 1},
+                },
+                time = 60
+            }
+        },
+	})
+else
+	data:extend({
+		{ --------- recipe ----------
+            type = "recipe",
+            name = "RTItemCannonRecipe",
+            enabled = false,
+            energy_required = 1,
+            ingredients =
+                {
+                    {type="item", name="refined-concrete", amount=100},
+                    {type="item", name="steel-plate", amount=50},
+                    {type="item", name="processing-unit", amount=10},
+                    {type="item", name="discharge-defense-equipment", amount=5}
+                },
+            results = {
+                {type="item", name="RTItemCannonItem", amount=1}
+            }
+        },
+		{
+            type = "technology",
+            name = "RTItemCannonTech",
+            icon = "__RenaiTransportation__/graphics/tech/ItemCannonTech.png",
+            icon_size = 128,
+            effects =
+            {
+                {
+                    type = "unlock-recipe",
+                    recipe = "RTItemShellRecipe"
+                },
+                {
+                    type = "unlock-recipe",
+                    recipe = "RTItemCannonRecipe"
+                },
+                {
+                    type = "unlock-recipe",
+                    recipe = "RTRicochetPanelRecipe"
+                },
+                {
+                    type = "unlock-recipe",
+                    recipe = "RTCatchingChuteRecipe"
+                },
+            },
+            prerequisites = {"se-no", "concrete", "logistics-2", "discharge-defense-equipment", "production-science-pack"},
+            unit =
+            {
+                count = 1000,
+                ingredients =
+                {
+                    {"automation-science-pack", 1},
+                    {"logistic-science-pack", 1},
+                    {"chemical-science-pack", 1},
+                    {"production-science-pack", 1},
+                },
+                time = 60
+            }
+        },
+        {
+            type = "technology",
+            name = "RTItemCannonLogisticsTech",
+            icon = "__RenaiTransportation__/graphics/tech/ItemCannonLogisticsTech.png",
+            icon_size = 128,
+            effects =
+            {
+                {
+                    type = "unlock-recipe",
+                    recipe = "RTDivergingChuteRecipe"
+                },
+                {
+                    type = "unlock-recipe",
+                    recipe = "RTMergingChuteRecipe"
+                },
+            },
+            prerequisites = {"RTItemCannonTech"},
+            unit =
+            {
+                count = 500,
+                ingredients =
+                {
+                    {"automation-science-pack", 1},
+                    {"logistic-science-pack", 1},
+                    {"chemical-science-pack", 1},
+                    {"production-science-pack", 1},
+                },
+                time = 60
+            }
+        },
+	})
+end

@@ -59,7 +59,7 @@ require('util')
 	-- nauvis: belt ramp, vacuum hatch ✅
 	-- Fulgora: item cannon, ricochet panels, chutes
 	-- Gleba: AI zipline controller, primer throwers ✅
-	-- Vulcanus: trapdoor wagon and switches and switch ramps
+	-- Vulcanus: trapdoor wagon and switches and switch ramps ✅
 	-- Aquilo: nothing yet
 	-- check with vanilla start
 -- straight up grief ✅

@@ -103,15 +103,16 @@ if (data.raw.item["carbon-fiber"] and data.raw.tool["agricultural-science-pack"]
 					recipe = "RTThrower-PrimerThrower-Recipe"
 				}
 			},
-			prerequisites = {"se-no", "gun-turret", "agricultural-science-pack", "carbon-fiber"},
+			prerequisites = {"se-no", "PrimerPlateTech", "gun-turret", "agricultural-science-pack", "carbon-fiber"},
 			unit =
 			{
-				count = 250,
+				count = 500,
 				ingredients =
 				{
 					{"automation-science-pack", 1},
 					{"logistic-science-pack", 1},
 					{"chemical-science-pack", 1},
+					{"space-science-pack", 1},
 					{"agricultural-science-pack", 1},
 				},
 				time = 60
@@ -151,14 +152,14 @@ else
 			prerequisites = {"se-no", "PrimerPlateTech", "gun-turret", "military-science-pack"},
 			unit =
 			{
-				count = 50,
+				count = 250,
 				ingredients =
 				{
 					{"military-science-pack", 1},
 					{"automation-science-pack", 1},
 					{"logistic-science-pack", 1}
 				},
-				time = 30
+				time = 60
 			}
 		}
 	})

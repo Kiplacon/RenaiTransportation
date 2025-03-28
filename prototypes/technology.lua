@@ -16,6 +16,7 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 				recipe = "PlayerLauncherRecipe"
 			}
 		},
+		prerequisites = {"automation-science-pack"},
 		unit =
 		{
 			count = 10,
@@ -162,12 +163,13 @@ else
 		icon_size = 128,
 		effects =
 		{},
+		prerequisites = {"automation-science-pack"},
 		unit =
 		{
 			count = 10,
 			ingredients =
 			{
-			{"automation-science-pack", 1}
+				{"automation-science-pack", 1}
 			},
 			time = 10
 		}
