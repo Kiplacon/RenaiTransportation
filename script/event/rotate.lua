@@ -76,7 +76,7 @@ local function rotate(event)
 			limit = 1
 		})[1]
 		properties.ParticleAnimation.orientation = entity.orientation
-		properties.ParticleAnimation.target = {entity=entity, offset={0.6*storage.OrientationUnitComponents[entity.orientation].x, 0.6*storage.OrientationUnitComponents[entity.orientation].y}}
+		properties.ParticleAnimation.target = {entity=entity, offset={3*storage.OrientationUnitComponents[entity.orientation].x, 3*storage.OrientationUnitComponents[entity.orientation].y}}
 	end
 end
 

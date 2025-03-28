@@ -270,7 +270,7 @@ local function entity_built(event)
 			animation = "VacuumHatchSucc",
 			orientation = entity.orientation,
 			surface = entity.surface,
-			target = {entity=entity, offset={0.6*storage.OrientationUnitComponents[entity.orientation].x, 0.6*storage.OrientationUnitComponents[entity.orientation].y}},
+			target = {entity=entity, offset={3*storage.OrientationUnitComponents[entity.orientation].x, 3*storage.OrientationUnitComponents[entity.orientation].y}},
 			y_scale = 1.1,
 			--animation_speed = 0.5,
 		}

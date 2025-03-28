@@ -72,7 +72,7 @@ data:extend({
 	type = "animation",
 	name = "VacuumHatchSucc",
 	filename = "__RenaiTransportation__/graphics/hatch/VacuumHatchParticles.png",
-	size = {160, 285},
+	size = {160, 142},
 	frame_count = 105,
 	line_length = 5,
 	animation_speed = 1
