@@ -231,7 +231,9 @@ local function GetOnOrOffZipline(event) -- has .name = event ID number, .tick = 
 				and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read)
 				then
 					GetOnZipline(player, PlayerProperties, ThingHovering)
-					AIZiplineControllerTerminalList(player, ThingHovering)
+					if (player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTAIZiplineControlsItem") then
+						AIZiplineControllerTerminalList(player, ThingHovering)
+					end
 				else
 					player.print({"zipline-stuff.reqs"})
 				end

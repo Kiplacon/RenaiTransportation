@@ -567,11 +567,6 @@ data:extend({
    RTZiplineTerminalRecipe
 })
 
-
-local AISource = "fish"
-if (data.raw.item["pentapod-egg"]) then
-   AISource = "pentapod-egg"
-end
 data:extend({
    { --------- AI zipline controls -------------
       type = "ammo",
@@ -591,21 +586,7 @@ data:extend({
       },
       ammo_category = "ZiplineController"
    },
-   { --------- AI zipline controls recipe ----------
-      type = "recipe",
-      name = "RTAIZiplineControlsRecipe",
-      enabled = false,
-      energy_required = 1,
-      ingredients =
-         {
-            {type="item", name="RTProgrammableZiplineControlsItem", amount=1},
-            {type="item", name="processing-unit", amount=5},
-            {type="item", name=AISource, amount=5}
-         },
-      results = {
-         {type="item", name="RTAIZiplineControlsItem", amount=1}
-      }
-   },
+   
 })
 
 
@@ -809,28 +790,94 @@ data:extend({
 			time = 30
 		}
 	},
-   {
-		type = "technology",
-		name = "RTAIZiplineControlTech",
-		icon = "__RenaiTransportation__/graphics/tech/AIZiplineTech.png",
-		icon_size = 128,
-		effects =
-		{
-			{
-				type = "unlock-recipe",
-				recipe = "RTAIZiplineControlsRecipe"
-			},
-		},
-		prerequisites = {"RTProgrammableZiplineControlTech"},
-		unit =
-		{
-			count = 150,
-			ingredients =
-			{
-			{"automation-science-pack", 1},
-			{"logistic-science-pack", 1}
-			},
-			time = 30
-		}
-	},
 })
+
+if (data.raw.item["carbon-fiber"] and data.raw.item["pentapod-egg"] and data.raw.tool["agricultural-science-pack"]) then
+	data:extend({
+      { --------- AI zipline controls recipe ----------
+         type = "recipe",
+         name = "RTAIZiplineControlsRecipe",
+         enabled = false,
+         energy_required = 1,
+         ingredients =
+            {
+               {type="item", name="RTProgrammableZiplineControlsItem", amount=1},
+               {type="item", name="processing-unit", amount=5},
+               {type="item", name="carbon-fiber", amount=4},
+               {type="item", name="pentapod-egg", amount=1}
+            },
+         results = {
+            {type="item", name="RTAIZiplineControlsItem", amount=1}
+         }
+      },
+		{
+         type = "technology",
+         name = "RTAIZiplineControlTech",
+         icon = "__RenaiTransportation__/graphics/tech/AIZiplineTech.png",
+         icon_size = 128,
+         effects =
+         {
+            {
+               type = "unlock-recipe",
+               recipe = "RTAIZiplineControlsRecipe"
+            },
+         },
+         prerequisites = {"RTProgrammableZiplineControlTech", "carbon-fiber"},
+         unit =
+         {
+            count = 250,
+            ingredients =
+            {
+               {"automation-science-pack", 1},
+               {"logistic-science-pack", 1},
+               {"chemical-science-pack", 1},
+               {"agricultural-science-pack", 1}
+            },
+            time = 60
+         }
+      },
+	})
+else
+	data:extend({
+      { --------- AI zipline controls recipe ----------
+         type = "recipe",
+         name = "RTAIZiplineControlsRecipe",
+         enabled = false,
+         energy_required = 1,
+         ingredients =
+            {
+               {type="item", name="RTProgrammableZiplineControlsItem", amount=1},
+               {type="item", name="processing-unit", amount=10},
+               {type="item", name="fish", amount=5}
+            },
+         results = {
+            {type="item", name="RTAIZiplineControlsItem", amount=1}
+         }
+      },
+		{
+         type = "technology",
+         name = "RTAIZiplineControlTech",
+         icon = "__RenaiTransportation__/graphics/tech/AIZiplineTech.png",
+         icon_size = 128,
+         effects =
+         {
+            {
+               type = "unlock-recipe",
+               recipe = "RTAIZiplineControlsRecipe"
+            },
+         },
+         prerequisites = {"RTProgrammableZiplineControlTech"},
+         unit =
+         {
+            count = 250,
+            ingredients =
+            {
+               {"automation-science-pack", 1},
+               {"logistic-science-pack", 1},
+               {"chemical-science-pack", 1}
+            },
+            time = 60
+         }
+      },
+	})
+end

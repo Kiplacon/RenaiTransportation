@@ -10,22 +10,16 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 	require("prototypes.PlayerLauncher")
 	require("prototypes.OpenContainer")
 	require("prototypes.hatch")
-
+	require("prototypes.VacuumHatch")
+	require("prototypes.BeltRamp")
 	if (settings.startup["RTBounceSetting"].value == true) then
 		require("prototypes.BouncePlates.PrimerBouncePlate")
 		--require("prototypes.BouncePlates.SignalBouncePlate")
-
 		require("prototypes.PrimerThrower.CheckingTurret")
 		require("prototypes.PrimerThrower.PrimerThrowerInserter")
-
 		if (settings.startup["RTTrainRampSetting"].value == true) then
 			require("prototypes.TrainGoBrrrr.PayloadWagon")
 		end
-	end
-
-	if (settings.startup["RTTrainBounceSetting"].value == true and settings.startup["RTTrainRampSetting"].value == true) then
-		require("prototypes.BouncePlates.TrainBouncePlate")
-		--require("prototypes.BouncePlates.TrainDirectedBouncePlate")
 	end
 end
 
@@ -33,6 +27,9 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 	require("prototypes.TrainGoBrrrr.prototypes.ramps")
 	require("prototypes.TrainGoBrrrr.sprites.base")
 	require("prototypes.TrainGoBrrrr.GhostLoco")
+	if (settings.startup["RTTrainBounceSetting"].value == true and settings.startup["RTTrainRampSetting"].value == true) then
+		require("prototypes.BouncePlates.TrainBouncePlate")
+	end
 end
 
 if (settings.startup["RTImpactSetting"].value == true) then
@@ -43,12 +40,16 @@ if (settings.startup["RTZiplineSetting"].value == true) then
 	require("prototypes.zipline")
 end
 
-require("prototypes.TrainGoBrrrr.TrapdoorWagon")
-require("prototypes.VacuumHatch")
-require("prototypes.BeltRamp")
-require("prototypes.ItemCannon.RicochetPanel")
-require("prototypes.ItemCannon.ItemCannon")
-require("prototypes.ItemCannon.chutes")
+if (settings.startup["RTTrapdoorSetting"].value == true) then
+	require("prototypes.TrainGoBrrrr.TrapdoorWagon")
+end
+
+if (settings.startup["RTItemCannonSetting"].value == true) then
+	require("prototypes.ItemCannon.RicochetPanel")
+	require("prototypes.ItemCannon.ItemCannon")
+	require("prototypes.ItemCannon.chutes")
+end
+
 
 data:extend({
 {

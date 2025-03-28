@@ -50,7 +50,7 @@ data:extend({
 		{
 			{type="item", name="HatchRTItem", amount=1},
 			{type="item", name="pump", amount=1},
-			{type="item", name="electronic-circuit", amount=2}
+			{type="item", name="advanced-circuit", amount=2}
 		},
 	results = {
 		{type="item", name="RTVacuumHatchItem", amount=1}
@@ -90,16 +90,16 @@ data:extend({
 			recipe = "RTVacuumHatchRecipe"
 		},
 	},
-	prerequisites = {"HatchRTTech", "fluid-handling"},
+	prerequisites = {"HatchRTTech", "advanced-circuit"},
 	unit =
 	{
-		count = 50,
+		count = 100,
 		ingredients =
 		{
 			{"automation-science-pack", 1},
 			{"logistic-science-pack", 1}
 		},
-		time = 15
+		time = 30
 	}
 },
 })

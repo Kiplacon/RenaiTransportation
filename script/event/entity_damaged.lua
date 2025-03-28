@@ -674,8 +674,8 @@ local function entity_damaged(event)
 			storage.DestructionLinks[script.register_on_object_destroyed(switch)] = {}
 		end ]]
 
-	elseif ( -- character hit by vehicle
-	event.cause
+	elseif (settings.global["RTVehicleCharacterKnockback"].value == true) -- character hit by vehicle
+	and (event.cause
 	and (event.cause.type == "locomotive"
 		or event.cause.type == "cargo-wagon"
 		or event.cause.type == "fluid-wagon"

@@ -21,6 +21,7 @@ require('util')
 -- generalize player launching with custom path ✅
 -- better unloading of impact wagons at non-cardinal angles ✅
 -- messages when toggling stuff ✅
+-- zipline path to furthest connection ✅
 
 ------- New stuff
 -- trapdoor wagon ✅
@@ -35,6 +36,7 @@ require('util')
 	-- not placable in space ✅
 	-- seal 1 stack of an item into a shell ✅
 		-- procedural recipe/shell for every game item. Failsafe for items loaded after ✅
+		-- Item shell packer
 	-- can bounce off of reinforced plates that can be rotated to face the 4 cardinal directions. up/down and left/right are basically the same thing for this ✅
 	-- falls to the ground if nothing hit after X tiles ✅
 		-- damages things in a small area ✅
@@ -54,9 +56,9 @@ require('util')
 	-- include terminal list pop up ✅
 	-- pentapod egg for SA, fish for vanilla ✅
 -- techs for the above
-	-- nauvis: belt ramp, vacuum hatch
+	-- nauvis: belt ramp, vacuum hatch ✅
 	-- Fulgora: item cannon, ricochet panels, chutes
-	-- Gleba: AI zipline controller, primer throwers
+	-- Gleba: AI zipline controller, primer throwers ✅
 	-- Vulcanus: trapdoor wagon and switches and switch ramps
 	-- Aquilo: nothing yet
 	-- check with vanilla start
@@ -64,7 +66,7 @@ require('util')
 	-- items in destroyed chests/containers fly out ✅
 	-- getting hit by a train/car knocks you away assuming you survive the hit ✅
 	-- items on the floor of a space platform fly away when the ship takes off ✅
-	-- settings to turn these off
+	-- settings to turn these off ✅
 
 ------- bugs
 -- crash on interact to toggle things not currently enabled ✅
@@ -122,7 +124,8 @@ script.on_event(
 
 script.on_event(defines.events.on_entity_died ,
 function(event)
-	if (event.entity.type == "container"
+	if settings.global["RTChestPop"].value == true
+	and (event.entity.type == "container"
 	or event.entity.type == "logistic-container"
 	or event.entity.type == "cargo-wagon"
 	or event.entity.type == "car") then

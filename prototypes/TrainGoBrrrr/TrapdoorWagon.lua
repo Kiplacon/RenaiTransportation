@@ -341,31 +341,37 @@ data:extend({
 			time = 20
 		}
 	},
-	{
-		type = "technology",
-		name = "RTSwitchRampTech",
-		icon = "__RenaiTransportation__/graphics/tech/SwitchRampTech.png",
-		icon_size = 128,
-		effects =
-		{
-			{
-				type = "unlock-recipe",
-				recipe = "RTMagnetSwitchTrainRampRecipe"
-			},
-			{
-				type = "unlock-recipe",
-				recipe = "RTSwitchTrainRampRecipe"
-			},
-		},
-		prerequisites = {"RTMagnetTrainRamps", "RTTrapdoorWagonTech"},
-		unit =
-		{
-			count = 50,
-			ingredients =
-			{
-				{"automation-science-pack", 1},
-			},
-			time = 20
-		}
-	}
+
 })
+
+if (settings.startup["RTTrapdoorSetting"].value == true) then
+	data:extend({
+		{
+			type = "technology",
+			name = "RTSwitchRampTech",
+			icon = "__RenaiTransportation__/graphics/tech/SwitchRampTech.png",
+			icon_size = 128,
+			effects =
+			{
+				{
+					type = "unlock-recipe",
+					recipe = "RTMagnetSwitchTrainRampRecipe"
+				},
+				{
+					type = "unlock-recipe",
+					recipe = "RTSwitchTrainRampRecipe"
+				},
+			},
+			prerequisites = {"RTMagnetTrainRamps", "RTTrapdoorWagonTech"},
+			unit =
+			{
+				count = 50,
+				ingredients =
+				{
+					{"automation-science-pack", 1},
+				},
+				time = 20
+			}
+		}
+	})
+end
