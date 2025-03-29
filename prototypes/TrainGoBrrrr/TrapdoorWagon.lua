@@ -1,5 +1,5 @@
 local OhYouLikeTrains = table.deepcopy(data.raw["cargo-wagon"]["cargo-wagon"])
-local color = {1,1,0}
+local color = {135,120,255}
 OhYouLikeTrains.name = "RTTrapdoorWagon"
 OhYouLikeTrains.icons =
 {

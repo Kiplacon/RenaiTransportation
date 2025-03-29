@@ -46,7 +46,7 @@ data:extend({
         subgroup = "RT",
         order = "f-c",
         place_result = "RTItemCannon",
-        stack_size = 50
+        stack_size = 5
     },
 
 
@@ -55,12 +55,12 @@ data:extend({
         name = "RTItemCannonChest",
         icon = "__base__/graphics/icons/iron-chest.png",
         flags = {"placeable-neutral", "not-on-map", "not-blueprintable", "not-deconstructable", "placeable-off-grid", "hide-alt-info"},
-        hidden = true,
+        --hidden = true,
         max_health = 42069,
         collision_box = {{-1.4, -1.4}, {1.4, 1.4}},
         collision_mask = {layers={}},
-        inventory_size = 1,
-        inventory_type = "normal",
+        inventory_size = 2,
+        inventory_type = "with_filters_and_bar",
     },
 
 
@@ -74,7 +74,7 @@ data:extend({
 		},
 		subgroup = "RT",
 		order = "f-b",
-		stack_size = 1
+		stack_size = 50
 	},
     { --------- recipe ----------
         type = "recipe",
@@ -91,10 +91,24 @@ data:extend({
     },
 
 
-    {
+    --[[ {
         type = "recipe-category",
         name = "RTItemShellPacking"
     },
+    {
+        type = "item-group",
+        name = "RTItemShellPacking",
+        icons = {
+            {icon = "__RenaiTransportation__/graphics/ItemCannon/EmptyItemShell.png"},
+            {icon = "__RenaiTransportation__/graphics/ItemCannon/LoadShellGroupIcon.png"}
+        },
+        order = "cc"
+    },
+    {
+        type = "item-subgroup",
+        name = "RTItemShellPacking",
+        group = "RTItemShellPacking"
+    }, ]]
     { -- the impact effect of a shell hitting the ground
         type = "projectile",
         name = "RTItemShellImpact",
@@ -149,7 +163,6 @@ data:extend({
             }
         },
     },
-
     {
         type = "projectile",
         name = "RTItemShell".."LaserPointer".."-Q-".."normal",

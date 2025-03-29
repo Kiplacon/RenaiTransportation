@@ -35,21 +35,6 @@ data.extend({
             --}
         }
     },
-    { --------- recipe ----------
-        type = "recipe",
-        name = "RTCatchingChuteRecipe",
-        enabled = false,
-        energy_required = 1,
-        ingredients =
-            {
-                {type="item", name="HatchRTItem", amount=1},
-                {type="item", name="pump", amount=1},
-                {type="item", name="electronic-circuit", amount=2}
-            },
-        results = {
-            {type="item", name="RTCatchingChuteItem", amount=1}
-        }
-    },
     { --------- item -------------
         type = "item",
         name = "RTCatchingChuteItem",
@@ -95,21 +80,6 @@ data.extend({
                 priority = "high",
                 scale = 0.5
             }
-        }
-    },
-    { --------- recipe ----------
-        type = "recipe",
-        name = "RTDivergingChuteRecipe",
-        enabled = false,
-        energy_required = 1,
-        ingredients =
-            {
-                {type="item", name="HatchRTItem", amount=1},
-                {type="item", name="pump", amount=1},
-                {type="item", name="electronic-circuit", amount=2}
-            },
-        results = {
-            {type="item", name="RTDivergingChuteItem", amount=1}
         }
     },
     { --------- item -------------
@@ -159,21 +129,7 @@ data.extend({
             }
         }
     },
-    { --------- recipe ----------
-        type = "recipe",
-        name = "RTMergingChuteRecipe",
-        enabled = false,
-        energy_required = 1,
-        ingredients =
-            {
-                {type="item", name="HatchRTItem", amount=1},
-                {type="item", name="pump", amount=1},
-                {type="item", name="electronic-circuit", amount=2}
-            },
-        results = {
-            {type="item", name="RTMergingChuteItem", amount=1}
-        }
-    },
+
     { --------- item -------------
         type = "item",
         name = "RTMergingChuteItem",
@@ -206,4 +162,52 @@ data.extend({
 			count_already_playing = true
 		}
     }
+})
+
+data:extend({
+    { --------- recipe ----------
+        type = "recipe",
+        name = "RTCatchingChuteRecipe",
+        enabled = false,
+        energy_required = 1,
+        ingredients =
+            {
+                {type="item", name="RTRicochetPanelItem", amount=4},
+                {type="item", name="steel-chest", amount=1},
+                {type="item", name="steel-plate", amount=20},
+            },
+        results = {
+            {type="item", name="RTCatchingChuteItem", amount=1}
+        }
+    },
+    { --------- recipe ----------
+        type = "recipe",
+        name = "RTMergingChuteRecipe",
+        enabled = false,
+        energy_required = 1,
+        ingredients =
+            {
+                {type="item", name="RTCatchingChuteItem", amount=1},
+                {type="item", name="HatchRTItem", amount=3},
+                {type="item", name="RTThrower-EjectorHatchRTItem", amount=1},
+            },
+        results = {
+            {type="item", name="RTMergingChuteItem", amount=1}
+        }
+    },
+    { --------- recipe ----------
+        type = "recipe",
+        name = "RTDivergingChuteRecipe",
+        enabled = false,
+        energy_required = 1,
+        ingredients =
+            {
+                {type="item", name="RTCatchingChuteItem", amount=1},
+                {type="item", name="HatchRTItem", amount=1},
+                {type="item", name="RTThrower-EjectorHatchRTItem", amount=2},
+            },
+        results = {
+            {type="item", name="RTDivergingChuteItem", amount=1}
+        }
+    },
 })

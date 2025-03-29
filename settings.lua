@@ -30,6 +30,13 @@ data:extend({
 },
 {
 	type = "bool-setting",
+	name = "RTItemCannonSetting",
+	setting_type = "startup",
+	default_value = true,
+	order = "cc"
+},
+{
+	type = "bool-setting",
 	name = "RTTrainRampSetting",
 	setting_type = "startup",
 	default_value = true,
@@ -56,13 +63,7 @@ data:extend({
 	default_value = true,
 	order = "f"
 },
-{
-	type = "bool-setting",
-	name = "RTItemCannonSetting",
-	setting_type = "startup",
-	default_value = true,
-	order = "g"
-},
+
 {
 	type = "bool-setting",
 	name = "RTZiplineSetting",

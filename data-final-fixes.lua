@@ -204,7 +204,7 @@ function MakeItemShellStuff(ThingData)
 			}
 		})
 	end
-	local TheItemShellItem =
+	--[[ local TheItemShellItem =
 	{
 		type = "item",
 		name = "RTItemShell"..ThingData.name,
@@ -212,17 +212,19 @@ function MakeItemShellStuff(ThingData)
 		{
 			{icon = "__RenaiTransportation__/graphics/ItemCannon/EmptyItemShell.png"}
 		},
-		subgroup = "RT",
-		order = "f-b",
+		subgroup = "RTItemShellPacking",
+		--order = "a",
 		stack_size = 1
 	}
 	local TheItemShellRecipe =
 	{
 		type = "recipe",
 		name = "RTItemShellRecipe"..ThingData.name,
+		localised_name = {"recipe-name.PackItemShell", {"item-name."..ThingData.name}},
 		enabled = true,
 		energy_required = 1,
 		category = "RTItemShellPacking",
+		subgroup = "RTItemShellPacking",
 		hide_from_player_crafting = true,
 		ingredients =
 			{
@@ -243,16 +245,6 @@ function MakeItemShellStuff(ThingData)
 			if (iconspecs.tint) then
 				rrrr = iconspecs.tint
 			end
-			--[[ table.insert(TheItemShell.animation.layers,
-			{
-				filename = iconspecs.icon,
-				line_length = 1,
-				frame_count = 1,
-				priority = "high",
-				scale = 19.2/eeee,
-				size = eeee,
-				tint = rrrr
-			}) ]]
 			table.insert(TheItemShellItem.icons,
 			{
 				icon = iconspecs.icon,
@@ -271,16 +263,6 @@ function MakeItemShellStuff(ThingData)
 		if (ThingData.tint) then
 			rrrr = ThingData.tint
 		end
-		--[[ table.insert(TheItemShell.animation.layers,
-		{
-			filename = ThingData.icon,
-			line_length = 1,
-			frame_count = 1,
-			priority = "high",
-			scale = 19.2/eeee,
-			size = eeee,
-			tint = rrrr
-		}) ]]
 		table.insert(TheItemShellItem.icons,
 		{
 			icon = ThingData.icon,
@@ -290,7 +272,7 @@ function MakeItemShellStuff(ThingData)
 			shift = {-7, 10}
 		})
 	end
-	data:extend({TheItemShellItem, TheItemShellRecipe})
+	data:extend({TheItemShellItem, TheItemShellRecipe}) ]]
 end
 
 function MakePrimedProjectile(ThingData, ProjectileType)-------------------------------------------
@@ -930,7 +912,7 @@ end
 -- item cannon shell projectils
 for Category, ThingsTable in pairs(data.raw) do
 	for ThingID, ThingData in pairs(ThingsTable) do
-		if (ThingData.stack_size and not string.find(ThingID, "RTItemShell")) then
+		if (ThingData.stack_size and ThingData.hidden ~= true and ThingData.parameter ~= true and not string.find(ThingID, "RTItemShell")) then
 			log("==========Creating item cannon projectile for "..ThingData.type..": "..ThingData.name.."===========")
 			MakeItemShellStuff(table.deepcopy(ThingData))
 		end

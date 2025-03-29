@@ -40,21 +40,6 @@ data.extend({
             }
         }
     },
-    { --------- recipe ----------
-        type = "recipe",
-        name = "RTRicochetPanelRecipe",
-        enabled = false,
-        energy_required = 1,
-        ingredients =
-            {
-                {type="item", name="HatchRTItem", amount=1},
-                {type="item", name="pump", amount=1},
-                {type="item", name="electronic-circuit", amount=2}
-            },
-        results = {
-            {type="item", name="RTRicochetPanelItem", amount=1}
-        }
-    },
     { --------- item -------------
         type = "item",
         name = "RTRicochetPanelItem",
@@ -77,3 +62,41 @@ data.extend({
 		}
     }
 })
+
+if (data.raw.item["supercapacitor"] and data.raw.tool["electromagnetic-science-pack"]) then
+    data:extend({
+        { --------- recipe ----------
+        type = "recipe",
+        name = "RTRicochetPanelRecipe",
+        enabled = false,
+        energy_required = 1,
+        ingredients =
+            {
+                {type="item", name="steel-plate", amount=10},
+                {type="item", name="supercapacitor", amount=1},
+                {type="item", name="processing-unit", amount=2}
+            },
+        results = {
+            {type="item", name="RTRicochetPanelItem", amount=1}
+        }
+    },
+    })
+else
+    data:extend({
+        { --------- recipe ----------
+        type = "recipe",
+        name = "RTRicochetPanelRecipe",
+        enabled = false,
+        energy_required = 1,
+        ingredients =
+            {
+                {type="item", name="steel-plate", amount=10},
+                {type="item", name="accumulator", amount=1},
+                {type="item", name="advanced-circuit", amount=2}
+            },
+        results = {
+            {type="item", name="RTRicochetPanelItem", amount=1}
+        }
+    },
+    })
+end

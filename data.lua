@@ -21,6 +21,11 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 			require("prototypes.TrainGoBrrrr.PayloadWagon")
 		end
 	end
+	if (settings.startup["RTItemCannonSetting"].value == true) then
+		require("prototypes.ItemCannon.RicochetPanel")
+		require("prototypes.ItemCannon.ItemCannon")
+		require("prototypes.ItemCannon.chutes")
+	end
 end
 
 if (settings.startup["RTTrainRampSetting"].value == true) then
@@ -42,12 +47,6 @@ end
 
 if (settings.startup["RTTrapdoorSetting"].value == true) then
 	require("prototypes.TrainGoBrrrr.TrapdoorWagon")
-end
-
-if (settings.startup["RTItemCannonSetting"].value == true) then
-	require("prototypes.ItemCannon.RicochetPanel")
-	require("prototypes.ItemCannon.ItemCannon")
-	require("prototypes.ItemCannon.chutes")
 end
 
 

@@ -245,7 +245,7 @@ local function entity_built(event)
 				sprite = "RTTrapdoorWagonClosed",
 				target = entity,
 				surface = entity.surface,
-				only_in_alt_mode = true
+				--only_in_alt_mode = true
 			}
 	elseif (string.find(entity.name, '^RT') and string.find(entity.name, "BeltRamp")) then
 		local ranges = {["RTBeltRamp"]=10, ["RTfastBeltRamp"]=20, ["RTexpressBeltRamp"]=30, ["RTturboBeltRamp"]=40}
@@ -300,6 +300,7 @@ local function entity_built(event)
 			create_build_effect_smoke = false
 		}
 		chest.destructible = false
+		chest.get_output_inventory().set_filter(2, {name="RTItemShellItem"})
 		storage.ItemCannons[script.register_on_object_destroyed(entity)].chest = chest
 	end
 end
