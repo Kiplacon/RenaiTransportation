@@ -5,14 +5,22 @@ end
 
 data.extend({
     { --------- entity
-        type = "simple-entity-with-owner",
+        type = "electric-energy-interface",
         name = "RTRicochetPanel",
         icon = "__RenaiTransportation__/graphics/ItemCannon/RicochetPanelIcon.png",
         icon_size = 128,
         flags = {"placeable-neutral", "player-creation"},
         minable = {mining_time = 0.2, result = "RTRicochetPanelItem"},
         hidden = true,
-        max_health = 420,
+        max_health = 250,
+        energy_source =
+		{
+			type = "electric",
+			usage_priority = "secondary-input",
+			buffer_capacity = "1MJ",
+            drain = "25kW"
+		},
+        gui_mode = "none",
         collision_box = {{-0.45, -0.2}, {0.45, 0.2}},
         selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
         resistances = {
@@ -29,7 +37,7 @@ data.extend({
                 percent = 50
             },
         },
-        picture = {
+        pictures = {
             sheet = {
                 filename = "__RenaiTransportation__/graphics/ItemCannon/RicochetPanel.png",
                 shift = {0, -0.6},

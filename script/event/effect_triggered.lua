@@ -109,48 +109,61 @@ local function effect_triggered(event)
 		local inserted = 0
 		local debris = true
 		local speed = storage.ItemCannonSpeed
+		local LaserPointer = false
 		if (ItemName == "LaserPointer") then
 			speed = 0.75
+			LaserPointer = true
 		end
 		if (event.target_entity) then
 			local HitEntity = event.target_entity
 			if (HitEntity.name == "RTRicochetPanel") then
-				-- the following code was brought to you by ChatGPT cause im way too dumb to come up with this but basically it reflects the item shell off the panel in an angle in = angle out way based on whether the panel is vertical or horizontal. It's actually good enough to handle the panel being at any angle but that sounds like a pain to actually use in game
-					local start = event.source_position
-					local HitPosition = event.target_position
-					local object = HitEntity
-					-- positions
-					local p_x, p_y = start.x, start.y
-					local o_x, o_y = HitPosition.x, HitPosition.y
-					local PanelOrientation = object.orientation  -- [0, 1)
-					-- 1) Compute the projectile's incoming direction (v_x, v_y).
-					--    Let's assume we want center-to-center for simplicity:
-					local v_x = o_x - p_x
-					local v_y = o_y - p_y
-					local v_len = math.sqrt(v_x*v_x + v_y*v_y)
-					if v_len > 0 then
-						v_x = v_x / v_len
-						v_y = v_y / v_len
+				if (HitEntity.energy/HitEntity.electric_buffer_size > 0.75) then
+					-- the following code was brought to you by ChatGPT cause im way too dumb to come up with this but basically it reflects the item shell off the panel in an angle in = angle out way based on whether the panel is vertical or horizontal. It's actually good enough to handle the panel being at any angle but that sounds like a pain to actually use in game
+						local start = event.source_position
+						local HitPosition = event.target_position
+						local object = HitEntity
+						-- positions
+						local p_x, p_y = start.x, start.y
+						local o_x, o_y = HitPosition.x, HitPosition.y
+						local PanelOrientation = object.orientation  -- [0, 1)
+						-- 1) Compute the projectile's incoming direction (v_x, v_y).
+						--    Let's assume we want center-to-center for simplicity:
+						local v_x = o_x - p_x
+						local v_y = o_y - p_y
+						local v_len = math.sqrt(v_x*v_x + v_y*v_y)
+						if v_len > 0 then
+							v_x = v_x / v_len
+							v_y = v_y / v_len
+						end
+						-- 2) Compute the normal from Factorio orientation
+						local theta = 2 * math.pi * PanelOrientation
+						local n_x = math.cos(theta - math.pi/2)
+						local n_y = math.sin(theta - math.pi/2)
+						-- 3) Reflect v about n
+						local dot = (v_x * n_x) + (v_y * n_y)
+						local r_x = v_x - 2 * dot * n_x
+						local r_y = v_y - 2 * dot * n_y
+						-- r_x, r_y now points in the bounced (reflected) direction.
+					surface.create_entity
+					{
+						name=event.effect_id,
+						source = HitEntity,
+						position = HitPosition,
+						target = OffsetPosition(HitPosition, {100*r_x, 100*r_y}),
+						speed=speed,
+						max_range = 100
+					}
+					if (not LaserPointer) then
+						HitEntity.energy = 0
 					end
-					-- 2) Compute the normal from Factorio orientation
-					local theta = 2 * math.pi * PanelOrientation
-					local n_x = math.cos(theta - math.pi/2)
-					local n_y = math.sin(theta - math.pi/2)
-					-- 3) Reflect v about n
-					local dot = (v_x * n_x) + (v_y * n_y)
-					local r_x = v_x - 2 * dot * n_x
-					local r_y = v_y - 2 * dot * n_y
-					-- r_x, r_y now points in the bounced (reflected) direction.
-				surface.create_entity
-				{
-					name=event.effect_id,
-					source = HitEntity,
-					position = HitPosition,
-					target = OffsetPosition(HitPosition, {100*r_x, 100*r_y}),
-					speed=speed,
-					max_range = 100
-				}
-			elseif (HitEntity.name == "RTCatchingChute" and ItemName ~= "LaserPointer") then
+				else
+					eject = true
+					--debris = false
+					if (not LaserPointer) then
+						HitEntity.die()
+					end
+				end
+			elseif (HitEntity.name == "RTCatchingChute" and not LaserPointer) then
 				surface.play_sound
 				{
 					path = "RTClunk",
@@ -162,51 +175,80 @@ local function effect_triggered(event)
 					debris = false
 				end
 			elseif (HitEntity.name == "RTMergingChute") then
-				local OutVector = storage.ChuteOrientationComponents[HitEntity.orientation]
-				surface.create_entity
-				{
-					name=event.effect_id,
-					source = HitEntity,
-					position = HitEntity.position,
-					target = OffsetPosition(HitEntity.position, {100*OutVector.x, 100*OutVector.y}),
-					speed=speed,
-					max_range = 100
-				}
-			elseif (HitEntity.name == "RTDivergingChute") then
-				local start = event.source_position
-				local HitPosition = event.target_position
-				local deltaX = HitPosition.x - start.x
-				local deltaY = HitPosition.y - start.y
-				local angle = math.atan2(deltaY, deltaX) - 3*math.pi/4 -- to align with the 45 degree tilt of the chute
-				local ProjectileOrientation = (angle / (2 * math.pi)) % 1
-				--game.print(ProjectileOrientation.." | "..HitEntity.orientation)
-				--if (math.floor((ProjectileOrientation*100) + 0.5) == math.floor((HitEntity.orientation*100) + 0.5)) then
-				if (ProjectileOrientation == HitEntity.orientation) then
-					local OutX = storage.ChuteOrientationComponents[HitEntity.orientation].x
-					local OutY = storage.ChuteOrientationComponents[HitEntity.orientation].y
-					-- flips either X or Y direction to bounce out one way or the other. destructible isn't relavent 99% of the time so i use it to track the direction it deflected last
-					if (HitEntity.destructible) then
-						OutX = -OutX
-						HitEntity.destructible = false
+				if (HitEntity.energy/HitEntity.electric_buffer_size > 0.75) then
+					local start = event.source_position
+					local HitPosition = event.target_position
+					local deltaX = HitPosition.x - start.x
+					local deltaY = HitPosition.y - start.y
+					local angle = math.atan2(deltaY, deltaX) - 3*math.pi/4 -- to align with the 45 degree tilt of the chute
+					local ProjectileOrientation = (angle / (2 * math.pi)) % 1
+					if (ProjectileOrientation ~= HitEntity.orientation and (ProjectileOrientation+0.5)%1 ~= HitEntity.orientation) then
+						local OutVector = storage.ChuteOrientationComponents[HitEntity.orientation]
+						surface.create_entity
+						{
+							name=event.effect_id,
+							source = HitEntity,
+							position = HitEntity.position,
+							target = OffsetPosition(HitEntity.position, {100*OutVector.x, 100*OutVector.y}),
+							speed=speed,
+							max_range = 100
+						}
+						if (not LaserPointer) then
+							HitEntity.energy = 0
+						end
 					else
-						OutY = -OutY
-						HitEntity.destructible = true
+						eject = true
+						debris = false
 					end
-					surface.create_entity
-					{
-						name=event.effect_id,
-						source = HitEntity,
-						position = HitEntity.position,
-						target = OffsetPosition(HitEntity.position, {100*OutX, 100*OutY}),
-						speed=speed,
-						max_range = 100
-					}
-					
 				else
 					eject = true
-					debris = false
+					if (not LaserPointer) then
+						HitEntity.die()
+					end
 				end
-				
+			elseif (HitEntity.name == "RTDivergingChute") then
+				if (HitEntity.energy/HitEntity.electric_buffer_size > 0.75) then
+					local start = event.source_position
+					local HitPosition = event.target_position
+					local deltaX = HitPosition.x - start.x
+					local deltaY = HitPosition.y - start.y
+					local angle = math.atan2(deltaY, deltaX) - 3*math.pi/4 -- to align with the 45 degree tilt of the chute
+					local ProjectileOrientation = (angle / (2 * math.pi)) % 1
+					--game.print(ProjectileOrientation.." | "..HitEntity.orientation)
+					--if (math.floor((ProjectileOrientation*100) + 0.5) == math.floor((HitEntity.orientation*100) + 0.5)) then
+					if (ProjectileOrientation == HitEntity.orientation) then
+						local OutX = storage.ChuteOrientationComponents[HitEntity.orientation].x
+						local OutY = storage.ChuteOrientationComponents[HitEntity.orientation].y
+						-- flips either X or Y direction to bounce out one way or the other. destructible isn't relavent 99% of the time so i use it to track the direction it deflected last
+						if (HitEntity.destructible) then
+							OutX = -OutX
+							HitEntity.destructible = false
+						else
+							OutY = -OutY
+							HitEntity.destructible = true
+						end
+						surface.create_entity
+						{
+							name=event.effect_id,
+							source = HitEntity,
+							position = HitEntity.position,
+							target = OffsetPosition(HitEntity.position, {100*OutX, 100*OutY}),
+							speed=speed,
+							max_range = 100
+						}
+						if (not LaserPointer) then
+							HitEntity.energy = 0
+						end
+					else
+						eject = true
+						debris = false
+					end
+				else
+					eject = true
+					if (not LaserPointer) then
+						HitEntity.die()
+					end
+				end
 			else
 				eject = true
 			end

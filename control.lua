@@ -552,7 +552,8 @@ function(event)
 			or selected.name == "RTMagnetRampDrain"
 			or selected.name == "RTBouncePlate"
 			or selected.name == "DirectedBouncePlate"
-			or selected.name == "PlayerLauncher") then
+			or selected.name == "PlayerLauncher"
+			or selected.name == "RTRicochetPanel") then
 			player.opened = nil
 
 		elseif (selected.name == "DirectorBouncePlate") then

@@ -14,7 +14,7 @@ data:extend({
         icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
         flags = {"placeable-neutral", "player-creation"},
         minable = {mining_time = 0.2, result = "RTItemCannonItem"},
-        max_health = 420,
+        max_health = 500,
         energy_source =
 		{
 			type = "electric",

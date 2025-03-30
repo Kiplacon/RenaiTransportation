@@ -15,7 +15,7 @@ local function PersonalFitness(event)
                 else
                     ItemCannonProperties.timeout = ItemCannonProperties.timeout - increment
                 end
-            elseif (ItemCannonProperties.entity.valid) then
+            elseif (ItemCannonProperties.entity.valid and ItemCannonProperties.entity.energy == ItemCannonProperties.entity.electric_buffer_size) then
                 local slot1 = ItemCannonProperties.chest.get_output_inventory()[1]
                 local slot2 = ItemCannonProperties.chest.get_output_inventory()[2]
                 if (slot2.valid_for_read
@@ -49,6 +49,7 @@ local function PersonalFitness(event)
                         if (ItemCannonProperties.CantLoad) then
                             ItemCannonProperties.CantLoad.visible = false
                         end
+                        ItemCannonProperties.entity.energy = 0
                     else
                         if (ItemCannonProperties.CantLoad == nil) then
                             ItemCannonProperties.CantLoad = rendering.draw_text
