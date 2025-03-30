@@ -32,11 +32,10 @@ require('util')
 	-- trapdoor open/close sound ✅
 	-- trapdoor open/close graphic ✅
 	-- trapdoor toggles when stopping/leaving a station with a certain signal fed into it ✅
--- electromagnetic item cannon (rail gun)?
+-- electromagnetic item cannon (rail gun)? ✅
 	-- not placable in space ✅
 	-- seal 1 stack of an item into a shell ✅
 		-- procedural recipe/shell for every game item. Failsafe for items loaded after ✅
-		-- Item shell packer
 	-- can bounce off of reinforced plates that can be rotated to face the 4 cardinal directions. up/down and left/right are basically the same thing for this ✅
 	-- falls to the ground if nothing hit after X tiles ✅
 		-- damages things in a small area ✅
@@ -55,13 +54,13 @@ require('util')
 -- dynamic zipline, get on from anywhere and autodrive anywhere ✅
 	-- include terminal list pop up ✅
 	-- pentapod egg for SA, fish for vanilla ✅
--- techs for the above
+-- techs for the above ✅
 	-- nauvis: belt ramp, vacuum hatch ✅
-	-- Fulgora: item cannon, ricochet panels, chutes
+	-- Fulgora: item cannon, ricochet panels, chutes ✅
 	-- Gleba: AI zipline controller, primer throwers ✅
 	-- Vulcanus: trapdoor wagon and switches and switch ramps ✅
 	-- Aquilo: nothing yet
-	-- check with vanilla start
+	-- check with vanilla start ✅
 -- straight up grief ✅
 	-- items in destroyed chests/containers fly out ✅
 	-- getting hit by a train/car knocks you away assuming you survive the hit ✅
@@ -382,7 +381,7 @@ script.on_event(defines.events.on_selected_entity_changed,
 --last_entity	:: LuaEntity?	The last selected entity if it still exists and there was one.
 function(event)
 	local player = game.players[event.player_index]
-	--hide the old one
+	--[[ --hide the old one
 	if (event.last_entity
 	and storage.HoverGFX[script.register_on_object_destroyed(event.last_entity)]
 	and storage.HoverGFX[script.register_on_object_destroyed(event.last_entity)][event.player_index]) then
@@ -393,7 +392,7 @@ function(event)
 	and storage.HoverGFX[script.register_on_object_destroyed(player.selected)]
 	and storage.HoverGFX[script.register_on_object_destroyed(player.selected)][event.player_index]) then
 		storage.HoverGFX[script.register_on_object_destroyed(player.selected)][event.player_index].visible = true
-	end
+	end ]]
 
 	--hide the old one
 	if (event.last_entity
@@ -616,7 +615,12 @@ script.on_event(
 defines.events.on_player_mined_entity,
 function(event)
 	local player = game.players[event.player_index]
-	if (player.character and player.character.character_mining_speed_modifier > 0.1 and string.find(event.entity.name, "HatchRT")) then
+	if (player.character and player.character.character_mining_speed_modifier > 0.1 
+	and (
+			string.find(event.entity.name, "HatchRT")
+			or event.entity.name == "RTTrapdoorSwitch"
+		)
+	) then
 		local back = player.character.character_mining_speed_modifier
 		if (storage.clock[game.tick+30] == nil) then
 			storage.clock[game.tick+30] = {MiningSpeedRevert={}}

@@ -336,6 +336,7 @@ function ToggleTrapdoorWagon(WagonEntity)
         storage.TrapdoorWagonsClosed[DestroyNumber].OpenIndicator.sprite = "RTTrapdoorWagonOpen"
         --storage.TrapdoorWagonsClosed[DestroyNumber].open = true
         storage.TrapdoorWagonsOpen[DestroyNumber], storage.TrapdoorWagonsClosed[DestroyNumber] = storage.TrapdoorWagonsClosed[DestroyNumber], nil
+        storage.TrapdoorWagonsOpen[DestroyNumber].timeout = nil
         WagonEntity.surface.play_sound{path="RTTrapdoorOpenSound", position=WagonEntity.position}
     end
 end

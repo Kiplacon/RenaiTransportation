@@ -48,8 +48,8 @@ OhYouLikeTrains,
 			tint = {220,150,50}
 		}
 	},
-	subgroup = "train-transport",
-	order = "aj",
+	subgroup = "RTTrainStuff",
+	order = "f",
 	place_result = "RTPayloadWagon",
 	stack_size = 5
 },

@@ -43,8 +43,8 @@ data:extend({
         type = "item",
         name = "RTItemCannonItem",
         icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
-        subgroup = "RT",
-        order = "f-c",
+        subgroup = "RTCannonStuff",
+        order = "a",
         place_result = "RTItemCannon",
         stack_size = 5
     },
@@ -55,7 +55,8 @@ data:extend({
         name = "RTItemCannonChest",
         icon = "__base__/graphics/icons/iron-chest.png",
         flags = {"placeable-neutral", "not-on-map", "not-blueprintable", "not-deconstructable", "placeable-off-grid", "hide-alt-info"},
-        --hidden = true,
+        hidden = true,
+        quality_affects_inventory_size = false,
         max_health = 42069,
         collision_box = {{-1.4, -1.4}, {1.4, 1.4}},
         collision_mask = {layers={}},
@@ -72,9 +73,9 @@ data:extend({
 		{
 			{icon = "__RenaiTransportation__/graphics/ItemCannon/EmptyItemShell.png"}
 		},
-		subgroup = "RT",
-		order = "f-b",
-		stack_size = 50
+		subgroup = "RTCannonStuff",
+		order = "ab",
+		stack_size = 20
 	},
     { --------- recipe ----------
         type = "recipe",
@@ -182,7 +183,7 @@ data:extend({
                     tint = {1,0,0,0.5},
                     frame_count = 1,
                     priority = "high",
-                    scale = 0.25
+                    scale = 0.1
                 },
             }
         },

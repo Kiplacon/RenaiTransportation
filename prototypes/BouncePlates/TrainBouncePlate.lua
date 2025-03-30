@@ -48,8 +48,8 @@ data:extend({
 		name = "RTTrainBouncePlateItem",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/TrainBouncePlate/TrainPlate.png",
 		icon_size = 64, --icon_mipmaps = 4,
-		subgroup = "RT",
-		order = "i",
+		subgroup = "RTTrainStuff",
+		order = "da",
 		place_result = "RTTrainBouncePlate",
 		stack_size = 50
 	},
@@ -117,8 +117,8 @@ data:extend({
 		name = "RTTrainDirectedBouncePlateItem",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/TrainBouncePlate/DirectedTrainPlate.png",
 		icon_size = 64, --icon_mipmaps = 4,
-		subgroup = "RT",
-		order = "i-a",
+		subgroup = "RTTrainStuff",
+		order = "db",
 		place_result = "RTTrainDirectedBouncePlate",
 		stack_size = 50
 	},

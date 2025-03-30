@@ -60,8 +60,8 @@ brrr,
 	name = "RTZiplineItem",
 	icon = "__RenaiTransportation__/graphics/zipline/icon.png",
 	icon_size = 64,
-	subgroup = "gun",
-	order = "hh",
+	subgroup = "RTZiplineStuff",
+	order = "aa",
 	stack_size = 1,
    attack_parameters =
    {
@@ -80,8 +80,8 @@ brrr,
 	name = "RTZiplineControlsItem",
 	icon = "__RenaiTransportation__/graphics/zipline/controls.png",
 	icon_size = 64,
-	subgroup = "gun",
-	order = "hi",
+	subgroup = "RTZiplineStuff",
+	order = "ba",
 	stack_size = 1,
 	ammo_type =
    {
@@ -111,8 +111,8 @@ brrr,
 	name = "RTZiplineCrankControlsItem",
 	icon = "__RenaiTransportation__/graphics/zipline/crankcontrols.png",
 	icon_size = 64,
-	subgroup = "gun",
-	order = "hj",
+	subgroup = "RTZiplineStuff",
+	order = "bb",
 	stack_size = 1,
 	magazine_size = 1000,
 	ammo_type =
@@ -164,8 +164,8 @@ brrr,
 	name = "RTProgrammableZiplineControlsItem",
 	icon = "__RenaiTransportation__/graphics/zipline/autocontrols.png",
 	icon_size = 64,
-	subgroup = "gun",
-	order = "hk",
+	subgroup = "RTZiplineStuff",
+	order = "bc",
 	stack_size = 1,
 	ammo_type =
    {
@@ -301,8 +301,8 @@ data:extend({
             tint = {1,0.9,0},
          }
       },
-      subgroup = "gun",
-      order = "hha",
+      subgroup = "RTZiplineStuff",
+      order = "ab",
       stack_size = 1,
       attack_parameters =
       {
@@ -352,8 +352,8 @@ data:extend({
             tint = {255,35,35},
          }
       },
-      subgroup = "gun",
-      order = "hhb",
+      subgroup = "RTZiplineStuff",
+      order = "ac",
       stack_size = 1,
       attack_parameters =
       {
@@ -404,8 +404,8 @@ data:extend({
             tint = {18,201,233},
          }
       },
-      subgroup = "gun",
-      order = "hhc",
+      subgroup = "RTZiplineStuff",
+      order = "ad",
       stack_size = 1,
       attack_parameters =
       {
@@ -456,8 +456,8 @@ data:extend({
             tint = {83,255,26},
          }
       },
-      subgroup = "gun",
-      order = "hhd",
+      subgroup = "RTZiplineStuff",
+      order = "ae",
       stack_size = 1,
       attack_parameters =
       {
@@ -577,8 +577,8 @@ data:extend({
             tint = {0.5, 1, 0.5}
          }
       },
-      subgroup = "gun",
-      order = "hl",
+      subgroup = "RTZiplineStuff",
+      order = "bd",
       stack_size = 1,
       ammo_type =
       {

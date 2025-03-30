@@ -142,8 +142,8 @@ data:extend({
 				tint = color
 			}
 		},
-		subgroup = "train-transport",
-		order = "aj",
+		subgroup = "RTTrainStuff",
+		order = "ga",
 		place_result = "RTTrapdoorWagon",
 		stack_size = 5
 	},
@@ -253,8 +253,8 @@ data:extend({
 	name = "RTTrapdoorSwitchItem",
 	icon = "__RenaiTransportation__/graphics/TrapdoorSwitch/TrapdoorSwitchIcon.png",
 	icon_size = 64,
-	subgroup = "RT",
-	order = "g",
+	subgroup = "RTTrainStuff",
+	order = "gb",
 	place_result = "RTTrapdoorSwitch-placer",
 	stack_size = 10
 },

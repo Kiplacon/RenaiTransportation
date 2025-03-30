@@ -40,8 +40,8 @@ data.extend({
         name = "RTCatchingChuteItem",
         icon = "__RenaiTransportation__/graphics/ItemCannon/CatchingChute.png",
         icon_size = 128,
-        subgroup = "RT",
-        order = "f-c",
+        subgroup = "RTCannonStuff",
+        order = "d",
         place_result = "RTCatchingChute",
         stack_size = 50
     },
@@ -87,8 +87,8 @@ data.extend({
         name = "RTDivergingChuteItem",
         icon = "__RenaiTransportation__/graphics/ItemCannon/DivergingChuteIcon.png",
         icon_size = 64,
-        subgroup = "RT",
-        order = "f-c",
+        subgroup = "RTCannonStuff",
+        order = "db",
         place_result = "RTDivergingChute",
         stack_size = 50
     },
@@ -135,8 +135,8 @@ data.extend({
         name = "RTMergingChuteItem",
         icon = "__RenaiTransportation__/graphics/ItemCannon/MergingChuteIcon.png",
         icon_size = 64,
-        subgroup = "RT",
-        order = "f-c",
+        subgroup = "RTCannonStuff",
+        order = "da",
         place_result = "RTMergingChute",
         stack_size = 50
     },

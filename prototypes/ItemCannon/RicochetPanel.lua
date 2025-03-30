@@ -45,8 +45,8 @@ data.extend({
         name = "RTRicochetPanelItem",
         icon = "__RenaiTransportation__/graphics/ItemCannon/RicochetPanelIcon.png",
         icon_size = 128,
-        subgroup = "RT",
-        order = "f-c",
+        subgroup = "RTCannonStuff",
+        order = "c",
         place_result = "RTRicochetPanel",
         stack_size = 50
     },

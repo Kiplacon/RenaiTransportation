@@ -213,7 +213,7 @@ function CanFitThrownItem(stuff)
             if (TargetEntity.belt_shape == "straight" and total <= 8)
             or (TargetEntity.belt_shape ~= "straight" and total <= 7) then
                 CanFit = true
-                if (thrower) then
+                --[[ if (thrower) then
                     local ThrowerDestroyNumber = script.register_on_object_destroyed(thrower)
                     if (storage.HoverGFX[ThrowerDestroyNumber]) then
                         for playerID, graphic in pairs(storage.HoverGFX[ThrowerDestroyNumber]) do
@@ -221,10 +221,10 @@ function CanFitThrownItem(stuff)
                         end
                         storage.HoverGFX[ThrowerDestroyNumber] = {}
                     end
-                end
+                end ]]
             else
                 CanFit = false
-                if (thrower) then
+                --[[ if (thrower) then
                     local ThrowerDestroyNumber = script.register_on_object_destroyed(thrower)
                     if (storage.HoverGFX[ThrowerDestroyNumber] == nil) then
                         storage.HoverGFX[ThrowerDestroyNumber] = {}
@@ -248,7 +248,7 @@ function CanFitThrownItem(stuff)
                             }
                         end
                     end
-                end
+                end ]]
             end
         end
     else

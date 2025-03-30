@@ -51,8 +51,8 @@ OhYouLikeTrains,
 			tint = color
 		}
 	},
-	subgroup = "train-transport",
-	order = "aj",
+	subgroup = "RTTrainStuff",
+	order = "e",
 	place_result = "RTImpactWagon",
 	stack_size = 5
 },

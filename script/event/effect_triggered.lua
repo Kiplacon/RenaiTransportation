@@ -110,7 +110,7 @@ local function effect_triggered(event)
 		local debris = true
 		local speed = storage.ItemCannonSpeed
 		if (ItemName == "LaserPointer") then
-			speed = 1
+			speed = 0.75
 		end
 		if (event.target_entity) then
 			local HitEntity = event.target_entity
