@@ -334,6 +334,12 @@ if (data.raw.item["tungsten-plate"] and data.raw.tool["metallurgic-science-pack"
 					type = "unlock-recipe",
 					recipe = "RTTrapdoorSwitchRecipe"
 				},
+				{
+					type = "nothing",
+					effect_description = {"technology-description.TrapdoorSignal"},
+					icon = "__RenaiTransportation__/graphics/TrapdoorSignal.png",
+					icon_size = 64,
+				}
 			},
 			prerequisites = {"se-no", "railway", "tungsten-steel", "circuit-network"},
 			unit =
@@ -435,6 +441,12 @@ else
 					type = "unlock-recipe",
 					recipe = "RTTrapdoorSwitchRecipe"
 				},
+				{
+					type = "nothing",
+					effect_description = {"technology-description.TrapdoorSignal"},
+					icon = "__RenaiTransportation__/graphics/TrapdoorSignal.png",
+					icon_size = 64,
+				}
 			},
 			prerequisites = {"se-no", "railway", "circuit-network"},
 			unit =
