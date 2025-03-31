@@ -68,6 +68,30 @@ data.extend({
 			remove = true,
 			count_already_playing = true
 		}
+    },
+    {
+        type = "sound",
+        name = "RTRicochetPanelSpark",
+        variations={
+            {filename = "__RenaiTransportation__/sickw0bs/zap1.ogg"},
+            {filename = "__RenaiTransportation__/sickw0bs/zap2.ogg"},
+            {filename = "__RenaiTransportation__/sickw0bs/zap3.ogg"},
+        },
+        aggregation =
+		{
+			max_count = 2,
+			remove = true,
+			count_already_playing = true
+		}
+    },
+    {
+        type = "animation",
+        name = "RTRicochetPanelZap",
+        filename = "__base__/graphics/entity/accumulator/accumulator-charge.png",
+        size = {178, 210},
+        scale = 0.5,
+        frame_count = 24,
+        line_length = 6
     }
 })
 
@@ -77,12 +101,13 @@ if (data.raw.item["supercapacitor"] and data.raw.tool["electromagnetic-science-p
         type = "recipe",
         name = "RTRicochetPanelRecipe",
         enabled = false,
-        energy_required = 1,
+        energy_required = 2,
         ingredients =
             {
-                {type="item", name="steel-plate", amount=10},
+                {type="item", name="steel-plate", amount=20},
                 {type="item", name="supercapacitor", amount=1},
-                {type="item", name="processing-unit", amount=2}
+                {type="item", name="processing-unit", amount=2},
+                {type="item", name="copper-cable", amount=8}
             },
         results = {
             {type="item", name="RTRicochetPanelItem", amount=1}
@@ -95,12 +120,13 @@ else
         type = "recipe",
         name = "RTRicochetPanelRecipe",
         enabled = false,
-        energy_required = 1,
+        energy_required = 2,
         ingredients =
             {
-                {type="item", name="steel-plate", amount=10},
+                {type="item", name="steel-plate", amount=20},
                 {type="item", name="accumulator", amount=1},
-                {type="item", name="advanced-circuit", amount=2}
+                {type="item", name="advanced-circuit", amount=2},
+                {type="item", name="copper-cable", amount=8}
             },
         results = {
             {type="item", name="RTRicochetPanelItem", amount=1}

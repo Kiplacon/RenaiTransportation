@@ -155,6 +155,21 @@ local function effect_triggered(event)
 					}
 					if (not LaserPointer) then
 						HitEntity.energy = 0
+						surface.play_sound
+						{
+							path = "RTRicochetPanelSpark",
+							position = HitEntity.position,
+							volume_modifier = 0.5
+						}
+						rendering.draw_animation
+						{
+							animation = "RTRicochetPanelZap",
+							target = {entity=HitEntity, offset={0,-0.6}},
+							surface = HitEntity.surface,
+							time_to_live = 20,
+							x_scale = 0.4,
+							y_scale = 0.8,
+						}
 					end
 				else
 					eject = true

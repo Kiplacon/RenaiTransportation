@@ -84,7 +84,8 @@ data:extend({
         energy_required = 1,
         ingredients =
             {
-                {type="item", name="steel-plate", amount=10},
+                {type="item", name="barrel", amount=1},
+                {type="item", name="copper-cable", amount=4},
             },
         results = {
             {type="item", name="RTItemShellItem", amount=1}
@@ -212,7 +213,7 @@ if (data.raw.item["holmium-plate"] and data.raw.tool["electromagnetic-science-pa
             type = "recipe",
             name = "RTItemCannonRecipe",
             enabled = false,
-            energy_required = 1,
+            energy_required = 5,
             ingredients =
                 {
                     {type="item", name="refined-concrete", amount=100},
@@ -301,7 +302,7 @@ else
             type = "recipe",
             name = "RTItemCannonRecipe",
             enabled = false,
-            energy_required = 1,
+            energy_required = 5,
             ingredients =
                 {
                     {type="item", name="refined-concrete", amount=100},

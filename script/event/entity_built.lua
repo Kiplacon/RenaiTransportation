@@ -272,6 +272,8 @@ local function entity_built(event)
 			surface = entity.surface,
 			target = {entity=entity, offset={3*storage.OrientationUnitComponents[entity.orientation].x, 3*storage.OrientationUnitComponents[entity.orientation].y}},
 			y_scale = 1.1,
+			animation_offset = math.random(100),
+			render_layer = "above-inserters"
 			--animation_speed = 0.5,
 		}
 		properties.ParticleAnimation = succc

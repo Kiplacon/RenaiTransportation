@@ -553,7 +553,9 @@ function(event)
 			or selected.name == "RTBouncePlate"
 			or selected.name == "DirectedBouncePlate"
 			or selected.name == "PlayerLauncher"
-			or selected.name == "RTRicochetPanel") then
+			or selected.name == "RTRicochetPanel"
+			or selected.name == "RTMergingChute"
+			or selected.name == "RTDivergingChute") then
 			player.opened = nil
 
 		elseif (selected.name == "DirectorBouncePlate") then

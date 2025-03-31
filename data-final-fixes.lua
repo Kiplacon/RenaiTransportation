@@ -843,7 +843,7 @@ end
 -- item cannon shell projectils
 for Category, ThingsTable in pairs(data.raw) do
 	for ThingID, ThingData in pairs(ThingsTable) do
-		if (ThingData.stack_size and ThingData.hidden ~= true and ThingData.parameter ~= true and not string.find(ThingID, "RTItemShell")) then
+		if (ThingData.stack_size and ThingData.hidden ~= true and ThingData.parameter ~= true and (ThingID == "RTItemShellItem" or not string.find(ThingID, "RTItemShell"))) then
 			log("==========Creating item cannon projectile for "..ThingData.type..": "..ThingData.name.."===========")
 			MakeItemShellStuff(table.deepcopy(ThingData))
 		end

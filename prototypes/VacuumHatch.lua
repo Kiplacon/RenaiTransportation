@@ -20,13 +20,39 @@ data:extend({
 		},
 	energy_usage = "200kW",
 	gui_mode = "none",
-	pictures =
+	animations =
 	{
-		sheet=
+		north =
 		{
-			filename = "__RenaiTransportation__/graphics/hatch/vacuumhatch.png",
-			size = 64,
-			scale = 0.5
+			filename = "__RenaiTransportation__/graphics/hatch/VacuumHatchN.png",
+			frame_count = 4,
+			line_length = 4,
+			size = 80,
+			scale = 0.6
+		},
+		east =
+		{
+			filename = "__RenaiTransportation__/graphics/hatch/VacuumHatchE.png",
+			frame_count = 4,
+			line_length = 4,
+			size = 80,
+			scale = 0.6
+		},
+		south =
+		{
+			filename = "__RenaiTransportation__/graphics/hatch/VacuumHatchS.png",
+			frame_count = 4,
+			line_length = 4,
+			size = 80,
+			scale = 0.6
+		},
+		west =
+		{
+			filename = "__RenaiTransportation__/graphics/hatch/VacuumHatchW.png",
+			frame_count = 4,
+			line_length = 4,
+			size = 80,
+			scale = 0.6
 		},
 	},
 	--render_layer = "arrow",
@@ -50,7 +76,7 @@ data:extend({
 		{
 			{type="item", name="HatchRTItem", amount=1},
 			{type="item", name="pump", amount=1},
-			{type="item", name="advanced-circuit", amount=2}
+			{type="item", name="electronic-circuit", amount=2}
 		},
 	results = {
 		{type="item", name="RTVacuumHatchItem", amount=1}

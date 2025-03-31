@@ -200,10 +200,11 @@ data:extend({
         type = "recipe",
         name = "RTMergingChuteRecipe",
         enabled = false,
-        energy_required = 1,
+        energy_required = 2,
         ingredients =
             {
                 {type="item", name="RTCatchingChuteItem", amount=1},
+                {type="item", name="RTRicochetPanelItem", amount=2},
                 {type="item", name="HatchRTItem", amount=3},
                 {type="item", name="RTThrower-EjectorHatchRTItem", amount=1},
             },
@@ -215,10 +216,11 @@ data:extend({
         type = "recipe",
         name = "RTDivergingChuteRecipe",
         enabled = false,
-        energy_required = 1,
+        energy_required = 2,
         ingredients =
             {
                 {type="item", name="RTCatchingChuteItem", amount=1},
+                {type="item", name="RTRicochetPanelItem", amount=2},
                 {type="item", name="HatchRTItem", amount=1},
                 {type="item", name="RTThrower-EjectorHatchRTItem", amount=2},
             },

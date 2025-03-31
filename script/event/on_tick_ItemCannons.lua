@@ -60,7 +60,7 @@ local function PersonalFitness(event)
                                 color = {1,1,1}
                             }
                         else
-                            ItemCannonProperties.CantLoad.text = {"RTmisc.CantLoad", "item-name."..slot1.name}
+                            ItemCannonProperties.CantLoad.text = {"RTmisc.CantLoad", slot1.name}
                             ItemCannonProperties.CantLoad.visible = true
                         end
                     end
