@@ -415,8 +415,8 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 
 	--| Adjust thrower range before placing
 	-- give player the adjusting blueprint
-	if (player.character
-	and player.cursor_stack.valid_for_read
+	if (--player.character and
+	player.cursor_stack.valid_for_read
 	and string.find(player.cursor_stack.name, "RTThrower-")
 	and player.cursor_stack.name ~= "RTThrower-EjectorHatchRTItem"
 	and player.cursor_stack.name ~= "RTThrower-FilterEjectorHatchRTItem"
@@ -424,7 +424,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		local thrower = string.gsub(player.cursor_stack.name, "-Item", "")
 		player.activate_paste() -- tests if activating paste brings up a blueprint to cursor
 		if (player.is_cursor_blueprint() == false) then -- only happens in saves where the player has never copied anything yet
-			local vvv = player.surface.create_entity({
+			--[[ local vvv = player.surface.create_entity({
 				name = "wooden-chest",
 				position = {0, 0},
 				raise_built = false,
@@ -436,6 +436,15 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				})
 			player.add_to_clipboard(vvv.get_inventory(defines.inventory.chest)[1])
 			player.activate_paste()
+			vvv.destroy() ]]
+			local vvv = game.create_inventory(1) 
+			vvv.insert({name = "blueprint"})
+			vvv[1].set_blueprint_entities(
+				{
+					{entity_number = 1, name = thrower, position = {0,0}, direction = 8, drop_position = {0,-1.2} }
+				})
+			player.add_to_clipboard(vvv[1])
+			player.activate_paste()
 			vvv.destroy()
 		else
 			player.cursor_stack.set_blueprint_entities(
@@ -443,6 +452,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					{entity_number = 1, name = thrower, position = {0,0}, direction = 8, drop_position = {0,-1.2} }
 				})
 		end
+		player.cursor_stack_temporary = true
 		player.play_sound{
 			path="utility/gui_click",
 			position=player.position,
