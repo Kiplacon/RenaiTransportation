@@ -329,7 +329,7 @@ script.on_event(defines.events.on_player_changed_surface,
 function(event)
 local player = game.players[event.player_index]
 local PlayerProperties = storage.AllPlayers[event.player_index]
-	if (PlayerProperties and PlayerProperties.state == "zipline" and player.surface.name ~= PlayerProperties.zipline.StartingSurface.name) then
+	if (PlayerProperties and PlayerProperties.state == "zipline" and player.character and player.character.surface.name ~= PlayerProperties.zipline.StartingSurface.name) then
 		player.teleport(player.position, game.get_surface(event.surface_index))
 	end
 end)

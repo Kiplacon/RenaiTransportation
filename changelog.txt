@@ -38,6 +38,7 @@ Date: 1/21/2025
     - Fixed that Thrower bulk inserters wouldn't generate if modded thrower inserter generation was disabled.
     - Fixed that train groups were erased when trains hit Impact unloaders or jumped off Train ramps. Reported by Pocket1998.
     - Fixed that Thrower inserters didn't actually throw on space platforms. Reported by Zantigar.
+    - Fixed that switching remote view to another planet or space platfrom while ziplining would kick you back to player view. Reported by dhiva
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.16
 Date: 1/21/2025

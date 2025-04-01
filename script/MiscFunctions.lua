@@ -171,6 +171,7 @@ function SwapBackFromGhost(player, FlyingItem)
         local ghost = player.character
         OG.vehicle.destroy()
         OG.teleport(ghost.position)
+        player.teleport(OG.position, OG.surface)
         player.character = OG
         OG.direction = ghost.direction
         OG.destructible = true
