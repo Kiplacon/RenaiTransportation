@@ -415,83 +415,76 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 
 	--| Adjust thrower range before placing
 	-- give player the adjusting blueprint
-	if (--player.character and
-	player.cursor_stack.valid_for_read
-	and string.find(player.cursor_stack.name, "RTThrower-")
-	and player.cursor_stack.name ~= "RTThrower-EjectorHatchRTItem"
-	and player.cursor_stack.name ~= "RTThrower-FilterEjectorHatchRTItem"
-	and player.force.technologies["RTFocusedFlinging"].researched == true) then
-		local thrower = string.gsub(player.cursor_stack.name, "-Item", "")
-		player.activate_paste() -- tests if activating paste brings up a blueprint to cursor
-		if (player.is_cursor_blueprint() == false) then -- only happens in saves where the player has never copied anything yet
-			--[[ local vvv = player.surface.create_entity({
-				name = "wooden-chest",
-				position = {0, 0},
-				raise_built = false,
-				create_build_effect_smoke = false})
-			vvv.insert({name = "blueprint"})
-			vvv.get_inventory(defines.inventory.chest)[1].set_blueprint_entities(
-				{
-					{entity_number = 1, name = thrower, position = {0,0}, direction = 8, drop_position = {0,-1.2} }
-				})
-			player.add_to_clipboard(vvv.get_inventory(defines.inventory.chest)[1])
-			player.activate_paste()
-			vvv.destroy() ]]
-			local vvv = game.create_inventory(1) 
-			vvv.insert({name = "blueprint"})
-			vvv[1].set_blueprint_entities(
-				{
-					{entity_number = 1, name = thrower, position = {0,0}, direction = 8, drop_position = {0,-1.2} }
-				})
-			player.add_to_clipboard(vvv[1])
-			player.activate_paste()
-			vvv.destroy()
-		else
+	if (player.force.technologies["RTFocusedFlinging"].researched == true) then
+		if (--player.character and
+				player.cursor_stack.valid_for_read
+				and string.find(player.cursor_stack.name, "RTThrower-")
+				and player.cursor_stack.name ~= "RTThrower-EjectorHatchRTItem"
+				and player.cursor_stack.name ~= "RTThrower-FilterEjectorHatchRTItem"
+			)
+		or (
+				player.cursor_ghost ~= nil
+				and string.find(player.cursor_ghost.name.name, "RTThrower-")
+				and player.cursor_ghost.name.name ~= "RTThrower-EjectorHatchRTItem"
+				and player.cursor_ghost.name.name ~= "RTThrower-FilterEjectorHatchRTItem"
+		) then
+			local ThrowerName
+			if (player.cursor_stack.valid_for_read) then
+				ThrowerName = string.gsub(player.cursor_stack.name, "-Item", "")
+			else
+				ThrowerName = string.gsub(player.cursor_ghost.name.name, "-Item", "")
+			end
+			player.clear_cursor()
+			player.cursor_stack.set_stack({name = "blueprint"})
 			player.cursor_stack.set_blueprint_entities(
-				{
-					{entity_number = 1, name = thrower, position = {0,0}, direction = 8, drop_position = {0,-1.2} }
-				})
-		end
-		player.cursor_stack_temporary = true
-		player.play_sound{
-			path="utility/gui_click",
-			position=player.position,
-			volume_modifier=1
-			}
-		player.create_local_flying_text
 			{
-				position = CursorPosition,
-				text = "Range: "..1
-			}
-		PlayerProperties.RangeAdjusting = true -- seems to immediately reset to false since the cursor stack changes to the blueprint but idk how to have the check go first and then set the storage.RangeAdjusting
-		PlayerProperties.RangeAdjustingDirection = 8
-		PlayerProperties.RangeAdjustingRange = 1.2
-
-	--adjust range of blueprint thrower
-	elseif (PlayerProperties.RangeAdjusting == true) then
-		local thrower = player.cursor_stack.get_blueprint_entities()[1]
-		local CurrentRange = PlayerProperties.RangeAdjustingRange
-		if (CurrentRange >= prototypes.entity[thrower.name].inserter_drop_position[2]) then
-			CurrentRange = 1.2
-		else
-			CurrentRange = CurrentRange + 1
-		end
-		player.cursor_stack.set_blueprint_entities(
-			{
-				{entity_number = 1, name = thrower.name, position = {0,0}, direction = 8, drop_position = {0, -CurrentRange}}
+				{entity_number = 1, name = ThrowerName, position = {0,0}, direction = 8, drop_position = {0,-1.2} }
 			})
-		player.play_sound{
-			path="utility/gui_click",
-			position=player.position,
-			volume_modifier=1
-			}
-		PlayerProperties.RangeAdjusting = true
-		PlayerProperties.RangeAdjustingRange = CurrentRange
-		player.create_local_flying_text
-			{
-				position = CursorPosition,
-				text = "Range: "..CurrentRange-0.2
-			}
+			player.cursor_stack_temporary = true
+			player.play_sound{
+				path="utility/gui_click",
+				position=player.position,
+				volume_modifier=1
+				}
+			player.create_local_flying_text
+				{
+					position = CursorPosition,
+					text = "Range: "..1
+				}
+			PlayerProperties.RangeAdjusting = true
+			PlayerProperties.RangeAdjustingDirection = 8
+			PlayerProperties.RangeAdjustingRange = 1.2
+
+		--adjust range of blueprint thrower
+		elseif (PlayerProperties.RangeAdjusting == true) then
+			if (player.is_cursor_blueprint() == true) then
+				local thrower = player.cursor_stack.get_blueprint_entities()[1]
+				local CurrentRange = PlayerProperties.RangeAdjustingRange
+				if (CurrentRange >= prototypes.entity[thrower.name].inserter_drop_position[2]) then
+					CurrentRange = 1.2
+				else
+					CurrentRange = CurrentRange + 1
+				end
+				player.cursor_stack.set_blueprint_entities(
+					{
+						{entity_number = 1, name = thrower.name, position = {0,0}, direction = 8, drop_position = {0, -CurrentRange}}
+					})
+				player.play_sound{
+					path="utility/gui_click",
+					position=player.position,
+					volume_modifier=1
+					}
+				PlayerProperties.RangeAdjusting = true
+				PlayerProperties.RangeAdjustingRange = CurrentRange
+				player.create_local_flying_text
+					{
+						position = CursorPosition,
+						text = "Range: "..CurrentRange-0.2
+					}
+			else
+				PlayerProperties.RangeAdjusting = false
+			end
+		end
 	end
 end
 

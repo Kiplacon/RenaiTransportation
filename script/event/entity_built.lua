@@ -17,12 +17,14 @@ local function entity_built(event)
 		if (storage.AllPlayers[event.player_index].RangeAdjusting == true
 		and entity.name == "entity-ghost"
 		and string.find(entity.ghost_prototype.name, "RTThrower-")
-		and player.get_main_inventory().find_item_stack(entity.ghost_prototype.name.."-Item")
 		) then
-			player.get_main_inventory().remove({name=entity.ghost_prototype.name.."-Item", count=1})
-			entity.revive({raise_revive = true})
-			return
+			if (player.controller_type == defines.controllers.character and player.get_main_inventory().find_item_stack(entity.ghost_prototype.name.."-Item")) then
+				player.get_main_inventory().remove({name=entity.ghost_prototype.name.."-Item", count=1})
+				entity.revive({raise_revive = true})
+				return
+			end
 		end
+		
 	elseif event.robot then
 		player = event.robot.last_user
 	end

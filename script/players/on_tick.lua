@@ -341,7 +341,6 @@ local function on_tick(event)
 							and player.character.get_inventory(defines.inventory.character_armor).is_full()
 							and player.character.get_inventory(defines.inventory.character_armor)[1].prototype.provides_flight == true) then
 								GetOffZipline(player, PlayerProperties)
-					
 							elseif (player.surface.find_non_colliding_position("character", {player.position.x, player.position.y+2}, 5, 0.01)
 							and player.character.get_inventory(defines.inventory.character_armor)
 							and (
@@ -352,7 +351,6 @@ local function on_tick(event)
 								)
 							) then
 								GetOffZipline(player, PlayerProperties)
-					
 							else
 								player.print({"zipline-stuff.NoFreeSpot"})
 								ZiplineStuff.path = nil

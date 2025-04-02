@@ -56,7 +56,6 @@ OhYouLikeTrains,
 	place_result = "RTImpactWagon",
 	stack_size = 5
 },
-
 { --------- wagon recipe ----------
 	type = "recipe",
 	name = "RTImpactWagonRecipe",
@@ -73,30 +72,106 @@ OhYouLikeTrains,
 	}
 },
 
--- -------------- Impact unloader
--- NameEveryTrainStation,
---
--- { --------- impact unloader item ----------
--- 	type = "item",
--- 	name = "RTImpactUnloaderItem",
--- 	icon = '__RenaiTransportation__/graphics/TrainRamp/RTImpactUnloader-icon.png',
--- 	icon_size = 64,
--- 	subgroup = "RT",
--- 	order = "g",
--- 	place_result = "RTImpactUnloader",
--- 	stack_size = 10
--- },
--- { --------- impact unloader recipe ----------
--- 	type = "recipe",
--- 	name = "RTImpactUnloaderRecipe",
--- 	enabled = false,
--- 	energy_required = 2,
--- 	ingredients =
--- 		{
--- 			{"steel-plate", 100},
--- 			{"refined-concrete", 100}
--- 		},
--- 	result = "RTImpactUnloaderItem"
--- }
-
+{ --------- impact recipe ----------
+	type = "recipe",
+	name = "RTImpactUnloaderRecipe",
+	enabled = false,
+	energy_required = 2,
+	ingredients =
+		{
+			{type="item", name="advanced-circuit", amount=20},
+			{type="item", name="steel-plate", amount=100},
+			{type="item", name="refined-concrete", amount=100}
+		},
+	results = {
+		{type="item", name="RTImpactUnloaderItem", amount=1}
+	}
+},
+{
+	type = "technology",
+	name = "RTImpactTech",
+	icon = "__RenaiTransportation__/graphics/tech/Impact.png",
+	icon_size = 128,
+	effects =
+	{
+		{
+			type = "unlock-recipe",
+			recipe = "RTImpactWagonRecipe"
+		},
+		{
+			type = "unlock-recipe",
+			recipe = "RTImpactUnloaderRecipe"
+		}
+	},
+	prerequisites = {"se-no", "railway", "concrete", "advanced-circuit"},
+	unit =
+	{
+		count = 200,
+		ingredients =
+		{
+		{"automation-science-pack", 1},
+		{"logistic-science-pack", 1}
+		},
+		time = 45
+	}
+},
 })
+
+
+for _, variants in pairs(
+	{
+		{"ImpactUnloader", "c"},
+	}) do
+	local variant = variants[1]
+	local order = variants[2]
+	local GroundMask = {layers={["train"]=true}}
+	local ElevMask = {layers={["elevated_train"]=true}}
+	local CellBox = {{-0.5, -2}, {1.5, 2}}
+	local hidden = (string.find(variant, "NoSkip") ~= nil)
+	data:extend({
+		{
+			type = "rail-signal",
+			name = "RT"..variant,
+			icon = "__RenaiTransportation__/graphics/TrainRamp/icons/"..variant.."Icon.png",
+			icon_size = 64,
+			flags = {"player-creation", "not-on-map", "placeable-off-grid", "hide-alt-info", "not-flammable"},
+			hidden = true,
+			minable = {mining_time = 1, result = "RT"..variant:gsub("NoSkip", "").."Item"},
+			max_health = 500,
+			collision_box = {{-0.9, -1.9}, {0.9, 1.9}},
+			selection_box = CellBox,
+			selection_priority = 100,
+			elevated_selection_priority = 100,
+			collision_mask = GroundMask,
+			elevated_collision_mask = ElevMask,
+			ground_picture_set = RampPictureSets("__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png"),
+			elevated_picture_set = RampPictureSets("__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png"),
+			placeable_by = { item = "RT"..variant:gsub("NoSkip", "").."Item", count = 1 }, -- Controls `q` and blueprint behavior
+			resistances = {
+				{
+					type = "impact",
+					percent = 100
+				}
+			}
+		},
+		{
+			type = "item",
+			name = "RT"..variant.."Item",
+			icon = "__RenaiTransportation__/graphics/TrainRamp/icons/"..variant.."Icon.png",
+			icon_size = 64,
+			subgroup = "RTTrainStuff",
+			hidden = hidden,
+			order = order,
+			place_result = "RT"..variant.."-placer",
+			stack_size = 10
+		},
+		makeRampPlacerEntity(
+				"RT"..variant.."-placer",
+				"__RenaiTransportation__/graphics/TrainRamp/icons/"..variant.."Icon.png",
+				"__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant.."Placer.png",
+				"RT"..variant.."Item",
+				hidden
+			),
+		CreateRampSprites("RT"..variant.."", "__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png")
+	})
+end

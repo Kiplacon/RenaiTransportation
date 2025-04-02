@@ -804,7 +804,7 @@ if (data.raw.item["carbon-fiber"] and data.raw.item["pentapod-egg"] and data.raw
             {
                {type="item", name="RTProgrammableZiplineControlsItem", amount=1},
                {type="item", name="processing-unit", amount=5},
-               {type="item", name="carbon-fiber", amount=4},
+               {type="item", name="carbon-fiber", amount=10},
                {type="item", name="pentapod-egg", amount=1}
             },
          results = {

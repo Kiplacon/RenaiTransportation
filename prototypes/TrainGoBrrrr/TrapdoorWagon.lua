@@ -358,7 +358,7 @@ if (data.raw.item["tungsten-plate"] and data.raw.tool["metallurgic-science-pack"
 		},
 	})
 	--- ramp switch tech
-	if (settings.startup["RTTrapdoorSetting"].value == true) then
+	if (settings.startup["RTTrainRampSetting"].value == true) then
 		data:extend({
 			{
 				type = "technology",
@@ -463,7 +463,7 @@ else
 		},
 	})
 	--- ramp switch tech
-	if (settings.startup["RTTrapdoorSetting"].value == true) then
+	if (settings.startup["RTTrainRampSetting"].value == true) then
 		data:extend({
 			{
 				type = "technology",

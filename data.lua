@@ -2,6 +2,7 @@ require("prototypes.technology")
 require("prototypes.sounds")
 require("prototypes.TabSortingStuff")
 require("prototypes.TrainGoBrrrr.PropHunt")
+require("prototypes.RailPlacerPrototypeStuff")
 
 if (settings.startup["RTThrowersSetting"].value == true) then
 	require("prototypes.BouncePlates.BouncePlate")
