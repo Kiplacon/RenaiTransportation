@@ -269,6 +269,7 @@ data:extend({
 	name = "StationTrapdoorWagonSignal",
 	icon = "__RenaiTransportation__/graphics/TrapdoorSignal.png",
 	icon_size = 64,
+	subgroup = "virtual-signal"
 },
 })
 for i = 0, 15 do

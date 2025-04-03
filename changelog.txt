@@ -7,7 +7,7 @@ Date: 1/21/2025
     - Trapdoor ramps. Variations of normal and magnet train ramps that additionally toggle whether a Trapdoor wagon is open or closed when it jumps off it, then toggles it back upon landing.
     - Belt ramps. A high-speed inclined belt that continually lauches all its items off the end. Faster belt tiers thrown items off further. Graphics by Bow Tied Ghost.
     - AI zipline controller. A zipline controller that can auto pilot you between any two power poles, not just between Zipline terminals.
-    - Electromagnetic item cannons. Load stacks of items into steel 
+    - Electromagnetic item cannons. Loads items into Item shells and accelerates them near-instantly to ridiculous speeds out the barrel
     - Ricochet panels. Deflects the item shells launched out from Electromagnetic item cannons.
     - Catching chute. Catches item shells and safely deposits the contents into the attached chest.
     - Merging chute. Allows item shells coming in from different directions to leave in the same direction.

@@ -205,7 +205,7 @@ data:extend({
             {
                 {type="item", name="RTCatchingChuteItem", amount=1},
                 {type="item", name="RTRicochetPanelItem", amount=2},
-                {type="item", name="HatchRTItem", amount=3},
+                {type="item", name="HatchRTItem", amount=2},
                 {type="item", name="RTThrower-EjectorHatchRTItem", amount=1},
             },
         results = {

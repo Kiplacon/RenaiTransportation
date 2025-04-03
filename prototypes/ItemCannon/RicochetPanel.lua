@@ -107,7 +107,7 @@ if (data.raw.item["supercapacitor"] and data.raw.tool["electromagnetic-science-p
                 {type="item", name="steel-plate", amount=20},
                 {type="item", name="supercapacitor", amount=1},
                 {type="item", name="processing-unit", amount=2},
-                {type="item", name="copper-cable", amount=8}
+                {type="item", name="copper-cable", amount=12}
             },
         results = {
             {type="item", name="RTRicochetPanelItem", amount=1}

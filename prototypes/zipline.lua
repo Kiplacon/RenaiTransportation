@@ -574,7 +574,6 @@ data:extend({
       icons = {
          {
             icon = "__RenaiTransportation__/graphics/zipline/AIcontrols.png",
-            tint = {0.5, 1, 0.5}
          }
       },
       subgroup = "RTZiplineStuff",
