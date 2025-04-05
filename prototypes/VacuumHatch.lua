@@ -16,7 +16,8 @@ data:extend({
 		{
 			type = "electric",
 			usage_priority = "secondary-input",
-			buffer_capacity = "3kJ",
+			buffer_capacity = "3J",
+			drain = "5kW",
 		},
 	energy_usage = "200kW",
 	gui_mode = "none",
@@ -28,7 +29,8 @@ data:extend({
 			frame_count = 4,
 			line_length = 4,
 			size = 80,
-			scale = 0.6
+			scale = 0.6,
+			animation_speed = 4/60
 		},
 		east =
 		{
@@ -36,7 +38,8 @@ data:extend({
 			frame_count = 4,
 			line_length = 4,
 			size = 80,
-			scale = 0.6
+			scale = 0.6,
+			animation_speed = 4/60
 		},
 		south =
 		{
@@ -44,7 +47,8 @@ data:extend({
 			frame_count = 4,
 			line_length = 4,
 			size = 80,
-			scale = 0.6
+			scale = 0.6,
+			animation_speed = 4/60
 		},
 		west =
 		{
@@ -52,7 +56,8 @@ data:extend({
 			frame_count = 4,
 			line_length = 4,
 			size = 80,
-			scale = 0.6
+			scale = 0.6,
+			animation_speed = 4/60
 		},
 	},
 	--render_layer = "arrow",

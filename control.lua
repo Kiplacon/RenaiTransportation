@@ -618,22 +618,27 @@ script.on_event(
 defines.events.on_player_mined_entity,
 function(event)
 	local player = game.players[event.player_index]
-	if (player.character and player.character.character_mining_speed_modifier > 0.1 
+	local entity = event.entity
+	if (player.character
+	and settings.get_player_settings(player)["MiningSpeedDebuffTime"].value ~= 0
+	and player.character.character_mining_speed_modifier > -0.9
 	and (
-			string.find(event.entity.name, "HatchRT")
-			or event.entity.name == "RTTrapdoorSwitch"
+			string.find(entity.name, "HatchRT")
+			or entity.name == "RTTrapdoorSwitch"
+			or (string.find(entity.name, '^RT') and (string.find(entity.name, 'TrainRamp') or string.find(entity.name, 'ImpactUnloader')))
 		)
 	) then
 		local back = player.character.character_mining_speed_modifier
-		if (storage.clock[game.tick+30] == nil) then
-			storage.clock[game.tick+30] = {MiningSpeedRevert={}}
+		local zawardo = math.max(1, math.ceil(settings.get_player_settings(player)["MiningSpeedDebuffTime"].value * 60))
+		if (storage.clock[game.tick+zawardo] == nil) then
+			storage.clock[game.tick+zawardo] = {MiningSpeedRevert={}}
 		else
-			if (storage.clock[game.tick+30].MiningSpeedRevert == nil) then
-				storage.clock[game.tick+30].MiningSpeedRevert = {}
+			if (storage.clock[game.tick+zawardo].MiningSpeedRevert == nil) then
+				storage.clock[game.tick+zawardo].MiningSpeedRevert = {}
 			end
 		end
-		table.insert(storage.clock[game.tick+30].MiningSpeedRevert, {character=player.character, back=back})
-		player.character.character_mining_speed_modifier = 0.1
+		table.insert(storage.clock[game.tick+zawardo].MiningSpeedRevert, {character=player.character, back=back})
+		player.character.character_mining_speed_modifier = -0.9
 	end
 end)
 

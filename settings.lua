@@ -148,6 +148,14 @@ data:extend({
 	setting_type = "runtime-per-user",
 	default_value = "Bobbing Motion",
     allowed_values = {"Bobbing Motion", "Level Motion"},
-	order = "g"
+	order = "a"
+},
+{
+	type = "double-setting",
+	name = "MiningSpeedDebuffTime",
+	setting_type = "runtime-per-user",
+	default_value = 0.5,
+    minimum_value = 0.0,
+	order = "b"
 },
 })
