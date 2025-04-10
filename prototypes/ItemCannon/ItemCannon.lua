@@ -9,7 +9,7 @@ if (mods["space-age"]) then
 end
 data:extend({
     { --------- entity
-        type = "electric-energy-interface",
+        type = "simple-entity-with-owner",
         name = "RTItemCannon",
         icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
         flags = {"placeable-neutral", "player-creation"},
@@ -26,16 +26,38 @@ data:extend({
         collision_box = {{-1.4, -1.4}, {1.4, 1.4}},
         selection_box = {{-1.5, -1.5}, {1.5, 1.5}},
         surface_conditions = SpaceConditions,
-        pictures =
+        picture =
         {
-            sheet =
-            {
-                filename = "__RenaiTransportation__/graphics/ItemCannon/ItemCannon.png",
-                --shift = {0, -0.6},
-                width = 64*3,
-                height = 64*3,
-                priority = "high",
-                scale = 0.5
+            sheets = {
+                {
+                    filename = "__RenaiTransportation__/graphics/ItemCannon/ItemCannon.png",
+                    width = 512,
+                    height = 512,
+                    direction_count = 4,
+                    line_length = 4,
+                    priority = "high",
+                    scale = 0.5
+                },
+                {
+                    filename = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonMask.png",
+                    width = 512,
+                    height = 512,
+                    direction_count = 4,
+                    line_length = 4,
+                    priority = "high",
+                    scale = 0.5,
+                    apply_runtime_tint = true -- will be ignored in this entity type
+                },
+                {
+                    filename = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonShadows.png",
+                    width = 512,
+                    height = 512,
+                    direction_count = 4,
+                    line_length = 4,
+                    priority = "high",
+                    scale = 0.5,
+                    draw_as_shadow = true -- will be ignored in this entity type
+                }
             }
         }
     },

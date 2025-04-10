@@ -491,11 +491,14 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	ItsRange = 15
 
 	if (TheThrower.energy_per_rotation) then
+		local MovementEnergy = util.parse_energy(TheThrower.energy_per_movement) * 3  -- for some reason x2.5 makes the total energy even out
+		local RotationEnergy = util.parse_energy(TheThrower.energy_per_rotation)
+		TheThrower.energy_per_rotation = (RotationEnergy + MovementEnergy).."J"
 		TheThrower.energy_per_movement = "1J" -- this prevents inserters from elongating first and then rotating when energy is low
 	end
 
 	if (TheThrower.name == "RTThrower-inserter") then
-	    TheThrower.extension_speed = 0.027 -- default 0.03, needs to be a but slower so we don't get LongB0is
+		TheThrower.extension_speed = 0.027 -- default 0.03, needs to be a but slower so we don't get LongB0is
 		TheThrower.rotation_speed = 0.020 -- default 0.014
 	elseif (TheThrower.name == "RTThrower-long-handed-inserter") then
 		TheThrower.insert_position = {0, 25.2}
@@ -539,14 +542,14 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
         scale = 0.25
 		}
 
-if mods["Ultracube"] then
-	data:extend({TheThrower, TheItem}) -- Recipes and tech will be handled by Ultracube
-else
-	data:extend({TheThrower, TheItem, TheRecipe})
-	if (isitenabled == false) then
-		table.insert(data.raw["technology"]["RTThrowerTime"].effects,{type="unlock-recipe",recipe=TheRecipe.name})
+	if mods["Ultracube"] then
+		data:extend({TheThrower, TheItem}) -- Recipes and tech will be handled by Ultracube
+	else
+		data:extend({TheThrower, TheItem, TheRecipe})
+		if (isitenabled == false) then
+			table.insert(data.raw["technology"]["RTThrowerTime"].effects,{type="unlock-recipe",recipe=TheRecipe.name})
+		end
 	end
-end
 end
 
 ----- Get the sprites of the carriage to use during a jump
@@ -558,7 +561,7 @@ function MakeCarriageSprites(ThingData)
 							size = {200,500},
 							scale = 0.5,
 							tint = {0.5, 0.5, 0.5}
-						  }}
+							}}
 		local RightSprites = {{
 							filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WheelsHorizontal.png",
 							size = {500,200},

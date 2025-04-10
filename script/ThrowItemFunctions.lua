@@ -686,6 +686,7 @@ function ResolveThrownItem(FlyingItem)
 
                 ---- If the thing it landed on has an inventory and a hatch, insert the item ----
                 elseif (ThingLandedOn.type ~= "transport-belt"
+                and settings.startup["RTThrowersSetting"].value == true  -- if false, HatchRT doesn't exist. With 2.1, there are potentially more possible ways thrown items can exist without the base thrower and hatch stuff
                 and ThingLandedOn.surface.find_entities_filtered(
                     {
                     name='HatchRT',

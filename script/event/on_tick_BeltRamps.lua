@@ -6,7 +6,7 @@ local function BeltRamps(event)
 			local line = BeltRamp.get_transport_line(game.tick%2 + 1)
 			if (#line>0) then
 				local start = line.get_line_item_position(1)
-				local StartShiftTileCenter = {x=math.floor(start.x)+0.5, y=math.floor(start.y)+0.5}
+				local StartShiftTileCenter = {x=math.floor(start.x)+(math.random(1,9)*0.1), y=math.floor(start.y)+(math.random(1,9)*0.1)}
 				if (BeltRampProperties.InSpace) then
 					local DiagonalShift = 100
 					if (BeltRamp.orientation == 0.5) then

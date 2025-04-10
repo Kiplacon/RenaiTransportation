@@ -330,7 +330,6 @@ local function effect_triggered(event)
 			}
 		end
 
-
 	elseif (event.effect_id == "BeltRampPlayer") then
 		local trigger = event.source_entity
 		local ramp = trigger.surface.find_entities_filtered

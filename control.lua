@@ -398,6 +398,7 @@ function(event)
 	if (event.last_entity
 	and storage.BouncePadList[script.register_on_object_destroyed(event.last_entity)]
 	and storage.BouncePadList[script.register_on_object_destroyed(event.last_entity)].arrow) then
+		storage.BouncePadList[script.register_on_object_destroyed(event.last_entity)].arrow.only_in_alt_mode = true
 		storage.BouncePadList[script.register_on_object_destroyed(event.last_entity)].arrow.visible = storage.BouncePadList[script.register_on_object_destroyed(event.last_entity)].ShowArrow
 	end
 	-- show the new one
@@ -405,6 +406,7 @@ function(event)
 	and storage.BouncePadList[script.register_on_object_destroyed(player.selected)]
 	and storage.BouncePadList[script.register_on_object_destroyed(player.selected)].arrow) then
 		storage.BouncePadList[script.register_on_object_destroyed(player.selected)].arrow.visible = true
+		storage.BouncePadList[script.register_on_object_destroyed(player.selected)].arrow.only_in_alt_mode = false
 	end
 end)
 
@@ -603,12 +605,14 @@ script.on_event(defines.events.on_train_changed_state,
 --train		:: LuaTrain	
 --old_state	:: defines.train_state
 function(event)
-	local train = event.train
-	if (train.state == defines.train_state.wait_station and train.station ~= nil and train.station.get_signal({type="virtual", name="StationTrapdoorWagonSignal"}, defines.wire_connector_id.circuit_red, defines.wire_connector_id.circuit_green) > 0)
-	or (event.old_state == defines.train_state.wait_station) then
-		for _, wagon in pairs(train.cargo_wagons) do
-			if (wagon.name == "RTTrapdoorWagon") then
-				ToggleTrapdoorWagon(wagon)
+	if (settings.startup["RTTrapdoorSetting"].value == true) then
+		local train = event.train
+		if (train.state == defines.train_state.wait_station and train.station ~= nil and train.station.get_signal({type="virtual", name="StationTrapdoorWagonSignal"}, defines.wire_connector_id.circuit_red, defines.wire_connector_id.circuit_green) > 0)
+		or (event.old_state == defines.train_state.wait_station) then
+			for _, wagon in pairs(train.cargo_wagons) do
+				if (wagon.name == "RTTrapdoorWagon") then
+					ToggleTrapdoorWagon(wagon)
+				end
 			end
 		end
 	end
@@ -639,6 +643,13 @@ function(event)
 		end
 		table.insert(storage.clock[game.tick+zawardo].MiningSpeedRevert, {character=player.character, back=back})
 		player.character.character_mining_speed_modifier = -0.9
+	end
+	if (entity.name == "RTItemCannon") then
+		storage.ItemCannons[script.register_on_object_destroyed(entity)].chest.mine
+		{
+			inventory=player.character.get_main_inventory(),
+			ignore_minable=true
+		}
 	end
 end)
 

@@ -207,7 +207,7 @@ local function entity_built(event)
 		local tag = entity.force.add_chart_tag(entity.surface, {position=entity.position, text=storage.ZiplineTerminals[OnDestroyNumber].name, icon={type="item", name="RTZiplineTerminalItem"}})
 		storage.ZiplineTerminals[OnDestroyNumber].tag = tag
 
-	elseif (entity.name == "RTTrapdoorSwitch") then
+	elseif (entity.name == "RTTrapdoorSwitewrewch") then
 		local TriggerDestroyNumber = script.register_on_object_destroyed(entity)
 		if (storage.DestructionLinks[TriggerDestroyNumber] == nil) then
 			storage.DestructionLinks[TriggerDestroyNumber] = {}

@@ -677,10 +677,10 @@ local function entity_damaged(event)
 	elseif (settings.global["RTVehicleCharacterKnockback"].value == true) -- character hit by vehicle
 	and (event.cause
 	and (event.cause.type == "locomotive"
+		or event.cause.type == "car"
 		or event.cause.type == "cargo-wagon"
 		or event.cause.type == "fluid-wagon"
-		or event.cause.type == "artillery-wagon"
-		or event.cause.type == "car")
+		or event.cause.type == "artillery-wagon")
 	and event.entity.type == "character"
 	and string.find(event.cause.name, "RTGhost") == nil
 	and event.entity.health > 0

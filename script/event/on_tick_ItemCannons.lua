@@ -66,12 +66,14 @@ local function PersonalFitness(event)
                     end
                     ItemCannonProperties.timeout = (60*3)/increment
                 end
+            elseif (ItemCannonProperties.entity.valid == false) then
+                -- pass
             else
                 ItemCannonProperties.timeout = 60/increment
             end
         end
         -- laser pointer
-        if (ItemCannonProperties.LaserPointer) then
+        if (ItemCannonProperties.entity.valid and ItemCannonProperties.LaserPointer) then
             local cannon = ItemCannonProperties.entity
             cannon.surface.create_entity
             {

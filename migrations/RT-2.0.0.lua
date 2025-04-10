@@ -1,4 +1,4 @@
-if (storage.CatapultList) then
+if (settings.startup["RTThrowersSetting"].value == true and storage.CatapultList) then
 	-- record all throwers then clear the list
 	local throwers = {}
 	for ID, stuff in pairs(storage.CatapultList) do
@@ -87,7 +87,7 @@ if (storage.HoverGFX) then
 	storage.HoverGFX = {}
 end
 
-if (storage.BouncePadList) then
+if (settings.startup["RTThrowersSetting"].value == true and storage.BouncePadList) then
 	-- record all bounce pads then clear the list
 	local pads = {}
 	for ID, stuff in pairs(storage.BouncePadList) do
@@ -98,8 +98,10 @@ if (storage.BouncePadList) then
 			table.insert(pads, stuff.entity)
 		end
 		if (stuff.arrow) then
-			if (type(stuff.arrow) == "number" and rendering.get_object_by_id(stuff.arrow) ~= nil) then
-				rendering.get_object_by_id(stuff.arrow).destroy()
+			if (type(stuff.arrow) == "number") then
+				if (rendering.get_object_by_id(stuff.arrow) ~= nil) then
+					rendering.get_object_by_id(stuff.arrow).destroy()
+				end
 			else
 				stuff.arrow.destroy()
 			end
@@ -234,7 +236,7 @@ if (storage.FlyingItems) then
 	storage.FlyingItems = {}
 end
 
-if (storage.ZiplineTerminals) then
+if (settings.startup["RTZiplineSetting"].value == true and storage.ZiplineTerminals) then
 	-- record all bounce pads then clear the list
 	local terminals = {}
 	for ID, stuff in pairs(storage.ZiplineTerminals) do
@@ -246,7 +248,7 @@ if (storage.ZiplineTerminals) then
 	storage.ZiplineTerminals = terminals
 end
 
-if (storage.MagnetRamps) then
+if (settings.startup["RTTrainRampSetting"].value == true and storage.MagnetRamps) then
 	-- record all bounce pads then clear the list
 	local ramps = {}
 	for ID, stuff in pairs(storage.MagnetRamps) do

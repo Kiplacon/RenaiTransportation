@@ -16,11 +16,11 @@ data:extend({
 		{
 			type = "electric",
 			usage_priority = "secondary-input",
-			buffer_capacity = "3J",
+			buffer_capacity = "25J", -- for some reason this helps the animation play slow enough to actually see
 			drain = "5kW",
 		},
 	energy_usage = "200kW",
-	gui_mode = "none",
+	gui_mode = "all",
 	animations =
 	{
 		north =
@@ -30,7 +30,7 @@ data:extend({
 			line_length = 4,
 			size = 80,
 			scale = 0.6,
-			animation_speed = 4/60
+			animation_speed = 0.01
 		},
 		east =
 		{
@@ -39,7 +39,7 @@ data:extend({
 			line_length = 4,
 			size = 80,
 			scale = 0.6,
-			animation_speed = 4/60
+			animation_speed = 0.01
 		},
 		south =
 		{
@@ -48,7 +48,7 @@ data:extend({
 			line_length = 4,
 			size = 80,
 			scale = 0.6,
-			animation_speed = 4/60
+			animation_speed = 0.01
 		},
 		west =
 		{
@@ -57,7 +57,7 @@ data:extend({
 			line_length = 4,
 			size = 80,
 			scale = 0.6,
-			animation_speed = 4/60
+			animation_speed = 0.01
 		},
 	},
 	--render_layer = "arrow",

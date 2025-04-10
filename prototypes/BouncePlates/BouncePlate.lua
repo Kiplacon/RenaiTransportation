@@ -11,7 +11,7 @@ data:extend({
 		name = "RTBouncePlate",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/PlateIconn.png",
 		icon_size = 64,
-		flags = {"placeable-neutral", "player-creation"},
+		flags = {"placeable-neutral", "player-creation", "hide-alt-info"},
 		minable = {mining_time = 0.2, result = "RTBouncePlateItem"},
 		max_health = 200,
 		collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},

@@ -19,7 +19,7 @@ data:extend({
 		name = "DirectedBouncePlate",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateIconn.png",
 		icon_size = 64,
-		flags = {"placeable-neutral", "player-creation"},
+		flags = {"placeable-neutral", "player-creation", "hide-alt-info"},
 		minable = {mining_time = 0.2, result = "DirectedBouncePlateItem"},
 		max_health = 200,
       collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},

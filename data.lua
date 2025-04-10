@@ -33,7 +33,7 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 	require("prototypes.TrainGoBrrrr.prototypes.ramps")
 	require("prototypes.TrainGoBrrrr.sprites.base")
 	require("prototypes.TrainGoBrrrr.GhostLoco")
-	if (settings.startup["RTTrainBounceSetting"].value == true and settings.startup["RTTrainRampSetting"].value == true) then
+	if (settings.startup["RTTrainBounceSetting"].value == true) then
 		require("prototypes.BouncePlates.TrainBouncePlate")
 	end
 end
