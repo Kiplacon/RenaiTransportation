@@ -13,6 +13,8 @@ data.extend({
         minable = {mining_time = 0.2, result = "RTRicochetPanelItem"},
         hidden = true,
         max_health = 250,
+        corpse = "steel-chest-remnants",
+        dying_explosion = "medium-explosion",
         energy_source =
 		{
 			type = "electric",

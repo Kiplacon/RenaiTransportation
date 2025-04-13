@@ -121,7 +121,7 @@ script.on_event(
 	require("script.event.entity_built")
 )
 
-script.on_event(defines.events.on_entity_died ,
+script.on_event(defines.events.on_entity_died,
 function(event)
 	if settings.global["RTChestPop"].value == true
 	and (event.entity.type == "container"
@@ -141,13 +141,12 @@ function(event)
 					local xUnit = math.cos(2*math.pi*angle)
 					local yUnit = math.sin(2*math.pi*angle)
 					-- flight arc
-					local speed = math.random(10, 90)*0.0008 + (scale*0.01)
-					local AirTime = math.max(1, math.floor(speed*800))
-					local TargetX = event.entity.position.x + (xUnit*speed*AirTime)
-					local TargetY = event.entity.position.y + (yUnit*speed*AirTime)
-					local distance = DistanceBetween(container.position, {x=TargetX, y=TargetY})
+					local speed = math.random(10, 20)*0.00008 + (scale*0.01)
+					local AirTime = math.random(40, 50) + math.ceil(scale*5)
+					local TargetX = event.entity.position.x + (xUnit*math.random(1, math.ceil(scale*0.8)))
+					local TargetY = event.entity.position.y + (yUnit*math.random(1, math.ceil(scale*0.8)))
 					local vector = {x=TargetX-container.position.x, y=TargetY-container.position.y}
-					local arc = 5/(distance^2)
+					local arc = 0.13
 					local path = {}
 					for j = 0, AirTime do
 						local progress = j/AirTime
@@ -393,20 +392,22 @@ function(event)
 	and storage.HoverGFX[script.register_on_object_destroyed(player.selected)][event.player_index]) then
 		storage.HoverGFX[script.register_on_object_destroyed(player.selected)][event.player_index].visible = true
 	end ]]
-
-	--hide the old one
-	if (event.last_entity
-	and storage.BouncePadList[script.register_on_object_destroyed(event.last_entity)]
-	and storage.BouncePadList[script.register_on_object_destroyed(event.last_entity)].arrow) then
-		storage.BouncePadList[script.register_on_object_destroyed(event.last_entity)].arrow.only_in_alt_mode = true
-		storage.BouncePadList[script.register_on_object_destroyed(event.last_entity)].arrow.visible = storage.BouncePadList[script.register_on_object_destroyed(event.last_entity)].ShowArrow
-	end
-	-- show the new one
-	if (player.selected
-	and storage.BouncePadList[script.register_on_object_destroyed(player.selected)]
-	and storage.BouncePadList[script.register_on_object_destroyed(player.selected)].arrow) then
-		storage.BouncePadList[script.register_on_object_destroyed(player.selected)].arrow.visible = true
-		storage.BouncePadList[script.register_on_object_destroyed(player.selected)].arrow.only_in_alt_mode = false
+	local groups = {"BouncePadList", "BeltRamps"}
+	for _, group in pairs(groups) do
+		--hide the old one
+		if (event.last_entity
+		and storage[group][script.register_on_object_destroyed(event.last_entity)]
+		and storage[group][script.register_on_object_destroyed(event.last_entity)].arrow) then
+			storage[group][script.register_on_object_destroyed(event.last_entity)].arrow.only_in_alt_mode = true
+			storage[group][script.register_on_object_destroyed(event.last_entity)].arrow.visible = storage[group][script.register_on_object_destroyed(event.last_entity)].ShowArrow
+		end
+		-- show the new one
+		if (player.selected
+		and storage[group][script.register_on_object_destroyed(player.selected)]
+		and storage[group][script.register_on_object_destroyed(player.selected)].arrow) then
+			storage[group][script.register_on_object_destroyed(player.selected)].arrow.visible = true
+			storage[group][script.register_on_object_destroyed(player.selected)].arrow.only_in_alt_mode = false
+		end
 	end
 end)
 
@@ -557,7 +558,8 @@ function(event)
 			or selected.name == "PlayerLauncher"
 			or selected.name == "RTRicochetPanel"
 			or selected.name == "RTMergingChute"
-			or selected.name == "RTDivergingChute") then
+			or selected.name == "RTDivergingChute"
+			or (string.find(selected.name, '^RT') and string.find(selected.name, "BeltRamp"))) then
 			player.opened = nil
 
 		elseif (selected.name == "DirectorBouncePlate") then

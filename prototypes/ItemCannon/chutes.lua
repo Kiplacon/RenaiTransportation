@@ -7,6 +7,8 @@ data.extend({
         flags = {"placeable-neutral", "player-creation"},
         minable = {mining_time = 0.5, result = "RTCatchingChuteItem"},
         max_health = 250,
+        corpse = "small-remnants",
+        dying_explosion = "iron-chest-explosion",
         circuit_wire_max_distance = 9,
         inventory_size = 48,
         collision_box = {{-0.4, -0.4}, {0.4, 0.4}},
@@ -55,6 +57,8 @@ data.extend({
         flags = {"placeable-neutral", "player-creation"},
         minable = {mining_time = 0.5, result = "RTDivergingChuteItem"},
         max_health = 250,
+        corpse = "small-remnants",
+        dying_explosion = "iron-chest-explosion",
         energy_source =
 		{
 			type = "electric",
@@ -110,6 +114,8 @@ data.extend({
         flags = {"placeable-neutral", "player-creation"},
         minable = {mining_time = 0.5, result = "RTMergingChuteItem"},
         max_health = 250,
+        corpse = "small-remnants",
+        dying_explosion = "iron-chest-explosion",
         energy_source =
 		{
 			type = "electric",

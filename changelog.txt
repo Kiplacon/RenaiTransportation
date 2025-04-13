@@ -21,10 +21,11 @@ Date: 1/21/2025
     - Loose items out on the floor of a space platform float away when the platform takes off.
     - Settings added to turn these off.
   Changes:
+    - Items thrown onto belts will prioritize the side closer to where it was thrown from.
     - Better train jumping between ground and elevated rails and vice versa. Vanilla Rail ramps are for suckers.
     - Magnet ramp targeting improved, especially for train bounce pads and elevated rails.
     - Manual Zipline driving will prioritize the pole with the longest wire connection when multiple connections are close together.
-    - Removing a Hatch gives a short mining speed debuff to help avoid also removing whatever the Hatch was on top of.
+    - Removing something that typically overlaps something (like Hatches and Train ramps) gives a short mining speed debuff to help avoid also removing whatever it was on top of.
     - Less cluttered range visuals for Bounce pads.
     - Player shadows separate while ziplining/jumping.
     - Player launchers are rotatable after placing.

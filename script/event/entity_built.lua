@@ -1,6 +1,7 @@
+---@diagnostic disable: newline-call
 local trainHandler = require("__RenaiTransportation__/script/trains/entity_built")
 
-local function NextThrowerGroup()
+function NextThrowerGroup()
 	storage.CatapultGroup = storage.CatapultGroup + 1
 	if (storage.CatapultGroup > storage.ThrowerGroups) then
 		storage.CatapultGroup = 1
@@ -103,6 +104,9 @@ local function entity_built(event)
 		local ShowRange = settings.global["RTShowRange"].value
 		if (entity.name == "DirectedBouncePlate") then
 			local HomeOnThe = entity.get_or_create_control_behavior().get_section(1).get_slot(1).min or 10
+			local direction = "UD"
+			local xflip = 1
+			local yflip = 1
 			if (entity.orientation == 0) then
 				direction = "UD"
 				xflip = 1
@@ -253,20 +257,56 @@ local function entity_built(event)
 		local ranges = {["RTBeltRamp"]=10, ["RTfastBeltRamp"]=20, ["RTexpressBeltRamp"]=30, ["RTturboBeltRamp"]=40}
 		local speeds = {["RTBeltRamp"]=0.18, ["RTfastBeltRamp"]=0.18, ["RTexpressBeltRamp"]=0.25, ["RTturboBeltRamp"]=0.25}
 		storage.BeltRamps[script.register_on_object_destroyed(entity)] = {entity=entity, range=(ranges[entity.name] or 10), speed=(speeds[entity.name] or 0.18), InSpace=false, PlayerTrigger=nil}
+		local BeltRampProperties = storage.BeltRamps[script.register_on_object_destroyed(entity)]
 		if (entity.surface.platform or string.find(entity.surface.name, " Orbit") or string.find(entity.surface.name, " Field") or string.find(entity.surface.name, " Belt")) then
-			storage.BeltRamps[script.register_on_object_destroyed(entity)].InSpace = true
+			BeltRampProperties.InSpace = true
 		end
+		---- player detector
 		local trigger = entity.surface.create_entity
 		{
 			name = "RTBeltRampPlayerTrigger",
 			position = OffsetPosition(entity.position, {-0.3*storage.OrientationUnitComponents[entity.orientation].x, -0.3*storage.OrientationUnitComponents[entity.orientation].y})
 		}
 		trigger.destructible = false
-		storage.BeltRamps[script.register_on_object_destroyed(entity)].PlayerTrigger = trigger
+		BeltRampProperties.PlayerTrigger = trigger
+		---- range indicator
+		local direction = "UD"
+		local xflip = 1
+		local yflip = 1
+		if (entity.orientation == 0) then
+			direction = "UD"
+			xflip = 1
+			yflip = 1
+		elseif (entity.orientation == 0.25) then
+			direction = "RL"
+			xflip = 1
+			yflip = 1
+		elseif (entity.orientation == 0.5) then
+			direction = "UD"
+			xflip = 1
+			yflip = -1
+		elseif (entity.orientation == 0.75) then
+			direction = "RL"
+			xflip = -1
+			yflip = 1
+		end
+		BeltRampProperties.arrow = rendering.draw_sprite
+			{
+				sprite = "RTDirectedRangeOverlay"..direction,
+				surface = entity.surface,
+				target = entity,
+				only_in_alt_mode = true,
+				x_scale = xflip*(ranges[entity.name] or 10)/10,
+				y_scale = yflip*(ranges[entity.name] or 10)/10,
+				tint = {r = 0.4, g = 0.4, b = 0.4, a = 0},
+				visible = settings.global["RTShowRange"].value
+			}
+		BeltRampProperties.ShowArrow = settings.global["RTShowRange"].value
 
 	elseif (entity.name == "RTVacuumHatch") then
 		storage.VacuumHatches[script.register_on_object_destroyed(entity)] = {entity=entity, output=nil}
 		local properties = storage.VacuumHatches[script.register_on_object_destroyed(entity)]
+		-- succ animation
 		local succc = rendering.draw_animation
 		{
 			animation = "VacuumHatchSucc",
@@ -279,12 +319,24 @@ local function entity_built(event)
 			--animation_speed = 0.5,
 		}
 		properties.ParticleAnimation = succc
+		-- output entity if any
 		properties.output = entity.surface.find_entities_filtered
 		({
 			collision_mask = "object",
 			position = OffsetPosition(entity.position, {-1*storage.OrientationUnitComponents[entity.orientation].x, -1*storage.OrientationUnitComponents[entity.orientation].y}),
 			limit = 1
 		})[1]
+		-- output arrow
+		properties.arrow = rendering.draw_sprite
+		{
+			sprite = "utility/indication_arrow",
+			orientation = (entity.orientation+0.5)%1,
+			target = {entity=entity, offset={-0.75*storage.OrientationUnitComponents[entity.orientation].x, -0.75*storage.OrientationUnitComponents[entity.orientation].y}},
+			surface = entity.surface,
+			only_in_alt_mode = true,
+			x_scale = 0.75,
+			y_scale = 0.75,
+		}
 
 	elseif (event.ghost or entity.name == "entity-ghost") then -- ghosts from dying and ghosts from blueprints
 		local ghost = event.ghost or entity
@@ -296,6 +348,7 @@ local function entity_built(event)
 
 	elseif (entity.name == "RTItemCannon") then
 		storage.ItemCannons[script.register_on_object_destroyed(entity)] = {entity=entity, LaserPointer=false}
+		---- chest part
 		local chest = entity.surface.create_entity
 		{
 			name = "RTItemCannonChest",
@@ -306,6 +359,17 @@ local function entity_built(event)
 		chest.destructible = false
 		chest.get_output_inventory().set_filter(2, {name="RTItemShellItem"})
 		storage.ItemCannons[script.register_on_object_destroyed(entity)].chest = chest
+		---- mask part
+		local mask = entity.surface.create_entity
+		{
+			name = "RTItemCannonMask",
+			position = entity.position,
+			force = entity.force,
+			direction = entity.direction,
+			create_build_effect_smoke = false
+		}
+		mask.destructible = false
+		storage.ItemCannons[script.register_on_object_destroyed(entity)].mask = mask
 	end
 end
 

@@ -1,9 +1,8 @@
 local tiers = {
-    {name="", tint={255,208,0}, speed=32, order="a"},
-    {name="fast", tint={1,0,0}, speed=64, order="b"},
-    {name="express", tint={0,0.75,1}, speed=96, order="c"},
+    {name="", tint={255,208,0}, speed=32, order="a", range=10},
+    {name="fast", tint={1,0,0}, speed=64, order="b", range=20},
+    {name="express", tint={0,0.75,1}, speed=96, order="c", range=30},
 }
-
 
 for _, tier in pairs(tiers) do
     local TierName = tier.name
@@ -13,6 +12,7 @@ for _, tier in pairs(tiers) do
     end
     local TierTint = tier.tint
     local TierSpeed = tier.speed
+    local TierRange = tier.range
     data:extend({
         { --------- Bounce plate entity --------------
             type = "transport-belt",
@@ -32,6 +32,8 @@ for _, tier in pairs(tiers) do
             flags = {"placeable-neutral", "player-creation"},
             minable = {mining_time = 0.5, result = "RT"..TierName.."BeltRampItem"},
             max_health = 200,
+            corpse = BaseBelt.."transport-belt".."-remnants",
+            dying_explosion = "iron-chest-explosion",
             collision_box = {{-0.4, -0.4}, {0.4, 0.4}},
             collision_mask = {layers={["item"]=true, ["object"]=true, ["water_tile"]=true}},
             selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
@@ -80,6 +82,16 @@ for _, tier in pairs(tiers) do
                 south_to_west_index = 2,
                 west_to_south_index = 4,
             },
+            radius_visualisation_specification =
+			{
+				sprite =
+					{
+						filename = "__RenaiTransportation__/graphics/testalt.png",
+						size = 640
+					},
+				draw_on_selection = false,
+				distance = TierRange
+			}
         },
         { --------- The Bounce plate item -------------
             type = "item",
@@ -198,6 +210,16 @@ if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt t
                 south_to_west_index = 2,
                 west_to_south_index = 4,
             },
+            radius_visualisation_specification =
+			{
+				sprite =
+					{
+						filename = "__RenaiTransportation__/graphics/testalt.png",
+						size = 640
+					},
+				draw_on_selection = false,
+				distance = 40
+			}
         },
         { --------- The Bounce plate item -------------
             type = "item",

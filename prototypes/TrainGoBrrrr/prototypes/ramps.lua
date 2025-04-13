@@ -19,6 +19,8 @@ for _, variants in pairs(
 			hidden = true,
 			minable = {mining_time = 1, result = "RT"..variant:gsub("NoSkip", "").."Item"},
 			max_health = 500,
+			corpse = "medium-remnants",
+			dying_explosion = "medium-explosion",
 			collision_box = {{-0.9, -1.9}, {0.9, 1.9}},
 			selection_box = CellBox,
 			selection_priority = 100,

@@ -7,6 +7,8 @@ data:extend({
 	icon_size = 64,
 	flags = {"placeable-neutral", "player-creation"},
 	max_health = 150,
+	corpse = "medium-remnants",
+	dying_explosion = "iron-chest-explosion",
 	--collision_mask = {layers={["RTHatches"]=true}},
 	collision_box = {{-0.49, -0.49}, {0.49, 0.49}},
 	selection_box = {{-0.5, -0.5}, {0.5, 0.5}},

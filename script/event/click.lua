@@ -7,9 +7,12 @@ local function click(event)
 	local player = game.get_player(event.player_index)
 	local clicked = game.get_player(event.player_index).selected
 	if (clicked) then
-		if (storage.BouncePadList[script.register_on_object_destroyed(clicked)] ~= nil) then
-			storage.BouncePadList[script.register_on_object_destroyed(clicked)].arrow.visible = not storage.BouncePadList[script.register_on_object_destroyed(clicked)].ShowArrow
-			storage.BouncePadList[script.register_on_object_destroyed(clicked)].ShowArrow = not storage.BouncePadList[script.register_on_object_destroyed(clicked)].ShowArrow
+		local groups = {"BouncePadList", "BeltRamps"}
+		for _, group in pairs(groups) do
+			if (storage[group][script.register_on_object_destroyed(clicked)] ~= nil) then
+				storage[group][script.register_on_object_destroyed(clicked)].arrow.visible = not storage[group][script.register_on_object_destroyed(clicked)].ShowArrow
+				storage[group][script.register_on_object_destroyed(clicked)].ShowArrow = not storage[group][script.register_on_object_destroyed(clicked)].ShowArrow
+			end
 		end
 		--| Start setting range of magenet ramp
 		if (settings.startup["RTItemCannonSetting"].value == true and clicked.name == "RTItemCannon") then

@@ -168,6 +168,15 @@ end
 end ]]
 
 if (settings.startup["RTThrowersSetting"].value == true) then
+	if (storage.CatapultGroup == nil) then
+		storage.CatapultGroup = 1
+	end
+	if (storage.ThrowerGroups == nil) then
+		storage.ThrowerGroups = 3
+	end
+	if (storage.ThrowerProcessing == nil) then
+		storage.ThrowerProcessing = {{}, {}, {}}
+	end
 	local ShowRange = settings.global["RTShowRange"].value
 	-- normal bounce pads
 	for _, surface in pairs(game.surfaces) do
@@ -189,6 +198,77 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 			}
 			PouncePadProperties.ShowArrow = ShowRange
 			deez.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=10})
+		end
+		-- register missed throwers on space platforms from pre 2.1
+		if (surface.platform) then
+			local SpaceThrowers = surface.find_entities_filtered
+			{
+				type = "inserter"
+			}
+			for _, deez in pairs(SpaceThrowers) do
+				if (string.find(deez.name, "RTThrower-")) then
+					local entity = deez
+					local OnDestroyNumber = script.register_on_object_destroyed(entity)
+					storage.CatapultList[OnDestroyNumber] = {entity=entity, targets={}, BurnerSelfRefuelCompensation=0.2, IsElectric=false, InSpace=false, RangeAdjustable=false}
+					local properties = storage.CatapultList[OnDestroyNumber]
+					storage.ThrowerProcessing[NextThrowerGroup()][OnDestroyNumber] = properties
+
+					if (string.find(entity.name, "RTThrower-") and entity.name ~= "RTThrower-PrimerThrower" and entity.force.technologies["RTFocusedFlinging"].researched == true) then
+						properties.RangeAdjustable = true
+					end
+
+					if (entity.surface.platform or string.find(entity.surface.name, " Orbit") or string.find(entity.surface.name, " Field") or string.find(entity.surface.name, " Belt")) then
+						properties.InSpace = true
+					end
+
+					if (entity.burner == nil and #entity.fluidbox == 0 and entity.electric_buffer_size ~= nil and entity.electric_buffer_size > 0) then
+						properties.BurnerSelfRefuelCompensation = 0
+						properties.IsElectric = true
+					elseif (entity.name == "RTThrower-PrimerThrower") then
+						properties.BurnerSelfRefuelCompensation = -0.1
+					end
+
+					if (entity.name == "RTThrower-EjectorHatchRT") then
+						properties.sprite = rendering.draw_animation
+							{
+								animation = "EjectorHatchFrames",
+								surface = entity.surface,
+								target = entity,
+								animation_offset = storage.EjectorPointing[entity.direction],
+								render_layer = 131,
+								animation_speed = 0,
+								only_in_alt_mode = false
+							}
+					elseif (entity.name == "RTThrower-FilterEjectorHatchRT") then
+						properties.sprite = rendering.draw_animation
+							{
+								animation = "FilterEjectorHatchFrames",
+								surface = entity.surface,
+								target = entity,
+								animation_offset = storage.EjectorPointing[entity.direction],
+								render_layer = 131,
+								animation_speed = 0,
+								only_in_alt_mode = false
+							}
+					elseif (entity.name == "RTThrower-PrimerThrower") then
+						
+						entity.inserter_stack_size_override = 1
+						local sherlock = entity.surface.create_entity
+						{
+							name = "RTPrimerThrowerDetector",
+							position = entity.position,
+							direction = storage.PrimerThrowerPointing[entity.direction],
+							force = entity.force,
+							create_build_effect_smoke = false
+						}
+						sherlock.destructible = false
+						properties.entangled = {}
+						properties.entangled.detector = sherlock
+						local OnDestroyNumber2 = script.register_on_object_destroyed(sherlock)
+						storage.PrimerThrowerLinks[OnDestroyNumber2] = {thrower = entity, ready = false}--, box = box}
+					end
+				end
+			end
 		end
 	end
 	for _, variant in pairs({5, 15}) do

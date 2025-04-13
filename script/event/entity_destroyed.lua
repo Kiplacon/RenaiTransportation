@@ -104,6 +104,9 @@ local function entity_destroyed(event)
 		if (storage.ItemCannons[event.registration_number].chest and storage.ItemCannons[event.registration_number].chest.valid) then
 			storage.ItemCannons[event.registration_number].chest.destroy()
 		end
+		if (storage.ItemCannons[event.registration_number].mask and storage.ItemCannons[event.registration_number].mask.valid) then
+			storage.ItemCannons[event.registration_number].mask.destroy()
+		end
 		storage.ItemCannons[event.registration_number] = nil
 	end
 end

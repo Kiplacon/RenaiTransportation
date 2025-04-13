@@ -9,12 +9,15 @@ if (mods["space-age"]) then
 end
 data:extend({
     { --------- entity
-        type = "simple-entity-with-owner",
+        type = "electric-energy-interface",
         name = "RTItemCannon",
         icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
+        icon_size = 130,
         flags = {"placeable-neutral", "player-creation"},
         minable = {mining_time = 0.2, result = "RTItemCannonItem"},
         max_health = 500,
+        corpse = "medium-remnants",
+        dying_explosion = "medium-explosion",
         energy_source =
 		{
 			type = "electric",
@@ -26,7 +29,7 @@ data:extend({
         collision_box = {{-1.4, -1.4}, {1.4, 1.4}},
         selection_box = {{-1.5, -1.5}, {1.5, 1.5}},
         surface_conditions = SpaceConditions,
-        picture =
+        pictures =
         {
             sheets = {
                 {
@@ -37,16 +40,6 @@ data:extend({
                     line_length = 4,
                     priority = "high",
                     scale = 0.5
-                },
-                {
-                    filename = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonMask.png",
-                    width = 512,
-                    height = 512,
-                    direction_count = 4,
-                    line_length = 4,
-                    priority = "high",
-                    scale = 0.5,
-                    apply_runtime_tint = true -- will be ignored in this entity type
                 },
                 {
                     filename = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonShadows.png",
@@ -65,6 +58,7 @@ data:extend({
         type = "item",
         name = "RTItemCannonItem",
         icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
+        icon_size = 130,
         subgroup = "RTCannonStuff",
         order = "a",
         place_result = "RTItemCannon",
@@ -72,7 +66,7 @@ data:extend({
     },
 
 
-    { --------- entity
+    { --------- linked container
         type = "container",
         name = "RTItemCannonChest",
         icon = "__base__/graphics/icons/iron-chest.png",
@@ -84,6 +78,28 @@ data:extend({
         collision_mask = {layers={}},
         inventory_size = 2,
         inventory_type = "with_filters_and_bar",
+    },
+    { --------- mask
+        type = "simple-entity-with-owner",
+        name = "RTItemCannonMask",
+        icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
+        icon_size = 130,
+        flags = {"placeable-neutral", "not-on-map", "not-blueprintable", "not-deconstructable", "placeable-off-grid", "hide-alt-info"},
+        collision_box = nil,
+        collision_mask = {layers={}},
+        picture =
+        {
+            sheet = {
+                filename = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonMask.png",
+                width = 512,
+                height = 512,
+                direction_count = 4,
+                line_length = 4,
+                priority = "high",
+                scale = 0.5,
+                apply_runtime_tint = true
+            }
+        }
     },
 
 
@@ -250,8 +266,8 @@ if (data.raw.item["holmium-plate"] and data.raw.tool["electromagnetic-science-pa
 		{
             type = "technology",
             name = "RTItemCannonTech",
-            icon = "__RenaiTransportation__/graphics/tech/ItemCannonTech.png",
-            icon_size = 128,
+            icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
+            icon_size = 130,
             effects =
             {
                 {
@@ -339,8 +355,8 @@ else
 		{
             type = "technology",
             name = "RTItemCannonTech",
-            icon = "__RenaiTransportation__/graphics/tech/ItemCannonTech.png",
-            icon_size = 128,
+            icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
+            icon_size = 130,
             effects =
             {
                 {

@@ -213,42 +213,8 @@ function CanFitThrownItem(stuff)
             if (TargetEntity.belt_shape == "straight" and total <= 8)
             or (TargetEntity.belt_shape ~= "straight" and total <= 7) then
                 CanFit = true
-                --[[ if (thrower) then
-                    local ThrowerDestroyNumber = script.register_on_object_destroyed(thrower)
-                    if (storage.HoverGFX[ThrowerDestroyNumber]) then
-                        for playerID, graphic in pairs(storage.HoverGFX[ThrowerDestroyNumber]) do
-                            graphic.destroy()
-                        end
-                        storage.HoverGFX[ThrowerDestroyNumber] = {}
-                    end
-                end ]]
             else
                 CanFit = false
-                --[[ if (thrower) then
-                    local ThrowerDestroyNumber = script.register_on_object_destroyed(thrower)
-                    if (storage.HoverGFX[ThrowerDestroyNumber] == nil) then
-                        storage.HoverGFX[ThrowerDestroyNumber] = {}
-                    end
-                    for ID, player in pairs(game.players) do
-                        if (storage.HoverGFX[ThrowerDestroyNumber][ID] == nil) then
-                            local hovering = false
-                            if (player.selected and player.selected.unit_number == thrower.unit_number) then
-                                hovering = true
-                            end
-                            storage.HoverGFX[ThrowerDestroyNumber][ID] = rendering.draw_text
-                            {
-                                text = {"RTmisc.EightMax"},
-                                surface = thrower.surface,
-                                target = thrower,
-                                alignment = "center",
-                                scale = 0.5,
-                                color = {1,1,1},
-                                players = {player},
-                                visible = hovering
-                            }
-                        end
-                    end
-                end ]]
             end
         end
     else
@@ -328,10 +294,55 @@ local function DropOntoGround(FlyingItem)
         end
     end
 end
-local function DropOntoBelt(FlyingItem, belt)
+local CloserSideOrder = {
+    up = {
+        [0]={2,1},
+        [0.25]={2,1},
+        [0.5]={2,1},
+        [0.75]={1,2}
+    },
+    down = {
+        [0]={1,2},
+        [0.25]={1,2},
+        [0.5]={2,1},
+        [0.75]={2,1}
+    },
+    left = {
+        [0]={2,1},
+        [0.25]={2,1},
+        [0.5]={1,2},
+        [0.75]={2,1}
+    },
+    right = {
+        [0]={1,2},
+        [0.25]={2,1},
+        [0.5]={2,1},
+        [0.75]={2,1}
+    },
+}
+local function DropOntoBelt(FlyingItem, belt, SpillExcess)
+    if (SpillExcess == nil) then -- only used for vacuum hatches because the spill of excess is handled by it instead
+        SpillExcess = true
+    end
+    ---- determine "From" direction ----
+    local origin = FlyingItem.ThrowerPosition or FlyingItem.start
+    local order = {1,2}
+    if (origin.y > FlyingItem.target.y
+    and math.abs(origin.y-FlyingItem.target.y) > math.abs(origin.x-FlyingItem.target.x)) then
+        order = CloserSideOrder.up[belt.orientation]
+    elseif (origin.y < FlyingItem.target.y
+    and math.abs(origin.y-FlyingItem.target.y) > math.abs(origin.x-FlyingItem.target.x)) then
+        order = CloserSideOrder.down[belt.orientation]
+    elseif (origin.x > FlyingItem.target.x
+    and math.abs(origin.y-FlyingItem.target.y) < math.abs(origin.x-FlyingItem.target.x)) then
+        order = CloserSideOrder.left[belt.orientation]
+    elseif (origin.x < FlyingItem.target.x
+    and math.abs(origin.y-FlyingItem.target.y) < math.abs(origin.x-FlyingItem.target.x)) then
+        order = CloserSideOrder.right[belt.orientation]
+    end
     local deposited = false
     if (FlyingItem.CloudStorage) then
-        for l = 1, 2 do
+        for _, l in pairs(order) do
             for i = 1, 0, -0.1 do
                 if (FlyingItem.CloudStorage[1].count > 0 and belt.get_transport_line(l).can_insert_at(i) == true) then
                     belt.get_transport_line(l).insert_at(i, FlyingItem.CloudStorage[1])
@@ -340,7 +351,7 @@ local function DropOntoBelt(FlyingItem, belt)
                 end
             end
         end
-        if (FlyingItem.CloudStorage[1].count > 0) then
+        if (SpillExcess and FlyingItem.CloudStorage[1].count > 0) then
             if (settings.global["RTSpillSetting"].value == "Destroy") then
                 FlyingItem.surface.pollute(FlyingItem.target, FlyingItem.CloudStorage[1].count*0.5)
                 FlyingItem.surface.create_entity
@@ -355,17 +366,18 @@ local function DropOntoBelt(FlyingItem, belt)
                         stack = FlyingItem.CloudStorage[1]
                     }
                 if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
-                    for every, thing in pairs(spilt) do
+                    for _, thing in pairs(spilt) do
                         thing.order_deconstruction("player")
                     end
                 end
             end
+            deposited = true
         end
         FlyingItem.CloudStorage.destroy()
     else
         local total = FlyingItem.amount
         if (belt.type == "transport-belt") then
-            for l = 1, 2 do
+            for _, l in pairs(order) do
                 for i = 0, 0.9, 0.1 do
                     if (total > 0 and belt.get_transport_line(l).can_insert_at(i) == true) then
                         belt.get_transport_line(l).insert_at(i, {name=FlyingItem.item, count=1, quality=FlyingItem.quality})
@@ -375,7 +387,7 @@ local function DropOntoBelt(FlyingItem, belt)
                 end
             end
         end
-        if (total > 0) then
+        if (SpillExcess and total > 0) then
             if (settings.global["RTSpillSetting"].value == "Destroy") then
                 FlyingItem.surface.pollute(FlyingItem.target, total*0.5)
                 FlyingItem.surface.create_entity
@@ -390,11 +402,12 @@ local function DropOntoBelt(FlyingItem, belt)
                     stack = {name=FlyingItem.item, count=total, quality=FlyingItem.quality}
                 }
                 if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
-                    for every, thing in pairs(spilt) do
+                    for _, thing in pairs(spilt) do
                         thing.order_deconstruction("player")
                     end
                 end
             end
+            deposited = true
         end
     end
     return deposited
@@ -509,7 +522,7 @@ function ResolveThrownItem(FlyingItem)
             local SidewaysShift = 0
             local tunez = "bounce"
             if (string.find(ThingLandedOn.name, "Train")) then
-                range = 39.9
+                range = 40
             elseif (string.find(ThingLandedOn.name, "Primer") == nil) then
                 range = ThingLandedOn.get_or_create_control_behavior().get_section(1).get_slot(1).min
                 local BouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(ThingLandedOn)]
@@ -569,10 +582,12 @@ function ResolveThrownItem(FlyingItem)
                     local TargetX = ThingLandedOn.position.x  +unitx*(range+RangeBonus)  +unity*(SidewaysShift)
                     local TargetY = ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)
                     local distance = math.sqrt((TargetX-ThingLandedOn.position.x)^2 + (TargetY-ThingLandedOn.position.y)^2)
-                    if (string.find(ThingLandedOn.name, "Train")) then
-                        FlyingItem.speed = 0.6
-                    else
+                    if (range <= 15) then
                         FlyingItem.speed = 0.18
+                    elseif (range > 15 and range < 40) then
+                        FlyingItem.speed = 0.25
+                    else
+                        FlyingItem.speed = 0.60
                     end
                     local AirTime = math.floor(distance/FlyingItem.speed)
                     FlyingItem.target={x=TargetX, y=TargetY}
@@ -735,7 +750,7 @@ function ResolveThrownItem(FlyingItem)
                     local deposited = false
                     if (properties.output and properties.output.valid) then
                         if (properties.output.type == "transport-belt") then
-                            deposited = DropOntoBelt(FlyingItem, properties.output)
+                            deposited = DropOntoBelt(FlyingItem, properties.output, false)
                         elseif (properties.output.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
                             if (FlyingItem.CloudStorage) then
                                 properties.output.insert(FlyingItem.CloudStorage[1])

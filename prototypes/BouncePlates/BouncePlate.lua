@@ -14,6 +14,8 @@ data:extend({
 		flags = {"placeable-neutral", "player-creation", "hide-alt-info"},
 		minable = {mining_time = 0.2, result = "RTBouncePlateItem"},
 		max_health = 200,
+		corpse = "small-remnants",
+        dying_explosion = "iron-chest-explosion",
 		collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
