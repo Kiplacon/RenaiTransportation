@@ -2,8 +2,8 @@ data.extend({
     { --------- entity
         type = "container",
         name = "RTCatchingChute",
-        icon = "__RenaiTransportation__/graphics/ItemCannon/CatchingChute.png",
-        icon_size = 128,
+        icon = "__RenaiTransportation__/graphics/ItemCannon/CatchingChuteIcon.png",
+        icon_size = 64,
         flags = {"placeable-neutral", "player-creation"},
         minable = {mining_time = 0.5, result = "RTCatchingChuteItem"},
         max_health = 250,
@@ -28,20 +28,30 @@ data.extend({
             },
         },
         picture = {
-            --sheet = {
+            layers = {
+            {
                 filename = "__RenaiTransportation__/graphics/ItemCannon/CatchingChute.png",
-                shift = {0, -0.6},
-                size = 128,
+                shift = {0, -0.72},
+                size = 260,
                 priority = "high",
-                scale = 0.5
-            --}
+                scale = 0.3
+            },
+            {
+                filename = "__RenaiTransportation__/graphics/ItemCannon/CatchingChuteShadow.png",
+                shift = {0, -0.72},
+                size = 512,
+                draw_as_shadow = true,
+                priority = "high",
+                scale = 0.3
+            },
+        }
         }
     },
     { --------- item -------------
         type = "item",
         name = "RTCatchingChuteItem",
-        icon = "__RenaiTransportation__/graphics/ItemCannon/CatchingChute.png",
-        icon_size = 128,
+        icon = "__RenaiTransportation__/graphics/ItemCannon/CatchingChuteIcon.png",
+        icon_size = 64,
         subgroup = "RTCannonStuff",
         order = "d",
         place_result = "RTCatchingChute",

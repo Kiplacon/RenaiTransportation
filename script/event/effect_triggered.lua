@@ -142,7 +142,7 @@ local function effect_triggered(event)
 						position = HitPosition,
 						target = OffsetPosition(HitPosition, {100*r_x, 100*r_y}),
 						speed=speed,
-						max_range = 100
+						max_range = storage.ItemCannonRange or 200
 					}
 					if (not LaserPointer) then
 						HitEntity.energy = 0
@@ -197,7 +197,7 @@ local function effect_triggered(event)
 							position = HitEntity.position,
 							target = OffsetPosition(HitEntity.position, {100*OutVector.x, 100*OutVector.y}),
 							speed=speed,
-							max_range = 100
+							max_range = storage.ItemCannonRange or 200
 						}
 						if (not LaserPointer) then
 							HitEntity.energy = 0
@@ -255,7 +255,7 @@ local function effect_triggered(event)
 							position = HitEntity.position,
 							target = OffsetPosition(HitEntity.position, {100*OutX, 100*OutY}),
 							speed=speed,
-							max_range = 100
+							max_range = storage.ItemCannonRange or 200
 						}
 						if (not LaserPointer) then
 							HitEntity.energy = 0

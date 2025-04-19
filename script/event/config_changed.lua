@@ -197,6 +197,7 @@ local function config_changed()
 		storage.ItemCannons = {}
 	end
 	storage.ItemCannonSpeed = 3
+	storage.ItemCannonRange = 200
 	storage.ChuteOrientationComponents = {}
 	storage.ChuteOrientationComponents[0] = {x = 1, y = -1, direction=defines.direction.northeast}
 	storage.ChuteOrientationComponents[0.25] = {x = 1, y = 1, direction=defines.direction.southeast}

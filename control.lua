@@ -607,13 +607,26 @@ script.on_event(defines.events.on_train_changed_state,
 --train		:: LuaTrain	
 --old_state	:: defines.train_state
 function(event)
+	local train = event.train
 	if (settings.startup["RTTrapdoorSetting"].value == true) then
-		local train = event.train
 		if (train.state == defines.train_state.wait_station and train.station ~= nil and train.station.get_signal({type="virtual", name="StationTrapdoorWagonSignal"}, defines.wire_connector_id.circuit_red, defines.wire_connector_id.circuit_green) > 0)
 		or (event.old_state == defines.train_state.wait_station) then
 			for _, wagon in pairs(train.cargo_wagons) do
 				if (wagon.name == "RTTrapdoorWagon") then
 					ToggleTrapdoorWagon(wagon)
+				end
+			end
+		end
+	end
+	if (settings.startup["RTThrowersSetting"].value == true) then
+		for _, wagon in pairs(train.cargo_wagons) do
+			local WagonDestroyNumber = script.register_on_object_destroyed(wagon)
+			if (storage.ThrowerPaths[WagonDestroyNumber]) then
+				for ThrowerDestoryNumber, items in pairs(storage.ThrowerPaths[WagonDestroyNumber]) do
+					if (storage.CatapultList[ThrowerDestoryNumber]) then
+						storage.ThrowerPaths[WagonDestroyNumber][ThrowerDestoryNumber] = {}
+						ResetThrowerOverflowTracking(storage.CatapultList[ThrowerDestoryNumber].entity)
+					end
 				end
 			end
 		end

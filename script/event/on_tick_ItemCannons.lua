@@ -24,17 +24,6 @@ local function PersonalFitness(event)
                 and slot1.count == slot1.prototype.stack_size) then
                     local cannon = ItemCannonProperties.entity
                     if (prototypes.entity["RTItemShell"..slot1.name.."-Q-"..slot1.quality.name]) then
-                        --[[ InvokeThrownItem
-                        {
-                            type = "ItemShell",
-                            ItemName = PackedItem,
-                            count = prototypes.item[PackedItem].stack_size,
-                            quality = ItemCannonProperties.chest.get_output_inventory()[1].quality.name,
-                            start = cannon.position,
-                            target = OffsetPosition(cannon.position, targets[cannon.orientation]),
-                            surface = cannon.surface,
-                            cannon = cannon,
-                        } ]]
                         cannon.surface.create_entity
                         {
                             name="RTItemShell"..slot1.name.."-Q-"..slot1.quality.name,
@@ -42,14 +31,30 @@ local function PersonalFitness(event)
                             position = cannon.position,
                             target = OffsetPosition(cannon.position, targets[cannon.orientation]),
                             speed=storage.ItemCannonSpeed,
-                            max_range = 100
+                            max_range = storage.ItemCannonRange or 200
                         }
                         slot1.clear()
                         slot2.count = slot2.count - 1
                         if (ItemCannonProperties.CantLoad) then
                             ItemCannonProperties.CantLoad.visible = false
                         end
-                        ItemCannonProperties.entity.energy = 0
+                        cannon.energy = 0
+                        cannon.surface.play_sound
+                        {
+                            path = "RTItemCannonFireSound",
+                            position = cannon.position,
+                            --volume = 0.7
+                        }
+                        --[[ rendering.draw_animation
+                        {
+                            animation = "RTRicochetPanelZap",
+                            orientation = cannon.orientation+0.125,
+                            target = {entity=cannon, offset={0,-0.5}},
+                            surface = cannon.surface,
+                            time_to_live = 20,
+                            x_scale = 0.4,
+                            y_scale = 0.4,
+                        } ]]
                     else
                         if (ItemCannonProperties.CantLoad == nil) then
                             ItemCannonProperties.CantLoad = rendering.draw_text
@@ -64,7 +69,7 @@ local function PersonalFitness(event)
                             ItemCannonProperties.CantLoad.visible = true
                         end
                     end
-                    ItemCannonProperties.timeout = (60*3)/increment
+                    ItemCannonProperties.timeout = 60*2
                 end
             elseif (ItemCannonProperties.entity.valid == false) then
                 -- pass
@@ -82,7 +87,7 @@ local function PersonalFitness(event)
                 position = cannon.position,
                 target = OffsetPosition(cannon.position, targets[cannon.orientation]),
                 speed=0.75,
-                max_range = 100
+                max_range = storage.ItemCannonRange or 200
             }
         end
     end

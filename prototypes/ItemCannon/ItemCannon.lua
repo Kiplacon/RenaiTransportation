@@ -101,6 +101,22 @@ data:extend({
             }
         }
     },
+    {
+        type = "sound",
+        name = "RTItemCannonFireSound",
+        variations =
+		{
+			{
+                filename = "__RenaiTransportation__/sickw0bs/ItemCannonFire1.ogg",
+			},
+		},
+        aggregation =
+		{
+			max_count = 4,
+			remove = true,
+			count_already_playing = true
+		}
+    },
 
 
 

@@ -679,9 +679,9 @@ function ResolveThrownItem(FlyingItem)
                     FlyingItem.player.character.damage(10*(ThingLandedOn.bounding_box.right_bottom.x-ThingLandedOn.bounding_box.left_top.x)*(ThingLandedOn.bounding_box.right_bottom.y-ThingLandedOn.bounding_box.left_top.y), "neutral", "impact", ThingLandedOn)
                     ThingLandedOn.die()
                 end
-            elseif (FlyingItem.type == "ItemShell") then
+            --[[ elseif (FlyingItem.type == "ItemShell") then
                 -- items falling on something
-                game.print("item shell expired on something")
+                game.print("item shell expired on something") ]]
             else
                 if (ThingLandedOn.name == "OpenContainer" and ThingLandedOn.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
                     if (FlyingItem.CloudStorage) then
@@ -809,8 +809,8 @@ function ResolveThrownItem(FlyingItem)
             end
         -- tracers falling on something
         else
-            if (storage.CatapultList[FlyingItem.tracing]) then
-                if (LandedOnCargoWagon) then
+            if (storage.CatapultList[FlyingItem.tracing]) then -- incase the thrower was removed the split second between starting tracing and now
+                if (LandedOnCargoWagon and LandedOnCargoWagon.speed == 0) then
                     local OnDestroyNumber = script.register_on_object_destroyed(LandedOnCargoWagon)
                     storage.CatapultList[FlyingItem.tracing].targets[FlyingItem.item] = LandedOnCargoWagon
                     if (storage.ThrowerPaths[OnDestroyNumber] == nil) then

@@ -35,6 +35,7 @@ Date: 1/21/2025
     - Adjusted Train ramps so that they will work even if friendly fire is turned off.
     - Fixed that the range settings for Magnet train ramps were lost when copy/pasting and blueprinting.
     - Fixed that items flung out of an Impact wagon at an angle weren't spread out very much.
+    - Fixed throwers getting stuck sometimes when throwing at cargo wagons.
     - Fixed that setting range of throwers through circuit signal only worked on the red wire line.
     - Fixed that Thrower bulk inserters wouldn't generate if modded thrower inserter generation was disabled.
     - Fixed that train groups were erased when trains hit Impact unloaders or jumped off Train ramps. Reported by Pocket1998.
