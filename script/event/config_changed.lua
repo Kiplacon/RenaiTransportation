@@ -17,6 +17,16 @@ local function config_changed()
 		end
 	end
 
+	if (storage.CatapultGroup == nil) then
+		storage.CatapultGroup = 1
+	end
+	if (storage.ThrowerGroups == nil) then
+		storage.ThrowerGroups = 3
+	end
+	if (storage.ThrowerProcessing == nil) then
+		storage.ThrowerProcessing = {{}, {}, {}}
+	end
+
 	if (storage.savedVehicleWagons == nil) then -- used for Vehicle Wagons 2 compatability
 		storage.savedVehicleWagons = {}
 	end
@@ -46,6 +56,23 @@ local function config_changed()
 	storage.OrientationNumberToDefinition[slice*13] = defines.direction.westnorthwest
 	storage.OrientationNumberToDefinition[slice*14] = defines.direction.northwest
 	storage.OrientationNumberToDefinition[slice*15] = defines.direction.northnorthwest
+
+	storage.InsertInventory = {}
+	storage.InsertInventory["ammo-turret"] = defines.inventory.turret_ammo
+	storage.InsertInventory["artillery-turret"] = defines.inventory.artillery_turret_ammo
+	storage.InsertInventory["assembling-machine"] = defines.inventory.assembling_machine_input
+	storage.InsertInventory["beacon"] = defines.inventory.beacon_modules
+	storage.InsertInventory["boiler"] = defines.inventory.fuel
+	storage.InsertInventory["burner-generator"] = defines.inventory.fuel
+	storage.InsertInventory["container"] = defines.inventory.chest
+	storage.InsertInventory["furnace"] = defines.inventory.furnace_source
+	storage.InsertInventory["lab"] = defines.inventory.lab_input
+	storage.InsertInventory["linked-container"] = defines.inventory.chest
+	storage.InsertInventory["logistic-container"] = defines.inventory.chest
+	storage.InsertInventory["reactor"] = defines.inventory.fuel
+	storage.InsertInventory["roboport"] = defines.inventory.roboport_robot
+	storage.InsertInventory["rocket-silo"] = defines.inventory.rocket_silo_input
+	storage.InsertInventory["proxy-container"] = defines.inventory.proxy_main
 
 	storage.Dir2Ori = {}
 	storage.Dir2Ori[0] = 0
@@ -88,8 +115,11 @@ local function config_changed()
 		storage.FlyingTrains = {}
 	end
 
-	if (storage.MagnetRamps == nil) then
-		storage.MagnetRamps = {}
+	if (storage.TrainRamps == nil) then
+		storage.TrainRamps = {}
+	end
+	if (storage.TrainCollisionDetectors == nil) then
+		storage.TrainCollisionDetectors = {}
 	end
 
 	if (storage.BouncePadList == nil) then
@@ -121,18 +151,9 @@ local function config_changed()
 	if (storage.FlyingItems == nil) then
 		storage.FlyingItems = {}
 	end
-
---[[ 	if (game.surfaces["RTStasisRealm"] == nil) then
-		game.create_surface("RTStasisRealm",
-		{
-			peaceful_mode = true,
-			water = "none",
-			starting_area = "none",
-			autoplace_controls = {},
-			default_enable_all_autoplace_controls = false,
-			cliff_settings = {name = "cliff", cliff_elevation_0 = 0, richness = 0}
-		})
-	end ]]
+	if (storage.CustomPathFlyingItemSprites == nil) then
+		storage.CustomPathFlyingItemSprites = {}
+	end
 
 	if (storage.ThrowerPaths == nil) then
 		storage.ThrowerPaths = {}
@@ -164,6 +185,26 @@ local function config_changed()
 		storage.TrapdoorWagons = nil
 	end
 
+	if (storage.BeltRamps == nil) then
+		storage.BeltRamps = {}
+	end
+
+	if (storage.VacuumHatches == nil) then
+		storage.VacuumHatches = {}
+	end
+	
+	if (storage.ItemCannons == nil) then
+		storage.ItemCannons = {}
+	end
+	storage.ItemCannonSpeed = 3
+	storage.ItemCannonRange = 200
+	storage.ChuteOrientationComponents = {}
+	storage.ChuteOrientationComponents[0] = {x = 1, y = -1, direction=defines.direction.northeast}
+	storage.ChuteOrientationComponents[0.25] = {x = 1, y = 1, direction=defines.direction.southeast}
+	storage.ChuteOrientationComponents[0.5] = {x = -1, y = 1, direction=defines.direction.southwest}
+	storage.ChuteOrientationComponents[0.75] = {x = -1, y = -1, direction=defines.direction.northwest}
+	storage.ChuteOrientationComponents[1] = {x = 1, y = -1, direction=defines.direction.northeast}
+	
 	-- Ultracube-specific globals
 	if script.active_mods["Ultracube"] then
 		-- Prototype data should be reset on config change just in case Ultracube has updated to add new types

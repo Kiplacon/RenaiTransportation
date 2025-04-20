@@ -1,16 +1,90 @@
 if script.active_mods["gvv"] then require("__gvv__.gvv")() end
 if script.active_mods["Ultracube"] then CubeFlyingItems = require("script.ultracube.cube_flying_items") end
 
----- keikaku
--- dynamic zipline, get on from anywhere and autodrive anywhere
--- better zipline driving with close connections
--- deflector pad, diagonal (w/range adjusts)
--- director pad range adjusting
--- better system to adjust filters/range before placing thrower?
+TrainConstants = require("__RenaiTransportation__/script/trains/constants")
+require('util')
+---- Space Age keikaku
+------- improvements ✅
+-- director pad range adjusting ✅
+	-- change bounde pads from simple-entity to constant combinator ✅
+	-- change on-build to default to 10 range, or set range/indicator according to the ghost signal value ✅
+	-- copy/paste setting change bounce range value ✅
+	-- Bounce pad ✅
+	-- directed bounce pad ✅
+	-- director bounce pad ✅
+	-- migration names ✅
+	-- interact cycling of range ✅
+-- remove shadows from character ghosts ✅
+	-- remove shadow layer from character prototype ✅
+	-- animate character shadow separately ✅
+		-- separate shadow sprite for manual animation ✅
+-- generalize player launching with custom path ✅
+-- better unloading of impact wagons at non-cardinal angles ✅
+-- messages when toggling stuff ✅
+-- zipline path to furthest connection ✅
 
--- trapdoor wagon
--- electromagnetic item cannon
--- belt ramp
+------- New stuff
+-- trapdoor wagon ✅
+	-- trapdoor switch (rail signal all 16 directions) ✅
+	-- trapdoor switch ramp ✅
+		-- toggles trapdoor only while train is in flight, switches back upon landing ✅
+	-- trapdoor switch placer graphics ✅
+	-- trapdoor open/close sound ✅
+	-- trapdoor open/close graphic ✅
+	-- trapdoor toggles when stopping/leaving a station with a certain signal fed into it ✅
+-- electromagnetic item cannon (rail gun)? ✅
+	-- not placable in space ✅
+	-- seal 1 stack of an item into a shell ✅
+		-- procedural recipe/shell for every game item. Failsafe for items loaded after ✅
+	-- can bounce off of reinforced plates that can be rotated to face the 4 cardinal directions. up/down and left/right are basically the same thing for this ✅
+	-- falls to the ground if nothing hit after X tiles ✅
+		-- damages things in a small area ✅
+		-- vomits out the contents of the shell (lose some?) ✅
+	-- catcher chute catches shell and drops contents into chest ✅
+	-- merging chute. X-shaped, shells can enter from different directions and leave from one ✅
+	-- diverging chure. T-shaped, shells enter from one and alternate leaving from the other two ✅
+	-- laser pointer to test trail ✅
+-- belt ramp ✅
+	-- fast, express, and tungsten variants ✅
+	-- items fly off into space at an angle ✅
+	-- player can be launched by it ✅
+-- vacuum hatch ✅
+	-- connection to entity behind it ✅
+	-- SUCC particles ✅
+-- dynamic zipline, get on from anywhere and autodrive anywhere ✅
+	-- include terminal list pop up ✅
+	-- pentapod egg for SA, fish for vanilla ✅
+-- techs for the above ✅
+	-- nauvis: belt ramp, vacuum hatch ✅
+	-- Fulgora: item cannon, ricochet panels, chutes ✅
+	-- Gleba: AI zipline controller, primer throwers ✅
+	-- Vulcanus: trapdoor wagon and switches and switch ramps ✅
+	-- Aquilo: nothing yet
+	-- check with vanilla start ✅
+-- straight up grief ✅
+	-- items in destroyed chests/containers fly out ✅
+	-- getting hit by a train/car knocks you away assuming you survive the hit ✅
+	-- items on the floor of a space platform fly away when the ship takes off ✅
+	-- settings to turn these off ✅
+
+------- bugs
+-- crash on interact to toggle things not currently enabled ✅
+-- rotating blueprints of trapdoor switches on angles doesnt always work due to rounding errors or something idk if you dont rotate it its fine ✅
+-- vacuum hatch full inventory loop (is fine actually, just bounce them off a short distance and only suck up 1 item per tick) ✅
+-- hover range indicator for bounce pads not synced with current setting ✅
+-- magnet ramp migration ✅
+-- director pad migration ✅
+-- losing train groups when incrementing schedules. Use train.get_schedule() and use go_to_station(schedule_index) if train had a group ✅
+
+------- possible future stuff
+-- deflector pad, diagonal
+-- Aquilo: launch trains iterplanetary
+
+------- impossible atm
+-- thrown item rework when animations can have dynamically rotated sprites
+	-- particle for each item
+	-- 10000 invisible particles with unique trigger IDs to cycle through
+	-- sprite and invisible particle thrown on top of each other together to create the illusion of a single entity 
 
 
 -- Setup tables and stuff for new/existing saves ----
@@ -18,7 +92,7 @@ script.on_init(
 	require("script.event.init")
 )
 
--- game version changes, prototypes change, startup mod settings change, and any time mod versions change including adding or removing mods
+-- game version changes, prototypes change, startup mod settings change, adding or removing mods, mod version changes
 script.on_configuration_changed(
 	require("script.event.config_changed")
 )
@@ -41,10 +115,65 @@ script.on_event(
 		defines.events.script_raised_built, --| built by script ----
 		defines.events.on_entity_cloned, -- | cloned by script ----
 		defines.events.script_raised_revive, -- | ghost revived by script
+		defines.events.on_post_entity_died, -- | ghost created when something dies
+		defines.events.on_space_platform_built_entity -- | built by space platform
 	},
 	require("script.event.entity_built")
 )
 
+script.on_event(defines.events.on_entity_died,
+function(event)
+	if settings.global["RTChestPop"].value == true
+	and (event.entity.type == "container"
+	or event.entity.type == "logistic-container"
+	or event.entity.type == "cargo-wagon"
+	or event.entity.type == "car") then
+		local container = event.entity
+		local scale = ((container.bounding_box.right_bottom.x-container.bounding_box.left_top.x)+(container.bounding_box.right_bottom.y-container.bounding_box.left_top.y))
+		for i = 1, #container.get_output_inventory() do
+			local stack = container.get_output_inventory()[i]
+			if (stack.valid_for_read == true) then
+				stack.count = math.ceil(stack.count*0.5) -- half the items lost in the destruction
+				local GroupSize = math.ceil((stack.count/17))
+				for _ = 1, math.floor(stack.count/GroupSize) do
+					-- unit vector
+					local angle = math.random(0, 100)*0.01
+					local xUnit = math.cos(2*math.pi*angle)
+					local yUnit = math.sin(2*math.pi*angle)
+					-- flight arc
+					local speed = math.random(10, 20)*0.00008 + (scale*0.01)
+					local AirTime = math.random(40, 50) + math.ceil(scale*5)
+					local TargetX = event.entity.position.x + (xUnit*math.random(1, math.ceil(scale*0.8)))
+					local TargetY = event.entity.position.y + (yUnit*math.random(1, math.ceil(scale*0.8)))
+					local vector = {x=TargetX-container.position.x, y=TargetY-container.position.y}
+					local arc = 0.13
+					local path = {}
+					for j = 0, AirTime do
+						local progress = j/AirTime
+						path[j] =
+						{
+							x = container.position.x+(progress*vector.x),
+							y = container.position.y+(progress*vector.y),
+							height = progress * (1-progress) / arc
+						}
+					end
+					InvokeThrownItem({
+						type = "CustomPath",
+						render_layer = "elevated-higher-object",
+						stack = stack,
+						ThrowFromStackAmount = GroupSize,
+						start = container.position,
+						target = {x=TargetX, y=TargetY},
+						path = path,
+						AirTime = AirTime,
+						surface=container.surface,
+					})
+				end
+			end
+		end
+	end
+end
+)
 
 -- On Rotate
 script.on_event(
@@ -75,327 +204,17 @@ function(event)
 		end
 	end
 
-	for unitID, ItsStuff in pairs(storage.MagnetRamps) do
+	for unitID, ItsStuff in pairs(storage.TrainRamps) do
 		if (ItsStuff.entity and ItsStuff.entity.valid) then
 			-- it's good
 		else
-			storage.MagnetRamps[unitID] = nil
+			storage.TrainRamps[unitID] = nil
 		end
 	end
 end)
 
 -- Thrower Check
 ---- checks if thrower inserters have something in their hands and it's in the throwing position, then creates the approppriate projectile ----
-script.on_nth_tick(3,
-function(event)
-	for catapultID, properties in pairs(storage.CatapultList) do
-		local catapult = properties.entity
-		if (catapult.valid) then
-			local CatapulyDestroyNumber = script.register_on_object_destroyed(catapult)
-			-- power check. low power makes inserter arms stretch
-			if (properties.IsElectric == true and catapult.energy/catapult.electric_buffer_size >= 0.9) then
-				catapult.active = true
-			elseif (properties.IsElectric == true and catapult.is_connected_to_electric_network() == true) then
-				catapult.active = false
-				rendering.draw_animation
-					{
-						animation = "RTMOREPOWER",
-						x_scale = 0.5,
-						y_scale = 0.5,
-						target = catapult,
-						surface = catapult.surface,
-						time_to_live = 4
-					}
-			end
-
-			if (catapult.held_stack.valid_for_read) then -- if it has power
-				local HeldItem = catapult.held_stack.name
-				-- if it's passed the "half swing" point
-				if (catapult.orientation == 0    and catapult.held_stack_position.y >= catapult.position.y+properties.BurnerSelfRefuelCompensation)
-				or (catapult.orientation == 0.25 and catapult.held_stack_position.x <= catapult.position.x-properties.BurnerSelfRefuelCompensation)
-				or (catapult.orientation == 0.50 and catapult.held_stack_position.y <= catapult.position.y-properties.BurnerSelfRefuelCompensation)
-				or (catapult.orientation == 0.75 and catapult.held_stack_position.x >= catapult.position.x+properties.BurnerSelfRefuelCompensation)
-				then
-					-- activate/disable thrower based on overflow prevention
-					if (catapult.name ~= "RTThrower-PrimerThrower" and settings.global["RTOverflowComp"].value == true and properties.InSpace == false) then
-						-- pointing at some entity
-						if (properties.targets[HeldItem]
-						and properties.targets[HeldItem].valid -- its an entity
-						and storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])] -- receptions are being tracked for the entity
-						and storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])][HeldItem]) then -- receptions are being tracked for the entity for the particular item
-							local TargetDestroyNumber = script.register_on_object_destroyed(properties.targets[HeldItem])
-							if (properties.targets[HeldItem].type ~= "transport-belt") then
-								if (storage.OnTheWay[TargetDestroyNumber][HeldItem] < 0) then
-									storage.OnTheWay[TargetDestroyNumber][HeldItem] = 0  -- correct any miscalculaltions resulting in negative values
-								end
-								local total = storage.OnTheWay[TargetDestroyNumber][HeldItem] + catapult.held_stack.count
-								local inserted = properties.targets[HeldItem].insert({name=HeldItem, count=total, quality=catapult.held_stack.quality.name, spoil_percent=catapult.held_stack.spoil_percent})
-								if (inserted < total) then
-									catapult.active = false
-								else
-									catapult.active = true
-								end
-								if (inserted > 0) then -- when the destination is full. Have to check otherwise there's an error
-									properties.targets[HeldItem].remove_item({name=HeldItem, count=inserted, quality=catapult.held_stack.quality.name})
-								end
-							elseif (properties.targets[HeldItem].type == "transport-belt") then
-								local incomming = 0
-								for name, count in pairs(storage.OnTheWay[TargetDestroyNumber]) do
-									incomming = incomming + count
-								end
-								local total = incomming + properties.targets[HeldItem].get_transport_line(1).get_item_count() + properties.targets[HeldItem].get_transport_line(2).get_item_count() + catapult.held_stack.count
-								if (properties.targets[HeldItem].belt_shape == "straight" and total <= 8)
-								or (properties.targets[HeldItem].belt_shape ~= "straight" and total <= 7) then
-									catapult.active = true
-									if (storage.HoverGFX[CatapulyDestroyNumber]) then
-										for playerID, graphic in pairs(storage.HoverGFX[CatapulyDestroyNumber]) do
-											graphic.destroy()
-										end
-										storage.HoverGFX[CatapulyDestroyNumber] = {}
-									end
-								else
-									catapult.active = false
-									if (storage.HoverGFX[CatapulyDestroyNumber] == nil) then
-										storage.HoverGFX[CatapulyDestroyNumber] = {}
-									end
-									for ID, player in pairs(game.players) do
-										if (storage.HoverGFX[CatapulyDestroyNumber][ID] == nil) then
-											local hovering = false
-											if (player.selected and player.selected.unit_number == catapult.unit_number) then
-												hovering = true
-											end
-											storage.HoverGFX[CatapulyDestroyNumber][ID] = rendering.draw_text
-											{
-												text = {"RTmisc.EightMax"},
-												surface = catapult.surface,
-												target = catapult,
-												alignment = "center",
-												scale = 0.5,
-												color = {1,1,1},
-												players = {player},
-												visible = hovering
-											}
-										end
-									end
-								end
-							end
-
-						-- pointing at nothing/the ground
-						elseif (properties.targets[HeldItem] == "nothing") then
-							catapult.active = true
-
-						-- item needs path validation/is currently tracking path
-						elseif (properties.targets[HeldItem] == nil) then
-							-- start path tracking, repeatedly stops here until trace ends, setting the target in properties
-							if (properties.ImAlreadyTracer == nil or properties.ImAlreadyTracer == "traced") then
-								properties.ImAlreadyTracer = "tracing"
-								-- set tracer "projectile"
-								local AirTime = 1
-								storage.FlyingItems[storage.FlightNumber] =
-									{
-									item=HeldItem, --this matters for tracing paths through director bounce pads
-									amount=0, --not like it matters
-									target=
-									{
-										x=properties.entity.drop_position.x, 
-										y=properties.entity.drop_position.y
-									},
-									ThrowerPosition=properties.entity.position,
-									AirTime=AirTime,
-									StartTick=event.tick,
-									LandTick=event.tick+AirTime,
-									tracing = catapultID,
-									surface = catapult.surface,
-									space = false --necessary
-									}
-								storage.FlightNumber = storage.FlightNumber + 1
-							end
-							catapult.active = false
-
-						-- first time throws for items to this target
-						elseif (properties.targets[HeldItem]
-						and properties.targets[HeldItem].valid
-						and storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])] == nil) then
-							storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])] = {}
-							storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])][HeldItem] = 0
-							catapult.active = false
-
-						-- first time throws for this particular item to this target
-						elseif (properties.targets[HeldItem]
-						and properties.targets[HeldItem].valid
-						and storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])]
-						and storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])][HeldItem] == nil) then
-							storage.OnTheWay[script.register_on_object_destroyed(properties.targets[HeldItem])][HeldItem] = 0
-							catapult.active = false
-						end
-					-- overflow prevention is set to off
-					else
-						catapult.active = true
-					end
-
-					-- if the thrower is still active after the checks then:
-					if (catapult.active == true) then
-						if (catapult.name == "RTThrower-PrimerThrower" and prototypes.entity["RTPrimerThrowerShooter-"..HeldItem]) then
-							catapult.inserter_stack_size_override = 1
-							catapult.active = false
-							storage.PrimerThrowerLinks[script.register_on_object_destroyed(properties.entangled.detector)].ready = true
-						else
-							-- starting parameters
-							local x = catapult.drop_position.x
-							local y = catapult.drop_position.y
-							local distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
-							-- calcaulte projectile parameters
-							local ShootPosition=catapult.held_stack_position
-							local speed = 0.18
-							if (catapult.name == "RTThrower-EjectorHatchRT" or catapult.name == "RTThrower-FilterEjectorHatchRT") then
-								distance = math.sqrt((x-catapult.position.x)^2 + (y-catapult.position.y)^2)
-								ShootPosition=catapult.position
-								speed = 0.25
-								--[[ catapult.surface.play_sound
-								{
-									path = "RTEjector",
-									position = catapult.position,
-									volume_modifier = 0.1
-								} ]]
-							else
-								catapult.surface.play_sound
-								{
-									path = "RTThrow",
-									position = catapult.position,
-									volume_modifier = 0.2
-								}
-							end
-							local AirTime = math.max(1, math.floor(distance/speed)) -- for super fast throwers that move right on top of their target
-							local DestinationDestroyNumber
-							if (settings.global["RTOverflowComp"].value == true and properties.InSpace == false) then
-								if (properties.targets[HeldItem] ~= nil and properties.targets[HeldItem].valid) then
-									DestinationDestroyNumber = script.register_on_object_destroyed(properties.targets[HeldItem])
-									if (storage.OnTheWay[DestinationDestroyNumber] == nil) then
-										storage.OnTheWay[DestinationDestroyNumber] = {}
-										storage.OnTheWay[DestinationDestroyNumber][HeldItem] = catapult.held_stack.count
-									elseif (storage.OnTheWay[DestinationDestroyNumber][HeldItem] == nil) then
-										storage.OnTheWay[DestinationDestroyNumber][HeldItem] = catapult.held_stack.count
-									else
-										storage.OnTheWay[DestinationDestroyNumber][HeldItem] = storage.OnTheWay[DestinationDestroyNumber][HeldItem] + catapult.held_stack.count
-									end
-								elseif (properties.targets[HeldItem] == "nothing") then -- recheck pointing at nothing/things without unit_numbers
-									properties.targets[HeldItem] = nil
-								end
-							end
-							storage.FlyingItems[storage.FlightNumber] =
-								{
-									item=HeldItem,
-									amount=catapult.held_stack.count,
-									quality=catapult.held_stack.quality.name,
-									--thrower=catapult, -- not used?
-									ThrowerPosition=catapult.position,
-									target={x=x, y=y},
-									--start=start, --ThrowerPosition now
-									AirTime=AirTime,
-									StartTick=game.tick,
-									LandTick=game.tick+AirTime,
-									destination=DestinationDestroyNumber,
-									space=properties.InSpace,
-									surface=catapult.surface,
-								}
-							if (properties.InSpace == false) then
-								if (prototypes.entity["RTItemProjectile-"..HeldItem..speed*100]) then
-									catapult.surface.create_entity
-									{
-										name="RTItemProjectile-"..HeldItem..speed*100,
-										position=catapult.held_stack_position,
-										source_position=ShootPosition,
-										target_position=catapult.drop_position
-									}
-								else
-									catapult.surface.create_entity
-									{
-										name="RTTestProjectile"..speed*100,
-										position=catapult.held_stack_position,
-										source_position=ShootPosition,
-										target_position=catapult.drop_position
-									}
-								end
-							else
-								x = x + (-storage.OrientationUnitComponents[catapult.orientation].x * 100)
-								y = y + (-storage.OrientationUnitComponents[catapult.orientation].y * 100)
-								distance = math.sqrt((x-catapult.held_stack_position.x)^2 + (y-catapult.held_stack_position.y)^2)
-								AirTime = math.max(1, math.floor(distance/speed))
-								local vector = {x=x-catapult.held_stack_position.x, y=y-catapult.held_stack_position.y}
-								local path = {}
-								for i = 1, AirTime do
-									local progress = i/AirTime
-									path[i] =
-									{
-										x = catapult.held_stack_position.x+(progress*vector.x),
-										y = catapult.held_stack_position.y+(progress*vector.y),
-										height = 0
-									}
-								end
-								storage.FlyingItems[storage.FlightNumber].path = path
-								storage.FlyingItems[storage.FlightNumber].space = true
-								storage.FlyingItems[storage.FlightNumber].LandTick = game.tick+AirTime
-								storage.FlyingItems[storage.FlightNumber].sprite = rendering.draw_sprite
-									{
-										sprite = "item/"..HeldItem,
-										x_scale = 0.5,
-										y_scale = 0.5,
-										target = catapult.held_stack_position,
-										surface = catapult.surface
-									}
-								storage.FlyingItems[storage.FlightNumber].spin = math.random(-10,10)*0.01
-							end
-							if (catapult.held_stack.item_number ~= nil) then
-								local CloudStorage = game.create_inventory(1)
-								CloudStorage.insert(catapult.held_stack)
-								storage.FlyingItems[storage.FlightNumber].CloudStorage = CloudStorage
-							end
-
-							-- Ultracube irreplaceables detection & handling
-							if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[HeldItem] then -- Ultracube mod is active, and the held item is an irreplaceable
-								-- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
-								CubeFlyingItems.create_token_for(storage.FlyingItems[storage.FlightNumber])
-							end
-							
-							storage.FlightNumber = storage.FlightNumber + 1
-							catapult.held_stack.clear()
-						end
-					end
-				end
-
-			elseif (catapult.active == false and catapult.held_stack.valid_for_read == false) then
-				catapult.active = true
-			end
-
-			if (properties.RangeAdjustable == true) then
-				local range = catapult.get_signal({type="virtual", name="ThrowerRangeSignal"}, defines.wire_connector_id.circuit_red)
-				if (properties.range==nil or properties.range~=range) then
-					if (range > 0 and range <= catapult.prototype.inserter_drop_position[2]+0.1) then
-						catapult.drop_position =
-							{
-								catapult.position.x + -range*storage.OrientationUnitComponents[catapult.orientation].x,
-								catapult.position.y + -range*storage.OrientationUnitComponents[catapult.orientation].y
-							}
-						properties.range = range
-						if (storage.CatapultList[CatapulyDestroyNumber]) then
-							storage.CatapultList[CatapulyDestroyNumber].targets = {}
-							for componentUN, PathsItsPartOf in pairs(storage.ThrowerPaths) do
-								for ThrowerUN, TrackedItems in pairs(PathsItsPartOf) do
-									if (ThrowerUN == CatapulyDestroyNumber) then
-										storage.ThrowerPaths[componentUN][ThrowerUN] = {}
-									end
-								end
-							end
-						end
-					end
-				end
-			end
-
-		elseif (catapult.valid == false) then
-			storage.CatapultList[catapultID] = nil
-		end
-	end
-end)
 
 -- Projectile Lands
 -- When a projectile lands and its effect_id is triggered, what to do ----
@@ -454,39 +273,41 @@ script.on_event(
 -- throw
 script.on_event(
 	"RTThrow",
-function(event1)
-	local player = game.get_player(event1.player_index)
-	local CursorPosition = event1.cursor_position
-	if (player
-	and player.character
-	and player.character.surface.name == player.surface.name
-	and player.cursor_stack
-	and player.cursor_stack.valid_for_read == true) then
-		if (DistanceBetween(player.character.position, CursorPosition) <= player.character.reach_distance) then
-			local stack
-			if (player.cursor_stack.item_number ~= nil) then
-				stack = player.cursor_stack
-			end
-			CreateThrownItem(player.character, CursorPosition, player.cursor_stack.name, 1, player.cursor_stack.quality.name, player.surface, {0,-1}, stack, true)
-			player.cursor_stack.count = player.cursor_stack.count-1
-			player.surface.play_sound
-				{
-					path = "RTThrow",
-					position = player.position,
-					--volume_modifier = 0.1
+	function(event1)
+		local player = game.get_player(event1.player_index)
+		local CursorPosition = event1.cursor_position
+		if (player
+		and player.character
+		and player.character.surface.name == player.surface.name
+		and player.cursor_stack
+		and player.cursor_stack.valid_for_read == true) then
+			if (DistanceBetween(player.character.position, CursorPosition) <= player.character.reach_distance) then
+				InvokeThrownItem({
+					type = "ReskinnedStream",
+					stack = player.cursor_stack,
+					ThrowFromStackAmount = 1,
+					start = OffsetPosition(player.character.position, {0, -1}),
+					target = CursorPosition,
+					surface = player.surface,
+				})
+				player.surface.play_sound
+					{
+						path = "RTThrow",
+						position = player.position,
+						--volume_modifier = 0.1
+					}
+			else
+				rendering.draw_circle{
+					color = {217, 145, 21},
+					radius = player.character.reach_distance,
+					target = player.character,
+					surface = player.character.surface,
+					players = {player},
+					time_to_live = 60
 				}
-		else
-			rendering.draw_circle{
-				color = {217, 145, 21},
-				radius = player.character.reach_distance,
-				target = player.character,
-				surface = player.character.surface,
-				players = {player},
-				time_to_live = 60
-			}
+			end
 		end
 	end
-end
 )
 
 -- On Click
@@ -507,7 +328,7 @@ script.on_event(defines.events.on_player_changed_surface,
 function(event)
 local player = game.players[event.player_index]
 local PlayerProperties = storage.AllPlayers[event.player_index]
-	if (PlayerProperties and PlayerProperties.state == "zipline" and player.surface.name ~= PlayerProperties.zipline.StartingSurface.name) then
+	if (PlayerProperties and PlayerProperties.state == "zipline" and player.character and player.character.surface.name ~= PlayerProperties.zipline.StartingSurface.name) then
 		player.teleport(player.position, game.get_surface(event.surface_index))
 	end
 end)
@@ -526,23 +347,28 @@ script.on_event(defines.events.on_gui_closed,
 function(event)
 	local player = game.players[event.player_index]
 	if (event.entity and event.entity.name == "DirectorBouncePlate" and storage.ThrowerPaths[script.register_on_object_destroyed(event.entity)] ~= nil) then
-		for ThrowerUN, TrackedItems in pairs(storage.ThrowerPaths[script.register_on_object_destroyed(event.entity)]) do
+		ResetPathComponentOverflowTracking(event.entity)
+		--[[ for ThrowerUN, TrackedItems in pairs(storage.ThrowerPaths[script.register_on_object_destroyed(event.entity)]) do
 			if (storage.CatapultList[ThrowerUN]) then
 				for item, asthma in pairs(TrackedItems) do
 					storage.CatapultList[ThrowerUN].targets[item] = nil
 				end
 			end
-		end
-		storage.ThrowerPaths[script.register_on_object_destroyed(event.entity)] = {}
+		end ]]
+		--storage.ThrowerPaths[script.register_on_object_destroyed(event.entity)] = {}
 	end
 	if (player.gui.screen.RTZiplineTerminalGUI) then
 		player.gui.screen.RTZiplineTerminalGUI.destroy()
+	end
+	if (player.gui.screen.RTDirectorPadGUI) then
+		player.gui.screen.RTDirectorPadGUI.destroy()
 	end
 end)
 
 -- a bunch of functions used in various other places
 require("script.MiscFunctions")
 require("script.GUIs")
+require("script.ThrowItemFunctions")
 
 script.on_event(defines.events.on_gui_click,
 	require("script.event.ClickGUI")
@@ -554,7 +380,7 @@ script.on_event(defines.events.on_selected_entity_changed,
 --last_entity	:: LuaEntity?	The last selected entity if it still exists and there was one.
 function(event)
 	local player = game.players[event.player_index]
-	--hide the old one
+	--[[ --hide the old one
 	if (event.last_entity
 	and storage.HoverGFX[script.register_on_object_destroyed(event.last_entity)]
 	and storage.HoverGFX[script.register_on_object_destroyed(event.last_entity)][event.player_index]) then
@@ -565,6 +391,23 @@ function(event)
 	and storage.HoverGFX[script.register_on_object_destroyed(player.selected)]
 	and storage.HoverGFX[script.register_on_object_destroyed(player.selected)][event.player_index]) then
 		storage.HoverGFX[script.register_on_object_destroyed(player.selected)][event.player_index].visible = true
+	end ]]
+	local groups = {"BouncePadList", "BeltRamps"}
+	for _, group in pairs(groups) do
+		--hide the old one
+		if (event.last_entity
+		and storage[group][script.register_on_object_destroyed(event.last_entity)]
+		and storage[group][script.register_on_object_destroyed(event.last_entity)].arrow) then
+			storage[group][script.register_on_object_destroyed(event.last_entity)].arrow.only_in_alt_mode = true
+			storage[group][script.register_on_object_destroyed(event.last_entity)].arrow.visible = storage[group][script.register_on_object_destroyed(event.last_entity)].ShowArrow
+		end
+		-- show the new one
+		if (player.selected
+		and storage[group][script.register_on_object_destroyed(player.selected)]
+		and storage[group][script.register_on_object_destroyed(player.selected)].arrow) then
+			storage[group][script.register_on_object_destroyed(player.selected)].arrow.visible = true
+			storage[group][script.register_on_object_destroyed(player.selected)].arrow.only_in_alt_mode = false
+		end
 	end
 end)
 
@@ -617,17 +460,23 @@ function(event)
 		end
 	elseif (player.character) then
 		rendering.draw_animation
-		{
-			animation = "RTHoojinTime",
-			x_scale = 0.5,
-			y_scale = 0.5,
-			target = {
-				entity = player.character,
-			},
-			surface = player.surface,
-			time_to_live = 120,
-			animation_speed = 0.5
-		}
+			{
+				animation = "RTHoojinTime",
+				x_scale = 0.5,
+				y_scale = 0.5,
+				target = {
+					entity = player.character,
+				},
+				surface = player.surface,
+				time_to_live = 120,
+				animation_speed = 0.5
+			}
+		player.surface.create_entity
+			{
+				name="RTSaysYourCrosshairIsTooLow",
+				target=player.character,
+				position={420,69},
+			}.time_to_live=120
 	end
 end)
 
@@ -680,11 +529,14 @@ function(event)
 			and player.character
 			and (not string.find(player.character.name, "-jetpack"))
 			and player.is_cursor_empty() == true) then
+				player.opened = nil
 				if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
 				and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "ZiplineItem")
 				and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
-				and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTProgrammableZiplineControlsItem") then
-					player.opened = nil
+				and (player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTProgrammableZiplineControlsItem"
+					or player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTAIZiplineControlsItem")
+				) then
+					
 					if (DistanceBetween(player.character.position, selected.position) <= 7) then
 						ShowZiplineTerminalGUI(player, selected)
 					else
@@ -692,6 +544,7 @@ function(event)
 					end
 				else
 					player.print({"zipline-stuff.terminalReqs"})
+					
 				end
 			end
 
@@ -699,26 +552,24 @@ function(event)
 			or selected.name == "RTTrainRampNoSkip"
 			or selected.name == "RTMagnetTrainRamp"
 			or selected.name == "RTMagnetTrainRampNoSkip"
-			or selected.name == "RTMagnetRampDrain") then
+			or selected.name == "RTMagnetRampDrain"
+			or selected.name == "RTBouncePlate"
+			or selected.name == "DirectedBouncePlate"
+			or selected.name == "PlayerLauncher"
+			or selected.name == "RTRicochetPanel"
+			or selected.name == "RTMergingChute"
+			or selected.name == "RTDivergingChute"
+			or (string.find(selected.name, '^RT') and string.find(selected.name, "BeltRamp"))) then
 			player.opened = nil
 
 		elseif (selected.name == "DirectorBouncePlate") then
 			player.opened = nil
 			ShowDirectorGUI(player, selected)
+
+		elseif (selected.name == "RTItemCannon") then
+			player.opened = storage.ItemCannons[script.register_on_object_destroyed(selected)].chest
 		end
     end
-end)
-
-script.on_event(
-defines.events.on_gui_closed,
-function(event)
-    local player = game.players[event.player_index]
-	if (player.gui.screen.RTZiplineTerminalGUI) then
-		player.gui.screen.RTZiplineTerminalGUI.destroy()
-	end
-	if (player.gui.screen.RTDirectorPadGUI) then
-		player.gui.screen.RTDirectorPadGUI.destroy()
-	end
 end)
 
 script.on_event(
@@ -734,6 +585,7 @@ function(event)
 		else
 			director.get_or_create_control_behavior().get_section(section).clear_slot(slot)
 		end
+		ResetPathComponentOverflowTracking(director)
 	end
 end)
 
@@ -744,6 +596,83 @@ function(event)
 		if (properties.tag and properties.tag.valid and properties.tag.tag_number == event.tag.tag_number) then
 			properties.name = event.tag.text
 		end
+	end
+end)
+
+script.on_event(defines.events.on_space_platform_changed_state,
+	require("script.event.platform_change_state")
+)
+
+script.on_event(defines.events.on_train_changed_state,
+--train		:: LuaTrain	
+--old_state	:: defines.train_state
+function(event)
+	local train = event.train
+	if (settings.startup["RTTrapdoorSetting"].value == true) then
+		if (train.state == defines.train_state.wait_station and train.station ~= nil and train.station.get_signal({type="virtual", name="StationTrapdoorWagonSignal"}, defines.wire_connector_id.circuit_red, defines.wire_connector_id.circuit_green) > 0) then
+			for _, wagon in pairs(train.cargo_wagons) do
+				if (wagon.name == "RTTrapdoorWagon") then
+					ToggleTrapdoorWagon(wagon, true)
+				end
+			end
+		elseif (event.old_state == defines.train_state.wait_station) then
+			for _, wagon in pairs(train.cargo_wagons) do
+				local DestroyNumber = script.register_on_object_destroyed(wagon)
+				if (wagon.name == "RTTrapdoorWagon")
+				and ((storage.TrapdoorWagonsOpen[DestroyNumber] and storage.TrapdoorWagonsOpen[DestroyNumber].StationToggleBack)
+					or (storage.TrapdoorWagonsClosed[DestroyNumber] and storage.TrapdoorWagonsClosed[DestroyNumber].StationToggleBack)) then
+					ToggleTrapdoorWagon(wagon)
+				end
+			end
+		end
+	end
+	if (settings.startup["RTThrowersSetting"].value == true) then
+		for _, wagon in pairs(train.cargo_wagons) do
+			local WagonDestroyNumber = script.register_on_object_destroyed(wagon)
+			if (storage.ThrowerPaths[WagonDestroyNumber]) then
+				for ThrowerDestoryNumber, items in pairs(storage.ThrowerPaths[WagonDestroyNumber]) do
+					if (storage.CatapultList[ThrowerDestoryNumber]) then
+						storage.ThrowerPaths[WagonDestroyNumber][ThrowerDestoryNumber] = {}
+						ResetThrowerOverflowTracking(storage.CatapultList[ThrowerDestoryNumber].entity)
+					end
+				end
+			end
+		end
+	end
+end)
+
+script.on_event(
+defines.events.on_player_mined_entity,
+function(event)
+	local player = game.players[event.player_index]
+	local entity = event.entity
+	if (player.character
+	and settings.get_player_settings(player)["MiningSpeedDebuffTime"].value ~= 0
+	and player.character.character_mining_speed_modifier > -0.9
+	and (
+			string.find(entity.name, "HatchRT")
+			or entity.name == "RTTrapdoorSwitch"
+			or (string.find(entity.name, '^RT') and (string.find(entity.name, 'TrainRamp') or string.find(entity.name, 'ImpactUnloader')))
+		)
+	) then
+		local back = player.character.character_mining_speed_modifier
+		local zawardo = math.max(1, math.ceil(settings.get_player_settings(player)["MiningSpeedDebuffTime"].value * 60))
+		if (storage.clock[game.tick+zawardo] == nil) then
+			storage.clock[game.tick+zawardo] = {MiningSpeedRevert={}}
+		else
+			if (storage.clock[game.tick+zawardo].MiningSpeedRevert == nil) then
+				storage.clock[game.tick+zawardo].MiningSpeedRevert = {}
+			end
+		end
+		table.insert(storage.clock[game.tick+zawardo].MiningSpeedRevert, {character=player.character, back=back})
+		player.character.character_mining_speed_modifier = -0.9
+	end
+	if (entity.name == "RTItemCannon") then
+		storage.ItemCannons[script.register_on_object_destroyed(entity)].chest.mine
+		{
+			inventory=player.character.get_main_inventory(),
+			ignore_minable=true
+		}
 	end
 end)
 

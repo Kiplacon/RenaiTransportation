@@ -1,18 +1,6 @@
+--local utild = require('util')
 --======= util.swap_entity_inventories and swap_inventories method copied from the Jetpacks mod cause this somehow preserves blueprints in the quickbar
 --https://mods.factorio.com/mod/jetpack
---[[ function util.swap_entity_inventories(entity_a, entity_b, inventory)
-    swap_inventories(entity_a.get_inventory(inventory), entity_b.get_inventory(inventory))
-end
-function swap_inventories(inv_a, inv_b)
-    if inv_a.is_filtered() then
-        for i = 1, math.min(#inv_a, #inv_b) do
-        inv_b.set_filter(i, inv_a.get_filter(i))
-        end
-    end
-    for i = 1, math.min(#inv_a, #inv_b)do
-        inv_b[i].swap_stack(inv_a[i])
-    end
-end ]]
 function util.swap_entity_inventories(entity_a, entity_b, inventory)
     local inv_a = entity_a.get_inventory(inventory)
     local inv_b = entity_b.get_inventory(inventory)
@@ -37,6 +25,15 @@ function SwapToGhost(player)
         position = OG.position,
         force = OG.force,
         direction = OG.direction
+    }
+    local OwTheEdge = rendering.draw_sprite{
+        sprite = "RTCharacterGhostStanding",
+        target = {entity=NEWHOST, offset={3, 0.25}},
+        tint = {r=1,g=1,b=1,a=0.3},
+        surface = NEWHOST.surface,
+        render_layer = "wires",
+        x_scale = 0.5,
+        y_scale = 0.5
     }
     local zhonyas = OG.surface.create_entity{
         name = "RTPropCar",
@@ -70,24 +67,26 @@ function SwapToGhost(player)
 	end
 
     -- logistics stuff
-    NEWHOST.get_requester_point().enabled = OG.get_requester_point().enabled
-    NEWHOST.get_requester_point().trash_not_requested = OG.get_requester_point().trash_not_requested
-    OG.get_requester_point().enabled = false
-    OG.get_requester_point().trash_not_requested = false
-    NEWHOST.get_logistic_sections().remove_section(1) -- new character starts with one
-    for i = 1, OG.get_logistic_sections().sections_count do
-        local from = OG.get_logistic_sections().get_section(i)
-        local to = NEWHOST.get_logistic_sections().add_section(from.group)
-        to.active = from.active
-        to.multiplier = from.multiplier
-        if (from.group == "") then
-            for j = 1, from.filters_count do
-                to.set_slot(j, from.get_slot(j))
+    if (player.force.character_logistic_requests == true) then
+        NEWHOST.get_requester_point().enabled = OG.get_requester_point().enabled
+        NEWHOST.get_requester_point().trash_not_requested = OG.get_requester_point().trash_not_requested
+        OG.get_requester_point().enabled = false
+        OG.get_requester_point().trash_not_requested = false
+        NEWHOST.get_logistic_sections().remove_section(1) -- new character starts with one
+        for i = 1, OG.get_logistic_sections().sections_count do
+            local from = OG.get_logistic_sections().get_section(i)
+            local to = NEWHOST.get_logistic_sections().add_section(from.group)
+            to.active = from.active
+            to.multiplier = from.multiplier
+            if (from.group == "") then
+                for j = 1, from.filters_count do
+                    to.set_slot(j, from.get_slot(j))
+                end
             end
         end
-    end
-    for i = 1, OG.get_logistic_sections().sections_count do
-        OG.get_logistic_sections().remove_section(1) --whenever you remove a slot, a new one becomes slot 1
+        for i = 1, OG.get_logistic_sections().sections_count do
+            OG.get_logistic_sections().remove_section(1) --whenever you remove a slot, a new one becomes slot 1
+        end
     end
 
 	------ undo crafting queue -------
@@ -154,7 +153,7 @@ function SwapToGhost(player)
     zhonyas.force = "enemy"
     zhonyas.destructible = false
 
-	return OG
+	return OG, OwTheEdge
 end
 
 ---- swapping back from character ghost copy from using the ziplines or player launcher
@@ -172,6 +171,7 @@ function SwapBackFromGhost(player, FlyingItem)
         local ghost = player.character
         OG.vehicle.destroy()
         OG.teleport(ghost.position)
+        player.teleport(OG.position, OG.surface)
         player.character = OG
         OG.direction = ghost.direction
         OG.destructible = true
@@ -201,16 +201,18 @@ function SwapBackFromGhost(player, FlyingItem)
         end
 
         -- logistics stuff
-        OG.get_requester_point().enabled = ghost.get_requester_point().enabled
-        OG.get_requester_point().trash_not_requested = ghost.get_requester_point().trash_not_requested
-        for i = 1, ghost.get_logistic_sections().sections_count do
-            local from = ghost.get_logistic_sections().get_section(i)
-            local to = OG.get_logistic_sections().add_section(from.group)
-            to.active = from.active
-            to.multiplier = from.multiplier
-            if (from.group == "") then
-                for j = 1, from.filters_count do
-                to.set_slot(j, from.get_slot(j))
+        if (player.force.character_logistic_requests == true) then
+            OG.get_requester_point().enabled = ghost.get_requester_point().enabled
+            OG.get_requester_point().trash_not_requested = ghost.get_requester_point().trash_not_requested
+            for i = 1, ghost.get_logistic_sections().sections_count do
+                local from = ghost.get_logistic_sections().get_section(i)
+                local to = OG.get_logistic_sections().add_section(from.group)
+                to.active = from.active
+                to.multiplier = from.multiplier
+                if (from.group == "") then
+                    for j = 1, from.filters_count do
+                    to.set_slot(j, from.get_slot(j))
+                    end
                 end
             end
         end
@@ -321,52 +323,23 @@ function OffsetPosition(p1, p2)
     return {x=p1x+p2x, y=p1y+p2y}
 end
 
-function CreateThrownItem(source, target, item, amount, quality, surface, StartOffset, stack, ManualThrow)
-    if (type(source) == "userdata") then
-        source = source.position
-    end
-    if (StartOffset == nil) then
-        StartOffset = {0,0}
-    end
-    local TargetX = target.x
-    local TargetY = target.y
-    local distance = math.sqrt((TargetX-source.x)^2 + (TargetY-source.y)^2)
-    local speed = 0.18
-    local AirTime = math.max(1, math.floor(distance/speed))
-    storage.FlyingItems[storage.FlightNumber] =
-    {
-        item=item,
-        amount=amount,
-        quality=quality or "normal",
-        ThrowerPosition=source, -- for bounce pad redirecting
-        target={x=TargetX, y=TargetY},
-        AirTime=AirTime,
-        StartTick=game.tick,
-        LandTick=game.tick+AirTime,
-        --destination=DestinationDestroyNumber, -- for overflow prevention
-        space=false,
-        surface=surface, -- to search for things by the landing zone
-    }
-    local FlyingItem = storage.FlyingItems[storage.FlightNumber]
-    storage.FlightNumber = storage.FlightNumber + 1
-    surface.create_entity
-        {
-            name="RTItemProjectile-"..item..speed*100,
-            position=source,
-            source_position=OffsetPosition(source, StartOffset),
-            target_position={TargetX, TargetY}
-        }
-    if (stack ~= nil) then
-        local CloudStorage = game.create_inventory(1)
-        CloudStorage.insert(stack)
-        if (ManualThrow ~= false) then
-            CloudStorage[1].count = 1
-        end
-        FlyingItem.CloudStorage = CloudStorage
-    end
-    -- Ultracube irreplaceables detection & handling
-    if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[item] then -- Ultracube mod is active, and the held item is an irreplaceable
-        -- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
-        CubeFlyingItems.create_token_for(storage.FlyingItems[storage.FlightNumber])
+function ToggleTrapdoorWagon(WagonEntity, StationToggleBack)
+    local DestroyNumber = script.register_on_object_destroyed(WagonEntity)
+    -- properties.entity = the wagon entity
+    -- properties.open = true/false
+    -- properties.OpenIndicator = RenderObject
+    if (storage.TrapdoorWagonsOpen[DestroyNumber] ~= nil) then
+        storage.TrapdoorWagonsOpen[DestroyNumber].OpenIndicator.sprite = "RTTrapdoorWagonClosed"
+        storage.TrapdoorWagonsOpen[DestroyNumber].StationToggleBack = StationToggleBack
+        --storage.TrapdoorWagonsOpen[DestroyNumber].open = false
+        storage.TrapdoorWagonsClosed[DestroyNumber], storage.TrapdoorWagonsOpen[DestroyNumber] = storage.TrapdoorWagonsOpen[DestroyNumber], nil
+        WagonEntity.surface.play_sound{path="RTTrapdoorCloseSound", position=WagonEntity.position}
+    elseif (storage.TrapdoorWagonsClosed[DestroyNumber] ~= nil) then
+        storage.TrapdoorWagonsClosed[DestroyNumber].OpenIndicator.sprite = "RTTrapdoorWagonOpen"
+        storage.TrapdoorWagonsClosed[DestroyNumber].StationToggleBack = StationToggleBack
+        --storage.TrapdoorWagonsClosed[DestroyNumber].open = true
+        storage.TrapdoorWagonsOpen[DestroyNumber], storage.TrapdoorWagonsClosed[DestroyNumber] = storage.TrapdoorWagonsClosed[DestroyNumber], nil
+        storage.TrapdoorWagonsOpen[DestroyNumber].timeout = nil
+        WagonEntity.surface.play_sound{path="RTTrapdoorOpenSound", position=WagonEntity.position}
     end
 end

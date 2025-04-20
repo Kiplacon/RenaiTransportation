@@ -1,5 +1,4 @@
 data:extend({
-
   {
     type = "item-subgroup",
     name = "throwers",
@@ -12,5 +11,24 @@ data:extend({
     name = "RT",
     group = "logistics",
     order = "cb"
+  },
+  {
+    type = "item-subgroup",
+    name = "RTCannonStuff",
+    group = "logistics",
+    order = "cc"
+  },
+  {
+    type = "item-subgroup",
+    name = "RTTrainStuff",
+    group = "logistics",
+    order = "cd"
+  },
+
+  {
+    type = "item-subgroup",
+    name = "RTZiplineStuff",
+    group = "combat",
+    order = "b-a" -- after ammo row
   }
 })

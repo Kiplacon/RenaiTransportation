@@ -1,0 +1,16 @@
+{
+	"entity":
+	[
+		["BouncePlate", "RTBouncePlate"]
+	],
+
+	"item":
+	[
+		["BouncePlateItem", "RTBouncePlateItem"]
+	],
+
+	"recipe": 
+	[
+		["BouncePlateRecipe", "RTBouncePlateRecipe"]
+	]
+}

@@ -1,4 +1,4 @@
-local util = require('util')
+--local util = require('util')
 
 local accumulator = table.deepcopy(data.raw.accumulator.accumulator)
 
@@ -84,7 +84,7 @@ magRampEntities = {
 	{
 		type = "electric-energy-interface",
 		name = "RTMagnetRampDrain",
-		icon = "__RenaiTransportation__/graphics/TrainRamp/RTMagnetTrainRamp-icon.png",
+		icon = "__RenaiTransportation__/graphics/TrainRamp/magnetrail.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-flammable", "no-copy-paste"},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},

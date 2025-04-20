@@ -1,47 +1,65 @@
 local math2d = require('math2d')
 
 local magnetRamps = {}
-
-magnetRamps.setRange = function (ramp, range, player, message)
-	if (range == nil) then
-		if (ramp.entity.get_or_create_control_behavior().get_section(1).get_slot(1).min and ramp.entity.get_or_create_control_behavior().get_section(1).get_slot(1).min>0) then
-			range = ramp.entity.get_or_create_control_behavior().get_section(1).get_slot(1).min-3
-			ramp.range = ramp.entity.get_or_create_control_behavior().get_section(1).get_slot(1).min
-		else
-			ramp.range = 0
+--get_or_create_control_behavior().circuit_condition = {constant = 5}
+--get_or_create_control_behavior().circuit_condition.constant
+magnetRamps.setRange = function (RampProperties, range, player, message, rail, LastSignal)
+	if (range == nil) then -- new ramp or ghost built
+		local CurrentRange = RampProperties.entity.get_or_create_control_behavior().circuit_condition.constant
+		if (CurrentRange > 0) then -- ghosts will have range/elevated modifiers copied on them
+			range = CurrentRange-6
+			RampProperties.range = CurrentRange -- so long as .range is not 0, the magnet ramp hit detection knows it has a range set. I could also change it to look for the existance of an associated power buffer and potentially i could take .range out i guess but it might be useful for migration stuff
+		else -- new ramps won't have a range set
+			RampProperties.range = 0
 		end
-	else
-		ramp.range = range + 3
-		ramp.entity.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=ramp.range})
+	else -- range adjusted by player or swap between schedule skipping
+		RampProperties.range = range + 6 -- +3 compensates for half the length of the train
+		local signal = "DirectorBouncePlateRight"
+		if (rail) then
+			if (RampProperties.entity.rail_layer == defines.rail_layer.elevated and rail.name ~= "elevated-straight-rail") then
+				signal = "DirectorBouncePlateDown"
+			end
+			if (RampProperties.entity.rail_layer == defines.rail_layer.ground and rail.name == "elevated-straight-rail") then
+				signal = "DirectorBouncePlateUp"
+			end
+		end
+		if (LastSignal and LastSignal.first_signal) then
+			signal = LastSignal.first_signal.name
+		end
+		RampProperties.entity.get_or_create_control_behavior().circuit_condition =
+			{
+				constant = RampProperties.range,
+				first_signal = {type = "virtual", name = signal},
+			}
 	end
 
-	if (range ~= nil) then
-		if ramp.rangeID then ramp.rangeID.destroy() end
-		for each, tile in pairs(ramp.tiles) do tile.destroy() end
-		ramp.tiles = {}
+	if (range ~= nil) then -- setup new magnet rail tiles and adjust power buffer 
+		if RampProperties.rangeID then RampProperties.rangeID.destroy() end
+		for each, tile in pairs(RampProperties.tiles) do tile.destroy() end
+		RampProperties.tiles = {}
 
-		local orientationComponent = storage.OrientationUnitComponents[ramp.entity.orientation]
+		local orientationComponent = storage.OrientationUnitComponents[RampProperties.entity.orientation]
 
 		for i = 1, range do
 			local offset = math2d.position.multiply_scalar(orientationComponent, -i)
-			local centerPosition = math2d.position.add(ramp.entity.position, offset)
+			local centerPosition = math2d.position.add(RampProperties.entity.position, offset)
 
-			local a, b = makeMagRampSection(centerPosition, ramp.entity.surface, ramp.entity.orientation)
-			table.insert(ramp.tiles, a)
-			table.insert(ramp.tiles, b)
+			local a, b = makeMagRampSection(centerPosition, RampProperties.entity.surface, RampProperties.entity.orientation)
+			table.insert(RampProperties.tiles, a)
+			table.insert(RampProperties.tiles, b)
 		end
-		ramp.power.electric_buffer_size = 200000 * range
+		RampProperties.power.electric_buffer_size = 200000 * range
 
 		if player and message and message == true then
-			player.print({"magnet-ramp-stuff.set", range, util.format_number(ramp.power.electric_buffer_size, true)})
+			player.print({"magnet-ramp-stuff.set", range, util.format_number(RampProperties.power.electric_buffer_size, true)})
 		end
 	end
 end
 
 function makeMagRampSection(centerPosition, surface, orientation)
 	local offsets = {
-		a = math2d.position.rotate_vector({ 0.5, 0 }, 360 * orientation),
-		b = math2d.position.rotate_vector({ 1.5, 0 }, 360 * orientation),
+		a = math2d.position.rotate_vector({ 0.9, 0 }, 360 * orientation),
+		b = math2d.position.rotate_vector({-0.1, 0 }, 360 * orientation),
 	}
 
 	local a = surface.create_entity({

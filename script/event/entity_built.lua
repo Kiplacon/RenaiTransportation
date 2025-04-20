@@ -1,8 +1,16 @@
+---@diagnostic disable: newline-call
 local trainHandler = require("__RenaiTransportation__/script/trains/entity_built")
 
-local function entity_built(event)
-	local entity = event.created_entity or event.entity or event.destination
+function NextThrowerGroup()
+	storage.CatapultGroup = storage.CatapultGroup + 1
+	if (storage.CatapultGroup > storage.ThrowerGroups) then
+		storage.CatapultGroup = 1
+	end
+	return storage.CatapultGroup
+end
 
+local function entity_built(event)
+	local entity = event.created_entity or event.entity or event.destination or {name="ghost"}
 	local player = nil
 
 	if event.player_index then
@@ -10,17 +18,19 @@ local function entity_built(event)
 		if (storage.AllPlayers[event.player_index].RangeAdjusting == true
 		and entity.name == "entity-ghost"
 		and string.find(entity.ghost_prototype.name, "RTThrower-")
-		and player.get_main_inventory().find_item_stack(entity.ghost_prototype.name.."-Item")
 		) then
-			player.get_main_inventory().remove({name=entity.ghost_prototype.name.."-Item", count=1})
-			entity.revive({raise_revive = true})
-			return
+			if (player.controller_type == defines.controllers.character and player.get_main_inventory().find_item_stack(entity.ghost_prototype.name.."-Item")) then
+				player.get_main_inventory().remove({name=entity.ghost_prototype.name.."-Item", count=1})
+				entity.revive({raise_revive = true})
+				return
+			end
 		end
+		
 	elseif event.robot then
 		player = event.robot.last_user
 	end
 
-	if trainHandler(entity, player) then
+	if entity and trainHandler(entity, player) then
 		return
 	end
 
@@ -28,6 +38,7 @@ local function entity_built(event)
 		local OnDestroyNumber = script.register_on_object_destroyed(entity)
 		storage.CatapultList[OnDestroyNumber] = {entity=entity, targets={}, BurnerSelfRefuelCompensation=0.2, IsElectric=false, InSpace=false, RangeAdjustable=false}
 		local properties = storage.CatapultList[OnDestroyNumber]
+		storage.ThrowerProcessing[NextThrowerGroup()][OnDestroyNumber] = properties
 
 		if (string.find(entity.name, "RTThrower-") and entity.name ~= "RTThrower-PrimerThrower" and entity.force.technologies["RTFocusedFlinging"].researched == true) then
 			properties.RangeAdjustable = true
@@ -45,7 +56,7 @@ local function entity_built(event)
 		end
 
 		if (entity.name == "RTThrower-EjectorHatchRT") then
-			storage.CatapultList[OnDestroyNumber].sprite = rendering.draw_animation
+			properties.sprite = rendering.draw_animation
 				{
 					animation = "EjectorHatchFrames",
 					surface = entity.surface,
@@ -56,7 +67,7 @@ local function entity_built(event)
 					only_in_alt_mode = false
 				}
 		elseif (entity.name == "RTThrower-FilterEjectorHatchRT") then
-			storage.CatapultList[OnDestroyNumber].sprite = rendering.draw_animation
+			properties.sprite = rendering.draw_animation
 				{
 					animation = "FilterEjectorHatchFrames",
 					surface = entity.surface,
@@ -78,24 +89,24 @@ local function entity_built(event)
 				create_build_effect_smoke = false
 			}
 			sherlock.destructible = false
-			storage.CatapultList[OnDestroyNumber].entangled = {}
-			storage.CatapultList[OnDestroyNumber].entangled.detector = sherlock
+			properties.entangled = {}
+			properties.entangled.detector = sherlock
 			local OnDestroyNumber2 = script.register_on_object_destroyed(sherlock)
 			storage.PrimerThrowerLinks[OnDestroyNumber2] = {thrower = entity, ready = false}--, box = box}
 		end
 
 	elseif (entity.name == "PlayerLauncher") then
-		entity.operable = false
 		entity.active = false
 
 	elseif (string.find(entity.name, "BouncePlate") and not string.find(entity.name, "Train")) then
-		storage.BouncePadList[script.register_on_object_destroyed(entity)] = {entity = entity}
+		storage.BouncePadList[script.register_on_object_destroyed(entity)] = {entity=entity, arrow=nil}
 		local PouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(entity)]
 		local ShowRange = settings.global["RTShowRange"].value
-		if (entity.name == "DirectedBouncePlate"
-		or entity.name == "DirectedBouncePlate5"
-		or entity.name == "DirectedBouncePlate15") then
-			--entity.operable = false
+		if (entity.name == "DirectedBouncePlate") then
+			local HomeOnThe = entity.get_or_create_control_behavior().get_section(1).get_slot(1).min or 10
+			local direction = "UD"
+			local xflip = 1
+			local yflip = 1
 			if (entity.orientation == 0) then
 				direction = "UD"
 				xflip = 1
@@ -113,54 +124,44 @@ local function entity_built(event)
 				xflip = -1
 				yflip = 1
 			end
-			if (entity.name == "DirectedBouncePlate5") then
-				xflip = xflip*0.5
-				yflip = yflip*0.5
-			elseif (entity.name == "DirectedBouncePlate15") then
-				xflip = xflip*1.5
-				yflip = yflip*1.5
-			end
 			PouncePadProperties.arrow = rendering.draw_sprite
 				{
 					sprite = "RTDirectedRangeOverlay"..direction,
 					surface = entity.surface,
 					target = entity,
 					only_in_alt_mode = true,
-					x_scale = xflip,
-					y_scale = yflip,
+					x_scale = xflip*HomeOnThe/10,
+					y_scale = yflip*HomeOnThe/10,
 					tint = {r = 0.4, g = 0.4, b = 0.4, a = 0},
 					visible = ShowRange
 				}
-		elseif (entity.name == "BouncePlate"
-		or entity.name == "BouncePlate5"
-		or entity.name == "BouncePlate15"
+			PouncePadProperties.ShowArrow = ShowRange
+			entity.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=HomeOnThe})
+		elseif (entity.name == "RTBouncePlate"
 		or entity.name == "SignalBouncePlate"
 		or entity.name == "DirectorBouncePlate") then
-			local xs = 1
-			local ys = 1
-			if (entity.name == "BouncePlate5") then
-				xs = 0.5
-				ys = 0.5
-			elseif (entity.name == "BouncePlate15") then
-				xs = 1.5
-				ys = 1.5
-			end
+			local HomeOnThe = entity.get_or_create_control_behavior().get_section(1).get_slot(1).min or 10
 			PouncePadProperties.arrow = rendering.draw_sprite
 				{
 					sprite = "RTRangeOverlay",
 					surface = entity.surface,
 					target = entity,
-					x_scale = xs,
-					y_scale = ys,
+					x_scale = HomeOnThe/10,
+					y_scale = HomeOnThe/10,
 					only_in_alt_mode = true,
 					tint = {r = 0.4, g = 0.4, b = 0.4, a = 0},
 					visible = ShowRange
 				}
+			PouncePadProperties.ShowArrow = ShowRange
 			-- link trackers with director plates on build or blueprint build
-			if (entity.name == "DirectorBouncePlate") then
+			if (entity.name == "DirectorBouncePlate" and entity.get_or_create_control_behavior().sections_count == 1) then -- newly placed
 				entity.get_or_create_control_behavior().add_section()
 				entity.get_or_create_control_behavior().add_section()
 				entity.get_or_create_control_behavior().add_section()
+				entity.get_or_create_control_behavior().add_section()
+				entity.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=HomeOnThe})
+			else -- blueprint
+				entity.get_or_create_control_behavior().get_section(1).set_slot(1, {value={type="virtual", name="signal-R", quality="normal"}, min=HomeOnThe})
 			end
 
 		elseif (entity.name == "PrimerBouncePlate") then
@@ -175,6 +176,7 @@ local function entity_built(event)
 					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0},
 					visible = ShowRange
 				}
+			PouncePadProperties.ShowArrow = ShowRange
 		elseif (entity.name == "PrimerSpreadBouncePlate") then
 			PouncePadProperties.arrow = rendering.draw_sprite
 				{
@@ -187,10 +189,11 @@ local function entity_built(event)
 					tint = {r = 0.2, g = 0.2, b = 0.2, a = 0},
 					visible = ShowRange
 				}
+			PouncePadProperties.ShowArrow = ShowRange
 		end
 	------- make train ramp stuff unrotatable just in case
-	elseif (entity.name == "RTTrainRamp" or entity.name == "RTTrainRampNoSkip" or entity.name == "RTMagnetTrainRamp" or entity.name == "RTMagnetTrainRampNoSkip") then
-		entity.rotatable = false
+	--[[ elseif (entity.name == "RTTrainRamp" or entity.name == "RTTrainRampNoSkip" or entity.name == "RTMagnetTrainRamp" or entity.name == "RTMagnetTrainRampNoSkip") then
+		entity.rotatable = false ]]
 
 	elseif (string.find(entity.name, "RTPrimerThrowerShooter-")) then
 		local time = 2
@@ -208,39 +211,165 @@ local function entity_built(event)
 		local tag = entity.force.add_chart_tag(entity.surface, {position=entity.position, text=storage.ZiplineTerminals[OnDestroyNumber].name, icon={type="item", name="RTZiplineTerminalItem"}})
 		storage.ZiplineTerminals[OnDestroyNumber].tag = tag
 
-	elseif (entity.name == "RTTrapdoorTrigger") then
+	elseif (entity.name == "RTTrapdoorSwitewrewch") then
 		local TriggerDestroyNumber = script.register_on_object_destroyed(entity)
 		if (storage.DestructionLinks[TriggerDestroyNumber] == nil) then
 			storage.DestructionLinks[TriggerDestroyNumber] = {}
 		end
-		local detector = entity.surface.create_entity
-		{
-			name = "RTTrainDetector",
-			position = entity.position,
-			force = "neutral",
-			create_build_effect_smoke = false,
-			raise_built = true
-		}
-	elseif (entity.name == "RTTrainDetector") then -- used when a trapdoor trigger is built or rezzed
-		entity.destructible = true -- maybe this enables impact damage when friendly fire is off?
-		local trigger = entity.surface.find_entities_filtered({name="RTTrapdoorTrigger", position=entity.position})[1]
-		if (trigger) then
-			storage.DestructionLinks[script.register_on_object_destroyed(trigger)] = {entity} -- Trapdoor triggers will only ever have 1 linked detector so this is a list of 1
+		if (entity.rail_layer == defines.rail_layer.ground) then
+			local detector = entity.surface.create_entity
+			{
+				name = "RTTrainDetector",
+				position = entity.position,
+				force = "neutral", -- makes it deal collision damage even if friendly fire is off
+				create_build_effect_smoke = false,
+				raise_built = true
+			}
+		elseif (entity.rail_layer == defines.rail_layer.elevated) then
+			local detector = entity.surface.create_entity
+			{
+				name = "RTTrainDetectorElevated",
+				position = entity.position,
+				force = "neutral", -- makes it deal collision damage even if friendly fire is off
+				create_build_effect_smoke = false,
+				raise_built = true
+			}
+		end
+	elseif (entity.name == "RTTrainDetector" or entity.name == "RTTrainDetectorElevated") then -- used when a trapdoor switch is built or rezzed
+		local switch = entity.surface.find_entities_filtered({name="RTTrapdoorSwitch", position=entity.position})[1]
+		if (switch) then
+			storage.DestructionLinks[script.register_on_object_destroyed(switch)] = {entity} -- Trapdoor switches will only ever have 1 linked detector so this is a list of 1
 		else
 			entity.destroy()
 		end
+		
 	elseif (entity.name == "RTTrapdoorWagon") then
 		storage.TrapdoorWagonsClosed[script.register_on_object_destroyed(entity)] = {entity=entity, OpenIndicator=nil}
 		-- draw a red circle to show the trapdoor starts closed
-		storage.TrapdoorWagonsClosed[script.register_on_object_destroyed(entity)].OpenIndicator = rendering.draw_circle
+		storage.TrapdoorWagonsClosed[script.register_on_object_destroyed(entity)].OpenIndicator = rendering.draw_sprite
 			{
-				color = {r = 1, g = 0, b = 0},
-				radius = 0.5,
-				filled = true,
+				sprite = "RTTrapdoorWagonClosed",
 				target = entity,
 				surface = entity.surface,
-				only_in_alt_mode = true
+				--only_in_alt_mode = true
 			}
+	elseif (string.find(entity.name, '^RT') and string.find(entity.name, "BeltRamp")) then
+		local ranges = {["RTBeltRamp"]=10, ["RTfastBeltRamp"]=20, ["RTexpressBeltRamp"]=30, ["RTturboBeltRamp"]=40}
+		local speeds = {["RTBeltRamp"]=0.18, ["RTfastBeltRamp"]=0.18, ["RTexpressBeltRamp"]=0.25, ["RTturboBeltRamp"]=0.25}
+		storage.BeltRamps[script.register_on_object_destroyed(entity)] = {entity=entity, range=(ranges[entity.name] or 10), speed=(speeds[entity.name] or 0.18), InSpace=false, PlayerTrigger=nil}
+		local BeltRampProperties = storage.BeltRamps[script.register_on_object_destroyed(entity)]
+		if (entity.surface.platform or string.find(entity.surface.name, " Orbit") or string.find(entity.surface.name, " Field") or string.find(entity.surface.name, " Belt")) then
+			BeltRampProperties.InSpace = true
+		end
+		---- player detector
+		local trigger = entity.surface.create_entity
+		{
+			name = "RTBeltRampPlayerTrigger",
+			position = OffsetPosition(entity.position, {-0.3*storage.OrientationUnitComponents[entity.orientation].x, -0.3*storage.OrientationUnitComponents[entity.orientation].y})
+		}
+		trigger.destructible = false
+		BeltRampProperties.PlayerTrigger = trigger
+		---- range indicator
+		local direction = "UD"
+		local xflip = 1
+		local yflip = 1
+		if (entity.orientation == 0) then
+			direction = "UD"
+			xflip = 1
+			yflip = 1
+		elseif (entity.orientation == 0.25) then
+			direction = "RL"
+			xflip = 1
+			yflip = 1
+		elseif (entity.orientation == 0.5) then
+			direction = "UD"
+			xflip = 1
+			yflip = -1
+		elseif (entity.orientation == 0.75) then
+			direction = "RL"
+			xflip = -1
+			yflip = 1
+		end
+		BeltRampProperties.arrow = rendering.draw_sprite
+			{
+				sprite = "RTDirectedRangeOverlay"..direction,
+				surface = entity.surface,
+				target = entity,
+				only_in_alt_mode = true,
+				x_scale = xflip*(ranges[entity.name] or 10)/10,
+				y_scale = yflip*(ranges[entity.name] or 10)/10,
+				tint = {r = 0.4, g = 0.4, b = 0.4, a = 0},
+				visible = settings.global["RTShowRange"].value
+			}
+		BeltRampProperties.ShowArrow = settings.global["RTShowRange"].value
+
+	elseif (entity.name == "RTVacuumHatch") then
+		storage.VacuumHatches[script.register_on_object_destroyed(entity)] = {entity=entity, output=nil}
+		local properties = storage.VacuumHatches[script.register_on_object_destroyed(entity)]
+		-- succ animation
+		local succc = rendering.draw_animation
+		{
+			animation = "VacuumHatchSucc",
+			orientation = entity.orientation,
+			surface = entity.surface,
+			target = {entity=entity, offset={3*storage.OrientationUnitComponents[entity.orientation].x, 3*storage.OrientationUnitComponents[entity.orientation].y}},
+			y_scale = 1.1,
+			animation_offset = math.random(100),
+			render_layer = "above-inserters"
+			--animation_speed = 0.5,
+		}
+		properties.ParticleAnimation = succc
+		-- output entity if any
+		properties.output = entity.surface.find_entities_filtered
+		({
+			collision_mask = "object",
+			position = OffsetPosition(entity.position, {-1*storage.OrientationUnitComponents[entity.orientation].x, -1*storage.OrientationUnitComponents[entity.orientation].y}),
+			limit = 1
+		})[1]
+		-- output arrow
+		properties.arrow = rendering.draw_sprite
+		{
+			sprite = "utility/indication_arrow",
+			orientation = (entity.orientation+0.5)%1,
+			target = {entity=entity, offset={-0.75*storage.OrientationUnitComponents[entity.orientation].x, -0.75*storage.OrientationUnitComponents[entity.orientation].y}},
+			surface = entity.surface,
+			only_in_alt_mode = true,
+			x_scale = 0.75,
+			y_scale = 0.75,
+		}
+
+	elseif (event.ghost or entity.name == "entity-ghost") then -- ghosts from dying and ghosts from blueprints
+		local ghost = event.ghost or entity
+		local RampList = {RTTrainRamp=true, RTTrainRampNoSkip=true, RTMagnetTrainRamp=true, RTMagnetTrainRampNoSkip=true, RTImpactUnloader=true, RTTrapdoorSwitch=true, RTSwitchTrainRamp=true, RTSwitchTrainRampNoSkip=true, RTMagnetSwitchTrainRamp=true, RTMagnetSwitchTrainRampNoSkip=true}
+		if (RampList[ghost.ghost_name]) then
+			local SixteenDirNudge = 1
+			ghost.teleport(OffsetPosition(ghost.position, {-TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ghost.direction][1]*SixteenDirNudge, -TrainConstants.PLACER_TO_RAMP_SHIFT_BY_DIRECTION[ghost.direction][2]*SixteenDirNudge}))
+		end
+
+	elseif (entity.name == "RTItemCannon") then
+		storage.ItemCannons[script.register_on_object_destroyed(entity)] = {entity=entity, LaserPointer=false}
+		---- chest part
+		local chest = entity.surface.create_entity
+		{
+			name = "RTItemCannonChest",
+			position = entity.position,
+			force = entity.force,
+			create_build_effect_smoke = false
+		}
+		chest.destructible = false
+		--chest.get_output_inventory().set_filter(2, {name="RTItemShellItem"})
+		storage.ItemCannons[script.register_on_object_destroyed(entity)].chest = chest
+		---- mask part
+		local mask = entity.surface.create_entity
+		{
+			name = "RTItemCannonMask",
+			position = entity.position,
+			force = entity.force,
+			direction = entity.direction,
+			create_build_effect_smoke = false
+		}
+		mask.destructible = false
+		storage.ItemCannons[script.register_on_object_destroyed(entity)].mask = mask
 	end
 end
 

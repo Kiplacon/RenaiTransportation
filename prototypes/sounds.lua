@@ -49,30 +49,36 @@ data:extend({
 {
 	type = "sound",
 	name = "RTClunk",
-	audible_distance_modifier = 0.4,
+	audible_distance_modifier = 0.3,
 	allow_random_repeat = true,
 	variations=
 		{
 			{
 			filename = "__RenaiTransportation__/sickw0bs/clunk1.ogg",
-			volume = 0.5,
+			volume = 0.4,
 			},
 			{
 			filename = "__RenaiTransportation__/sickw0bs/clunk2.ogg",
-			volume = 0.5,
+			volume = 0.4,
 			},
 			{
 			filename = "__RenaiTransportation__/sickw0bs/clunk3.ogg",
-			volume = 0.5,
+			volume = 0.4,
 			},
 			{
 			filename = "__RenaiTransportation__/sickw0bs/clunk4.ogg",
-			volume = 0.5,
+			volume = 0.4,
 			},
 			{
 			filename = "__RenaiTransportation__/sickw0bs/clunk5.ogg",
-			volume = 0.5,
+			volume = 0.4,
 			}
+		},
+	aggregation =
+		{
+			max_count = 4,
+			remove = true,
+			count_already_playing = true
 		}
 },
 

@@ -3,16 +3,17 @@ local function on_tick(event)
 	for ThePlayer, PlayerProperties in pairs(storage.AllPlayers) do
 		local player = game.players[ThePlayer]
 		--|| Player Launchers
-		if (PlayerProperties.state == "jumping" and player.character and PlayerProperties.sliding ~= true) then
+		if (PlayerProperties.state == "jumping" and player.character) then
 			player.character_running_speed_modifier = -0.75
 			local FlyingItem = storage.FlyingItems[PlayerProperties.PlayerLauncher.tracker]
-			local duration = game.tick-FlyingItem.StartTick
-			local progress = duration/FlyingItem.AirTime
-			local height = (duration/(FlyingItem.arc*FlyingItem.AirTime))-(duration^2/(FlyingItem.arc*FlyingItem.AirTime^2))
-			player.character.teleport -- predefined bounce "animation"
-				(
-					{FlyingItem.ThrowerPosition.x+(progress*FlyingItem.vector.x), FlyingItem.ThrowerPosition.y+(progress*FlyingItem.vector.y)+height}
-				)
+			local duration = event.tick-FlyingItem.StartTick
+			local x_coord = FlyingItem.path[duration].x
+			local y_coord = FlyingItem.path[duration].y
+			local height = -FlyingItem.path[duration].height -- negative because in factorio +y is south
+			player.character.teleport({x_coord, y_coord + height})
+			local shadow = FlyingItem.shadow
+			shadow.target = {x_coord+1-height, y_coord}
+			shadow.color = {0, 0, 0, 2.5/(5-height)}
 			if (PlayerProperties.PlayerLauncher.direction == "right") then
 				player.character.walking_state = {walking = true, direction = defines.direction.east}
 			elseif (PlayerProperties.PlayerLauncher.direction == "left") then
@@ -57,21 +58,37 @@ local function on_tick(event)
 							end
 							--game.print(WhichWay)
 							if ((WhichWay >= 337.5 and WhichWay < 360) or (WhichWay >= 0 and WhichWay < 22.5)) then --U
-								AngleSorted[0] = pole
+								if (AngleSorted[0] == nil or DistanceBetween(ZiplineStuff.WhereDidYouComeFrom.position, pole.position) > DistanceBetween(ZiplineStuff.WhereDidYouComeFrom.position, AngleSorted[0].position)) then
+									AngleSorted[0] = pole
+								end
 							elseif (WhichWay >= 22.5 and WhichWay < 67.5) then --UR
-								AngleSorted[2] = pole
+								if (AngleSorted[2] == nil or DistanceBetween(ZiplineStuff.WhereDidYouComeFrom.position, pole.position) > DistanceBetween(ZiplineStuff.WhereDidYouComeFrom.position, AngleSorted[2].position)) then
+									AngleSorted[2] = pole
+								end
 							elseif (WhichWay >= 67.5 and WhichWay < 112.5) then --R
-								AngleSorted[4] = pole
+								if (AngleSorted[4] == nil or DistanceBetween(ZiplineStuff.WhereDidYouComeFrom.position, pole.position) > DistanceBetween(ZiplineStuff.WhereDidYouComeFrom.position, AngleSorted[4].position)) then
+									AngleSorted[4] = pole
+								end
 							elseif (WhichWay >= 112.5 and WhichWay < 157.5) then --DR
-								AngleSorted[6] = pole
+								if (AngleSorted[6] == nil or DistanceBetween(ZiplineStuff.WhereDidYouComeFrom.position, pole.position) > DistanceBetween(ZiplineStuff.WhereDidYouComeFrom.position, AngleSorted[6].position)) then
+									AngleSorted[6] = pole
+								end
 							elseif (WhichWay >= 157.5 and WhichWay < 202.5) then --D
-								AngleSorted[8] = pole
+								if (AngleSorted[8] == nil or DistanceBetween(ZiplineStuff.WhereDidYouComeFrom.position, pole.position) > DistanceBetween(ZiplineStuff.WhereDidYouComeFrom.position, AngleSorted[8].position)) then
+									AngleSorted[8] = pole
+								end
 							elseif (WhichWay >= 202.5 and WhichWay < 247.5) then --DL
-								AngleSorted[10] = pole
+								if (AngleSorted[10] == nil or DistanceBetween(ZiplineStuff.WhereDidYouComeFrom.position, pole.position) > DistanceBetween(ZiplineStuff.WhereDidYouComeFrom.position, AngleSorted[10].position)) then
+									AngleSorted[10] = pole
+								end
 							elseif (WhichWay >= 247.5 and WhichWay < 292.5) then --L
-								AngleSorted[12] = pole
+								if (AngleSorted[12] == nil or DistanceBetween(ZiplineStuff.WhereDidYouComeFrom.position, pole.position) > DistanceBetween(ZiplineStuff.WhereDidYouComeFrom.position, AngleSorted[12].position)) then
+									AngleSorted[12] = pole
+								end
 							elseif (WhichWay >= 292.5 and WhichWay < 337.5) then --UL
-								AngleSorted[14] = pole
+								if (AngleSorted[14] == nil or DistanceBetween(ZiplineStuff.WhereDidYouComeFrom.position, pole.position) > DistanceBetween(ZiplineStuff.WhereDidYouComeFrom.position, AngleSorted[14].position)) then
+									AngleSorted[14] = pole
+								end
 							end
 						end
 					end
@@ -157,7 +174,7 @@ local function on_tick(event)
 						ZiplineStuff.LetMeGuideYou.teleport({current.position.x+FromXWireOffset, current.position.y+FromYWireOffset})
 						local angle = math.deg(math.atan2((ZiplineStuff.LetMeGuideYou.position.y-(FD.position.y+ToYWireOffset)),(ZiplineStuff.LetMeGuideYou.position.x-(FD.position.x+ToXWireOffset))))
 						ZiplineStuff.LetMeGuideYou.orientation = (angle/360)-0.25 -- I think because Factorio's grid is x-axis flipped compared to a traditional graph, it needs this -0.25 adjustment
-						ZiplineStuff.DaWhey = ZiplineStuff.LetMeGuideYou.orientation
+						--ZiplineStuff.DaWhey = ZiplineStuff.LetMeGuideYou.orientation
 						--storage.AllPlayers[ThePlayer].WhereDidYouComeFrom = arrived
 						ZiplineStuff.WhereDidYouGo = FD
 						ZiplineStuff.distance = math.sqrt(
@@ -199,7 +216,7 @@ local function on_tick(event)
 						ZiplineStuff.LetMeGuideYou.speed = 0
 						--game.print("not pressing a valid direction")
 					end
-
+					
 				else
 					ZiplineStuff.LetMeGuideYou.speed = 0
 					--game.print("not pressing movement key")
@@ -235,12 +252,18 @@ local function on_tick(event)
 							ZiplineStuff.LetMeGuideYou.position.x,
 							2+ZiplineStuff.LetMeGuideYou.position.y-FollowZip
 						})
+					if (player.character.walking_state.walking == true) then
+						ZiplineStuff.shadow.sprite = "RTCharacterGhostMoving"
+					else
+						ZiplineStuff.shadow.sprite = "RTCharacterGhostStanding"
+					end
+					ZiplineStuff.shadow.target = {entity=player.character, offset={3+FollowZip, 0.25}}
 					ZiplineStuff.ChuggaChugga.teleport
 						({
 							ZiplineStuff.LetMeGuideYou.position.x,
 							0.5+ZiplineStuff.LetMeGuideYou.position.y-(3*(FromStart^2-FromStart*ZiplineStuff.distance)/ZiplineStuff.distance^2)
 						})
-					ZiplineStuff.LetMeGuideYou.orientation = ZiplineStuff.DaWhey
+					--ZiplineStuff.LetMeGuideYou.orientation = ZiplineStuff.DaWhey
 					-- Braking
 					if (ZiplineStuff.braking ~= nil) then
 						local BrakeForce = 0.15
@@ -318,7 +341,6 @@ local function on_tick(event)
 							and player.character.get_inventory(defines.inventory.character_armor).is_full()
 							and player.character.get_inventory(defines.inventory.character_armor)[1].prototype.provides_flight == true) then
 								GetOffZipline(player, PlayerProperties)
-					
 							elseif (player.surface.find_non_colliding_position("character", {player.position.x, player.position.y+2}, 5, 0.01)
 							and player.character.get_inventory(defines.inventory.character_armor)
 							and (
@@ -329,7 +351,6 @@ local function on_tick(event)
 								)
 							) then
 								GetOffZipline(player, PlayerProperties)
-					
 							else
 								player.print({"zipline-stuff.NoFreeSpot"})
 								ZiplineStuff.path = nil

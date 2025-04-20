@@ -95,8 +95,6 @@ See the FAQ for some specific details
 - Mods that allow you to walk on water make it so that items don't splash and disappear.
 - Changing a thrower's pickup/drop location using another mod, like Bob's adjustable inserters, may cause strange behavior depending on the change
 - Mods that use train IDs, like Logistics Train Network, probably won't work right with train jumps because trains will have a different train ID before and after jumping. Vehicle Wagons 2 being an exception because compatibility was specifically programmed in for it
-- Train Ramps don't work when friendly fire is turned off because the ramps rely on the impact damage to detect and start a jump
-- Magnet ramps don't have their ranges carried over in blueprints and copy/paste. It'll have to be set up manually after being built.
 - Using cut/copy on a thrower and then trying to adjust its range before placement may cause crashes. At the moment I have no idea why this happens or how it differs from using Q to add the thrower ghost to hand, which works just fine with the range adjusting.
 
 ## Other

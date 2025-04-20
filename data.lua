@@ -2,6 +2,7 @@ require("prototypes.technology")
 require("prototypes.sounds")
 require("prototypes.TabSortingStuff")
 require("prototypes.TrainGoBrrrr.PropHunt")
+require("prototypes.RailPlacerPrototypeStuff")
 
 if (settings.startup["RTThrowersSetting"].value == true) then
 	require("prototypes.BouncePlates.BouncePlate")
@@ -10,22 +11,21 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 	require("prototypes.PlayerLauncher")
 	require("prototypes.OpenContainer")
 	require("prototypes.hatch")
-
+	require("prototypes.VacuumHatch")
+	require("prototypes.BeltRamp")
 	if (settings.startup["RTBounceSetting"].value == true) then
 		require("prototypes.BouncePlates.PrimerBouncePlate")
 		--require("prototypes.BouncePlates.SignalBouncePlate")
-
 		require("prototypes.PrimerThrower.CheckingTurret")
 		require("prototypes.PrimerThrower.PrimerThrowerInserter")
-
 		if (settings.startup["RTTrainRampSetting"].value == true) then
 			require("prototypes.TrainGoBrrrr.PayloadWagon")
 		end
 	end
-
-	if (settings.startup["RTTrainBounceSetting"].value == true and settings.startup["RTTrainRampSetting"].value == true) then
-		require("prototypes.BouncePlates.TrainBouncePlate")
-		require("prototypes.BouncePlates.TrainDirectedBouncePlate")
+	if (settings.startup["RTItemCannonSetting"].value == true) then
+		require("prototypes.ItemCannon.RicochetPanel")
+		require("prototypes.ItemCannon.ItemCannon")
+		require("prototypes.ItemCannon.chutes")
 	end
 end
 
@@ -33,6 +33,9 @@ if (settings.startup["RTTrainRampSetting"].value == true) then
 	require("prototypes.TrainGoBrrrr.prototypes.ramps")
 	require("prototypes.TrainGoBrrrr.sprites.base")
 	require("prototypes.TrainGoBrrrr.GhostLoco")
+	if (settings.startup["RTTrainBounceSetting"].value == true) then
+		require("prototypes.BouncePlates.TrainBouncePlate")
+	end
 end
 
 if (settings.startup["RTImpactSetting"].value == true) then
@@ -43,7 +46,10 @@ if (settings.startup["RTZiplineSetting"].value == true) then
 	require("prototypes.zipline")
 end
 
---require("prototypes.TrainGoBrrrr.TrapdoorWagon")
+if (settings.startup["RTTrapdoorSetting"].value == true) then
+	require("prototypes.TrainGoBrrrr.TrapdoorWagon")
+end
+
 
 data:extend({
 {
@@ -80,6 +86,26 @@ data:extend({
 	size = 1
 },
 {
+	type = "sprite",
+	name = "RTCharacterGhostStanding",
+	filename = "__RenaiTransportation__/graphics/zipline/StandingShadow.png",
+	width = 190,
+	height = 72
+},
+{
+	type = "sprite",
+	name = "RTCharacterGhostMoving",
+	filename = "__RenaiTransportation__/graphics/zipline/DrivingShadow.png",
+	width = 190,
+	height = 72
+},
+{
+	type = "sound",
+	name = "RTImpactPlayerLaunch",
+	filename = "__base__/sound/car-metal-impact-6.ogg",
+	volume = 0.5
+},
+{
 	type = "animation",
 	name = "RTMOREPOWER",
 	filename = "__RenaiTransportation__/graphics/NoPowerBlink.png",
@@ -87,6 +113,34 @@ data:extend({
 	frame_count = 2,
 	line_length = 2,
 	animation_speed = 1/30
+},
+{
+	type = "virtual-signal",
+	name = "DirectorBouncePlateUp",
+	icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Up.png",
+	icon_size = 64,
+	subgroup = "virtual-signal"
+},
+{
+	type = "virtual-signal",
+	name = "DirectorBouncePlateRight",
+	icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Right.png",
+	icon_size = 64,
+	subgroup = "virtual-signal"
+},
+{
+	type = "virtual-signal",
+	name = "DirectorBouncePlateDown",
+	icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Down.png",
+	icon_size = 64,
+	subgroup = "virtual-signal"
+},
+{
+	type = "virtual-signal",
+	name = "DirectorBouncePlateLeft",
+	icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Left.png",
+	icon_size = 64,
+	subgroup = "virtual-signal"
 },
 {
 	type = "animation",
@@ -125,6 +179,7 @@ data:extend({
 	name = "ThrowerRangeSignal",
 	icon = "__RenaiTransportation__/graphics/RangeSignaling.png",
 	icon_size = 64,
+	subgroup = "virtual-signal"
 },
 {
 	type = "stream",
@@ -245,6 +300,10 @@ data:extend({
 },
 })
 
+--[[ if (data.raw["fluid"]["thruster-fuel"]) then
+    data.raw["fluid"]["thruster-fuel"].auto_barrel = true
+    data.raw["fluid"]["thruster-oxidizer"].auto_barrel = true
+end ]]
 if (data.raw.tree.lickmaw and data.raw["item-subgroup"]["agriculture-processes"]) then
 	data:extend({
 		{

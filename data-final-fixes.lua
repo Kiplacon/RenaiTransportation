@@ -46,27 +46,20 @@ function MakeProjectile(ThingData, speed)
 		}
 
 	if (ThingData.icons) then
-		if (ThingData.icon_size) then
-			TheProjectile.particle.size = ThingData.icon_size
-		else
-			TheProjectile.particle.size = ThingData.icons[1].icon_size
-		end
-
 		TheProjectile.particle.layers = {}
 		TheProjectile.shadow.layers = {}
 		for iconlayer, iconspecs in pairs(ThingData.icons) do
-			local eeee
+			local eeee = 64
 			local rrrr
+			local shiftt = {0,0}
+			if (iconspecs.shift) then
+				shiftt = {iconspecs.shift[1]/32, iconspecs.shift[2]/32}
+			end
 			if (iconspecs.icon_size) then
 				eeee = iconspecs.icon_size
-			else
-				eeee = TheProjectile.particle.size
 			end
-
 			if (iconspecs.tint) then
 				rrrr = iconspecs.tint
-			else
-				rrrr = nil
 			end
 
 			table.insert(TheProjectile.particle.layers,
@@ -75,9 +68,10 @@ function MakeProjectile(ThingData, speed)
 					line_length = 1,
 					frame_count = 1,
 					priority = "high",
-					scale = 19.2/eeee,
+					scale = (iconspecs.scale or 1) * (19.2/eeee),
 					size = eeee,
-					tint = rrrr
+					tint = rrrr,
+					--shift = shiftt
 				})
 			table.insert(TheProjectile.shadow.layers,
 				{
@@ -85,7 +79,7 @@ function MakeProjectile(ThingData, speed)
 					line_length = 1,
 					frame_count = 1,
 					priority = "high",
-					scale = 19.2/eeee,
+					scale = (iconspecs.scale or 1) * (19.2/eeee),
 					size = eeee,
 					tint = {0,0,0,0.5}
 				})
@@ -99,8 +93,6 @@ function MakeProjectile(ThingData, speed)
 			width = ThingData.icon_size,
 			height = ThingData.icon_size,
 			frame_count = 1,
-			--shift = util.mul_shift(util.by_pixel(-2, 30), data.scale),
-			--tint = data.tint,
 			priority = "high",
 			scale = 19.2/ThingData.icon_size --0.3 of a tile
 			--animation_speed = 1,
@@ -134,6 +126,84 @@ function MakeProjectile(ThingData, speed)
 		}
 	end
 	data:extend({TheProjectile})
+
+end
+
+function MakeItemShellStuff(ThingData)
+	for QualityName, quality in pairs(data.raw.quality) do
+		data:extend({
+			{
+				type = "projectile",
+				name = "RTItemShell"..ThingData.name.."-Q-"..QualityName,
+				acceleration = 0,
+				direction_only = true,
+				collision_box = {{-0.1, -0.1}, {0.1, 0.1}},
+				--hit_collision_mask = {layers={object=true, player=true, train=true}},
+				piercing_damage = 9999999999,
+				--hit_at_collision_position = true,
+				height = 1,
+				animation =
+				{
+					layers =
+					{
+						{
+							filename = "__RenaiTransportation__/graphics/ItemCannon/EmptyItemShell.png",
+							size = 64,
+							frame_count = 1,
+							priority = "high",
+							scale = 0.5
+						},
+					}
+				},
+				shadow =
+				{
+					filename = "__RenaiTransportation__/graphics/ItemCannon/EmptyItemShell.png",
+					size = 64,
+					frame_count = 1,
+					priority = "high",
+					draw_as_shadow = true,
+					scale = 0.5
+				},
+				action =
+				{
+					type = "direct",
+					action_delivery =
+					{
+						type = "instant",
+						target_effects =
+						{
+							{
+								type = "damage",
+								damage = {amount = 9999999999, type = "impact"}
+							}
+						}
+					}
+				},
+				final_action =
+				{
+					type = "direct",
+					action_delivery =
+					{
+						type = "instant",
+						target_effects =
+						{
+							{
+								type = "script",
+								effect_id = "RTItemShell"..ThingData.name.."-Q-"..QualityName
+							},
+						}
+					}
+				},
+				smoke =
+				{
+					{
+						name = "smoke-fast",
+						frequency = 1,
+					}
+				},
+			}
+		})
+	end
 end
 
 function MakePrimedProjectile(ThingData, ProjectileType)-------------------------------------------
@@ -421,11 +491,14 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	ItsRange = 15
 
 	if (TheThrower.energy_per_rotation) then
+		local MovementEnergy = util.parse_energy(TheThrower.energy_per_movement) * 3  -- for some reason x2.5 makes the total energy even out
+		local RotationEnergy = util.parse_energy(TheThrower.energy_per_rotation)
+		TheThrower.energy_per_rotation = (RotationEnergy + MovementEnergy).."J"
 		TheThrower.energy_per_movement = "1J" -- this prevents inserters from elongating first and then rotating when energy is low
 	end
 
 	if (TheThrower.name == "RTThrower-inserter") then
-	    TheThrower.extension_speed = 0.027 -- default 0.03, needs to be a but slower so we don't get LongB0is
+		TheThrower.extension_speed = 0.027 -- default 0.03, needs to be a but slower so we don't get LongB0is
 		TheThrower.rotation_speed = 0.020 -- default 0.014
 	elseif (TheThrower.name == "RTThrower-long-handed-inserter") then
 		TheThrower.insert_position = {0, 25.2}
@@ -469,14 +542,14 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
         scale = 0.25
 		}
 
-if mods["Ultracube"] then
-	data:extend({TheThrower, TheItem}) -- Recipes and tech will be handled by Ultracube
-else
-	data:extend({TheThrower, TheItem, TheRecipe})
-	if (isitenabled == false) then
-		table.insert(data.raw["technology"]["RTThrowerTime"].effects,{type="unlock-recipe",recipe=TheRecipe.name})
+	if mods["Ultracube"] then
+		data:extend({TheThrower, TheItem}) -- Recipes and tech will be handled by Ultracube
+	else
+		data:extend({TheThrower, TheItem, TheRecipe})
+		if (isitenabled == false) then
+			table.insert(data.raw["technology"]["RTThrowerTime"].effects,{type="unlock-recipe",recipe=TheRecipe.name})
+		end
 	end
-end
 end
 
 ----- Get the sprites of the carriage to use during a jump
@@ -488,7 +561,7 @@ function MakeCarriageSprites(ThingData)
 							size = {200,500},
 							scale = 0.5,
 							tint = {0.5, 0.5, 0.5}
-						  }}
+							}}
 		local RightSprites = {{
 							filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WheelsHorizontal.png",
 							size = {500,200},
@@ -762,11 +835,20 @@ for ThingID, ThingData in pairs(data.raw.inserter) do
 		or ThingData.name == "inserter"
 		or ThingData.name == "fast-inserter"
 		or ThingData.name == "long-handed-inserter"
-		or ThingData.name == "filter-inserter"
-		or ThingData.name == "stack-filter-inserter"
+		or ThingData.name == "bulk-inserter"
 		or ThingData.name == "stack-inserter")
 		then
 			MakeThrowerVariant(ThingData)
+		end
+	end
+end
+
+-- item cannon shell projectils
+for Category, ThingsTable in pairs(data.raw) do
+	for ThingID, ThingData in pairs(ThingsTable) do
+		if (ThingData.stack_size and ThingData.hidden ~= true and ThingData.parameter ~= true and (ThingID == "RTItemShellItem" or not string.find(ThingID, "RTItemShell"))) then
+			log("==========Creating item cannon projectile for "..ThingData.type..": "..ThingData.name.."===========")
+			MakeItemShellStuff(table.deepcopy(ThingData))
 		end
 	end
 end
@@ -881,11 +963,29 @@ for Category, ThingsTable in pairs(data.raw) do
 			local casper = table.deepcopy(ThingData)
 			casper.name = casper.name.."RTGhost"
 			casper.collision_mask = {layers={}}
+			-- remove shadows
+			for q = 1, #casper.animations do
+				for ActionCategory, sprites in pairs(casper.animations[q]) do
+					if (type(sprites) == "table" and sprites.layers) then
+						for i, sprite in pairs(sprites.layers) do
+							if (sprite.draw_as_shadow) then
+								sprite.filename = "__RenaiTransportation__/graphics/nothing.png"
+								sprite.size = 1
+							end
+						end
+					end
+				end
+			end
+			-- remove reflection
+			if (casper.water_reflection) then
+				casper.water_reflection = nil
+			end
+
 			if (casper.resistances) then
 				table.insert(casper.resistances,
 					{
 						type = "fire",
-						percent = 100
+						percent = 80
 					}
 				)
 			else
@@ -893,48 +993,36 @@ for Category, ThingsTable in pairs(data.raw) do
 				{
 					{
 						type = "fire",
-						percent = 99
+						percent = 80
 					}
 				}
 			end
 			data:extend({casper})
-
-			--[[ for each, set in pairs(ThingData.animations) do
-				if (set.armors ~= nil) then
-					for every, armor in pairs(set.armors) do
-						local sprites = set.running or set.running_with_gun
-						if (armor == "mech-armor") then
-							sprites = set.idle_with_gun_in_air
-						end
-						local MLG = table.deepcopy(data.raw.car["RTPropCar"])
-						MLG.name = ThingData.name..armor.."RTGhostCar"
-						MLG.working_sound = nil
-						MLG.animation =
-							{
-								layers =
-								{
-									sprites
-								}
-							}
-						MLG.light_animation = MLG.animation
-						data:extend({MLG})
-					end
-				else
-					local MLG = table.deepcopy(data.raw.car["RTPropCar"])
-					MLG.name = ThingData.name.."RTGhostCar"
-					MLG.working_sound = nil
-					MLG.animation =
-						{
-							layers =
-							{
-								set.running or set.running_with_gun
-							}
-						}
-					MLG.light_animation = MLG.animation
-					data:extend({MLG})
-				end
-			end ]]
 		end
+
+		--[[ if (Category == "fluid") then
+			data:extend({
+				{
+					type = "item",
+					name = "RT"..ThingID.."SplashCapsule",
+					icons =
+					{
+						{
+							icon = "__RenaiTransportation__/graphics/SplashCapsule/SplashCapsuleFluid.png",
+							tint = ThingData.base_color,
+							icon_size = 64,
+						},
+						{
+							icon = "__RenaiTransportation__/graphics/SplashCapsule/EmptySplashCapsule.png",
+							icon_size = 64,
+						}
+					},
+					subgroup = "intermediate-product",
+					order = "z-a",
+					stack_size = 50
+				}
+			})
+		end ]]
 	end
 end
 

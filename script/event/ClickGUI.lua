@@ -1,4 +1,4 @@
-local function FindPath(finish, start)
+function FindPath(finish, start)
    local possibilities = {}
          possibilities[start.unit_number] = {entity=start, FromStart=0, FromFinish=DistanceBetween(start.position, finish.position), difficulty=DistanceBetween(start.position, finish.position)}
    local analyzed = {}
@@ -52,7 +52,7 @@ local function FindPath(finish, start)
    end
 end
 
-ClickableStuff = {
+local ClickableStuff = {
 	RTCloseGUI = function(event, player)
 		event.element.parent.parent.destroy()
 	end,
@@ -63,6 +63,27 @@ ClickableStuff = {
          local finish = storage.ZiplineTerminals[event.element.tags.finish].entity
          if (start.valid and finish.valid and start.electric_network_id == finish.electric_network_id) then
             GetOnZipline(player, PlayerProperties, start)
+            PlayerProperties.zipline.path = FindPath(start, finish)
+            PlayerProperties.zipline.FinalStop = finish
+
+         elseif (start.valid and finish.valid and start.electric_network_id ~= finish.electric_network_id) then
+            player.print({"zipline-stuff.NotOnSameNetwork"})
+
+         else
+            player.print({"zipline-stuff.MissingChoice"})
+         end
+         event.element.parent.parent.parent.destroy()
+      else
+         player.print({"zipline-stuff.MissingChoice"})
+      end
+	end,
+   ZiplineAIAutoPath = function(event, player)
+		local PlayerProperties = storage.AllPlayers[player.index]
+      if (storage.ZiplineTerminals[event.element.tags.finish]) then
+         local start = storage.ZiplineTerminals[event.element.tags.start].entity
+         local finish = storage.ZiplineTerminals[event.element.tags.finish].entity
+         if (start.valid and finish.valid and start.electric_network_id == finish.electric_network_id) then
+            --GetOnZipline(player, PlayerProperties, start)
             PlayerProperties.zipline.path = FindPath(start, finish)
             PlayerProperties.zipline.FinalStop = finish
 
@@ -104,7 +125,7 @@ ClickableStuff = {
       else
          local entity = storage.ZiplineTerminals[event.element.parent.parent.tags.ID].entity
          local tag = entity.force.add_chart_tag(entity.surface, {position=entity.position, text=storage.ZiplineTerminals[event.element.parent.parent.tags.ID].name, icon={type="item", name="RTZiplineTerminalItem"}})
-		   storage.ZiplineTerminals[event.element.parent.parent.tags.ID].tag = tag
+         storage.ZiplineTerminals[event.element.parent.parent.tags.ID].tag = tag
       end
 		event.element.parent.TerminalName.destroy()
 		event.element.destroy()
@@ -126,14 +147,16 @@ ClickableStuff = {
       local layout = event.element.parent.parent.scroller.layout
       local clicked = storage.ZiplineTerminals[event.element.parent.parent.tags.ID].entity
       local a = {}
-      for each, terminal in pairs(storage.ZiplineTerminals) do
-         table.insert(a, string.lower(copy(terminal.name)))
+      for _, terminal in pairs(storage.ZiplineTerminals) do
+         if (terminal.name) then
+            table.insert(a, string.lower(copy(terminal.name)))
+         end
       end
       table.sort(a)
       local sorted = {}
-      for each, name in pairs(a) do
-         for each, terminal in pairs(storage.ZiplineTerminals) do
-            if (string.lower(copy(terminal.name)) == name) then
+      for _, name in pairs(a) do
+         for _, terminal in pairs(storage.ZiplineTerminals) do
+            if (terminal.name and string.lower(copy(terminal.name)) == name) then
                table.insert(sorted, terminal)
                break
             end
@@ -142,7 +165,7 @@ ClickableStuff = {
       for each, terminal in pairs(sorted) do
          local entity = terminal.entity
          if (entity.valid == true and entity.electric_network_id == clicked.electric_network_id and entity.unit_number ~= clicked.unit_number) then
-            local TerminalButton = layout.add{type="button", name=each, caption=terminal.name, tags={RTEffect="ZiplineAutoPath", start=script.register_on_object_destroyed(clicked), finish=script.register_on_object_destroyed(entity)}}
+            local TerminalButton = layout.add{type="button", name=each, caption=terminal.name, tags={RTEffect=(event.element.tags.type or "ZiplineAutoPath"), start=script.register_on_object_destroyed(clicked), finish=script.register_on_object_destroyed(entity)}}
                TerminalButton.style.font = "heading-1"
                TerminalButton.style.horizontally_stretchable = true
             local cam = layout.add{type="camera", caption="caption", position=entity.position, zoom=0.4}
@@ -163,13 +186,15 @@ ClickableStuff = {
       local clicked = storage.ZiplineTerminals[event.element.parent.parent.tags.ID].entity
       local a = {}
       for each, terminal in pairs(storage.ZiplineTerminals) do
-         table.insert(a, string.lower(copy(terminal.name)))
+         if (terminal.name) then
+            table.insert(a, string.lower(copy(terminal.name)))
+         end
       end
       table.sort(a)
       local sorted = {}
-      for each, name in pairs(a) do
-         for each, terminal in pairs(storage.ZiplineTerminals) do
-            if (string.lower(copy(terminal.name)) == name) then
+      for _, name in pairs(a) do
+         for _, terminal in pairs(storage.ZiplineTerminals) do
+            if (terminal.name and string.lower(copy(terminal.name)) == name) then
                table.insert(sorted, terminal)
                break
             end
@@ -178,7 +203,7 @@ ClickableStuff = {
       for each, terminal in pairs(sorted) do
          local entity = terminal.entity
          if (entity.valid == true and entity.electric_network_id == clicked.electric_network_id and entity.unit_number ~= clicked.unit_number) then
-            local TerminalButton = layout.add{type="button", name=each, caption=terminal.name, tags={RTEffect="ZiplineAutoPath", start=script.register_on_object_destroyed(clicked), finish=script.register_on_object_destroyed(entity)}}
+            local TerminalButton = layout.add{type="button", name=each, caption=terminal.name, tags={RTEffect=(event.element.tags.type or "ZiplineAutoPath"), start=script.register_on_object_destroyed(clicked), finish=script.register_on_object_destroyed(entity)}}
                TerminalButton.style.font = "heading-1"
                TerminalButton.style.horizontally_stretchable = true
             local cam = layout.add{type="minimap", caption="caption", position=entity.position, zoom=1}
@@ -199,13 +224,15 @@ ClickableStuff = {
       local clicked = storage.ZiplineTerminals[event.element.parent.parent.tags.ID].entity
       local a = {}
       for each, terminal in pairs(storage.ZiplineTerminals) do
-         table.insert(a, string.lower(copy(terminal.name)))
+         if (terminal.name) then
+            table.insert(a, string.lower(copy(terminal.name)))
+         end
       end
       table.sort(a)
       local sorted = {}
       for each, name in pairs(a) do
          for each, terminal in pairs(storage.ZiplineTerminals) do
-            if (string.lower(copy(terminal.name)) == name) then
+            if (terminal.name and string.lower(copy(terminal.name)) == name) then
                table.insert(sorted, terminal)
                break
             end
@@ -214,7 +241,7 @@ ClickableStuff = {
       for each, terminal in pairs(sorted) do
          local entity = terminal.entity
          if (entity.valid == true and entity.electric_network_id == clicked.electric_network_id and entity.unit_number ~= clicked.unit_number) then
-            local TerminalButton = layout.add{type="button", name=each, caption=terminal.name, tags={RTEffect="ZiplineAutoPath", start=script.register_on_object_destroyed(clicked), finish=script.register_on_object_destroyed(entity)}}
+            local TerminalButton = layout.add{type="button", name=each, caption=terminal.name, tags={RTEffect=(event.element.tags.type or "ZiplineAutoPath"), start=script.register_on_object_destroyed(clicked), finish=script.register_on_object_destroyed(entity)}}
                TerminalButton.style.font = "heading-1"
                TerminalButton.style.horizontally_stretchable = true
             layout.add{type="label", caption=""}
@@ -240,13 +267,3 @@ local player = game.players[event.player_index]
 end
 
 return ClickGUI
-
--- RTZiplineTerminalGUI
-	-- TerminalHeader
-		-- Terminal
-		-- name
-		-- rename button
-	-- scroller
-		-- layout table
-			-- button
-			-- camera

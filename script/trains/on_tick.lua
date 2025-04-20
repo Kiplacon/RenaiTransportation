@@ -7,7 +7,7 @@ local temporaryPathingCondition = {
 	compare_type = "and",
 	condition = {
 		comparator = "=",
-	  	first_signal = {type="item", name="RTPropCarItem" },
+		first_signal = {type="item", name="RTPropCarItem" },
 		constant = 69 -- nice
 	}
 }
@@ -17,24 +17,42 @@ local function reEnableSchedule(train, schedule, destinationStation, properties)
 	-- first landed gets new schedule, check stop, if it has a limit, add the temp
 	-- at last carriage to land, if the stop limit was reduced, increase it again. Then delete temp and route to end or vice versa
 	if (destinationStation and destinationStation.valid and destinationStation.trains_limit ~= 4294967295 and destinationStation.connected_rail) then -- NoSkip ramp pathing to a station with a train limit
-		tempStation = {
+		local tempStation = {
 			rail = destinationStation.connected_rail,
 			wait_conditions = { temporaryPathingCondition },
 			temporary = true
 		}
-		table.insert(schedule.records, schedule.current, tempStation)
-		train.schedule = schedule
+		if (properties.TrainGroup) then
+			train.group = properties.TrainGroup
+			tempStation.index = {schedule_index=schedule.current}
+			train.get_schedule().add_record(tempStation)
+			train.get_schedule().go_to_station(schedule.current)
+		else -- writing a schedule deletes a train's group
+			table.insert(schedule.records, schedule.current, tempStation)
+			train.schedule = schedule
+		end
 	else
-		train.schedule = schedule
+		if (properties.TrainGroup) then
+			train.group = properties.TrainGroup
+		else
+			train.schedule = schedule
+		end
 		if (train.path_end_stop and train.path_end_stop.valid and train.path_end_stop.trains_limit ~= 4294967295 and train.path_end_stop.connected_rail) then
-			tempStation = {
+			local tempStation = {
 				rail = train.path_end_stop.connected_rail,
 				wait_conditions = { temporaryPathingCondition },
 				temporary = true
 			}
-			local newSchedule = table.deepcopy(train.schedule)
-			table.insert(newSchedule.records, newSchedule.current, tempStation)
-			train.schedule = newSchedule
+			if (properties.TrainGroup) then
+				--train.group = properties.TrainGroup
+				tempStation.index = {schedule_index=schedule.current}
+				train.get_schedule().add_record(tempStation)
+				train.get_schedule().go_to_station(schedule.current)
+			else -- writing a schedule deletes a train's group
+				local newSchedule = table.deepcopy(train.schedule)
+				table.insert(newSchedule.records, newSchedule.current, tempStation)
+				train.schedule = newSchedule
+			end
 		end
 	end
 end
@@ -55,14 +73,15 @@ local function finalizeLandedTrain(PropUnitNumber, properties) -- happens when t
 		if schedule and schedule.current then
 			local dst = schedule.records[schedule.current]
 
-			if dst and dst.wait_conditions then
+			if dst and dst.wait_conditions and dst.wait_conditions[1] then
 				local firstWaitCond = dst.wait_conditions[1]
 
 				if firstWaitCond.condition and firstWaitCond.condition.first_signal and firstWaitCond.condition.first_signal.name == 'RTPropCarItem' then
-					local newSchedule = table.deepcopy(schedule)
-					table.remove(newSchedule.records, newSchedule.current)
-					properties.LandedTrain.train.schedule = newSchedule
-					properties.LandedTrain.train.go_to_station(newSchedule.current)
+					--local newSchedule = table.deepcopy(schedule)
+					--table.remove(newSchedule.records, newSchedule.current)
+					properties.LandedTrain.train.get_schedule().remove_record({schedule_index=schedule.current})
+					--properties.LandedTrain.train.schedule = newSchedule
+					properties.LandedTrain.train.get_schedule().go_to_station(schedule.current)
 				end
 			end
 		end
@@ -449,11 +468,19 @@ local function on_tick(event)
 							end
 							--restore trapdoor wagon tracking, existing tracking table in storage.TrapdoorWagonsClosed[script.register_on_object_destroyed(NewTrain)], created from raise_built in wagon respawning
 							if (properties.trapdoor ~= nil) then
-								local NewTrainDestoyNumber = script.register_on_object_destroyed(NewTrain)
-								storage.TrapdoorWagonsClosed[NewTrainDestoyNumber].OpenIndicator.color = {r=0,g=1,b=0,a=1}
-								storage.TrapdoorWagonsOpen[NewTrainDestoyNumber] = storage.TrapdoorWagonsClosed[NewTrainDestoyNumber]
-								storage.TrapdoorWagonsClosed[NewTrainDestoyNumber] = nil
-							end -- if trapdoor is closed, it will be tracked correctly by the default raise_built
+								if (properties.trapdoor == true and properties.ToggleTrapdoorBack == nil) -- open withthout ramp toggleback
+								or (properties.trapdoor == false and properties.ToggleTrapdoorBack) then -- closed with ramp toggleback to open
+									-- set to open
+									local NewTrainDestoyNumber = script.register_on_object_destroyed(NewTrain)
+									storage.TrapdoorWagonsClosed[NewTrainDestoyNumber].OpenIndicator.sprite = "RTTrapdoorWagonOpen"
+									storage.TrapdoorWagonsOpen[NewTrainDestoyNumber] = storage.TrapdoorWagonsClosed[NewTrainDestoyNumber]
+									storage.TrapdoorWagonsClosed[NewTrainDestoyNumber] = nil
+								--elseif (properties.trapdoor == false and properties.ToggleTrapdoorBack == nil) then -- closed without ramp toggleback
+									-- do nothing
+								--elseif (properties.trapdoor == true and properties.ToggleTrapdoorBack) then -- open with ramp toggleback to closed
+									-- do nothing
+								end
+							end -- if trapdoor is closed, it will be closed default raise_built
 
 						elseif (NewTrain.type == "fluid-wagon") then
 							for FluidName, quantity in pairs(properties.fluids) do
@@ -634,7 +661,8 @@ local function on_tick(event)
 			end
 
 			-- open trapdoor wagon spilling items out during flight
-			if (properties.trapdoor and #properties.cargo > 0) then
+			if (properties.trapdoor and #properties.cargo ~= 0 and not (height < 1.5 and VerticalSpeed > 0)) then
+			--if (properties.trapdoor and #properties.cargo ~= 0 and ((height > 1.5 and VerticalSpeed > 0) or VerticalSpeed <= 0)) then
 				local ItemsPerDrop = 2
 				local items = properties.cargo
 				for drop = 1, 5 do
@@ -659,35 +687,16 @@ local function on_tick(event)
 						-- Spill the selected items on the ground
 						for _, stack in pairs(spill) do
 							local ItemName = stack.name
-							local sprite = rendering.draw_sprite
-								{
-									sprite = "item/"..ItemName,
-									render_layer = "under-elevated",
-									x_scale = 0.5,
-									y_scale = 0.5,
-									target = wagon.position,
-									surface = wagon.surface
-								}
-							local shadow = rendering.draw_sprite
-								{
-									sprite = "item/"..ItemName,
-									render_layer = "under-elevated",
-									tint = {0,0,0,0.1},
-									x_scale = 0.5,
-									y_scale = 0.5,
-									target = wagon.position,
-									surface = wagon.surface
-								}
 							local xUnit = math.sin(2*math.pi*(wagon.orientation))
 							local yUnit = math.sin(2*math.pi*(wagon.orientation-0.25))
 							local randomX = math.random(-5, 5)*0.1
 							local randomY = math.random(-5, 5)*0.1
-							local inertia = 13
+							local inertia = 10
 							local LandX = (wagon.position.x+randomX + (inertia*wagon.speed*xUnit)) + math.random(-height, height)*0.25
 							local LandY = (wagon.position.y+randomY + (inertia*wagon.speed*yUnit)) + math.random(-height, height)*0.25
 							local vector = {x=LandX-wagon.position.x, y=LandY-wagon.position.y}
 							local path = {}
-							local AirTime = math.floor(math.sqrt(2*height/12)*60) + math.random(-40, 0) -- +- half a second
+							local AirTime = math.max(1, math.floor(math.sqrt(2*height/12)*60 * (math.random(95, 105)*0.01))) -- +- half a second
 							for i = 0, AirTime do
 								local progress = i/AirTime
 								path[i] =
@@ -697,48 +706,34 @@ local function on_tick(event)
 									height = -(height*progress^2)+height,
 								}
 							end
-							storage.FlyingItems[storage.FlightNumber] =
-								{
-									sprite=sprite,
-									shadow=shadow,
-									--speed=speed,
-									spin=math.random(-2,2)*0.01,
-									item=ItemName,
-									amount=stack.count,
-									quality=stack.quality,
-									target={x=LandX, y=LandY},
-									ThrowerPosition={x=wagon.position.x, y=wagon.position.y},
-									AirTime=AirTime,
-									StartTick=game.tick,
-									LandTick=game.tick+AirTime,
-									space=false,
-									surface=wagon.surface,
-									path=path
-								}
 							if (stack.item_number) then
-								local CloudStorage = game.create_inventory(1)
-								CloudStorage.insert(stack)
-								storage.FlyingItems[storage.FlightNumber].CloudStorage = CloudStorage
-								stack.count = stack.count - math.min(stack.count, ItemsPerDrop)
+								InvokeThrownItem({
+									type = "CustomPath",
+									stack = stack,
+									ThrowFromStackAmount = math.min(stack.count, ItemsPerDrop),
+									start = wagon.position,
+									target = {x=LandX, y=LandY},
+									path = path,
+									AirTime = AirTime,
+									surface=wagon.surface,
+								})
 								if (stack.count <= 0) then
 									items[slot].destroy()
 									table.remove(items, slot)
 								end
+							else
+								InvokeThrownItem({
+									type = "CustomPath",
+									ItemName = ItemName,
+									count = stack.count, -- take value
+									quality = stack.quality,
+									start = wagon.position,
+									target = {x=LandX, y=LandY},
+									path = path,
+									AirTime = AirTime,
+									surface=wagon.surface,
+								})
 							end
-							-- Ultracube irreplaceables detection & handling
-							if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] then -- Ultracube mod is active, and item is an irreplaceable
-								-- Velocity calculation
-								local velocity = {x=0,y=0}
-								if storage.FlyingItems[storage.FlightNumber].AirTime >= 2 then
-									local v1 = storage.FlyingItems[storage.FlightNumber].path[1]
-									local v2 = storage.FlyingItems[storage.FlightNumber].path[2]
-									velocity.x = v2.x - v1.x
-									velocity.y = v2.y - v1.y
-								end
-								-- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
-								CubeFlyingItems.create_token_for(storage.FlyingItems[storage.FlightNumber], velocity)
-							end
-							storage.FlightNumber = storage.FlightNumber + 1
 						end
 					end
 				end
@@ -799,7 +794,13 @@ local function on_tick(event)
 		if (properties.entity.valid) then
 			local wagon = properties.entity
 			local inventory = wagon.get_inventory(defines.inventory.cargo_wagon)
-			if (inventory.is_empty() == false) then
+			if (properties.timeout) then
+				if (properties.timeout - 1 <= 0) then
+                    properties.timeout = nil
+                else
+                    properties.timeout = properties.timeout - 1
+                end
+			elseif (inventory.is_empty() == false) then
 				local ItemsPerDrop = 2
 				for drop = 1, 4 do
 					-- Get the inventory of the cargo wagon
@@ -824,29 +825,10 @@ local function on_tick(event)
 						end
 
 						-- Spill the selected items on the ground
-						for _, stack in pairs(spill) do
+						for _, stackk in pairs(spill) do
 							-- off an elevated rail
 							if (wagon.draw_data.height == 3) then
-								local ItemName = stack.name
-								local sprite = rendering.draw_sprite
-									{
-										sprite = "item/"..ItemName,
-										render_layer = "under-elevated",
-										x_scale = 0.5,
-										y_scale = 0.5,
-										target = wagon.position,
-										surface = wagon.surface
-									}
-								local shadow = rendering.draw_sprite
-									{
-										sprite = "item/"..ItemName,
-										render_layer = "under-elevated",
-										tint = {0,0,0,0.1},
-										x_scale = 0.5,
-										y_scale = 0.5,
-										target = wagon.position,
-										surface = wagon.surface
-									}
+								local ItemName = stackk.name
 								local xUnit = math.sin(2*math.pi*(wagon.orientation))
 								local yUnit = math.sin(2*math.pi*(wagon.orientation-0.25))
 								local randomX = math.random(-5, 5)*0.1
@@ -866,55 +848,49 @@ local function on_tick(event)
 										height = -((progress^2)/0.3333)+3,
 									}
 								end
-								storage.FlyingItems[storage.FlightNumber] =
-									{
-										sprite=sprite,
-										shadow=shadow,
-										--speed=speed,
-										spin=math.random(-2,2)*0.01,
-										item=ItemName,
-										amount=stack.count,
-										quality=stack.quality,
-										target={x=LandX, y=LandY},
-										ThrowerPosition={x=wagon.position.x, y=wagon.position.y},
-										AirTime=AirTime,
-										StartTick=game.tick,
-										LandTick=game.tick+AirTime,
-										space=false,
+								if (stackk.item_number) then
+									InvokeThrownItem({
+										type = "CustomPath",
+										stack = stackk,
+										ThrowFromStackAmount = math.min(stackk.count, ItemsPerDrop),
+										start = wagon.position,
+										target = {x=LandX, y=LandY},
+										path = path,
+										AirTime = AirTime,
 										surface=wagon.surface,
-										path=path
-									}
-								if (stack.item_number) then
-									local CloudStorage = game.create_inventory(1)
-									CloudStorage.insert(stack)
-									storage.FlyingItems[storage.FlightNumber].CloudStorage = CloudStorage
-									stack.count = stack.count - take
+									})
+								else
+									InvokeThrownItem({
+										type = "CustomPath",
+										ItemName = ItemName,
+										count = stackk.count, -- take value
+										quality = stackk.quality,
+										start = wagon.position,
+										target = {x=LandX, y=LandY},
+										path = path,
+										AirTime = AirTime,
+										surface=wagon.surface,
+									})
 								end
-								-- Ultracube irreplaceables detection & handling
-								if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] then -- Ultracube mod is active, and item is an irreplaceable
-									-- Velocity calculation
-									local velocity = {x=0,y=0}
-									if storage.FlyingItems[storage.FlightNumber].AirTime >= 2 then
-										local v1 = storage.FlyingItems[storage.FlightNumber].path[1]
-										local v2 = storage.FlyingItems[storage.FlightNumber].path[2]
-										velocity.x = v2.x - v1.x
-										velocity.y = v2.y - v1.y
-									end
-									-- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
-									CubeFlyingItems.create_token_for(storage.FlyingItems[storage.FlightNumber], velocity)
-								end
-								storage.FlightNumber = storage.FlightNumber + 1
 							-- Spill the selected items on the ground
 							else
-								-- WIP ultracube support spill on ground driectly from wagon
-								properties.entity.surface.spill_item_stack({position=properties.entity.position, stack=stack})
-								if (stack.item_number) then
-									stack.count = stack.count - take
+								-- WIP ultracube support spill on ground driectly from wagon goes here
+								if (stackk.item_number) then
+									local substack = game.create_inventory(1)
+									substack.insert(stackk) -- inserts a copy, doesnt transfer
+									substack[1].count = math.min(stackk.count, ItemsPerDrop)
+									stackk.count = stackk.count - math.min(stackk.count, ItemsPerDrop)
+									properties.entity.surface.spill_item_stack({position=properties.entity.position, stack=substack[1]})
+									substack.destroy()
+								else
+									properties.entity.surface.spill_item_stack({position=properties.entity.position, stack=stackk})
 								end
 							end
 						end
 					end
 				end
+			else
+				properties.timeout = 60
 			end
 		end
 	end

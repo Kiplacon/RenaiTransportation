@@ -6,19 +6,23 @@ data:extend({
 		filename = "__RenaiTransportation__/graphics/test.png",
 		size = 640
 	},
-
 	{ --------- Bounce plate entity --------------
-		type = "simple-entity-with-owner",
-		name = "BouncePlate",
+		type = "constant-combinator",
+		name = "RTBouncePlate",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/PlateIconn.png",
 		icon_size = 64,
-		flags = {"placeable-neutral", "player-creation"},
-		minable = {mining_time = 0.2, result = "BouncePlateItem"},
+		flags = {"placeable-neutral", "player-creation", "hide-alt-info"},
+		minable = {mining_time = 0.2, result = "RTBouncePlateItem"},
 		max_health = 200,
-	    collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+		corpse = "small-remnants",
+        dying_explosion = "iron-chest-explosion",
+		collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
-		picture =
+		activity_led_sprites = {filename = "__RenaiTransportation__/graphics/nothing.png", size = 1},
+		activity_led_light_offsets = {{0,0},{0,0},{0,0},{0,0}},
+		circuit_wire_connection_points = {{wire={}, shadow={}},{wire={}, shadow={}},{wire={}, shadow={}},{wire={}, shadow={}}},
+		sprites =
 			{
 			layers =
 				{
@@ -40,6 +44,7 @@ data:extend({
 					}
 				}
 			},
+		
 		radius_visualisation_specification =
 			{
 				sprite =
@@ -47,25 +52,25 @@ data:extend({
 						filename = "__RenaiTransportation__/graphics/testalt.png",
 						size = 640
 					},
-				draw_on_selection = true,
+				draw_on_selection = false,
 				distance = 10
 			}
 	},
 
 	{ --------- The Bounce plate item -------------
 		type = "item",
-		name = "BouncePlateItem",
+		name = "RTBouncePlateItem",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/PlateIconn.png",
 		icon_size = 64, --icon_mipmaps = 4,
 		subgroup = "RT",
 		order = "a",
-		place_result = "BouncePlate",
+		place_result = "RTBouncePlate",
 		stack_size = 50
 	},
 
 	{ --------- The Bounce plate recipe ----------
 		type = "recipe",
-		name = "BouncePlateRecipe",
+		name = "RTBouncePlateRecipe",
 		enabled = true,
 		energy_required = 1,
 		ingredients =
@@ -74,7 +79,7 @@ data:extend({
 				{type="item", name="automation-science-pack", amount=1}
 			},
 		results = {
-			{type="item", name="BouncePlateItem", amount=1}
+			{type="item", name="RTBouncePlateItem", amount=1}
 		}
 	},
 
@@ -85,15 +90,49 @@ data:extend({
 		render_layer = "higher-object-above",
 		pictures =
 			{
-			  filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Particle.png",
-			  --width = 64,
-			  --height = 64,
-			  size = 32,
-			  priority = "extra-high",
-			  line_length = 4, -- frames per row
-			  frame_count = 4, -- total frames
-			  animation_speed = 0.5
+				filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Particle.png",
+				--width = 64,
+				--height = 64,
+				size = 32,
+				priority = "extra-high",
+				line_length = 4, -- frames per row
+				frame_count = 4, -- total frames
+				animation_speed = 0.5
 			}
+	},
+	{ --------- bounce effect ----------
+		type = "optimized-particle",
+		name = "RTTestParticle",
+		life_time = 60*5,
+		render_layer = "under-elevated",
+		pictures =
+			{
+				filename = "__RenaiTransportation__/graphics/LickmawBALLS.png",
+				--width = 64,
+				--height = 64,
+				size = 64,
+				scale = 0.3,
+				priority = "high",
+				line_length = 1, -- frames per row
+				frame_count = 1, -- total frames
+			},
+		shadows =
+			{
+				filename = "__RenaiTransportation__/graphics/LickmawBALLS.png",
+				--width = 64,
+				--height = 64,
+				size = 64,
+				scale = 0.3,
+				priority = "high",
+				line_length = 1, -- frames per row
+				frame_count = 1, -- total frames
+			},
+		draw_shadow_when_on_ground = false,
+		--regular_trigger_effect = {type="script", effect_id="RTTestProjectileRegularEffect"}, -- while in flight
+		--regular_trigger_effect_frequency = 30, -- how ofter while in flight
+		ended_in_water_trigger_effect = {type="script", effect_id="RTTestProjectileWaterEffect"}, -- the particle is destroyed when it hits the water regardless if this is defined or not
+		ended_on_ground_trigger_effect = {type="script", effect_id="RTTestProjectileGroundEffect"}, -- destroys the particle once it hits the ground in addition to the effect
+		--movement_modifier_when_on_ground = 0 -- > 1 means it speeds up when on the ground, 0 means it stops, < 1 means it slows down
 	}
 })
 
@@ -134,8 +173,8 @@ data:extend({
 		icon = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/PlateIconn.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
-		minable = {mining_time = 0.2, result = "BouncePlateItem"},
-		placeable_by = {item="BouncePlateItem", count=1},
+		minable = {mining_time = 0.2, result = "RTBouncePlateItem"},
+		placeable_by = {item="RTBouncePlateItem", count=1},
 		max_health = 200,
 	   collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
@@ -179,8 +218,8 @@ data:extend({
 		icon = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/PlateIconn.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
-		minable = {mining_time = 0.2, result = "BouncePlateItem"},
-		placeable_by = {item="BouncePlateItem", count=1},
+		minable = {mining_time = 0.2, result = "RTBouncePlateItem"},
+		placeable_by = {item="RTBouncePlateItem", count=1},
 		max_health = 200,
 		collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},

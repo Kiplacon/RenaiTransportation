@@ -1,4 +1,4 @@
-ConnectionPoints = 
+local ConnectionPoints =
     {
       shadow =
       {
@@ -19,7 +19,7 @@ data:extend({
 		name = "SignalBouncePlate",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlateIconn.png",
 		icon_size = 64,
-		flags = {"placeable-neutral", "player-creation"},
+		flags = {"placeable-neutral", "player-creation", "hide-alt-info"},
 		minable = {mining_time = 0.2, result = "SignalBouncePlateItem"},
 		max_health = 200,
 	    collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
@@ -103,7 +103,7 @@ data:extend({
 		ingredients = 
 			{
 				{type="item", name="constant-combinator", amount=1},
-				{type="item", name="BouncePlateItem", amount=1}
+				{type="item", name="RTBouncePlateItem", amount=1}
 			},
 		results = {
 			{type="item", name="SignalBouncePlateItem", amount=1}

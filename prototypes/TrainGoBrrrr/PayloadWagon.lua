@@ -48,8 +48,8 @@ OhYouLikeTrains,
 			tint = {220,150,50}
 		}
 	},
-	subgroup = "train-transport",
-	order = "aj",
+	subgroup = "RTTrainStuff",
+	order = "f",
 	place_result = "RTPayloadWagon",
 	stack_size = 5
 },
@@ -68,6 +68,33 @@ OhYouLikeTrains,
 	results = {
 		{type="item", name="RTPayloadWagonItem", amount=1}
 	}
+},
+
+{
+	type = "technology",
+	name = "RTDeliverThePayload",
+	icon = "__RenaiTransportation__/graphics/tech/boom.png",
+	icon_size = 128,
+	effects =
+	{
+		{
+			type = "unlock-recipe",
+			recipe = "RTPayloadWagonRecipe"
+		}
+	},
+	prerequisites = {"PrimerPlateTech", "RTFlyingFreight", "explosives", "military-3"},
+	unit =
+	{
+		count = 200,
+		ingredients =
+			{
+			{"automation-science-pack", 1},
+			{"logistic-science-pack", 1},
+			{"military-science-pack", 1},
+			{"chemical-science-pack", 1}
+			},
+		time = 30
+		}
 }
 
 })

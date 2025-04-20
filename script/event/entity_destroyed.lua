@@ -1,4 +1,8 @@
 local function entity_destroyed(event)
+	if (storage.FlyingItems[event.registration_number]) then -- ##### VERY IMPORTANT THIS IS HOW LANDING OF THROWN ITEMS IS DETECTED #####
+		ResolveThrownItem(storage.FlyingItems[event.registration_number])
+	end
+
 	if (storage.CatapultList[event.registration_number]) then
 		if (storage.CatapultList[event.registration_number].entangled) then
 			for each, entity in pairs(storage.CatapultList[event.registration_number].entangled) do
@@ -12,12 +16,29 @@ local function entity_destroyed(event)
 		storage.PrimerThrowerLinks[event.registration_number] = nil
 	end
 
-	if (storage.MagnetRamps[event.registration_number]) then
+	if (storage.TrainRamps[event.registration_number]) then
+		if (storage.TrainRamps[event.registration_number].blocker and storage.TrainRamps[event.registration_number].blocker.valid) then
+			storage.TrainRamps[event.registration_number].blocker.destroy()
+		end
+		if (storage.TrainRamps[event.registration_number].power) then -- magent ramps
+			for each, tile in pairs(storage.TrainRamps[event.registration_number].tiles) do
+				tile.destroy()
+			end
+			storage.TrainRamps[event.registration_number].power.destroy()
+		end
+		storage.TrainRamps[event.registration_number] = nil
+	end
+	-- storage.MagnetRamps isnt used anymore but this section is kept for migration
+	if (storage.MagnetRamps and storage.MagnetRamps[event.registration_number]) then
 		for each, tile in pairs(storage.MagnetRamps[event.registration_number].tiles) do
 			tile.destroy()
 		end
 		storage.MagnetRamps[event.registration_number].power.destroy()
 		storage.MagnetRamps[event.registration_number] = nil
+	end
+
+	if (storage.TrainCollisionDetectors[event.registration_number]) then
+		storage.TrainCollisionDetectors[event.registration_number] = nil
 	end
 
 	if (storage.OnTheWay[event.registration_number]) then
@@ -66,6 +87,27 @@ local function entity_destroyed(event)
 	end
 	if (storage.TrapdoorWagonsClosed[event.registration_number]) then
 		storage.TrapdoorWagonsClosed[event.registration_number] = nil
+	end
+
+	if (storage.BeltRamps[event.registration_number]) then
+		if (storage.BeltRamps[event.registration_number].PlayerTrigger and storage.BeltRamps[event.registration_number].PlayerTrigger.valid) then
+			storage.BeltRamps[event.registration_number].PlayerTrigger.destroy()
+		end
+		storage.BeltRamps[event.registration_number] = nil
+	end
+
+	if (storage.VacuumHatches[event.registration_number]) then
+		storage.VacuumHatches[event.registration_number] = nil
+	end
+
+	if (storage.ItemCannons[event.registration_number]) then
+		if (storage.ItemCannons[event.registration_number].chest and storage.ItemCannons[event.registration_number].chest.valid) then
+			storage.ItemCannons[event.registration_number].chest.destroy()
+		end
+		if (storage.ItemCannons[event.registration_number].mask and storage.ItemCannons[event.registration_number].mask.valid) then
+			storage.ItemCannons[event.registration_number].mask.destroy()
+		end
+		storage.ItemCannons[event.registration_number] = nil
 	end
 end
 
