@@ -323,18 +323,20 @@ function OffsetPosition(p1, p2)
     return {x=p1x+p2x, y=p1y+p2y}
 end
 
-function ToggleTrapdoorWagon(WagonEntity)
+function ToggleTrapdoorWagon(WagonEntity, StationToggleBack)
     local DestroyNumber = script.register_on_object_destroyed(WagonEntity)
     -- properties.entity = the wagon entity
     -- properties.open = true/false
     -- properties.OpenIndicator = RenderObject
     if (storage.TrapdoorWagonsOpen[DestroyNumber] ~= nil) then
         storage.TrapdoorWagonsOpen[DestroyNumber].OpenIndicator.sprite = "RTTrapdoorWagonClosed"
+        storage.TrapdoorWagonsOpen[DestroyNumber].StationToggleBack = StationToggleBack
         --storage.TrapdoorWagonsOpen[DestroyNumber].open = false
         storage.TrapdoorWagonsClosed[DestroyNumber], storage.TrapdoorWagonsOpen[DestroyNumber] = storage.TrapdoorWagonsOpen[DestroyNumber], nil
         WagonEntity.surface.play_sound{path="RTTrapdoorCloseSound", position=WagonEntity.position}
     elseif (storage.TrapdoorWagonsClosed[DestroyNumber] ~= nil) then
         storage.TrapdoorWagonsClosed[DestroyNumber].OpenIndicator.sprite = "RTTrapdoorWagonOpen"
+        storage.TrapdoorWagonsClosed[DestroyNumber].StationToggleBack = StationToggleBack
         --storage.TrapdoorWagonsClosed[DestroyNumber].open = true
         storage.TrapdoorWagonsOpen[DestroyNumber], storage.TrapdoorWagonsClosed[DestroyNumber] = storage.TrapdoorWagonsClosed[DestroyNumber], nil
         storage.TrapdoorWagonsOpen[DestroyNumber].timeout = nil

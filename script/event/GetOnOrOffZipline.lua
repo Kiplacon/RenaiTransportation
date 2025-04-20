@@ -202,6 +202,7 @@ local function GetOnOrOffZipline(event) -- has .name = event ID number, .tick = 
 					local angle = math.deg(math.atan2((ZiplineStuff.LetMeGuideYou.position.y-(FD.position.y+ToYWireOffset)),(ZiplineStuff.LetMeGuideYou.position.x-(FD.position.x+ToXWireOffset))))
 					ZiplineStuff.LetMeGuideYou.orientation = (angle/360)-0.25
 					player.print({"zipline-stuff.InitiateSelfDriving"})
+					player.opened = nil
 					if (player.controller_type == defines.controllers.remote) then
 						player.set_controller{type=defines.controllers.character, character=player.character}
 					end

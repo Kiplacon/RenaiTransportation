@@ -76,8 +76,8 @@ data:extend({
         max_health = 42069,
         collision_box = {{-1.4, -1.4}, {1.4, 1.4}},
         collision_mask = {layers={}},
-        inventory_size = 2,
-        inventory_type = "with_filters_and_bar",
+        inventory_size = 1,
+        --inventory_type = "with_filters_and_bar",
     },
     { --------- mask
         type = "simple-entity-with-owner",
@@ -120,7 +120,7 @@ data:extend({
 
 
 
-    { -- base item shell
+    --[[ { -- base item shell
 		type = "item",
 		name = "RTItemShellItem",
 		icons =
@@ -144,7 +144,7 @@ data:extend({
         results = {
             {type="item", name="RTItemShellItem", amount=1}
         }
-    },
+    }, ]]
 
 
     --[[ {
@@ -282,14 +282,14 @@ if (data.raw.item["holmium-plate"] and data.raw.tool["electromagnetic-science-pa
 		{
             type = "technology",
             name = "RTItemCannonTech",
-            icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
+            icon = "__RenaiTransportation__/graphics/tech/ItemCannonTech.png",
             icon_size = 130,
             effects =
             {
-                {
+                --[[ {
                     type = "unlock-recipe",
                     recipe = "RTItemShellRecipe"
-                },
+                }, ]]
                 {
                     type = "unlock-recipe",
                     recipe = "RTItemCannonRecipe"
@@ -371,14 +371,14 @@ else
 		{
             type = "technology",
             name = "RTItemCannonTech",
-            icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
+            icon = "__RenaiTransportation__/graphics/tech/ItemCannonTech.png",
             icon_size = 130,
             effects =
             {
-                {
+                --[[ {
                     type = "unlock-recipe",
                     recipe = "RTItemShellRecipe"
-                },
+                }, ]]
                 {
                     type = "unlock-recipe",
                     recipe = "RTItemCannonRecipe"

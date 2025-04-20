@@ -609,10 +609,18 @@ script.on_event(defines.events.on_train_changed_state,
 function(event)
 	local train = event.train
 	if (settings.startup["RTTrapdoorSetting"].value == true) then
-		if (train.state == defines.train_state.wait_station and train.station ~= nil and train.station.get_signal({type="virtual", name="StationTrapdoorWagonSignal"}, defines.wire_connector_id.circuit_red, defines.wire_connector_id.circuit_green) > 0)
-		or (event.old_state == defines.train_state.wait_station) then
+		if (train.state == defines.train_state.wait_station and train.station ~= nil and train.station.get_signal({type="virtual", name="StationTrapdoorWagonSignal"}, defines.wire_connector_id.circuit_red, defines.wire_connector_id.circuit_green) > 0) then
 			for _, wagon in pairs(train.cargo_wagons) do
 				if (wagon.name == "RTTrapdoorWagon") then
+					ToggleTrapdoorWagon(wagon, true)
+				end
+			end
+		elseif (event.old_state == defines.train_state.wait_station) then
+			for _, wagon in pairs(train.cargo_wagons) do
+				local DestroyNumber = script.register_on_object_destroyed(wagon)
+				if (wagon.name == "RTTrapdoorWagon")
+				and ((storage.TrapdoorWagonsOpen[DestroyNumber] and storage.TrapdoorWagonsOpen[DestroyNumber].StationToggleBack)
+					or (storage.TrapdoorWagonsClosed[DestroyNumber] and storage.TrapdoorWagonsClosed[DestroyNumber].StationToggleBack)) then
 					ToggleTrapdoorWagon(wagon)
 				end
 			end

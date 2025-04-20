@@ -17,10 +17,10 @@ local function PersonalFitness(event)
                 end
             elseif (ItemCannonProperties.entity.valid and ItemCannonProperties.entity.energy == ItemCannonProperties.entity.electric_buffer_size) then
                 local slot1 = ItemCannonProperties.chest.get_output_inventory()[1]
-                local slot2 = ItemCannonProperties.chest.get_output_inventory()[2]
-                if (slot2.valid_for_read
-                and slot2.name == "RTItemShellItem"
-                and slot1.valid_for_read
+                --local slot2 = ItemCannonProperties.chest.get_output_inventory()[2]
+                --if (slot2.valid_for_read
+                --and slot2.name == "RTItemShellItem"
+                if (slot1.valid_for_read
                 and slot1.count == slot1.prototype.stack_size) then
                     local cannon = ItemCannonProperties.entity
                     if (prototypes.entity["RTItemShell"..slot1.name.."-Q-"..slot1.quality.name]) then
@@ -34,7 +34,7 @@ local function PersonalFitness(event)
                             max_range = storage.ItemCannonRange or 200
                         }
                         slot1.clear()
-                        slot2.count = slot2.count - 1
+                        --slot2.count = slot2.count - 1
                         if (ItemCannonProperties.CantLoad) then
                             ItemCannonProperties.CantLoad.visible = false
                         end

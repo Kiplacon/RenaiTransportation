@@ -127,7 +127,7 @@ else
             {
                 {type="item", name="steel-plate", amount=20},
                 {type="item", name="accumulator", amount=1},
-                {type="item", name="advanced-circuit", amount=2},
+                {type="item", name="processing-unit", amount=2},
                 {type="item", name="copper-cable", amount=8}
             },
         results = {

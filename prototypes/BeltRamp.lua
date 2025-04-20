@@ -58,7 +58,7 @@ for _, tier in pairs(tiers) do
                             filename = "__RenaiTransportation__/graphics/BeltRamp/BeltRampArrows.png",
                             tint = TierTint,
                             priority = "extra-high",
-                            size = 256,
+                            size = 144,
                             frame_count = 16,
                             direction_count = 5,
                             scale = 0.39,

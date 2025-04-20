@@ -357,7 +357,7 @@ local function entity_built(event)
 			create_build_effect_smoke = false
 		}
 		chest.destructible = false
-		chest.get_output_inventory().set_filter(2, {name="RTItemShellItem"})
+		--chest.get_output_inventory().set_filter(2, {name="RTItemShellItem"})
 		storage.ItemCannons[script.register_on_object_destroyed(entity)].chest = chest
 		---- mask part
 		local mask = entity.surface.create_entity

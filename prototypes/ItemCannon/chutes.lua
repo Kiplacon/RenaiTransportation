@@ -94,13 +94,22 @@ data.extend({
             },
         },
         pictures = {
-            sheet = {
-                filename = "__RenaiTransportation__/graphics/ItemCannon/DivergingChute.png",
-                shift = {0, -0.6},
-                width = 66,
-                height = 128,
-                priority = "high",
-                scale = 0.5
+            sheets = {
+                {
+                    filename = "__RenaiTransportation__/graphics/ItemCannon/DivergingChute.png",
+                    shift = {0, -0.72},
+                    size = 260,
+                    priority = "high",
+                    scale = 0.3
+                },
+                {
+                    filename = "__RenaiTransportation__/graphics/ItemCannon/DivergingChuteShadow.png",
+                    shift = {0, -0.72},
+                    size = 512,
+                    draw_as_shadow = true,
+                    priority = "high",
+                    scale = 0.3
+                },
             }
         }
     },
@@ -151,13 +160,22 @@ data.extend({
             },
         },
         pictures = {
-            sheet = {
-                filename = "__RenaiTransportation__/graphics/ItemCannon/MergingChute.png",
-                shift = {0, -0.6},
-                width = 66,
-                height = 128,
-                priority = "high",
-                scale = 0.5
+            sheets = {
+                {
+                    filename = "__RenaiTransportation__/graphics/ItemCannon/MergingChute.png",
+                    shift = {0, -0.72},
+                    size = 260,
+                    priority = "high",
+                    scale = 0.3
+                },
+                {
+                    filename = "__RenaiTransportation__/graphics/ItemCannon/MergingChuteShadow.png",
+                    shift = {0, -0.72},
+                    size = 512,
+                    draw_as_shadow = true,
+                    priority = "high",
+                    scale = 0.3
+                },
             }
         }
     },
@@ -199,21 +217,6 @@ data.extend({
 data:extend({
     { --------- recipe ----------
         type = "recipe",
-        name = "RTCatchingChuteRecipe",
-        enabled = false,
-        energy_required = 1,
-        ingredients =
-            {
-                {type="item", name="RTRicochetPanelItem", amount=4},
-                {type="item", name="steel-chest", amount=1},
-                {type="item", name="steel-plate", amount=20},
-            },
-        results = {
-            {type="item", name="RTCatchingChuteItem", amount=1}
-        }
-    },
-    { --------- recipe ----------
-        type = "recipe",
         name = "RTMergingChuteRecipe",
         enabled = false,
         energy_required = 2,
@@ -245,3 +248,41 @@ data:extend({
         }
     },
 })
+
+if (data.raw.item["holmium-plate"]) then
+    data:extend({
+        { --------- recipe ----------
+            type = "recipe",
+            name = "RTCatchingChuteRecipe",
+            enabled = false,
+            energy_required = 1,
+            ingredients =
+                {
+                    {type="item", name="holmium-plate", amount=5},
+                    {type="item", name="concrete", amount=10},
+                    {type="item", name="steel-plate", amount=20},
+                },
+            results = {
+                {type="item", name="RTCatchingChuteItem", amount=1}
+            }
+        },
+    })
+else
+    data:extend({
+        { --------- recipe ----------
+            type = "recipe",
+            name = "RTCatchingChuteRecipe",
+            enabled = false,
+            energy_required = 1,
+            ingredients =
+                {
+                    {type="item", name="iron-chest", amount=1},
+                    {type="item", name="concrete", amount=20},
+                    {type="item", name="steel-plate", amount=20},
+                },
+            results = {
+                {type="item", name="RTCatchingChuteItem", amount=1}
+            }
+        },
+    })
+end
