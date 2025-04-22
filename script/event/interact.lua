@@ -82,7 +82,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		local DestroyNumber = script.register_on_object_destroyed(ThingHovering)
 		--game.print(DestroyNumber)
 		--|| Adjusting Thrower Range
-		if (settings.startup["RTThrowersSetting"].value == true and ThingHovering.type == "inserter" and string.find(ThingHovering.name, "RTThrower-") and ThingHovering.name ~= "RTThrower-PrimerThrower" and storage.CatapultList[DestroyNumber].RangeAdjustable == true) then
+		if (settings.startup["RTThrowersSetting"].value == true and ThingHovering.valid and ThingHovering.type == "inserter" and string.find(ThingHovering.name, "RTThrower-") and ThingHovering.name ~= "RTThrower-PrimerThrower" and storage.CatapultList[DestroyNumber].RangeAdjustable == true) then
 			local CurrentRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
 			if (CurrentRange >= ThingHovering.prototype.inserter_drop_position[2]) then
 				ThingHovering.drop_position =
@@ -112,7 +112,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			ResetThrowerOverflowTracking(ThingHovering)
 		end
 		--|| Swap Primer Modes
-		if (settings.startup["RTBounceSetting"].value == true) then
+		if (settings.startup["RTBounceSetting"].value == true and ThingHovering.valid) then
 			if (ThingHovering.name == "PrimerBouncePlate") then
 				ThingHovering.surface.create_entity
 					({
@@ -157,7 +157,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		end
 
 		--|| Swap Ramp Modes
-		if (settings.startup["RTTrainRampSetting"].value == true) then
+		if (settings.startup["RTTrainRampSetting"].value == true and ThingHovering.valid) then
 			if (ThingHovering.name == "RTTrainRamp" or ThingHovering.name == "RTSwitchTrainRamp") then
 				local switch = ""
 				if (string.find(ThingHovering.name, "Switch")) then
@@ -315,7 +315,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		end
 
 		-- bound pad ranges
-		if (settings.startup["RTThrowersSetting"].value == true) then
+		if (settings.startup["RTThrowersSetting"].value == true and ThingHovering.valid) then
 			if (ThingHovering.name == "RTBouncePlate") then
 				local BouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(ThingHovering)]
 				local range = ThingHovering.get_or_create_control_behavior().get_section(1).get_slot(1).min
@@ -405,7 +405,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			end
 		end
 
-		if (settings.startup["RTItemCannonSetting"].value == true and ThingHovering.name == "RTItemCannon") then
+		if (settings.startup["RTItemCannonSetting"].value == true and ThingHovering.valid and ThingHovering.name == "RTItemCannon") then
 			storage.ItemCannons[script.register_on_object_destroyed(ThingHovering)].LaserPointer = not storage.ItemCannons[script.register_on_object_destroyed(ThingHovering)].LaserPointer
 			player.play_sound{
 				path="utility/rotated_medium",
