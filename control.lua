@@ -129,7 +129,7 @@ function(event)
 	or event.entity.type == "cargo-wagon"
 	or event.entity.type == "car") then
 		local container = event.entity
-		local scale = ((container.bounding_box.right_bottom.x-container.bounding_box.left_top.x)+(container.bounding_box.right_bottom.y-container.bounding_box.left_top.y))
+		local scale = ((container.bounding_box.right_bottom.x-container.bounding_box.left_top.x)+(container.bounding_box.right_bottom.y-container.bounding_box.left_top.y)) or 3
 		for i = 1, #container.get_output_inventory() do
 			local stack = container.get_output_inventory()[i]
 			if (stack.valid_for_read == true) then
@@ -143,8 +143,8 @@ function(event)
 					-- flight arc
 					local speed = math.random(10, 20)*0.00008 + (scale*0.01)
 					local AirTime = math.random(40, 50) + math.ceil(scale*5)
-					local TargetX = event.entity.position.x + (xUnit*math.random(1, math.ceil(scale*0.8)))
-					local TargetY = event.entity.position.y + (yUnit*math.random(1, math.ceil(scale*0.8)))
+					local TargetX = event.entity.position.x + (xUnit*math.random(1, math.abs(math.ceil(scale*0.8))))
+					local TargetY = event.entity.position.y + (yUnit*math.random(1, math.abs(math.ceil(scale*0.8))))
 					local vector = {x=TargetX-container.position.x, y=TargetY-container.position.y}
 					local arc = 0.13
 					local path = {}
@@ -646,33 +646,34 @@ defines.events.on_player_mined_entity,
 function(event)
 	local player = game.players[event.player_index]
 	local entity = event.entity
-	if (player.character
-	and settings.get_player_settings(player)["MiningSpeedDebuffTime"].value ~= 0
-	and player.character.character_mining_speed_modifier > -0.9
-	and (
-			string.find(entity.name, "HatchRT")
-			or entity.name == "RTTrapdoorSwitch"
-			or (string.find(entity.name, '^RT') and (string.find(entity.name, 'TrainRamp') or string.find(entity.name, 'ImpactUnloader')))
-		)
-	) then
-		local back = player.character.character_mining_speed_modifier
-		local zawardo = math.max(1, math.ceil(settings.get_player_settings(player)["MiningSpeedDebuffTime"].value * 60))
-		if (storage.clock[game.tick+zawardo] == nil) then
-			storage.clock[game.tick+zawardo] = {MiningSpeedRevert={}}
-		else
-			if (storage.clock[game.tick+zawardo].MiningSpeedRevert == nil) then
-				storage.clock[game.tick+zawardo].MiningSpeedRevert = {}
+	if (player.character) then
+		if (settings.get_player_settings(player)["MiningSpeedDebuffTime"].value ~= 0
+		and player.character.character_mining_speed_modifier > -0.9
+		and (
+				string.find(entity.name, "HatchRT")
+				or entity.name == "RTTrapdoorSwitch"
+				or (string.find(entity.name, '^RT') and (string.find(entity.name, 'TrainRamp') or string.find(entity.name, 'ImpactUnloader')))
+			)
+		) then
+			local back = player.character.character_mining_speed_modifier
+			local zawardo = math.max(1, math.ceil(settings.get_player_settings(player)["MiningSpeedDebuffTime"].value * 60))
+			if (storage.clock[game.tick+zawardo] == nil) then
+				storage.clock[game.tick+zawardo] = {MiningSpeedRevert={}}
+			else
+				if (storage.clock[game.tick+zawardo].MiningSpeedRevert == nil) then
+					storage.clock[game.tick+zawardo].MiningSpeedRevert = {}
+				end
 			end
+			table.insert(storage.clock[game.tick+zawardo].MiningSpeedRevert, {character=player.character, back=back})
+			player.character.character_mining_speed_modifier = -0.9
 		end
-		table.insert(storage.clock[game.tick+zawardo].MiningSpeedRevert, {character=player.character, back=back})
-		player.character.character_mining_speed_modifier = -0.9
-	end
-	if (entity.name == "RTItemCannon") then
-		storage.ItemCannons[script.register_on_object_destroyed(entity)].chest.mine
-		{
-			inventory=player.character.get_main_inventory(),
-			ignore_minable=true
-		}
+		if (entity.name == "RTItemCannon") then
+			storage.ItemCannons[script.register_on_object_destroyed(entity)].chest.mine
+			{
+				inventory=player.character.get_main_inventory(),
+				ignore_minable=true
+			}
+		end
 	end
 end)
 

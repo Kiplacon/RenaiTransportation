@@ -1,8 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.2
+Date: 4/25/2025
+  Bugfixes:
+    - Fixed a crash when removing Item cannons in editor mode. Reported by niokomino
+    - Fixed a crash when vehicles were destroyed at certain angles. Reported by BillyGG2000
+---------------------------------------------------------------------------------------------------
 Version: 2.1.1
 Date: 4/21/2025
   Bugfixes:
-    - Fixed a crash when swapping between Train ramps
+    - Fixed a crash when swapping between Train ramps Reported by PhantomXz_
 ---------------------------------------------------------------------------------------------------
 Version: 2.1.0
 Date: 4/20/2025
