@@ -6,6 +6,7 @@ local TheItem = table.deepcopy(data.raw.item.inserter)
 	TheItem.place_result = "RTThrower-PrimerThrower"
 
 local TheThrower = table.deepcopy(data.raw.inserter.inserter)
+	TheThrower.icon = "__RenaiTransportation__/graphics/primerthrowericon.png"
 	TheThrower.name = "RTThrower-PrimerThrower"
 	TheThrower.minable = {mining_time = 0.1, result = TheItem.name}
 	TheThrower.insert_position = {0, 0.8}

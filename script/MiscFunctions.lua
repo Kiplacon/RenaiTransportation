@@ -6,7 +6,7 @@ function util.swap_entity_inventories(entity_a, entity_b, inventory)
     local inv_b = entity_b.get_inventory(inventory)
     if inv_a.is_filtered() then
         for i = 1, math.min(#inv_a, #inv_b) do
-        inv_b.set_filter(i, inv_a.get_filter(i))
+            inv_b.set_filter(i, inv_a.get_filter(i))
         end
     end
     for i = 1, math.min(#inv_a, #inv_b)do
@@ -101,20 +101,24 @@ function SwapToGhost(player)
 		end
 	end
 	------ move items ----------
-	OG.character_inventory_slots_bonus = OG.character_inventory_slots_bonus+10000 -- hopefully offset losing armor inventory bonuses
-	for i = 1, #OG.get_inventory(defines.inventory.character_armor) do
-		NEWHOST.get_inventory(defines.inventory.character_armor).insert(OG.get_inventory(defines.inventory.character_armor)[i])
+    -- move items into intermediate inventory to account for all inventory bonuses when armor is removed
+    local CloudStorage = game.create_inventory(#OG.get_inventory(defines.inventory.character_main))
+    for i = 1, #OG.get_inventory(defines.inventory.character_main) do
+        OG.get_inventory(defines.inventory.character_main)[i].swap_stack(CloudStorage[i])
 	end
-	util.swap_entity_inventories(OG, NEWHOST, defines.inventory.character_main)
+    -- SWAP the armor, inserting a copy of the armor does NOT instantly apply tool belt inventory bonuses apparently
+	util.swap_entity_inventories(OG, NEWHOST, defines.inventory.character_armor)
+    -- move items from intermediate inventory to the new character then destroy the intermediate
+    for i = 1, math.min(#CloudStorage, #NEWHOST.get_inventory(defines.inventory.character_main)) do
+        CloudStorage[i].swap_stack(NEWHOST.get_inventory(defines.inventory.character_main)[i])
+	end
+    CloudStorage.destroy()
+    -- swap the other inventories
 	util.swap_entity_inventories(OG, NEWHOST, defines.inventory.character_guns)
 	util.swap_entity_inventories(OG, NEWHOST, defines.inventory.character_ammo)
 	util.swap_entity_inventories(OG, NEWHOST, defines.inventory.character_trash)
-	OG.get_main_inventory().clear()
-	OG.get_inventory(defines.inventory.character_guns).clear()
-	OG.get_inventory(defines.inventory.character_ammo).clear()
-	OG.get_inventory(defines.inventory.character_armor).clear()
-	OG.get_inventory(defines.inventory.character_trash).clear()
     NEWHOST.cursor_stack.transfer_stack(OG.cursor_stack)
+
 	---------- redo crafting queue -----------
 	if (TheList ~= nil) then
 		for i = #TheList, 1, -1 do
@@ -228,21 +232,26 @@ function SwapBackFromGhost(player, FlyingItem)
                 end
             end
         end
+
         ------ move items ----------
-        for i = 1, #ghost.get_inventory(defines.inventory.character_armor) do
-            OG.get_inventory(defines.inventory.character_armor).insert(ghost.get_inventory(defines.inventory.character_armor)[i])
+        -- move items into intermediate inventory to account for all inventory bonuses when armor is removed
+        local CloudStorage = game.create_inventory(#ghost.get_inventory(defines.inventory.character_main))
+        for i = 1, #ghost.get_inventory(defines.inventory.character_main) do
+            ghost.get_inventory(defines.inventory.character_main)[i].swap_stack(CloudStorage[i])
         end
-        util.swap_entity_inventories(ghost, OG, defines.inventory.character_main)
+        -- SWAP the armor, inserting a copy of the armor does NOT instantly apply tool belt inventory bonuses apparently
+        util.swap_entity_inventories(ghost, OG, defines.inventory.character_armor)
+        -- move items from intermediate inventory to the new character then destroy the intermediate
+        for i = 1, math.min(#CloudStorage, #OG.get_inventory(defines.inventory.character_main)) do
+            CloudStorage[i].swap_stack(OG.get_inventory(defines.inventory.character_main)[i])
+        end
+        CloudStorage.destroy()
+        -- swap the other inventories
         util.swap_entity_inventories(ghost, OG, defines.inventory.character_guns)
         util.swap_entity_inventories(ghost, OG, defines.inventory.character_ammo)
         util.swap_entity_inventories(ghost, OG, defines.inventory.character_trash)
-        ghost.get_main_inventory().clear()
-        ghost.get_inventory(defines.inventory.character_guns).clear()
-        ghost.get_inventory(defines.inventory.character_ammo).clear()
-        ghost.get_inventory(defines.inventory.character_armor).clear()
-        ghost.get_inventory(defines.inventory.character_trash).clear()
         OG.cursor_stack.transfer_stack(ghost.cursor_stack)
-        --OG.character_inventory_slots_bonus = OG.character_inventory_slots_bonus-10000
+
         ---------- redo crafting queue -----------
         if (TheList ~= nil) then
             for i = #TheList, 1, -1 do

@@ -1,7 +1,7 @@
 local MLG = table.deepcopy(data.raw.car["car"])
 MLG.name = "RTPropCar"
 MLG.flags = {"placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-selectable-in-game"}
-hidden = true
+MLG.hidden = true
 MLG.collision_mask = {layers={}}
 MLG.selectable_in_game = false
 MLG.corpse = nil
@@ -53,6 +53,7 @@ MLG,
 	type = "recipe",
 	name = "RTPropCar",
 	enabled = false,
+	hidden = true,
 	energy_required = 0.5,
 	ingredients =
 		{

@@ -482,6 +482,24 @@ TheRecipe =
 	}
 
 TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
+	if (TheThrower.icon) then
+		TheThrower.icons =
+			{
+				{
+					icon = TheThrower.icon,
+					icon_size = TheThrower.icon_size,
+					icon_mipmaps = TheThrower.icon_mipmaps
+				},
+
+				{
+					icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",
+					icon_size = 64,
+					icon_mipmaps = 4
+				}
+			}
+	else
+		table.insert(TheThrower.icons, {icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",	icon_size = 64, icon_mipmaps = 4})
+	end
 	TheThrower.name = "RTThrower-"..ThingData.name
 	TheThrower.minable = {mining_time = 0.1, result = TheItem.name}
 	TheThrower.localised_name ="Thrower "..ThingData.name:gsub("-i"," i")
@@ -489,6 +507,10 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	TheThrower.insert_position = {0, 15.2}
 	TheThrower.allow_custom_vectors = true
 	ItsRange = 15
+	TheThrower.fast_replaceable_group = "ThrowerInserters"
+	if (TheThrower.next_upgrade) then
+		TheThrower.next_upgrade = "RTThrower-"..TheThrower.next_upgrade
+	end
 
 	if (TheThrower.energy_per_rotation) then
 		local MovementEnergy = util.parse_energy(TheThrower.energy_per_movement) * 3  -- for some reason x2.5 makes the total energy even out
@@ -503,6 +525,7 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	elseif (TheThrower.name == "RTThrower-long-handed-inserter") then
 		TheThrower.insert_position = {0, 25.2}
 		ItsRange = 25
+		TheThrower.fast_replaceable_group = "LongThrowers"
 	end
 
 	if settings.startup["RTThrowersDynamicRange"].value == true then

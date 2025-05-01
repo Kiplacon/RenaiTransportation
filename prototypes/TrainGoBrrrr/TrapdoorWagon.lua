@@ -237,6 +237,7 @@ data:extend({
 	icon = "__RenaiTransportation__/graphics/TrapdoorSwitch/TrapdoorSwitchIcon.png",
 	icon_size = 64,
 	flags = {"filter-directions", "not-on-map", "player-creation", "building-direction-16-way"},
+	hidden = true,
 	minable = { mining_time = 0.5, result = "RTTrapdoorSwitchItem" },-- Minable so they can get the item back if the placer swap bugs out
 	render_layer = "elevated-object",
 	collision_mask = {layers={["train"]=true}}, -- these masks interact with the blocker

@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.3
+Date: 4/30/2025
+  Bugfixes:
+    - Fixed some issues with how thrower inserters were placable on top of normal inserters and vice versa. Zantigar
+    - Fixed that items were lost when getting on/off ziplines if you had Tool belts in your armor and your inventory was full. Reported by The_God_
+    - Fixed that the icon for the thrower inserter entities didn't have the yellow arms.
+    - Fixed that the Primer thrower entity icon looked like a normal inserter.
+---------------------------------------------------------------------------------------------------
 Version: 2.1.2
 Date: 4/25/2025
   Bugfixes:

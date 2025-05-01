@@ -17,7 +17,7 @@ data:extend({
 type = "simple-entity-with-owner",
 name = "HatchRT",
 icon = "__RenaiTransportation__/graphics/hatch/icon.png",
-icon_size = 16,
+icon_size = 64,
 flags = {"placeable-neutral", "player-creation", "not-rotatable"},
 collision_mask = {layers={[RememberNoUnderscores]=true}},
 collision_box = {{-0.35, -0.3}, {0.35, 0.55}},
