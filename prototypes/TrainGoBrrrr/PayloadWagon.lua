@@ -10,7 +10,7 @@ OhYouLikeTrains.icons =
 		tint = color
 	}
 }
-OhYouLikeTrains.minable = {mining_time = 0.5, result = "RTPayloadWagonItem"}
+OhYouLikeTrains.minable = {mining_time = 0.5, result = "RTPayloadWagon"}
 OhYouLikeTrains.inventory_size = 8
 
 for _, part in pairs({"rotated", "sloped"}) do
@@ -38,7 +38,7 @@ OhYouLikeTrains,
 
 { --------- prop item -------------
 	type = "item",
-	name = "RTPayloadWagonItem",
+	name = "RTPayloadWagon",
 	icon_size = 64,
 	icons = 
 	{
@@ -56,17 +56,17 @@ OhYouLikeTrains,
 
 { --------- prop recipe ----------
 	type = "recipe",
-	name = "RTPayloadWagonRecipe",
+	name = "RTPayloadWagon",
 	enabled = false,
 	energy_required = 1,
 	ingredients = 
 		{
 			{type="item", name="explosives", amount=10},
-			{type="item", name="PrimerBouncePlateItem", amount=5},
+			{type="item", name="PrimerBouncePlate", amount=5},
 			{type="item", name="cargo-wagon", amount=1}
 		},
 	results = {
-		{type="item", name="RTPayloadWagonItem", amount=1}
+		{type="item", name="RTPayloadWagon", amount=1}
 	}
 },
 
@@ -79,7 +79,7 @@ OhYouLikeTrains,
 	{
 		{
 			type = "unlock-recipe",
-			recipe = "RTPayloadWagonRecipe"
+			recipe = "RTPayloadWagon"
 		}
 	},
 	prerequisites = {"PrimerPlateTech", "RTFlyingFreight", "explosives", "military-3"},

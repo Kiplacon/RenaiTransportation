@@ -6,11 +6,11 @@
 
 	"item":
 	[
-		["BouncePlateItem", "RTBouncePlateItem"]
+		["BouncePlateItem", "RTBouncePlate"]
 	],
 
 	"recipe": 
 	[
-		["BouncePlateRecipe", "RTBouncePlateRecipe"]
+		["BouncePlateRecipe", "RTBouncePlate"]
 	]
 }

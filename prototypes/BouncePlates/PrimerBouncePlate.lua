@@ -18,16 +18,16 @@ data:extend({
 		icon = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerPlateIconn.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
-		minable = {mining_time = 0.2, result = "PrimerBouncePlateItem"},
+		minable = {mining_time = 0.2, result = "PrimerBouncePlate"},
 		max_health = 200,
 		corpse = "small-remnants",
         dying_explosion = "iron-chest-explosion",
 		collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
-		picture = 
+		picture =
 			{
-			layers = 
+			layers =
 				{
 					{
 						filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/shadow.png",
@@ -60,7 +60,7 @@ data:extend({
 	},
 	{ --------- The Bounce plate item -------------
 		type = "item",
-		name = "PrimerBouncePlateItem",
+		name = "PrimerBouncePlate",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerPlateIconn.png",
 		icon_size = 64, --icon_mipmaps = 4,
 		subgroup = "RT",
@@ -70,17 +70,17 @@ data:extend({
 	},
 	{ --------- The Bounce plate recipe ----------
 		type = "recipe",
-		name = "PrimerBouncePlateRecipe",
+		name = "PrimerBouncePlate",
 		enabled = false,
 		energy_required = 1,
 		ingredients = 
 			{
-				{type="item", name="RTBouncePlateItem", amount=1},
+				{type="item", name="RTBouncePlate", amount=1},
 				{type="item", name="electronic-circuit", amount=2},
 				{type="item", name="coal", amount=5}
 			},
 		results = {
-			{type="item", name="PrimerBouncePlateItem", amount=1}
+			{type="item", name="PrimerBouncePlate", amount=1}
 		}
 	},
 	
@@ -108,8 +108,8 @@ data:extend({
 		icon = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerPlateIconn.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
-		minable = {mining_time = 0.2, result = "PrimerBouncePlateItem"},
-		placeable_by = {item = "PrimerBouncePlateItem", count = 1},
+		minable = {mining_time = 0.2, result = "PrimerBouncePlate"},
+		placeable_by = {item = "PrimerBouncePlate", count = 1},
 		max_health = 200,
 		corpse = "small-remnants",
         dying_explosion = "iron-chest-explosion",
@@ -159,7 +159,7 @@ data:extend({
 		{
 			{
 				type = "unlock-recipe",
-				recipe = "PrimerBouncePlateRecipe"
+				recipe = "PrimerBouncePlate"
 			}
 		},
 		prerequisites = {"se-no", "military-2"},

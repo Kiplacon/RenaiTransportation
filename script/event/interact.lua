@@ -431,14 +431,14 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		if (--player.character and
 				player.cursor_stack.valid_for_read
 				and string.find(player.cursor_stack.name, "RTThrower-")
-				and player.cursor_stack.name ~= "RTThrower-EjectorHatchRTItem"
-				and player.cursor_stack.name ~= "RTThrower-FilterEjectorHatchRTItem"
+				and player.cursor_stack.name ~= "RTThrower-EjectorHatchRT"
+				and player.cursor_stack.name ~= "RTThrower-FilterEjectorHatchRT"
 			)
 		or (
 				player.cursor_ghost ~= nil
 				and string.find(player.cursor_ghost.name.name, "RTThrower-")
-				and player.cursor_ghost.name.name ~= "RTThrower-EjectorHatchRTItem"
-				and player.cursor_ghost.name.name ~= "RTThrower-FilterEjectorHatchRTItem"
+				and player.cursor_ghost.name.name ~= "RTThrower-EjectorHatchRT"
+				and player.cursor_ghost.name.name ~= "RTThrower-FilterEjectorHatchRT"
 		) then
 			local ThrowerName
 			if (player.cursor_stack.valid_for_read) then

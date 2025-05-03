@@ -5,7 +5,7 @@ data.extend({
         icon = "__RenaiTransportation__/graphics/ItemCannon/CatchingChuteIcon.png",
         icon_size = 64,
         flags = {"placeable-neutral", "player-creation"},
-        minable = {mining_time = 0.5, result = "RTCatchingChuteItem"},
+        minable = {mining_time = 0.5, result = "RTCatchingChute"},
         max_health = 250,
         corpse = "small-remnants",
         dying_explosion = "iron-chest-explosion",
@@ -49,7 +49,7 @@ data.extend({
     },
     { --------- item -------------
         type = "item",
-        name = "RTCatchingChuteItem",
+        name = "RTCatchingChute",
         icon = "__RenaiTransportation__/graphics/ItemCannon/CatchingChuteIcon.png",
         icon_size = 64,
         subgroup = "RTCannonStuff",
@@ -65,7 +65,7 @@ data.extend({
         icon = "__RenaiTransportation__/graphics/ItemCannon/DivergingChuteIcon.png",
         icon_size = 64,
         flags = {"placeable-neutral", "player-creation"},
-        minable = {mining_time = 0.5, result = "RTDivergingChuteItem"},
+        minable = {mining_time = 0.5, result = "RTDivergingChute"},
         max_health = 250,
         corpse = "small-remnants",
         dying_explosion = "iron-chest-explosion",
@@ -115,7 +115,7 @@ data.extend({
     },
     { --------- item -------------
         type = "item",
-        name = "RTDivergingChuteItem",
+        name = "RTDivergingChute",
         icon = "__RenaiTransportation__/graphics/ItemCannon/DivergingChuteIcon.png",
         icon_size = 64,
         subgroup = "RTCannonStuff",
@@ -131,7 +131,7 @@ data.extend({
         icon = "__RenaiTransportation__/graphics/ItemCannon/MergingChuteIcon.png",
         icon_size = 64,
         flags = {"placeable-neutral", "player-creation"},
-        minable = {mining_time = 0.5, result = "RTMergingChuteItem"},
+        minable = {mining_time = 0.5, result = "RTMergingChute"},
         max_health = 250,
         corpse = "small-remnants",
         dying_explosion = "iron-chest-explosion",
@@ -182,7 +182,7 @@ data.extend({
 
     { --------- item -------------
         type = "item",
-        name = "RTMergingChuteItem",
+        name = "RTMergingChute",
         icon = "__RenaiTransportation__/graphics/ItemCannon/MergingChuteIcon.png",
         icon_size = 64,
         subgroup = "RTCannonStuff",
@@ -217,34 +217,34 @@ data.extend({
 data:extend({
     { --------- recipe ----------
         type = "recipe",
-        name = "RTMergingChuteRecipe",
+        name = "RTMergingChute",
         enabled = false,
         energy_required = 2,
         ingredients =
             {
-                {type="item", name="RTCatchingChuteItem", amount=1},
-                {type="item", name="RTRicochetPanelItem", amount=2},
-                {type="item", name="HatchRTItem", amount=2},
-                {type="item", name="RTThrower-EjectorHatchRTItem", amount=1},
+                {type="item", name="RTCatchingChute", amount=1},
+                {type="item", name="RTRicochetPanel", amount=2},
+                {type="item", name="HatchRT", amount=2},
+                {type="item", name="RTThrower-EjectorHatchRT", amount=1},
             },
         results = {
-            {type="item", name="RTMergingChuteItem", amount=1}
+            {type="item", name="RTMergingChute", amount=1}
         }
     },
     { --------- recipe ----------
         type = "recipe",
-        name = "RTDivergingChuteRecipe",
+        name = "RTDivergingChute",
         enabled = false,
         energy_required = 2,
         ingredients =
             {
-                {type="item", name="RTCatchingChuteItem", amount=1},
-                {type="item", name="RTRicochetPanelItem", amount=2},
-                {type="item", name="HatchRTItem", amount=1},
-                {type="item", name="RTThrower-EjectorHatchRTItem", amount=2},
+                {type="item", name="RTCatchingChute", amount=1},
+                {type="item", name="RTRicochetPanel", amount=2},
+                {type="item", name="HatchRT", amount=1},
+                {type="item", name="RTThrower-EjectorHatchRT", amount=2},
             },
         results = {
-            {type="item", name="RTDivergingChuteItem", amount=1}
+            {type="item", name="RTDivergingChute", amount=1}
         }
     },
 })
@@ -253,7 +253,7 @@ if (data.raw.item["holmium-plate"]) then
     data:extend({
         { --------- recipe ----------
             type = "recipe",
-            name = "RTCatchingChuteRecipe",
+            name = "RTCatchingChute",
             enabled = false,
             energy_required = 1,
             ingredients =
@@ -263,7 +263,7 @@ if (data.raw.item["holmium-plate"]) then
                     {type="item", name="steel-plate", amount=20},
                 },
             results = {
-                {type="item", name="RTCatchingChuteItem", amount=1}
+                {type="item", name="RTCatchingChute", amount=1}
             }
         },
     })
@@ -271,7 +271,7 @@ else
     data:extend({
         { --------- recipe ----------
             type = "recipe",
-            name = "RTCatchingChuteRecipe",
+            name = "RTCatchingChute",
             enabled = false,
             energy_required = 1,
             ingredients =
@@ -281,7 +281,7 @@ else
                     {type="item", name="steel-plate", amount=20},
                 },
             results = {
-                {type="item", name="RTCatchingChuteItem", amount=1}
+                {type="item", name="RTCatchingChute", amount=1}
             }
         },
     })

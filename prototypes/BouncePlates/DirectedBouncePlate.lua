@@ -20,7 +20,7 @@ data:extend({
 		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateIconn.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation", "hide-alt-info"},
-		minable = {mining_time = 0.2, result = "DirectedBouncePlateItem"},
+		minable = {mining_time = 0.2, result = "DirectedBouncePlate"},
 		max_health = 200,
       corpse = "small-remnants",
       dying_explosion = "iron-chest-explosion",
@@ -68,6 +68,7 @@ data:extend({
       icon = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateIconn.png",
       icon_size = 64,
       flags = {"placeable-neutral", "player-creation"},
+      hidden = true,
       max_health = 200,
       collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
       selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
@@ -100,8 +101,9 @@ data:extend({
       icon = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateIconn.png",
       icon_size = 64,
       flags = {"placeable-neutral", "player-creation"},
-      minable = {mining_time = 0.2, result = "DirectedBouncePlateItem"},
-      placeable_by = {item="DirectedBouncePlateItem", count=1},
+      hidden = true,
+      minable = {mining_time = 0.2, result = "DirectedBouncePlate"},
+      placeable_by = {item="DirectedBouncePlate", count=1},
       max_health = 200,
       collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
       selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
@@ -130,7 +132,7 @@ data:extend({
    },
 	{ --------- The Bounce plate item -------------
 		type = "item",
-		name = "DirectedBouncePlateItem",
+		name = "DirectedBouncePlate",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateIconn.png",
 		icon_size = 64, --icon_mipmaps = 4,
 		subgroup = "RT",
@@ -141,7 +143,7 @@ data:extend({
 
 	{ --------- The Bounce plate recipe ----------
 		type = "recipe",
-		name = "DirectedBouncePlateRecipe",
+		name = "DirectedBouncePlate",
 		enabled = false,
 		energy_required = 1,
 		ingredients =
@@ -150,7 +152,7 @@ data:extend({
 				{type="item", name="automation-science-pack", amount=1}
 			},
       results = {
-			{type="item", name="DirectedBouncePlateItem", amount=1}
+			{type="item", name="DirectedBouncePlate", amount=1}
 		}
 	}
 })

@@ -23,7 +23,7 @@ function GetOnZipline(player, PlayerProperties, pole)
 
 	local drain
 	local shade
-	if (EquippedTrolley == "RTZiplineItem") then
+	if (EquippedTrolley == "RTZiplineTrolley") then
 		drain = pole.surface.create_entity
 			({
 				name = "RTZiplinePowerDrain",
@@ -32,7 +32,7 @@ function GetOnZipline(player, PlayerProperties, pole)
 				create_build_effect_smoke = false
 			})
 		shade = {1,1,1}
-	elseif (EquippedTrolley == "RTZiplineItem2") then
+	elseif (EquippedTrolley == "RTZiplineTrolley2") then
 		drain = pole.surface.create_entity
 			({
 				name = "RTZiplinePowerDrain2",
@@ -41,7 +41,7 @@ function GetOnZipline(player, PlayerProperties, pole)
 				create_build_effect_smoke = false
 			})
 		shade = {1,0.9,0}
-	elseif (EquippedTrolley == "RTZiplineItem3") then
+	elseif (EquippedTrolley == "RTZiplineTrolley3") then
 		drain = pole.surface.create_entity
 			({
 				name = "RTZiplinePowerDrain3",
@@ -50,7 +50,7 @@ function GetOnZipline(player, PlayerProperties, pole)
 				create_build_effect_smoke = false
 			})
 		shade = {255,35,35}
-	elseif (EquippedTrolley == "RTZiplineItem4") then
+	elseif (EquippedTrolley == "RTZiplineTrolley4") then
 		drain = pole.surface.create_entity
 			({
 				name = "RTZiplinePowerDrain4",
@@ -59,7 +59,7 @@ function GetOnZipline(player, PlayerProperties, pole)
 				create_build_effect_smoke = false
 			})
 		shade = {18,201,233}
-	elseif (EquippedTrolley == "RTZiplineItem5") then
+	elseif (EquippedTrolley == "RTZiplineTrolley5") then
 		drain = pole.surface.create_entity
 			({
 				name = "RTZiplinePowerDrain5",
@@ -184,9 +184,9 @@ local function GetOnOrOffZipline(event) -- has .name = event ID number, .tick = 
 			elseif (PlayerProperties.zipline.path == nil and player.selected and player.selected.type == "electric-pole"
 			and player.selected.unit_number ~= PlayerProperties.zipline.WhereDidYouComeFrom.unit_number
 			and player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
-			and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "ZiplineItem")
+			and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineTrolley")
 			and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
-			and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTAIZiplineControlsItem"
+			and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTAIZiplineControls"
 			) then
 				local ZiplineStuff = PlayerProperties.zipline
 				if (ZiplineStuff.WhereDidYouComeFrom.electric_network_id == player.selected.electric_network_id) then
@@ -229,11 +229,11 @@ local function GetOnOrOffZipline(event) -- has .name = event ID number, .tick = 
 			and ThingHovering.get_wire_connector(defines.wire_connector_id.pole_copper, true).connection_count > 0) then
 				if (math.sqrt((player.position.x-ThingHovering.position.x)^2+(player.position.y-ThingHovering.position.y)^2) <= 6) then
 					if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
-					and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineItem")
+					and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineTrolley")
 					and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read)
 					then
 						GetOnZipline(player, PlayerProperties, ThingHovering)
-						if (player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTAIZiplineControlsItem") then
+						if (player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTAIZiplineControls") then
 							AIZiplineControllerTerminalList(player, ThingHovering)
 						end
 					else

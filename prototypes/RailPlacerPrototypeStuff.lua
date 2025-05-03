@@ -47,7 +47,7 @@ function RampPictureSets(FilePath)
 		}
 	}
 end
-function makeRampPlacerEntity(name, icon, pictureFileName, placerItem, hidden)
+function makeRampPlacerEntity(name, icon, pictureFileName, placerItem)
 	local PictureSet =
 	{
 		structure =
@@ -101,7 +101,7 @@ function makeRampPlacerEntity(name, icon, pictureFileName, placerItem, hidden)
 		icon = icon,
 		icon_size = 64,
 		flags = {"filter-directions", "not-on-map", "player-creation"},
-		hidden = hidden,
+		hidden = true,
 		minable = { mining_time = 0.5, result = placerItem },-- Minable so they can get the item back if the placer swap bugs out
 		render_layer = "elevated-object",
 		collision_mask = {layers={["train"]=true}}, -- these masks interact with the blocker

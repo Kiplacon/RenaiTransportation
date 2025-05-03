@@ -3,7 +3,7 @@ local PikachuFace = table.deepcopy(data.raw.inserter["inserter"])
 	PikachuFace.name = "PlayerLauncher"
 	PikachuFace.icon = "__RenaiTransportation__/graphics/PlayerLauncher/icon.png"
 	PikachuFace.icon_size = 32
-	PikachuFace.minable = {mining_time = 0.2, result = "PlayerLauncherItem"}
+	PikachuFace.minable = {mining_time = 0.2, result = "PlayerLauncher"}
 	PikachuFace.insert_position = {0, -9.9}
 	PikachuFace.pickup_position = {0, -0.1}
 	PikachuFace.hand_size = 0
@@ -43,7 +43,7 @@ local PikachuFace = table.deepcopy(data.raw.inserter["inserter"])
 data:extend({ 	
 	{ --------- The thrower item -------------
 		type = "item",
-		name = "PlayerLauncherItem",
+		name = "PlayerLauncher",
 		icon = "__RenaiTransportation__/graphics/PlayerLauncher/icon.png",
 		icon_size = 32,
 		subgroup = "RT",
@@ -54,16 +54,16 @@ data:extend({
 	
 	{ --------- The thrower recipe ----------
 		type = "recipe",
-		name = "PlayerLauncherRecipe",
+		name = "PlayerLauncher",
 		enabled = false,
 		energy_required = 0.5,
 		ingredients = 
 			{
-				{type="item", name="RTBouncePlateItem", amount=1},
+				{type="item", name="RTBouncePlate", amount=1},
 				{type="item", name="iron-plate", amount=4}
 			},
 		results = {
-			{type="item", name="PlayerLauncherItem", amount=1}
+			{type="item", name="PlayerLauncher", amount=1}
 		}
 	},
 	

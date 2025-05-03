@@ -10,7 +10,7 @@ OhYouLikeTrains.icons =
 		tint = color
 	}
 }
-OhYouLikeTrains.minable = {mining_time = 0.5, result = "RTTrapdoorWagonItem"}
+OhYouLikeTrains.minable = {mining_time = 0.5, result = "RTTrapdoorWagon"}
 
 for _, part in pairs({"rotated", "sloped"}) do
 	if OhYouLikeTrains.pictures[part] and OhYouLikeTrains.pictures[part].layers then
@@ -132,7 +132,7 @@ data:extend({
 	OhYouLikeTrains,
 	{ --------- wagon item -------------
 		type = "item",
-		name = "RTTrapdoorWagonItem",
+		name = "RTTrapdoorWagon",
 		icon_size = 64,
 		icons =
 		{
@@ -184,6 +184,7 @@ data:extend({
 	icon = '__RenaiTransportation__/graphics/Untitled.png',
 	icon_size = 32,
 	flags = {"placeable-neutral", "placeable-off-grid", "not-blueprintable", "not-deconstructable", "not-flammable", "no-copy-paste"},
+	hidden = true,
 	max_health = 1,
 	selection_box = nil,
 	collision_box = {{-0.2, -0.2}, {0.2, 0.2}},
@@ -201,6 +202,7 @@ data:extend({
 	icon = '__RenaiTransportation__/graphics/Untitled.png',
 	icon_size = 32,
 	flags = {"placeable-neutral", "placeable-off-grid", "not-blueprintable", "not-deconstructable", "not-flammable", "no-copy-paste"},
+	hidden = true,
 	max_health = 1,
 	selection_box = nil,
 	collision_box = {{-0.2, -0.2}, {0.2, 0.2}},
@@ -219,7 +221,7 @@ data:extend({
 	icon = "__RenaiTransportation__/graphics/TrapdoorSwitch/TrapdoorSwitchIcon.png",
 	icon_size = 64,
 	flags = {"filter-directions", "not-on-map", "player-creation", "building-direction-16-way", "hide-alt-info", "not-flammable"},
-	minable = { mining_time = 0.5, result = "RTTrapdoorSwitchItem" },-- Minable so they can get the item back if the placer swap bugs out
+	minable = { mining_time = 0.5, result = "RTTrapdoorSwitch" },-- Minable so they can get the item back if the placer swap bugs out
 	max_health = 100,
 	collision_mask = {layers={}}, -- these masks interact with the blocker
 	elevated_collision_mask = {layers={}},
@@ -229,7 +231,7 @@ data:extend({
 	selection_box = {{-0.3, -0.5}, {0.7, 0.5}},
 	ground_picture_set = PictureSet,
 	elevated_picture_set = PictureSet,
-	placeable_by = { item = "RTTrapdoorSwitchItem", count = 1 },
+	placeable_by = { item = "RTTrapdoorSwitch", count = 1 },
 },
 { -- switch placer entity
 	type = "rail-signal",
@@ -238,7 +240,7 @@ data:extend({
 	icon_size = 64,
 	flags = {"filter-directions", "not-on-map", "player-creation", "building-direction-16-way"},
 	hidden = true,
-	minable = { mining_time = 0.5, result = "RTTrapdoorSwitchItem" },-- Minable so they can get the item back if the placer swap bugs out
+	minable = { mining_time = 0.5, result = "RTTrapdoorSwitch" },-- Minable so they can get the item back if the placer swap bugs out
 	render_layer = "elevated-object",
 	collision_mask = {layers={["train"]=true}}, -- these masks interact with the blocker
 	elevated_collision_mask = {layers={["elevated_train"]=true}},
@@ -251,7 +253,7 @@ data:extend({
 },
 {
 	type = "item",
-	name = "RTTrapdoorSwitchItem",
+	name = "RTTrapdoorSwitch",
 	icon = "__RenaiTransportation__/graphics/TrapdoorSwitch/TrapdoorSwitchIcon.png",
 	icon_size = 64,
 	subgroup = "RTTrainStuff",
@@ -292,7 +294,7 @@ if (data.raw.item["tungsten-plate"] and data.raw.tool["metallurgic-science-pack"
 	data:extend({
 		{ --------- wagon recipe ----------
 			type = "recipe",
-			name = "RTTrapdoorWagonRecipe",
+			name = "RTTrapdoorWagon",
 			enabled = false,
 			energy_required = 1,
 			ingredients =
@@ -303,12 +305,12 @@ if (data.raw.item["tungsten-plate"] and data.raw.tool["metallurgic-science-pack"
 					{type="item", name="cargo-wagon", amount=1}
 				},
 			results = {
-				{type="item", name="RTTrapdoorWagonItem", amount=1}
+				{type="item", name="RTTrapdoorWagon", amount=1}
 			}
 		},
 		{ --------- Switch recipe ----------
 			type = "recipe",
-			name = "RTTrapdoorSwitchRecipe",
+			name = "RTTrapdoorSwitch",
 			enabled = false,
 			energy_required = 0.1,
 			ingredients =
@@ -318,7 +320,7 @@ if (data.raw.item["tungsten-plate"] and data.raw.tool["metallurgic-science-pack"
 				{type="item", name="iron-plate", amount=5},
 			},
 			results = {
-				{type="item", name="RTTrapdoorSwitchItem", amount=1}
+				{type="item", name="RTTrapdoorSwitch", amount=1}
 			}
 		},
 		{ --- wagon tech
@@ -330,11 +332,11 @@ if (data.raw.item["tungsten-plate"] and data.raw.tool["metallurgic-science-pack"
 			{
 				{
 					type = "unlock-recipe",
-					recipe = "RTTrapdoorWagonRecipe"
+					recipe = "RTTrapdoorWagon"
 				},
 				{
 					type = "unlock-recipe",
-					recipe = "RTTrapdoorSwitchRecipe"
+					recipe = "RTTrapdoorSwitch"
 				},
 				{
 					type = "nothing",
@@ -371,11 +373,11 @@ if (data.raw.item["tungsten-plate"] and data.raw.tool["metallurgic-science-pack"
 				{
 					{
 						type = "unlock-recipe",
-						recipe = "RTMagnetSwitchTrainRampRecipe"
+						recipe = "RTMagnetSwitchTrainRamp"
 					},
 					{
 						type = "unlock-recipe",
-						recipe = "RTSwitchTrainRampRecipe"
+						recipe = "RTSwitchTrainRamp"
 					},
 				},
 				prerequisites = {"RTMagnetTrainRamps", "RTTrapdoorWagonTech"},
@@ -399,7 +401,7 @@ else
 	data:extend({
 		{ --------- wagon recipe ----------
 			type = "recipe",
-			name = "RTTrapdoorWagonRecipe",
+			name = "RTTrapdoorWagon",
 			enabled = false,
 			energy_required = 1,
 			ingredients =
@@ -410,12 +412,12 @@ else
 					{type="item", name="cargo-wagon", amount=1}
 				},
 			results = {
-				{type="item", name="RTTrapdoorWagonItem", amount=1}
+				{type="item", name="RTTrapdoorWagon", amount=1}
 			}
 		},
 		{ --------- Switch recipe ----------
 			type = "recipe",
-			name = "RTTrapdoorSwitchRecipe",
+			name = "RTTrapdoorSwitch",
 			enabled = false,
 			energy_required = 0.1,
 			ingredients =
@@ -425,7 +427,7 @@ else
 				{type="item", name="iron-plate", amount=5},
 			},
 			results = {
-				{type="item", name="RTTrapdoorSwitchItem", amount=1}
+				{type="item", name="RTTrapdoorSwitch", amount=1}
 			}
 		},
 		{ --- wagon tech
@@ -437,11 +439,11 @@ else
 			{
 				{
 					type = "unlock-recipe",
-					recipe = "RTTrapdoorWagonRecipe"
+					recipe = "RTTrapdoorWagon"
 				},
 				{
 					type = "unlock-recipe",
-					recipe = "RTTrapdoorSwitchRecipe"
+					recipe = "RTTrapdoorSwitch"
 				},
 				{
 					type = "nothing",
@@ -476,11 +478,11 @@ else
 				{
 					{
 						type = "unlock-recipe",
-						recipe = "RTMagnetSwitchTrainRampRecipe"
+						recipe = "RTMagnetSwitchTrainRamp"
 					},
 					{
 						type = "unlock-recipe",
-						recipe = "RTSwitchTrainRampRecipe"
+						recipe = "RTSwitchTrainRamp"
 					},
 				},
 				prerequisites = {"RTMagnetTrainRamps", "RTTrapdoorWagonTech"},

@@ -53,11 +53,12 @@ brrr,
 {
 	type = "ammo-category",
 	name = "ZiplineController",
+   hidden = true,
 },
 
 { --------- zipline item -------------
 	type = "gun",
-	name = "RTZiplineItem",
+	name = "RTZiplineTrolley",
 	icon = "__RenaiTransportation__/graphics/zipline/icon.png",
 	icon_size = 64,
 	subgroup = "RTZiplineStuff",
@@ -77,7 +78,7 @@ brrr,
 
 { --------- zipline controls -------------
 	type = "ammo",
-	name = "RTZiplineControlsItem",
+	name = "RTZiplineControls",
 	icon = "__RenaiTransportation__/graphics/zipline/controls.png",
 	icon_size = 64,
 	subgroup = "RTZiplineStuff",
@@ -91,7 +92,7 @@ brrr,
 },
 { --------- zipline controls recipe ----------
 	type = "recipe",
-	name = "RTZiplineControlsRecipe",
+	name = "RTZiplineControls",
 	enabled = false,
 	energy_required = 0.5,
 	ingredients =
@@ -102,13 +103,13 @@ brrr,
 			{type="item", name="electronic-circuit", amount=2}
 		},
    results = {
-      {type="item", name="RTZiplineControlsItem", amount=1}
+      {type="item", name="RTZiplineControls", amount=1}
    }
 },
 
 { --------- zipline crank controls -------------
 	type = "ammo",
-	name = "RTZiplineCrankControlsItem",
+	name = "RTZiplineCrankControls",
 	icon = "__RenaiTransportation__/graphics/zipline/crankcontrols.png",
 	icon_size = 64,
 	subgroup = "RTZiplineStuff",
@@ -145,23 +146,23 @@ brrr,
 },
 { --------- zipline crank controls recipe ----------
 	type = "recipe",
-	name = "RTZiplineCrankControlsRecipe",
+	name = "RTZiplineCrankControls",
 	enabled = false,
 	energy_required = 0.5,
 	ingredients =
 		{
-			{type="item", name="RTZiplineControlsItem", amount=1},
+			{type="item", name="RTZiplineControls", amount=1},
 			{type="item", name="iron-stick", amount=2},
 			{type="item", name="iron-gear-wheel", amount=10}
 		},
    results = {
-      {type="item", name="RTZiplineCrankControlsItem", amount=1}
+      {type="item", name="RTZiplineCrankControls", amount=1}
    }
 },
 
 { --------- programmabel zipline controls -------------
 	type = "ammo",
-	name = "RTProgrammableZiplineControlsItem",
+	name = "RTProgrammableZiplineControls",
 	icon = "__RenaiTransportation__/graphics/zipline/autocontrols.png",
 	icon_size = 64,
 	subgroup = "RTZiplineStuff",
@@ -175,16 +176,16 @@ brrr,
 },
 { --------- programmable zipline controls recipe ----------
 	type = "recipe",
-	name = "RTProgrammableZiplineControlsRecipe",
+	name = "RTProgrammableZiplineControls",
 	enabled = false,
 	energy_required = 0.5,
 	ingredients =
 		{
-         {type="item", name="RTZiplineControlsItem", amount=1},
+         {type="item", name="RTZiplineControls", amount=1},
 			{type="item", name="advanced-circuit", amount=5}
 		},
    results = {
-      {type="item", name="RTProgrammableZiplineControlsItem", amount=1}
+      {type="item", name="RTProgrammableZiplineControls", amount=1}
    }
 },
 
@@ -241,7 +242,7 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 	data:extend({
 		{ --------- zipline recipe ----------
 			type = "recipe",
-			name = "RTZiplineRecipe",
+			name = "RTZiplineTrolley",
 			enabled = false,
 			energy_required = 0.5,
 			ingredients =
@@ -249,11 +250,11 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 					{type="item", name="copper-cable", amount=100},
 					{type="item", name="iron-gear-wheel", amount=50},
 					{type="item", name="electronic-circuit", amount=4},
-					{type="item", name="PlayerLauncherItem", amount=1},
+					{type="item", name="PlayerLauncher", amount=1},
 					{type="item", name="steel-chest", amount=1}
 				},
          results = {
-            {type="item", name="RTZiplineItem", amount=1}
+            {type="item", name="RTZiplineTrolley", amount=1}
          }
 		}
 	})
@@ -262,7 +263,7 @@ else
 	data:extend({
 		{ --------- zipline recipe ----------
 			type = "recipe",
-			name = "RTZiplineRecipe",
+			name = "RTZiplineTrolley",
 			enabled = false,
 			energy_required = 0.5,
 			ingredients =
@@ -273,7 +274,7 @@ else
 					{type="item", name="steel-chest", amount=1}
 				},
          results = {
-            {type="item", name="RTZiplineItem", amount=1}
+            {type="item", name="RTZiplineTrolley", amount=1}
          }
 		}
 	})
@@ -293,7 +294,7 @@ data:extend({ succ2 })
 data:extend({
    { --------- zipline item -------------
       type = "gun",
-      name = "RTZiplineItem2",
+      name = "RTZiplineTrolley2",
       icons = {
          {
             icon = "__RenaiTransportation__/graphics/zipline/icon.png",
@@ -315,17 +316,17 @@ data:extend({
    },
    { --------- zipline recipe ----------
       type = "recipe",
-      name = "RTZiplineRecipe2",
+      name = "RTZiplineTrolley2",
       enabled = false,
       energy_required = 0.5,
       ingredients =
          {
             {type="item", name="iron-gear-wheel", amount=100},
             {type="item", name="engine-unit", amount=10},
-            {type="item", name="RTZiplineItem", amount=1},
+            {type="item", name="RTZiplineTrolley", amount=1},
          },
          results = {
-            {type="item", name="RTZiplineItem2", amount=1}
+            {type="item", name="RTZiplineTrolley2", amount=1}
          }
    }
 })
@@ -344,7 +345,7 @@ data:extend({ succ3 })
 data:extend({
    { --------- zipline item -------------
       type = "gun",
-      name = "RTZiplineItem3",
+      name = "RTZiplineTrolley3",
       icons = {
          {
             icon = "__RenaiTransportation__/graphics/zipline/icon.png",
@@ -366,7 +367,7 @@ data:extend({
    },
    { --------- zipline recipe ----------
       type = "recipe",
-      name = "RTZiplineRecipe3",
+      name = "RTZiplineTrolley3",
       enabled = false,
       energy_required = 0.5,
       ingredients =
@@ -374,10 +375,10 @@ data:extend({
             {type="item", name="iron-gear-wheel", amount=150},
             {type="item", name="electric-engine-unit", amount=10},
             {type="item", name="advanced-circuit", amount=10},
-            {type="item", name="RTZiplineItem2", amount=1},
+            {type="item", name="RTZiplineTrolley2", amount=1},
          },
          results = {
-            {type="item", name="RTZiplineItem3", amount=1}
+            {type="item", name="RTZiplineTrolley3", amount=1}
          }
    }
 })
@@ -396,7 +397,7 @@ data:extend({ succ4 })
 data:extend({
    { --------- zipline item -------------
       type = "gun",
-      name = "RTZiplineItem4",
+      name = "RTZiplineTrolley4",
       icons = {
          {
             icon = "__RenaiTransportation__/graphics/zipline/icon.png",
@@ -418,7 +419,7 @@ data:extend({
    },
    { --------- zipline recipe ----------
       type = "recipe",
-      name = "RTZiplineRecipe4",
+      name = "RTZiplineTrolley4",
       enabled = false,
       energy_required = 0.5,
       ingredients =
@@ -426,10 +427,10 @@ data:extend({
             {type="item", name="iron-gear-wheel", amount=200},
             {type="item", name="rocket-fuel", amount=25},
             {type="item", name="processing-unit", amount=5},
-            {type="item", name="RTZiplineItem3", amount=1},
+            {type="item", name="RTZiplineTrolley3", amount=1},
          },
          results = {
-            {type="item", name="RTZiplineItem4", amount=1}
+            {type="item", name="RTZiplineTrolley4", amount=1}
          }
    }
 })
@@ -448,7 +449,7 @@ data:extend({ succ5 })
 data:extend({
    { --------- zipline item -------------
       type = "gun",
-      name = "RTZiplineItem5",
+      name = "RTZiplineTrolley5",
       icons = {
          {
             icon = "__RenaiTransportation__/graphics/zipline/icon.png",
@@ -470,7 +471,7 @@ data:extend({
    },
    { --------- zipline recipe ----------
       type = "recipe",
-      name = "RTZiplineRecipe5",
+      name = "RTZiplineTrolley5",
       enabled = false,
       energy_required = 0.5,
       ingredients =
@@ -478,10 +479,10 @@ data:extend({
             {type="item", name="iron-gear-wheel", amount=300},
             {type="item", name="nuclear-fuel", amount=5},
             {type="item", name="fission-reactor-equipment", amount=1},
-            {type="item", name="RTZiplineItem4", amount=1},
+            {type="item", name="RTZiplineTrolley4", amount=1},
          },
          results = {
-            {type="item", name="RTZiplineItem5", amount=1}
+            {type="item", name="RTZiplineTrolley5", amount=1}
          }
    }
 })
@@ -490,7 +491,7 @@ local RTZiplineTerminal = table.deepcopy(data.raw["electric-pole"]["medium-elect
    RTZiplineTerminal.icon = "__RenaiTransportation__/graphics/zipline/terminalicon.png"
    RTZiplineTerminal.icon_size = 64
    RTZiplineTerminal.name = "RTZiplineTerminal"
-   RTZiplineTerminal.minable = {mining_time = 0.5, result = "RTZiplineTerminalItem"}
+   RTZiplineTerminal.minable = {mining_time = 0.5, result = "RTZiplineTerminal"}
    RTZiplineTerminal.collision_box = {{-0.9, -0.3}, {0.9, 0.9}}
    RTZiplineTerminal.selection_box = {{-1, -0.5}, {1, 1}}
    RTZiplineTerminal.pictures =
@@ -537,17 +538,17 @@ local RTZiplineTerminal = table.deepcopy(data.raw["electric-pole"]["medium-elect
    }
    RTZiplineTerminal.supply_area_distance = 0
    RTZiplineTerminal.next_upgrade = nil
-   
-local RTZiplineTerminalItem = table.deepcopy(data.raw.item["medium-electric-pole"])
-   RTZiplineTerminalItem.name = "RTZiplineTerminalItem"
-   RTZiplineTerminalItem.icon = "__RenaiTransportation__/graphics/zipline/terminalicon.png"
-   RTZiplineTerminalItem.icon_size = 64
-   RTZiplineTerminalItem.place_result = "RTZiplineTerminal"
-   RTZiplineTerminalItem.order = "a[energy]-x[ZiplineTerminal]"
-local RTZiplineTerminalRecipe =
+
+local RTZiplineTerminalItemP = table.deepcopy(data.raw.item["medium-electric-pole"])
+   RTZiplineTerminalItemP.name = "RTZiplineTerminal"
+   RTZiplineTerminalItemP.icon = "__RenaiTransportation__/graphics/zipline/terminalicon.png"
+   RTZiplineTerminalItemP.icon_size = 64
+   RTZiplineTerminalItemP.place_result = "RTZiplineTerminal"
+   RTZiplineTerminalItemP.order = "a[energy]-x[ZiplineTerminal]"
+local RTZiplineTerminalRecipeP =
    {
       type = "recipe",
-      name = "RTZiplineTerminalRecipe",
+      name = "RTZiplineTerminal",
       enabled = false,
       energy_required = 3,
       ingredients =
@@ -558,19 +559,19 @@ local RTZiplineTerminalRecipe =
             {type="item", name="concrete", amount=25}
          },
       results = {
-         {type="item", name="RTZiplineTerminalItem", amount=1}
+         {type="item", name="RTZiplineTerminal", amount=1}
       }
    }
 data:extend({
    RTZiplineTerminal,
-   RTZiplineTerminalItem,
-   RTZiplineTerminalRecipe
+   RTZiplineTerminalItemP,
+   RTZiplineTerminalRecipeP
 })
 
 data:extend({
    { --------- AI zipline controls -------------
       type = "ammo",
-      name = "RTAIZiplineControlsItem",
+      name = "RTAIZiplineControls",
       icons = {
          {
             icon = "__RenaiTransportation__/graphics/zipline/AIcontrols.png",
@@ -599,11 +600,11 @@ data:extend({
 		{
 			{
 				type = "unlock-recipe",
-				recipe = "RTZiplineRecipe"
+				recipe = "RTZiplineTrolley"
 			},
 			{
 				type = "unlock-recipe",
-				recipe = "RTZiplineControlsRecipe"
+				recipe = "RTZiplineControls"
 			}
 		},
 		prerequisites = {"se-no", "steel-processing"},
@@ -626,7 +627,7 @@ data:extend({
 		{
 			{
 				type = "unlock-recipe",
-				recipe = "RTZiplineCrankControlsRecipe"
+				recipe = "RTZiplineCrankControls"
 			}
 		},
 		prerequisites = {"RTZiplineTech"},
@@ -654,7 +655,7 @@ data:extend({
 		{
 			{
 				type = "unlock-recipe",
-				recipe = "RTZiplineRecipe2"
+				recipe = "RTZiplineTrolley2"
 			}
 		},
 		prerequisites = {"RTZiplineTech", "engine"},
@@ -683,7 +684,7 @@ data:extend({
 		{
 			{
 				type = "unlock-recipe",
-				recipe = "RTZiplineRecipe3"
+				recipe = "RTZiplineTrolley3"
 			}
 		},
 		prerequisites = {"RTZiplineTech2", "electric-engine"},
@@ -713,7 +714,7 @@ data:extend({
 		{
 			{
 				type = "unlock-recipe",
-				recipe = "RTZiplineRecipe4"
+				recipe = "RTZiplineTrolley4"
 			}
 		},
 		prerequisites = {"RTZiplineTech3", "rocket-fuel", "processing-unit"},
@@ -743,7 +744,7 @@ data:extend({
 		{
 			{	
 				type = "unlock-recipe",
-				recipe = "RTZiplineRecipe5"
+				recipe = "RTZiplineTrolley5"
 			}
 		},
 		prerequisites = {"RTZiplineTech4", "kovarex-enrichment-process", "fission-reactor-equipment"},
@@ -770,11 +771,11 @@ data:extend({
 		{
 			{
 				type = "unlock-recipe",
-				recipe = "RTProgrammableZiplineControlsRecipe"
+				recipe = "RTProgrammableZiplineControls"
 			},
 			{
 				type = "unlock-recipe",
-				recipe = "RTZiplineTerminalRecipe"
+				recipe = "RTZiplineTerminal"
 			}
 		},
 		prerequisites = {"RTZiplineTech", "electric-energy-distribution-1", "concrete", "chemical-science-pack"},
@@ -796,18 +797,18 @@ if (data.raw.item["carbon-fiber"] and data.raw.item["pentapod-egg"] and data.raw
 	data:extend({
       { --------- AI zipline controls recipe ----------
          type = "recipe",
-         name = "RTAIZiplineControlsRecipe",
+         name = "RTAIZiplineControls",
          enabled = false,
          energy_required = 1,
          ingredients =
             {
-               {type="item", name="RTProgrammableZiplineControlsItem", amount=1},
+               {type="item", name="RTProgrammableZiplineControls", amount=1},
                {type="item", name="processing-unit", amount=5},
                {type="item", name="carbon-fiber", amount=10},
                {type="item", name="pentapod-egg", amount=1}
             },
          results = {
-            {type="item", name="RTAIZiplineControlsItem", amount=1}
+            {type="item", name="RTAIZiplineControls", amount=1}
          }
       },
 		{
@@ -819,7 +820,7 @@ if (data.raw.item["carbon-fiber"] and data.raw.item["pentapod-egg"] and data.raw
          {
             {
                type = "unlock-recipe",
-               recipe = "RTAIZiplineControlsRecipe"
+               recipe = "RTAIZiplineControls"
             },
          },
          prerequisites = {"RTProgrammableZiplineControlTech", "carbon-fiber", "utility-science-pack"},
@@ -843,17 +844,17 @@ else
 	data:extend({
       { --------- AI zipline controls recipe ----------
          type = "recipe",
-         name = "RTAIZiplineControlsRecipe",
+         name = "RTAIZiplineControls",
          enabled = false,
          energy_required = 1,
          ingredients =
             {
-               {type="item", name="RTProgrammableZiplineControlsItem", amount=1},
+               {type="item", name="RTProgrammableZiplineControls", amount=1},
                {type="item", name="processing-unit", amount=10},
                {type="item", name="raw-fish", amount=5}
             },
          results = {
-            {type="item", name="RTAIZiplineControlsItem", amount=1}
+            {type="item", name="RTAIZiplineControls", amount=1}
          }
       },
 		{
@@ -865,7 +866,7 @@ else
          {
             {
                type = "unlock-recipe",
-               recipe = "RTAIZiplineControlsRecipe"
+               recipe = "RTAIZiplineControls"
             },
          },
          prerequisites = {"RTProgrammableZiplineControlTech", "utility-science-pack"},

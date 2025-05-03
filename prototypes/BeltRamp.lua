@@ -30,7 +30,7 @@ for _, tier in pairs(tiers) do
                 },
             },
             flags = {"placeable-neutral", "player-creation"},
-            minable = {mining_time = 0.5, result = "RT"..TierName.."BeltRampItem"},
+            minable = {mining_time = 0.5, result = "RT"..TierName.."BeltRamp"},
             max_health = 200,
             corpse = BaseBelt.."transport-belt".."-remnants",
             dying_explosion = "iron-chest-explosion",
@@ -95,7 +95,7 @@ for _, tier in pairs(tiers) do
         },
         { --------- The Bounce plate item -------------
             type = "item",
-            name = "RT"..TierName.."BeltRampItem",
+            name = "RT"..TierName.."BeltRamp",
             icons =
             {
                 {
@@ -115,7 +115,7 @@ for _, tier in pairs(tiers) do
         },
         {
             type = "recipe",
-            name = "RT"..TierName.."BeltRampRecipe",
+            name = "RT"..TierName.."BeltRamp",
             enabled = false,
             energy_required = 1,
             ingredients =
@@ -125,7 +125,7 @@ for _, tier in pairs(tiers) do
                     {type="item", name="iron-gear-wheel", amount=2},
                 },
             results = {
-                {type="item", name="RT"..TierName.."BeltRampItem", amount=1}
+                {type="item", name="RT"..TierName.."BeltRamp", amount=1}
             }
         },
     })
@@ -136,6 +136,7 @@ data:extend({
         type = "land-mine",
         name = "RTBeltRampPlayerTrigger",
         flags = {"not-on-map", "placeable-off-grid", "not-selectable-in-game", "no-copy-paste", "not-blueprintable", "not-deconstructable"},
+        hidden = true,
         trigger_collision_mask = {layers={["player"]=true}},
         trigger_radius = 0.5,
         timeout = 0,
@@ -175,7 +176,7 @@ if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt t
                 },
             },
             flags = {"placeable-neutral", "player-creation"},
-            minable = {mining_time = 0.5, result = "RTturboBeltRampItem"},
+            minable = {mining_time = 0.5, result = "RTturboBeltRamp"},
             max_health = 200,
             collision_box = {{-0.4, -0.4}, {0.4, 0.4}},
             collision_mask = {layers={["item"]=true, ["object"]=true, ["water_tile"]=true}},
@@ -223,7 +224,7 @@ if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt t
         },
         { --------- The Bounce plate item -------------
             type = "item",
-            name = "RTturboBeltRampItem",
+            name = "RTturboBeltRamp",
             icons =
             {
                 {
@@ -243,7 +244,7 @@ if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt t
         },
         {
             type = "recipe",
-            name = "RTturboBeltRampRecipe",
+            name = "RTturboBeltRamp",
             enabled = false,
             energy_required = 1,
             ingredients =
@@ -253,7 +254,7 @@ if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt t
                     {type="item", name="iron-gear-wheel", amount=2},
                 },
             results = {
-                {type="item", name="RTturboBeltRampItem", amount=1}
+                {type="item", name="RTturboBeltRamp", amount=1}
             }
         },
     })
@@ -263,19 +264,19 @@ local unlocks =
 {
     {
         type = "unlock-recipe",
-        recipe = "RTBeltRampRecipe"
+        recipe = "RTBeltRamp"
     },
     {
         type = "unlock-recipe",
-        recipe = "RTfastBeltRampRecipe"
+        recipe = "RTfastBeltRamp"
     },
     {
         type = "unlock-recipe",
-        recipe = "RTexpressBeltRampRecipe"
+        recipe = "RTexpressBeltRamp"
     },
 }
 if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt tier
-    table.insert(unlocks, {type = "unlock-recipe", recipe = "RTturboBeltRampRecipe"})
+    table.insert(unlocks, {type = "unlock-recipe", recipe = "RTturboBeltRamp"})
 end
 
 data:extend({

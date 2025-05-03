@@ -13,7 +13,7 @@ data:extend({
 	collision_box = {{-0.49, -0.49}, {0.49, 0.49}},
 	selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 	--selection_priority = 255,
-	minable = {mining_time = 0.5, result = "RTVacuumHatchItem"},
+	minable = {mining_time = 0.5, result = "RTVacuumHatch"},
 	energy_source =
 		{
 			type = "electric",
@@ -76,23 +76,23 @@ data:extend({
 },
 { --------- The vacuum hatch recipe ----------
 	type = "recipe",
-	name = "RTVacuumHatchRecipe",
+	name = "RTVacuumHatch",
 	enabled = false,
 	energy_required = 1,
 	ingredients =
 		{
-			{type="item", name="HatchRTItem", amount=1},
+			{type="item", name="HatchRT", amount=1},
 			{type="item", name="pump", amount=1},
 			{type="item", name="electronic-circuit", amount=2}
 		},
 	results = {
-		{type="item", name="RTVacuumHatchItem", amount=1}
+		{type="item", name="RTVacuumHatch", amount=1}
 	}
 
 },
 { --------- The vacuum hatch item -------------
 	type = "item",
-	name = "RTVacuumHatchItem",
+	name = "RTVacuumHatch",
 	icon = "__RenaiTransportation__/graphics/hatch/vacuumhatchicon.png",
 	icon_size = 64,
 	subgroup = "RT",
@@ -120,7 +120,7 @@ data:extend({
 	{
 		{
 			type = "unlock-recipe",
-			recipe = "RTVacuumHatchRecipe"
+			recipe = "RTVacuumHatch"
 		},
 	},
 	prerequisites = {"HatchRTTech", "advanced-circuit"},

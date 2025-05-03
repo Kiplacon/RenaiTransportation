@@ -10,7 +10,7 @@ OhYouLikeTrains.icons =
 		tint = color
 	}
 }
-OhYouLikeTrains.minable = {mining_time = 0.5, result = "RTImpactWagonItem"}
+OhYouLikeTrains.minable = {mining_time = 0.5, result = "RTImpactWagon"}
 
 for _, part in pairs({"rotated", "sloped"}) do
 	if OhYouLikeTrains.pictures[part] and OhYouLikeTrains.pictures[part].layers then
@@ -41,7 +41,7 @@ OhYouLikeTrains,
 
 { --------- wagon item -------------
 	type = "item",
-	name = "RTImpactWagonItem",
+	name = "RTImpactWagon",
 	icon_size = 64,
 	icons =
 	{
@@ -58,7 +58,7 @@ OhYouLikeTrains,
 },
 { --------- wagon recipe ----------
 	type = "recipe",
-	name = "RTImpactWagonRecipe",
+	name = "RTImpactWagon",
 	enabled = false,
 	energy_required = 1,
 	ingredients =
@@ -68,13 +68,13 @@ OhYouLikeTrains,
 			{type="item", name="cargo-wagon", amount=1}
 		},
 	results = {
-		{type="item", name="RTImpactWagonItem", amount=1}
+		{type="item", name="RTImpactWagon", amount=1}
 	}
 },
 
 { --------- impact recipe ----------
 	type = "recipe",
-	name = "RTImpactUnloaderRecipe",
+	name = "RTImpactUnloader",
 	enabled = false,
 	energy_required = 2,
 	ingredients =
@@ -84,7 +84,7 @@ OhYouLikeTrains,
 			{type="item", name="refined-concrete", amount=100}
 		},
 	results = {
-		{type="item", name="RTImpactUnloaderItem", amount=1}
+		{type="item", name="RTImpactUnloader", amount=1}
 	}
 },
 {
@@ -96,11 +96,11 @@ OhYouLikeTrains,
 	{
 		{
 			type = "unlock-recipe",
-			recipe = "RTImpactWagonRecipe"
+			recipe = "RTImpactWagon"
 		},
 		{
 			type = "unlock-recipe",
-			recipe = "RTImpactUnloaderRecipe"
+			recipe = "RTImpactUnloader"
 		}
 	},
 	prerequisites = {"se-no", "railway", "concrete", "advanced-circuit"},
@@ -136,7 +136,7 @@ for _, variants in pairs(
 			icon_size = 64,
 			flags = {"player-creation", "not-on-map", "placeable-off-grid", "hide-alt-info", "not-flammable"},
 			hidden = true,
-			minable = {mining_time = 1, result = "RT"..variant:gsub("NoSkip", "").."Item"},
+			minable = {mining_time = 1, result = "RT"..variant:gsub("NoSkip", "")},
 			max_health = 500,
 			collision_box = {{-0.9, -1.9}, {0.9, 1.9}},
 			selection_box = CellBox,
@@ -146,7 +146,7 @@ for _, variants in pairs(
 			elevated_collision_mask = ElevMask,
 			ground_picture_set = RampPictureSets("__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png"),
 			elevated_picture_set = RampPictureSets("__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png"),
-			placeable_by = { item = "RT"..variant:gsub("NoSkip", "").."Item", count = 1 }, -- Controls `q` and blueprint behavior
+			placeable_by = { item = "RT"..variant:gsub("NoSkip", ""), count = 1 }, -- Controls `q` and blueprint behavior
 			resistances = {
 				{
 					type = "impact",
@@ -156,7 +156,7 @@ for _, variants in pairs(
 		},
 		{
 			type = "item",
-			name = "RT"..variant.."Item",
+			name = "RT"..variant,
 			icon = "__RenaiTransportation__/graphics/TrainRamp/icons/"..variant.."Icon.png",
 			icon_size = 64,
 			subgroup = "RTTrainStuff",
@@ -169,8 +169,7 @@ for _, variants in pairs(
 				"RT"..variant.."-placer",
 				"__RenaiTransportation__/graphics/TrainRamp/icons/"..variant.."Icon.png",
 				"__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant.."Placer.png",
-				"RT"..variant.."Item",
-				hidden
+				"RT"..variant
 			),
 		CreateRampSprites("RT"..variant.."", "__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png")
 	})

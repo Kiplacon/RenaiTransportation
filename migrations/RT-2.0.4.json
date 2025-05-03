@@ -1,18 +1,18 @@
 {
 	"recipe":
 	[
-		[ "BouncePlateRecipie", "RTBouncePlateRecipe" ],
-		[ "PrimerBouncePlateRecipie", "PrimerBouncePlateRecipe" ],
+		[ "BouncePlateRecipie", "RTBouncePlate" ],
+		[ "PrimerBouncePlateRecipie", "PrimerBouncePlate" ],
 		[ "PrimerSpreadBouncePlateRecipie", "PrimerSpreadBouncePlateRecipe" ],
-		[ "SignalBouncePlateRecipie", "SignalBouncePlateRecipe" ],
-		[ "DirectedBouncePlateRecipie", "DirectedBouncePlateRecipe" ],
-		[ "DirectorBouncePlateRecipie", "DirectorBouncePlateRecipe" ],
-		[ "OpenContainerRecipie", "OpenContainerRecipe" ],
+		[ "SignalBouncePlateRecipie", "SignalBouncePlate" ],
+		[ "DirectedBouncePlateRecipie", "DirectedBouncePlate" ],
+		[ "DirectorBouncePlateRecipie", "DirectorBouncePlate" ],
+		[ "OpenContainerRecipie", "OpenContainer" ],
 		[ "OpenContainerRevertRecipie", "OpenContainerRevertRecipe" ],
-		[ "PlayerLauncherRecipie", "PlayerLauncherRecipe" ],
-		[ "RTThrower-EjectorHatchRTRecipie", "RTThrower-EjectorHatchRTRecipe" ],
-		[ "RTThrower-FilterEjectorHatchRTRecipie", "RTThrower-FilterEjectorHatchRTRecipe" ],
-		[ "RTTrainBouncePlateRecipie", "RTTrainBouncePlateRecipe" ],
-		[ "RTTrainDirectedBouncePlateRecipie", "RTTrainDirectedBouncePlateRecipe" ]
+		[ "PlayerLauncherRecipie", "PlayerLauncher" ],
+		[ "RTThrower-EjectorHatchRTRecipie", "RTThrower-EjectorHatchRT" ],
+		[ "RTThrower-FilterEjectorHatchRTRecipie", "RTThrower-FilterEjectorHatchRT" ],
+		[ "RTTrainBouncePlateRecipie", "RTTrainBouncePlate" ],
+		[ "RTTrainDirectedBouncePlateRecipie", "RTTrainDirectedBouncePlate" ]
 	]
 }

@@ -14,7 +14,7 @@ data:extend({
         icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
         icon_size = 130,
         flags = {"placeable-neutral", "player-creation"},
-        minable = {mining_time = 0.2, result = "RTItemCannonItem"},
+        minable = {mining_time = 0.2, result = "RTItemCannon"},
         max_health = 500,
         corpse = "medium-remnants",
         dying_explosion = "medium-explosion",
@@ -56,7 +56,7 @@ data:extend({
     },
     { --------- item -------------
         type = "item",
-        name = "RTItemCannonItem",
+        name = "RTItemCannon",
         icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
         icon_size = 130,
         subgroup = "RTCannonStuff",
@@ -85,6 +85,7 @@ data:extend({
         icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
         icon_size = 130,
         flags = {"placeable-neutral", "not-on-map", "not-blueprintable", "not-deconstructable", "placeable-off-grid", "hide-alt-info"},
+        hidden = true,
         collision_box = nil,
         collision_mask = {layers={}},
         picture =
@@ -265,7 +266,7 @@ if (data.raw.item["holmium-plate"] and data.raw.tool["electromagnetic-science-pa
 	data:extend({
         { --------- recipe ----------
             type = "recipe",
-            name = "RTItemCannonRecipe",
+            name = "RTItemCannon",
             enabled = false,
             energy_required = 5,
             ingredients =
@@ -276,7 +277,7 @@ if (data.raw.item["holmium-plate"] and data.raw.tool["electromagnetic-science-pa
                     {type="item", name="discharge-defense-equipment", amount=5}
                 },
             results = {
-                {type="item", name="RTItemCannonItem", amount=1}
+                {type="item", name="RTItemCannon", amount=1}
             }
         },
 		{
@@ -292,15 +293,15 @@ if (data.raw.item["holmium-plate"] and data.raw.tool["electromagnetic-science-pa
                 }, ]]
                 {
                     type = "unlock-recipe",
-                    recipe = "RTItemCannonRecipe"
+                    recipe = "RTItemCannon"
                 },
                 {
                     type = "unlock-recipe",
-                    recipe = "RTRicochetPanelRecipe"
+                    recipe = "RTRicochetPanel"
                 },
                 {
                     type = "unlock-recipe",
-                    recipe = "RTCatchingChuteRecipe"
+                    recipe = "RTCatchingChute"
                 },
             },
             prerequisites = {"se-no", "concrete", "logistics-2", "discharge-defense-equipment", "electromagnetic-science-pack"},
@@ -327,11 +328,11 @@ if (data.raw.item["holmium-plate"] and data.raw.tool["electromagnetic-science-pa
             {
                 {
                     type = "unlock-recipe",
-                    recipe = "RTDivergingChuteRecipe"
+                    recipe = "RTDivergingChute"
                 },
                 {
                     type = "unlock-recipe",
-                    recipe = "RTMergingChuteRecipe"
+                    recipe = "RTMergingChute"
                 },
             },
             prerequisites = {"RTItemCannonTech"},
@@ -354,7 +355,7 @@ else
 	data:extend({
 		{ --------- recipe ----------
             type = "recipe",
-            name = "RTItemCannonRecipe",
+            name = "RTItemCannon",
             enabled = false,
             energy_required = 5,
             ingredients =
@@ -365,7 +366,7 @@ else
                     {type="item", name="discharge-defense-equipment", amount=5}
                 },
             results = {
-                {type="item", name="RTItemCannonItem", amount=1}
+                {type="item", name="RTItemCannon", amount=1}
             }
         },
 		{
@@ -381,15 +382,15 @@ else
                 }, ]]
                 {
                     type = "unlock-recipe",
-                    recipe = "RTItemCannonRecipe"
+                    recipe = "RTItemCannon"
                 },
                 {
                     type = "unlock-recipe",
-                    recipe = "RTRicochetPanelRecipe"
+                    recipe = "RTRicochetPanel"
                 },
                 {
                     type = "unlock-recipe",
-                    recipe = "RTCatchingChuteRecipe"
+                    recipe = "RTCatchingChute"
                 },
             },
             prerequisites = {"se-no", "concrete", "logistics-2", "discharge-defense-equipment", "production-science-pack"},
@@ -415,11 +416,11 @@ else
             {
                 {
                     type = "unlock-recipe",
-                    recipe = "RTDivergingChuteRecipe"
+                    recipe = "RTDivergingChute"
                 },
                 {
                     type = "unlock-recipe",
-                    recipe = "RTMergingChuteRecipe"
+                    recipe = "RTMergingChute"
                 },
             },
             prerequisites = {"RTItemCannonTech"},

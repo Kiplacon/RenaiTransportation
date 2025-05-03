@@ -9,7 +9,7 @@ local datboi = table.deepcopy(data.raw.container["iron-chest"])
 		height = 76,
 		scale = 0.5
 	}
-	datboi.minable = {mining_time = 0.2, result = "OpenContainerItem"}
+	datboi.minable = {mining_time = 0.2, result = "OpenContainer"}
 	datboi.next_upgrade = nil
 	datboi.not_upgradable = true
 	
@@ -17,7 +17,7 @@ data:extend({
 	
 	{ --------- The container item -------------
 		type = "item",
-		name = "OpenContainerItem",
+		name = "OpenContainer",
 		icon = "__RenaiTransportation__/graphics/OpenContainer/icon.png",
 		icon_size = 64,
 		subgroup = "RT",
@@ -28,12 +28,12 @@ data:extend({
 	
 	{ --------- The container recipe ----------
 		type = "recipe",
-		name = "OpenContainerRecipe",
+		name = "OpenContainer",
 		enabled = true,
 		energy_required = 0.5,
 		ingredients = {{type="item", name="iron-chest", amount=1}},
 		results = {
-			{type="item", name="OpenContainerItem", amount=1}
+			{type="item", name="OpenContainer", amount=1}
 		}
 	},
 	
@@ -42,7 +42,7 @@ data:extend({
 		name = "OpenContainerRevertRecipe",
 		enabled = true,
 		energy_required = 0.5,
-		ingredients = {{type="item", name="OpenContainerItem", amount=1}},
+		ingredients = {{type="item", name="OpenContainer", amount=1}},
 		results = {
 			{type="item", name="iron-chest", amount=1}
 		},

@@ -5,7 +5,7 @@ data:extend({
 		icon = "__RenaiTransportation__/graphics/BouncePlates/TrainBouncePlate/TrainPlate.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
-		minable = {mining_time = 0.5, result = "RTTrainBouncePlateItem"},
+		minable = {mining_time = 0.5, result = "RTTrainBouncePlate"},
 		max_health = 400,
 		corpse = "medium-remnants",
         dying_explosion = "medium-explosion",
@@ -47,7 +47,7 @@ data:extend({
 	},
 	{ --------- The Bounce plate item -------------
 		type = "item",
-		name = "RTTrainBouncePlateItem",
+		name = "RTTrainBouncePlate",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/TrainBouncePlate/TrainPlate.png",
 		icon_size = 64, --icon_mipmaps = 4,
 		subgroup = "RTTrainStuff",
@@ -57,7 +57,7 @@ data:extend({
 	},
 	{ --------- The Bounce plate recipe ----------
 		type = "recipe",
-		name = "RTTrainBouncePlateRecipe",
+		name = "RTTrainBouncePlate",
 		enabled = false,
 		energy_required = 1,
 		ingredients = 
@@ -67,7 +67,7 @@ data:extend({
 				{type="item", name="automation-science-pack", amount=10}
 			},
 		results = {
-			{type="item", name="RTTrainBouncePlateItem", amount=1}
+			{type="item", name="RTTrainBouncePlate", amount=1}
 		}
 	},
 
@@ -77,7 +77,7 @@ data:extend({
 		icon = "__RenaiTransportation__/graphics/BouncePlates/TrainBouncePlate/DirectedTrainPlate.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
-		minable = {mining_time = 0.5, result = "RTTrainDirectedBouncePlateItem"},
+		minable = {mining_time = 0.5, result = "RTTrainDirectedBouncePlate"},
 		max_health = 400,
 		corpse = "medium-remnants",
         dying_explosion = "medium-explosion",
@@ -118,7 +118,7 @@ data:extend({
 	},
 	{ --------- The Bounce plate item -------------
 		type = "item",
-		name = "RTTrainDirectedBouncePlateItem",
+		name = "RTTrainDirectedBouncePlate",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/TrainBouncePlate/DirectedTrainPlate.png",
 		icon_size = 64, --icon_mipmaps = 4,
 		subgroup = "RTTrainStuff",
@@ -128,7 +128,7 @@ data:extend({
 	},
 	{ --------- The Bounce plate recipe ----------
 		type = "recipe",
-		name = "RTTrainDirectedBouncePlateRecipe",
+		name = "RTTrainDirectedBouncePlate",
 		enabled = false,
 		energy_required = 1,
 		ingredients = 
@@ -138,7 +138,7 @@ data:extend({
 				{type="item", name="automation-science-pack", amount=10}
 			},
 		results = {
-			{type="item", name="RTTrainDirectedBouncePlateItem", amount=1}
+			{type="item", name="RTTrainDirectedBouncePlate", amount=1}
 		}
 	},
 
@@ -151,11 +151,11 @@ data:extend({
 		{
 			{
 				type = "unlock-recipe",
-				recipe = "RTTrainBouncePlateRecipe"
+				recipe = "RTTrainBouncePlate"
 			},
 			{
 				type = "unlock-recipe",
-				recipe = "RTTrainDirectedBouncePlateRecipe"
+				recipe = "RTTrainDirectedBouncePlate"
 			}
 		},
 		prerequisites = {"RTFlyingFreight"},

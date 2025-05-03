@@ -277,7 +277,7 @@ local function on_tick(event)
 						end
 					-- valid movement conditions
 					elseif (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
-					and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineItem")
+					and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineTrolley")
 					and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
 					and (player.character.walking_state.walking == true or ZiplineStuff.path)
 					and ZiplineStuff.succ.energy ~= 0
@@ -286,19 +286,19 @@ local function on_tick(event)
 						local EquippedTrolley = player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name
 						local MaxSpeed = 0.3
 						local accel = 0.004
-						if (EquippedTrolley == "RTZiplineItem") then
+						if (EquippedTrolley == "RTZiplineTrolley") then
 							MaxSpeed = 0.3
 							accel = 0.004
-						elseif (EquippedTrolley == "RTZiplineItem2") then
+						elseif (EquippedTrolley == "RTZiplineTrolley2") then
 							MaxSpeed = 0.6
 							accel = 0.008
-						elseif (EquippedTrolley == "RTZiplineItem3") then
+						elseif (EquippedTrolley == "RTZiplineTrolley3") then
 							MaxSpeed = 1.5
 							accel = 0.012
-						elseif (EquippedTrolley == "RTZiplineItem4") then
+						elseif (EquippedTrolley == "RTZiplineTrolley4") then
 							MaxSpeed = 4
 							accel = 0.016
-						elseif (EquippedTrolley == "RTZiplineItem5") then
+						elseif (EquippedTrolley == "RTZiplineTrolley5") then
 							MaxSpeed = 10
 							accel = 0.05
 						end

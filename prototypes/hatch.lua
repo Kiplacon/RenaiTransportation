@@ -24,7 +24,7 @@ collision_box = {{-0.35, -0.3}, {0.35, 0.55}},
 selection_box = {{-0.35, -0.3}, {0.35, 0.55}},
 selection_priority = 255,
 dying_explosion = "iron-chest-explosion",
-minable = {mining_time = 0.2, result = "HatchRTItem"},
+minable = {mining_time = 0.2, result = "HatchRT"},
 render_layer = "arrow",
 picture =
 	{
@@ -37,7 +37,7 @@ picture =
 
 { --------- The hatch item -------------
 	type = "item",
-	name = "HatchRTItem",
+	name = "HatchRT",
 	icon = "__RenaiTransportation__/graphics/hatch/icon.png",
 	icon_size = 64, --icon_mipmaps = 4,
 	subgroup = "RT",
@@ -48,7 +48,7 @@ picture =
 
 { --------- The hatch recipe ----------
 	type = "recipe",
-	name = "HatchRTRecipe",
+	name = "HatchRT",
 	enabled = false,
 	energy_required = 1,
 	ingredients =
@@ -58,7 +58,7 @@ picture =
 			{type="item", name="copper-plate", amount=2}
 		},
 	results = {
-		{type="item", name="HatchRTItem", amount=1}
+		{type="item", name="HatchRT", amount=1}
 	}
 },
 
@@ -74,7 +74,7 @@ picture =
 	selection_box = {{-0.4, -0.4}, {0.4, 0.4}},
 	selection_priority = 255,
 	dying_explosion = "iron-chest-explosion",
-	minable = {mining_time = 0.2, result = "RTThrower-EjectorHatchRTItem"},
+	minable = {mining_time = 0.2, result = "RTThrower-EjectorHatchRT"},
 	render_layer = "higher-object-under",
 	filter_count = 5,
 	energy_source =
@@ -114,7 +114,7 @@ picture =
 
 { --------- The ejector hatch item -------------
 	type = "item",
-	name = "RTThrower-EjectorHatchRTItem",
+	name = "RTThrower-EjectorHatchRT",
 	icon = "__RenaiTransportation__/graphics/hatch/EjeectorIccon.png",
 	icon_size = 43, --icon_mipmaps = 4,
 	subgroup = "RT",
@@ -125,17 +125,17 @@ picture =
 
 { --------- The ejector hatch recipe ----------
 	type = "recipe",
-	name = "RTThrower-EjectorHatchRTRecipe",
+	name = "RTThrower-EjectorHatchRT",
 	enabled = false,
 	energy_required = 1,
 	ingredients =
 		{
-			{type="item", name="HatchRTItem", amount=1},
-			{type="item", name="RTBouncePlateItem", amount=1},
+			{type="item", name="HatchRT", amount=1},
+			{type="item", name="RTBouncePlate", amount=1},
 			{type="item", name="electronic-circuit", amount=2}
 		},
 	results = {
-		{type="item", name="RTThrower-EjectorHatchRTItem", amount=1}
+		{type="item", name="RTThrower-EjectorHatchRT", amount=1}
 	}
 },
 ---------- sprites because inserters dont render above a lot of things

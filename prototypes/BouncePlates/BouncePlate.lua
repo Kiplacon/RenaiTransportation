@@ -12,7 +12,7 @@ data:extend({
 		icon = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/PlateIconn.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation", "hide-alt-info"},
-		minable = {mining_time = 0.2, result = "RTBouncePlateItem"},
+		minable = {mining_time = 0.2, result = "RTBouncePlate"},
 		max_health = 200,
 		corpse = "small-remnants",
         dying_explosion = "iron-chest-explosion",
@@ -59,7 +59,7 @@ data:extend({
 
 	{ --------- The Bounce plate item -------------
 		type = "item",
-		name = "RTBouncePlateItem",
+		name = "RTBouncePlate",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/PlateIconn.png",
 		icon_size = 64, --icon_mipmaps = 4,
 		subgroup = "RT",
@@ -70,7 +70,7 @@ data:extend({
 
 	{ --------- The Bounce plate recipe ----------
 		type = "recipe",
-		name = "RTBouncePlateRecipe",
+		name = "RTBouncePlate",
 		enabled = true,
 		energy_required = 1,
 		ingredients =
@@ -79,7 +79,7 @@ data:extend({
 				{type="item", name="automation-science-pack", amount=1}
 			},
 		results = {
-			{type="item", name="RTBouncePlateItem", amount=1}
+			{type="item", name="RTBouncePlate", amount=1}
 		}
 	},
 
@@ -174,8 +174,8 @@ data:extend({
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
 		hidden = true,
-		minable = {mining_time = 0.2, result = "RTBouncePlateItem"},
-		placeable_by = {item="RTBouncePlateItem", count=1},
+		minable = {mining_time = 0.2, result = "RTBouncePlate"},
+		placeable_by = {item="RTBouncePlate", count=1},
 		max_health = 200,
 	   	collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
@@ -220,8 +220,8 @@ data:extend({
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
 		hidden = true,
-		minable = {mining_time = 0.2, result = "RTBouncePlateItem"},
-		placeable_by = {item="RTBouncePlateItem", count=1},
+		minable = {mining_time = 0.2, result = "RTBouncePlate"},
+		placeable_by = {item="RTBouncePlate", count=1},
 		max_health = 200,
 		collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},

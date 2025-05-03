@@ -7,6 +7,7 @@ function MakeProjectile(ThingData, speed)
 			type = "stream",
 			name = "RTItemProjectile-"..ThingData.name..(speed*100 or 18),
 			flags = {"not-on-map"},
+			hidden = true,
 			particle_spawn_interval = 0,
 			particle_spawn_timeout = 0,
 			particle_vertical_acceleration = 0.0035,
@@ -135,6 +136,7 @@ function MakeItemShellStuff(ThingData)
 			{
 				type = "projectile",
 				name = "RTItemShell"..ThingData.name.."-Q-"..QualityName,
+				hidden = true,
 				acceleration = 0,
 				direction_only = true,
 				collision_box = {{-0.1, -0.1}, {0.1, 0.1}},
@@ -507,7 +509,11 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	TheThrower.insert_position = {0, 15.2}
 	TheThrower.allow_custom_vectors = true
 	ItsRange = 15
-	TheThrower.fast_replaceable_group = "ThrowerInserters"
+	if (TheThrower.fast_replaceable_group ~= nil) then
+		TheThrower.fast_replaceable_group = "thrower-"..TheThrower.fast_replaceable_group
+	else
+		TheThrower.fast_replaceable_group = "ThrowerInserters"
+	end
 	if (TheThrower.next_upgrade) then
 		TheThrower.next_upgrade = "RTThrower-"..TheThrower.next_upgrade
 	end
@@ -525,7 +531,6 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	elseif (TheThrower.name == "RTThrower-long-handed-inserter") then
 		TheThrower.insert_position = {0, 25.2}
 		ItsRange = 25
-		TheThrower.fast_replaceable_group = "LongThrowers"
 	end
 
 	if settings.startup["RTThrowersDynamicRange"].value == true then
@@ -629,7 +634,7 @@ function MakeCarriageSprites(ThingData)
 			if (ThingData.pictures.rotated.layers) then
 				SpriteSets = ThingData.pictures.rotated.layers
 			else
-				SpriteSets = ThingData.pictures.rotated
+				SpriteSets = {ThingData.pictures.rotated}
 			end
 		else
 			-- no images (invisibel)
@@ -1050,9 +1055,9 @@ for Category, ThingsTable in pairs(data.raw) do
 end
 
 if (settings.startup["RTZiplineSetting"].value == true) then
-	for _, ingredient in pairs(data.raw.recipe.RTZiplineRecipe4.ingredients) do
+	for _, ingredient in pairs(data.raw.recipe.RTZiplineTrolley4.ingredients) do
 		if (ingredient.type and ingredient.type == "fluid") then
-			data.raw.recipe.RTZiplineRecipe4.category = "crafting-with-fluid"
+			data.raw.recipe.RTZiplineTrolley4.category = "crafting-with-fluid"
 			break
 		end
 	end

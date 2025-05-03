@@ -1,6 +1,6 @@
 local TheItem = table.deepcopy(data.raw.item.inserter)
 	TheItem.icon = "__RenaiTransportation__/graphics/primerthrowericon.png"
-	TheItem.name = "RTThrower-PrimerThrower-Item"
+	TheItem.name = "RTThrower-PrimerThrower"
 	TheItem.subgroup = "defensive-structure"
 	TheItem.order = "b-a-b"
 	TheItem.place_result = "RTThrower-PrimerThrower"
@@ -79,7 +79,7 @@ if (data.raw.item["carbon-fiber"] and data.raw.tool["agricultural-science-pack"]
 	data:extend({
 		{
 			type = "recipe",
-			name = "RTThrower-PrimerThrower-Recipe",
+			name = "RTThrower-PrimerThrower",
 			enabled = false,
 			energy_required = 1,
 			ingredients =
@@ -101,7 +101,7 @@ if (data.raw.item["carbon-fiber"] and data.raw.tool["agricultural-science-pack"]
 			{
 				{
 					type = "unlock-recipe",
-					recipe = "RTThrower-PrimerThrower-Recipe"
+					recipe = "RTThrower-PrimerThrower"
 				}
 			},
 			prerequisites = {"se-no", "PrimerPlateTech", "gun-turret", "agricultural-science-pack", "carbon-fiber"},
@@ -124,13 +124,13 @@ else
 	data:extend({
 		{
 			type = "recipe",
-			name = "RTThrower-PrimerThrower-Recipe",
+			name = "RTThrower-PrimerThrower",
 			enabled = false,
 			energy_required = 1,
 			ingredients =
 				{
 					{type="item", name="electronic-circuit", amount=2},
-					{type="item", name="PrimerBouncePlateItem", amount=2},
+					{type="item", name="PrimerBouncePlate", amount=2},
 					{type="item", name="gun-turret", amount=1},
 					{type="item", name="inserter", amount=1}
 				},
@@ -147,7 +147,7 @@ else
 			{
 				{
 					type = "unlock-recipe",
-					recipe = "RTThrower-PrimerThrower-Recipe"
+					recipe = "RTThrower-PrimerThrower"
 				}
 			},
 			prerequisites = {"se-no", "PrimerPlateTech", "gun-turret", "military-science-pack"},

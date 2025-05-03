@@ -208,7 +208,7 @@ local function entity_built(event)
 	elseif (entity.name == "RTZiplineTerminal") then
 		local OnDestroyNumber = script.register_on_object_destroyed(entity)
 		storage.ZiplineTerminals[OnDestroyNumber] = {entity=entity, name=game.backer_names[math.random(1, #game.backer_names)]}
-		local tag = entity.force.add_chart_tag(entity.surface, {position=entity.position, text=storage.ZiplineTerminals[OnDestroyNumber].name, icon={type="item", name="RTZiplineTerminalItem"}})
+		local tag = entity.force.add_chart_tag(entity.surface, {position=entity.position, text=storage.ZiplineTerminals[OnDestroyNumber].name, icon={type="item", name="RTZiplineTerminal"}})
 		storage.ZiplineTerminals[OnDestroyNumber].tag = tag
 
 	elseif (entity.name == "RTTrapdoorSwitewrewch") then

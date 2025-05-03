@@ -9,11 +9,11 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 		{
 			{
 				type = "unlock-recipe",
-				recipe = "DirectedBouncePlateRecipe"
+				recipe = "DirectedBouncePlate"
 			},
 			{
 				type = "unlock-recipe",
-				recipe = "PlayerLauncherRecipe"
+				recipe = "PlayerLauncher"
 			}
 		},
 		prerequisites = {"automation-science-pack"},
@@ -66,7 +66,7 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 		{
 			{
 				type = "unlock-recipe",
-				recipe = "HatchRTRecipe"
+				recipe = "HatchRT"
 			}
 		},
 		prerequisites = {"se-no"},
@@ -89,11 +89,11 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 		{
 			{
 				type = "unlock-recipe",
-				recipe = "RTThrower-EjectorHatchRTRecipe"
+				recipe = "RTThrower-EjectorHatchRT"
 			},
 			--[[ {
 				type = "unlock-recipe",
-				recipe = "RTThrower-FilterEjectorHatchRTRecipe"
+				recipe = "RTThrower-FilterEjectorHatchRT"
 			} ]]
 		},
 		prerequisites = {"HatchRTTech"},
@@ -137,7 +137,7 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 		{
 		{
 			type = "unlock-recipe",
-			recipe = "DirectorBouncePlateRecipe"
+			recipe = "DirectorBouncePlate"
 		}
 		},
 		prerequisites = {"se-no", "advanced-circuit"},

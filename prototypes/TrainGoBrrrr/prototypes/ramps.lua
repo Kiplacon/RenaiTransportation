@@ -17,7 +17,7 @@ for _, variants in pairs(
 			icon_size = 64,
 			flags = {"player-creation", "not-on-map", "placeable-off-grid", "hide-alt-info", "not-flammable"},
 			hidden = true,
-			minable = {mining_time = 1, result = "RT"..variant:gsub("NoSkip", "").."Item"},
+			minable = {mining_time = 1, result = "RT"..variant:gsub("NoSkip", "")},
 			max_health = 500,
 			corpse = "medium-remnants",
 			dying_explosion = "medium-explosion",
@@ -29,7 +29,7 @@ for _, variants in pairs(
 			elevated_collision_mask = ElevMask,
 			ground_picture_set = RampPictureSets("__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png"),
 			elevated_picture_set = RampPictureSets("__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png"),
-			placeable_by = { item = "RT"..variant:gsub("NoSkip", "").."Item", count = 1 }, -- Controls `q` and blueprint behavior
+			placeable_by = { item = "RT"..variant:gsub("NoSkip", ""), count = 1 }, -- Controls `q` and blueprint behavior
 			resistances = {
 				{
 					type = "impact",
@@ -39,7 +39,7 @@ for _, variants in pairs(
 		},
 		{
 			type = "item",
-			name = "RT"..variant.."Item",
+			name = "RT"..variant,
 			icon = "__RenaiTransportation__/graphics/TrainRamp/icons/"..variant.."Icon.png",
 			icon_size = 64,
 			subgroup = "RTTrainStuff",
@@ -52,8 +52,7 @@ for _, variants in pairs(
 				"RT"..variant.."-placer",
 				"__RenaiTransportation__/graphics/TrainRamp/icons/"..variant.."Icon.png",
 				"__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant.."Placer.png",
-				"RT"..variant.."Item",
-				hidden
+				"RT"..variant
 			),
 		CreateRampSprites("RT"..variant.."", "__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png")
 	})
@@ -64,7 +63,7 @@ end
 data:extend({
 	{ --------- ramp recipe ----------
 		type = "recipe",
-		name = "RTTrainRampRecipe",
+		name = "RTTrainRamp",
 		enabled = false,
 		energy_required = 2,
 		ingredients =
@@ -74,24 +73,24 @@ data:extend({
 				{type="item", name="concrete", amount=50}
 			},
 		results = {
-			{type="item", name="RTTrainRampItem", amount=1}
+			{type="item", name="RTTrainRamp", amount=1}
 		}
 	},
 	{ --------- ramp recipe ----------
 		type = "recipe",
-		name = "RTMagnetTrainRampRecipe",
+		name = "RTMagnetTrainRamp",
 		enabled = false,
 		energy_required = 2,
 		ingredients =
 			{
-				{type="item", name="RTTrainRampItem", amount=1},
+				{type="item", name="RTTrainRamp", amount=1},
 				{type="item", name="accumulator", amount=1},
 				{type="item", name="substation", amount=1},
 				{type="item", name="steel-plate", amount=100},
 				{type="item", name="advanced-circuit", amount=25}
 			},
 		results = {
-			{type="item", name="RTMagnetTrainRampItem", amount=1}
+			{type="item", name="RTMagnetTrainRamp", amount=1}
 		}
 	},
 	{
@@ -103,7 +102,7 @@ data:extend({
 		{
 			{
 				type = "unlock-recipe",
-				recipe = "RTTrainRampRecipe"
+				recipe = "RTTrainRamp"
 			}
 		},
 		prerequisites = {"se-no", "railway", "concrete"},
@@ -127,7 +126,7 @@ data:extend({
 		{
 			{
 				type = "unlock-recipe",
-				recipe = "RTMagnetTrainRampRecipe"
+				recipe = "RTMagnetTrainRamp"
 			}
 		},
 		prerequisites = {"RTFlyingFreight", "electric-energy-accumulators", "electric-energy-distribution-2"},
@@ -149,30 +148,30 @@ if (settings.startup["RTTrapdoorSetting"].value == true) then
 	data:extend({
 		{ --------- switch ramp recipe ----------
 			type = "recipe",
-			name = "RTSwitchTrainRampRecipe",
+			name = "RTSwitchTrainRamp",
 			enabled = false,
 			energy_required = 2,
 			ingredients =
 				{
-					{type="item", name="RTTrainRampItem", amount=1},
-					{type="item", name="RTTrapdoorSwitchItem", amount=1}
+					{type="item", name="RTTrainRamp", amount=1},
+					{type="item", name="RTTrapdoorSwitch", amount=1}
 				},
 			results = {
-				{type="item", name="RTSwitchTrainRampItem", amount=1}
+				{type="item", name="RTSwitchTrainRamp", amount=1}
 			}
 		},
 		{ --------- magnet switch ramp recipe ----------
 			type = "recipe",
-			name = "RTMagnetSwitchTrainRampRecipe",
+			name = "RTMagnetSwitchTrainRamp",
 			enabled = false,
 			energy_required = 2,
 			ingredients =
 				{
-					{type="item", name="RTMagnetTrainRampItem", amount=1},
-					{type="item", name="RTTrapdoorSwitchItem", amount=1}
+					{type="item", name="RTMagnetTrainRamp", amount=1},
+					{type="item", name="RTTrapdoorSwitch", amount=1}
 				},
 			results = {
-				{type="item", name="RTMagnetSwitchTrainRampItem", amount=1}
+				{type="item", name="RTMagnetSwitchTrainRamp", amount=1}
 			}
 		},
 	})

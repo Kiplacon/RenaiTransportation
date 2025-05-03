@@ -20,7 +20,7 @@ data:extend({
 		icon = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlateIconn.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation", "hide-alt-info"},
-		minable = {mining_time = 0.2, result = "SignalBouncePlateItem"},
+		minable = {mining_time = 0.2, result = "SignalBouncePlate"},
 		max_health = 200,
 	    collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
@@ -86,7 +86,7 @@ data:extend({
 	
 	{ --------- The Bounce plate item -------------
 		type = "item",
-		name = "SignalBouncePlateItem",
+		name = "SignalBouncePlate",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlateIconn.png",
 		icon_size = 64, --icon_mipmaps = 4,
 		subgroup = "RT",
@@ -97,16 +97,16 @@ data:extend({
 	
 	{ --------- The Bounce plate recipe ----------
 		type = "recipe",
-		name = "SignalBouncePlateRecipe",
+		name = "SignalBouncePlate",
 		enabled = false,
 		energy_required = 1,
 		ingredients = 
 			{
 				{type="item", name="constant-combinator", amount=1},
-				{type="item", name="RTBouncePlateItem", amount=1}
+				{type="item", name="RTBouncePlate", amount=1}
 			},
 		results = {
-			{type="item", name="SignalBouncePlateItem", amount=1}
+			{type="item", name="SignalBouncePlate", amount=1}
 		}
 	},
 	

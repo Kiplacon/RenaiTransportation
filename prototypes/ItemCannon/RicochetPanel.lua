@@ -10,7 +10,7 @@ data.extend({
         icon = "__RenaiTransportation__/graphics/ItemCannon/RicochetPanelIcon.png",
         icon_size = 128,
         flags = {"placeable-neutral", "player-creation"},
-        minable = {mining_time = 0.2, result = "RTRicochetPanelItem"},
+        minable = {mining_time = 0.2, result = "RTRicochetPanel"},
         hidden = true,
         max_health = 250,
         corpse = "steel-chest-remnants",
@@ -52,7 +52,7 @@ data.extend({
     },
     { --------- item -------------
         type = "item",
-        name = "RTRicochetPanelItem",
+        name = "RTRicochetPanel",
         icon = "__RenaiTransportation__/graphics/ItemCannon/RicochetPanelIcon.png",
         icon_size = 128,
         subgroup = "RTCannonStuff",
@@ -101,7 +101,7 @@ if (data.raw.item["supercapacitor"] and data.raw.tool["electromagnetic-science-p
     data:extend({
         { --------- recipe ----------
         type = "recipe",
-        name = "RTRicochetPanelRecipe",
+        name = "RTRicochetPanel",
         enabled = false,
         energy_required = 2,
         ingredients =
@@ -112,7 +112,7 @@ if (data.raw.item["supercapacitor"] and data.raw.tool["electromagnetic-science-p
                 {type="item", name="copper-cable", amount=12}
             },
         results = {
-            {type="item", name="RTRicochetPanelItem", amount=1}
+            {type="item", name="RTRicochetPanel", amount=1}
         }
     },
     })
@@ -120,7 +120,7 @@ else
     data:extend({
         { --------- recipe ----------
         type = "recipe",
-        name = "RTRicochetPanelRecipe",
+        name = "RTRicochetPanel",
         enabled = false,
         energy_required = 2,
         ingredients =
@@ -131,7 +131,7 @@ else
                 {type="item", name="copper-cable", amount=8}
             },
         results = {
-            {type="item", name="RTRicochetPanelItem", amount=1}
+            {type="item", name="RTRicochetPanel", amount=1}
         }
     },
     })

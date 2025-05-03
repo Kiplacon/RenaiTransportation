@@ -5,7 +5,7 @@ data:extend({
 		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/DirectorPlateIcon.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation", "hide-alt-info"},
-		minable = {mining_time = 0.2, result = "DirectorBouncePlateItem"},
+		minable = {mining_time = 0.2, result = "DirectorBouncePlate"},
 		max_health = 200,
 		corpse = "small-remnants",
         dying_explosion = "iron-chest-explosion",
@@ -51,7 +51,7 @@ data:extend({
 
 	{ --------- The Bounce plate item -------------
 		type = "item",
-		name = "DirectorBouncePlateItem",
+		name = "DirectorBouncePlate",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/DirectorPlateIcon.png",
 		icon_size = 64, --icon_mipmaps = 4,
 		subgroup = "RT",
@@ -62,16 +62,16 @@ data:extend({
 
 	{ --------- The Bounce plate recipe ----------
 		type = "recipe",
-		name = "DirectorBouncePlateRecipe",
+		name = "DirectorBouncePlate",
 		enabled = false,
 		energy_required = 1,
 		ingredients =
 			{
-				{type="item", name="RTBouncePlateItem", amount=1},
+				{type="item", name="RTBouncePlate", amount=1},
 				{type="item", name="advanced-circuit", amount=2}
 			},
 		results = {
-			{type="item", name="DirectorBouncePlateItem", amount=1}
+			{type="item", name="DirectorBouncePlate", amount=1}
 		}
 	},
 })

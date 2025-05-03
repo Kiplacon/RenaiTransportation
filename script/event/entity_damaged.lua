@@ -379,7 +379,7 @@ local function entity_damaged(event)
 
 		elseif (MagneticRamps[ramp.name] and MagnetRampProperties and MagnetRampProperties.range ~= 0 and FlyingTrainProperties.MakeFX == "NoEnergy") then
 			for each, guy in pairs(game.connected_players) do
-				guy.add_custom_alert(MagnetRampProperties.entity, {type = "item", name = "RTMagnetTrainRampItem"}, "A Magnet Ramp was used without a full buffer!", true)
+				guy.add_custom_alert(MagnetRampProperties.entity, {type = "item", name = "RTMagnetTrainRamp"}, "A Magnet Ramp was used without a full buffer!", true)
 			end
 
 		end
