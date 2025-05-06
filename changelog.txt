@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.5
+Date: 5/6/2025
+  Bugfixes:
+    - Fixed a typo that caused the Trapdoor switch to not actually work lol https://i.imgur.com/ezUN2qE.png. Reported by BubbleTanks
+---------------------------------------------------------------------------------------------------
 Version: 2.1.4
 Date: 5/2/2025
   Changes:
