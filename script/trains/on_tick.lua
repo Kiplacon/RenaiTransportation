@@ -275,8 +275,10 @@ local function on_tick(event)
 
 					if (properties.GuideCar.get_passenger() ~= nil) then
 						local rrr = properties.GuideCar.get_passenger()
+						properties.GuideCar.rotatable = true
 						properties.GuideCar.set_passenger(nil) -- SA 2.0.15 for some reason landing on the ground needs this now otherwise the player gets ejected instead of put into the new train
 						NewTrain.set_driver(rrr)
+						properties.GuideCar.rotatable = false
 					end
 
 					AngleChange = math.abs(NewTrain.orientation-properties.orientation) -- a new train will be made if there's enough rail, direction doesn't matter
@@ -636,8 +638,14 @@ local function on_tick(event)
 				-- downward arc
 				local gravity = 1/250
 				local LandingRunwayDistance = math.abs(GuideCar.speed)*(VerticalSpeed+math.sqrt((VerticalSpeed^2) - 2*gravity*(3-height)))/gravity -- "Landing strip" length needed for the touchdown animation
-				local XLandOffset = LandingRunwayDistance*storage.OrientationUnitComponents[GuideCar.orientation].x*(GuideCar.speed/math.abs(GuideCar.speed))
-				local YLandOffset = LandingRunwayDistance*storage.OrientationUnitComponents[GuideCar.orientation].y*(GuideCar.speed/math.abs(GuideCar.speed))
+				local VectorComponents
+				if (storage.OrientationUnitComponents[GuideCar.orientation]) then
+					VectorComponents = storage.OrientationUnitComponents[GuideCar.orientation]
+				else
+					VectorComponents = storage.OrientationUnitComponents[math.floor(GuideCar.orientation/0.25 + 0.5) * 0.25]
+				end
+				local XLandOffset = LandingRunwayDistance*VectorComponents.x*(GuideCar.speed/math.abs(GuideCar.speed))
+				local YLandOffset = LandingRunwayDistance*VectorComponents.y*(GuideCar.speed/math.abs(GuideCar.speed))
 				local rails = GuideCar.surface.find_entities_filtered{
 					position = {GuideCar.position.x+XLandOffset, GuideCar.position.y+YLandOffset},
 					radius = 1.5,

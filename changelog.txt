@@ -1,4 +1,24 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.8
+Date: 5/20/2025
+  Changes:
+    - Made it so you can't enter a train while it's in the air.
+    - Exiting a train while it's in the air is now a bit more dramatic.
+  Bugfixes:
+    - Trains now have to be going at least the minimum speed of vehicles to be able to jump off a ramp, which helps ensure correct animations. Reported by BubbleTanks
+    - Fixed a crash that had a small chance of happening when Vacuum hatches tried to output to a full belt. Reported by BubbleTanks
+---------------------------------------------------------------------------------------------------
+Version: 2.1.7
+Date: 5/17/2025
+  Bugfixes:
+    - Fixed a crash with trying to eject the inventory of cars and wagons that have inventory size 0. Reported by cra_
+---------------------------------------------------------------------------------------------------
+Version: 2.1.6
+Date: 5/15/2025
+  Bugfixes:
+    - Fixed that player's inventory filters weren't copied when getting on/off a zipline, which could end up deleting items in transfer. Reported by Artamiel
+    - Fixed a load crash when using mods that rearrange the mining result of inserters, like in Pyanodons apparently. Reported by ImTooTired
+---------------------------------------------------------------------------------------------------
 Version: 2.1.5
 Date: 5/6/2025
   Bugfixes:

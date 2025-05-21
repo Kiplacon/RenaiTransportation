@@ -436,9 +436,20 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 end
 
 ---------------------------------------Thrower----------------------------------------------------------------------
-function MakeThrowerVariant(ThingData)
-
-TheItem = table.deepcopy(data.raw.item[ThingData.minable.result])
+function MakeThrowerVariant(ThingData, PlacingItemName)
+log("--------Creating thrower variant for "..ThingData.name.."-----------")
+if (PlacingItemName == nil) then
+	if (ThingData.minable.result) then
+		PlacingItemName = ThingData.minable.result
+	elseif (ThingData.minable.results) then
+		for _, result in pairs(ThingData.minable.results) do
+			if (result.type == "item") then
+				PlacingItemName = result.name
+			end
+		end
+	end
+end
+TheItem = table.deepcopy(data.raw.item[PlacingItemName])
 	TheItem.name = "RTThrower-"..TheItem.name.."-Item"
 	TheItem.subgroup = "throwers"
 	TheItem.place_result = "RTThrower-"..ThingData.name
@@ -472,10 +483,10 @@ TheRecipe =
 		name = "RTThrower-"..ThingData.name.."-Recipe",
 		enabled = isitenabled,
 		energy_required = 1,
-		localised_name =  "Thrower "..ThingData.name:gsub("-i"," i"), 
+		localised_name =  "Thrower "..ThingData.name:gsub("-i"," i"),
 		ingredients =
 			{
-				{type="item", name=ThingData.minable.result, amount=1},
+				{type="item", name=PlacingItemName, amount=1},
 				{type="item", name="copper-cable", amount=4}
 			},
 		results = {
@@ -840,23 +851,69 @@ end
 for ThingID, ThingData in pairs(data.raw.inserter) do
 	-- lots of requirements to make sure not pick up any "function only" inserters from other mods --
 	if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RTModdedThrowers"].value == true) then
-		if (ThingData.type == "inserter"
-			and ThingData.energy_source.type ~= "void"
-			and ThingData.draw_held_item ~= false
-			and ThingData.selectable_in_game ~= false
-			and ThingData.minable
-			and ThingData.minable.result
-			and ThingData.rotation_speed ~= 0
-			and ThingData.extension_speed ~= 0
-			and data.raw.item[ThingData.minable.result] ~= nil
-			and ThingData.selection_box[1][1] >= -0.5
-			and ThingData.selection_box[1][2] >= -0.5
-			and ThingData.selection_box[2][1] <= 0.5
-			and ThingData.selection_box[2][2] <= 0.5
-			and not string.find(ThingData.name, "RTThrower-")
-			--and (not ThingData.name ~= "thrower-inserter")
-		)then
-			MakeThrowerVariant(ThingData)
+		if (ThingData.type == "inserter") then
+			log("--------Checking if "..ThingData.name.." should have thrower varient-----------")
+			if
+				(ThingData.energy_source.type ~= "void"
+				and ThingData.draw_held_item ~= false
+				and ThingData.selectable_in_game ~= false
+				and ThingData.minable
+				and ThingData.rotation_speed ~= 0
+				and ThingData.extension_speed ~= 0
+				and ThingData.selection_box[1][1] >= -0.5
+				and ThingData.selection_box[1][2] >= -0.5
+				and ThingData.selection_box[2][1] <= 0.5
+				and ThingData.selection_box[2][2] <= 0.5
+				and not string.find(ThingData.name, "RTThrower-")
+				--and (not ThingData.name ~= "thrower-inserter")
+			)then
+				local PlacingItem
+				if (ThingData.minable.result) then
+					PlacingItem = ThingData.minable.result
+				elseif (ThingData.minable.results) then
+					for _, result in pairs(ThingData.minable.results) do
+						if (result.type == "item") then
+							PlacingItem = result.name
+						end
+					end
+				end
+				if (PlacingItem and data.raw.item[PlacingItem]) then
+					MakeThrowerVariant(ThingData, PlacingItem)
+				else
+					log("-----------"..ThingData.name.." doesn't have a valid item to place.")
+				end
+			else
+				if (ThingData.energy_source.type == "void") then
+					log("-----------"..ThingData.name.." is a void inserter.")
+				elseif (ThingData.draw_held_item == false) then
+					log("-----------"..ThingData.name.." is not a held item inserter.")
+				elseif (ThingData.selectable_in_game == false) then
+					log("-----------"..ThingData.name.." is not selectable in game.")
+				elseif (ThingData.minable == nil) then
+					log("-----------"..ThingData.name.." is not minable.")
+				elseif (ThingData.minable.result == nil) then
+					log("-----------"..ThingData.name.." doesn't have a mine result.")
+					if (ThingData.minable.results) then
+						log("-------------"..ThingData.name.." has a resultS table.")
+					end
+				elseif (ThingData.rotation_speed == 0) then
+					log("-----------"..ThingData.name.." has no rotation speed.")
+				elseif (ThingData.extension_speed == 0) then
+					log("-----------"..ThingData.name.." has no extension speed.")
+				elseif (data.raw.item[ThingData.minable.result] == nil) then
+					log("-----------"..ThingData.name.."'s mine result item doesnt exist.")
+				elseif (ThingData.selection_box[1][1] < -0.5) then
+					log("-----------"..ThingData.name.." has a selection box top left that is too big.")
+				elseif (ThingData.selection_box[1][2] < -0.5) then
+					log("-----------"..ThingData.name.." has a selection box top left that is too big.")
+				elseif (ThingData.selection_box[2][1] > 0.5) then
+					log("-----------"..ThingData.name.." has a selection box bottom right that is too big.")
+				elseif (ThingData.selection_box[2][2] > 0.5) then
+					log("-----------"..ThingData.name.." has a selection box bottom right that is too big.")
+				elseif (string.find(ThingData.name, "RTThrower-")) then
+					log("-----------"..ThingData.name.." is already a thrower inserter.")
+				end
+			end
 		end
 	elseif (settings.startup["RTThrowersSetting"].value == true and settings.startup["RTModdedThrowers"].value == false) then
 		if (ThingData.name == "burner-inserter"

@@ -106,8 +106,17 @@ function SwapToGhost(player)
     for i = 1, #OG.get_inventory(defines.inventory.character_main) do
         OG.get_inventory(defines.inventory.character_main)[i].swap_stack(CloudStorage[i])
 	end
-    -- SWAP the armor, inserting a copy of the armor does NOT instantly apply tool belt inventory bonuses apparently
+    -- copy the main inventory filters
+    local filters = {} -- record it because the inventory sizes of the player and ghost might be different if they were wearing armor with inventory bonus
+    for i = 1, #OG.get_inventory(defines.inventory.character_main) do
+        filters[i] = OG.get_inventory(defines.inventory.character_main).get_filter(i)
+    end
+    -- SWAP the armor, inserting a copy of the armor does NOT instantly apply tool belt inventory bonuses apparently. Do this after copying the filters
 	util.swap_entity_inventories(OG, NEWHOST, defines.inventory.character_armor)
+    -- write the main inventory filters
+    for i = 1, #NEWHOST.get_inventory(defines.inventory.character_main) do
+        NEWHOST.get_inventory(defines.inventory.character_main).set_filter(i, filters[i])
+    end
     -- move items from intermediate inventory to the new character then destroy the intermediate
     for i = 1, math.min(#CloudStorage, #NEWHOST.get_inventory(defines.inventory.character_main)) do
         CloudStorage[i].swap_stack(NEWHOST.get_inventory(defines.inventory.character_main)[i])
@@ -164,7 +173,7 @@ end
 function SwapBackFromGhost(player, FlyingItem)
     local PlayerProperties = storage.AllPlayers[player.index]
     PlayerProperties.state = "default"
-    PlayerProperties.PlayerLauncher = {}
+    
     local OG = PlayerProperties.SwapBack
     if (FlyingItem) then
         OG = FlyingItem.SwapBack
@@ -239,8 +248,17 @@ function SwapBackFromGhost(player, FlyingItem)
         for i = 1, #ghost.get_inventory(defines.inventory.character_main) do
             ghost.get_inventory(defines.inventory.character_main)[i].swap_stack(CloudStorage[i])
         end
+        -- copy the main inventory filters
+        local filters = {} -- record it because the inventory sizes of the player and ghost might be different if they were wearing armor with inventory bonus
+        for i = 1, #ghost.get_inventory(defines.inventory.character_main) do
+            filters[i] = ghost.get_inventory(defines.inventory.character_main).get_filter(i)
+        end
         -- SWAP the armor, inserting a copy of the armor does NOT instantly apply tool belt inventory bonuses apparently
         util.swap_entity_inventories(ghost, OG, defines.inventory.character_armor)
+        -- write the main inventory filters
+        for i = 1, #OG.get_inventory(defines.inventory.character_main) do
+            OG.get_inventory(defines.inventory.character_main).set_filter(i, filters[i])
+        end
         -- move items from intermediate inventory to the new character then destroy the intermediate
         for i = 1, math.min(#CloudStorage, #OG.get_inventory(defines.inventory.character_main)) do
             CloudStorage[i].swap_stack(OG.get_inventory(defines.inventory.character_main)[i])
@@ -284,7 +302,9 @@ function SwapBackFromGhost(player, FlyingItem)
         end
         ghost.destroy()
         PlayerProperties.SwapBack = nil
-
+        if (player.character and player.character.valid and PlayerProperties.PlayerLauncher and PlayerProperties.PlayerLauncher.FallDamage) then
+            player.character.damage(PlayerProperties.PlayerLauncher.height*20, "neutral")
+        end
     else
         OG.vehicle.destroy()
         OG.destructible = true
@@ -292,6 +312,7 @@ function SwapBackFromGhost(player, FlyingItem)
         PlayerProperties.SwapBack = nil
     end
 
+    PlayerProperties.PlayerLauncher = {}
 
 end
 

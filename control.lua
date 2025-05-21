@@ -125,9 +125,11 @@ script.on_event(defines.events.on_entity_died,
 function(event)
 	if settings.global["RTChestPop"].value == true
 	and (event.entity.type == "container"
-	or event.entity.type == "logistic-container"
-	or event.entity.type == "cargo-wagon"
-	or event.entity.type == "car") then
+		or event.entity.type == "logistic-container"
+		or event.entity.type == "cargo-wagon"
+		or event.entity.type == "car")
+	and event.entity.bounding_box ~= nil
+	and event.entity.get_output_inventory() ~= nil then
 		local container = event.entity
 		local scale = ((container.bounding_box.right_bottom.x-container.bounding_box.left_top.x)+(container.bounding_box.right_bottom.y-container.bounding_box.left_top.y)) or 3
 		for i = 1, #container.get_output_inventory() do
@@ -141,10 +143,9 @@ function(event)
 					local xUnit = math.cos(2*math.pi*angle)
 					local yUnit = math.sin(2*math.pi*angle)
 					-- flight arc
-					local speed = math.random(10, 20)*0.00008 + (scale*0.01)
 					local AirTime = math.random(40, 50) + math.ceil(scale*5)
-					local TargetX = event.entity.position.x + (xUnit*math.random(1, math.abs(math.ceil(scale*0.8))))
-					local TargetY = event.entity.position.y + (yUnit*math.random(1, math.abs(math.ceil(scale*0.8))))
+					local TargetX = event.entity.position.x + (xUnit*math.random(1, math.max(1, math.abs(math.ceil(scale*0.8))) ))
+					local TargetY = event.entity.position.y + (yUnit*math.random(1, math.max(1, math.abs(math.ceil(scale*0.8))) ))
 					local vector = {x=TargetX-container.position.x, y=TargetY-container.position.y}
 					local arc = 0.13
 					local path = {}
@@ -559,6 +560,7 @@ function(event)
 			or selected.name == "RTRicochetPanel"
 			or selected.name == "RTMergingChute"
 			or selected.name == "RTDivergingChute"
+			or selected.name == "RTVacuumHatch"
 			or (string.find(selected.name, '^RT') and string.find(selected.name, "BeltRamp"))) then
 			player.opened = nil
 
@@ -674,6 +676,62 @@ function(event)
 				ignore_minable=true
 			}
 		end
+	end
+end)
+
+script.on_event(
+defines.events.on_player_driving_changed_state,
+function(event)
+	local player = game.players[event.player_index]
+	local entity = event.entity
+	if (player.vehicle and player.vehicle.name == "RTPropCar" and player.vehicle.rotatable == false) then -- they are default true except those used for jumping trains which i manually set
+		local ttt = player.vehicle
+		ttt.rotatable = true
+		player.vehicle.set_driver(nil)
+		ttt.rotatable = false
+	elseif (player.character and player.character.vehicle == nil and entity and entity.name == "RTPropCar" and entity.rotatable == false) then
+		local height = storage.FlyingTrains[entity.unit_number].height
+		-- calculate how many ticks it will take the player to fall to the ground
+		local AirTime = math.ceil(math.sqrt(2*height/125))*60
+		local VectorComponents
+		if (storage.OrientationUnitComponents[entity.orientation]) then
+			VectorComponents = storage.OrientationUnitComponents[entity.orientation]
+		else
+			VectorComponents = storage.OrientationUnitComponents[math.floor(entity.orientation/0.25 + 0.5) * 0.25]
+		end
+		local PlayerProperties = storage.AllPlayers[player.index]
+		PlayerProperties.state = "jumping"
+		local OG, shadow = SwapToGhost(player)
+		local speed = entity.speed*0.95
+		local TargetX = entity.position.x + speed*AirTime*VectorComponents.x
+		local TargetY = entity.position.y + speed*AirTime*VectorComponents.y
+		local vector = {x=TargetX-entity.position.x, y=TargetY-entity.position.y}
+		local path = {}
+		for j = 0, AirTime do
+			local progress = j/AirTime
+			path[j] =
+			{
+				x = entity.position.x+(progress*vector.x),
+				y = entity.position.y+(progress*vector.y),
+				height = -height*(progress^2) + height
+			}
+		end
+		local FlyingItem = InvokeThrownItem({
+			type = "PlayerGuide",
+			player = player,
+			shadow = shadow,
+			AirTime = AirTime,
+			SwapBack = OG,
+			IAmSpeed = player.character.character_running_speed_modifier,
+			path = path,
+			start = player.position,
+			target={x=TargetX, y=TargetY},
+			surface=player.surface,
+		})
+		PlayerProperties.PlayerLauncher.tracker = FlyingItem.FlightNumber
+		PlayerProperties.PlayerLauncher.direction = VectorComponents.name
+		PlayerProperties.PlayerLauncher.FallDamage = true
+		PlayerProperties.PlayerLauncher.height = height
 	end
 end)
 

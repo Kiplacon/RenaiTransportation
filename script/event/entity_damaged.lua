@@ -42,6 +42,7 @@ local function entity_damaged(event)
 			or event.cause.type == "cargo-wagon"
 			or event.cause.type == "fluid-wagon"
 			or event.cause.type == "artillery-wagon")
+		and (math.abs(event.cause.speed*0.8) > 0.008) -- 0.008 is the smallest speed that a car can have, trains can actually go slower
 		and (event.entity.name == "RTTrainRampCollisionBox"
 			or event.entity.name == "RTElevatedTrainRampCollisionBox")
 		and storage.TrainCollisionDetectors[script.register_on_object_destroyed(event.entity)].RampType ~= "ImpactUnloader"
@@ -72,6 +73,7 @@ local function entity_damaged(event)
 		SpookyGhost.operable = false
 		SpookyGhost.speed = 0.8*carriage.speed
 		SpookyGhost.destructible = false
+		SpookyGhost.rotatable = false
 
 		local base = carriage.name
 		local way = storage.OrientationUnitComponents[carriage.orientation].name
@@ -154,7 +156,9 @@ local function entity_damaged(event)
 		FlyingTrainProperties.GuideCar = SpookyGhost
 		if (carriage.get_driver() ~= nil) then
 			--FlyingTrainProperties.passenger = carriage.get_driver()
+			SpookyGhost.rotatable = true
 			SpookyGhost.set_passenger(carriage.get_driver())
+			SpookyGhost.rotatable = false
 		end
 		FlyingTrainProperties.name = carriage.name
 		FlyingTrainProperties.type = carriage.type

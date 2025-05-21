@@ -260,6 +260,8 @@ local function DropOntoGround(FlyingItem)
                 position = FlyingItem.target
             })
         else
+            --game.print(game.tick.." "..FlyingItem.surface.name)
+            --game.print(FlyingItem.item.." | "..FlyingItem.target.x..", "..FlyingItem.target.y)
             local spilt = FlyingItem.surface.spill_item_stack
                 {
                     position = FlyingItem.surface.find_non_colliding_position("item-on-ground", FlyingItem.target, 500, 0.1),
@@ -321,7 +323,7 @@ local CloserSideOrder = {
     },
 }
 local function DropOntoBelt(FlyingItem, belt, SpillExcess)
-    if (SpillExcess == nil) then -- only used for vacuum hatches because the spill of excess is handled by it instead
+    if (SpillExcess == nil) then -- only used for vacuum hatches with this set to false because the spill of excess is handled by it instead
         SpillExcess = true
     end
     ---- determine "From" direction ----
@@ -373,7 +375,9 @@ local function DropOntoBelt(FlyingItem, belt, SpillExcess)
             end
             deposited = true
         end
-        FlyingItem.CloudStorage.destroy()
+        if (deposited) then
+            FlyingItem.CloudStorage.destroy()
+        end
     else
         local total = FlyingItem.amount
         if (belt.type == "transport-belt") then
@@ -674,7 +678,7 @@ function ResolveThrownItem(FlyingItem)
                 ---- Doesn't make sense for player landingit ----
                 if (ThingLandedOn.name == "cliff") then
                     FlyingItem.player.teleport(ThingLandedOn.surface.find_non_colliding_position("iron-chest", FlyingItem.target, 0, 0.5))
-                elseif (ThingLandedOn.name ~= "PlayerLauncher" and ThingLandedOn.prototype.collision_mask["player"]) then
+                elseif (ThingLandedOn.name ~= "PlayerLauncher" and ThingLandedOn.prototype.collision_mask.layers["player"]) then
                     ---- Damage the player based on thing's size and destroy what they landed on to prevent getting stuck ----
                     FlyingItem.player.character.damage(10*(ThingLandedOn.bounding_box.right_bottom.x-ThingLandedOn.bounding_box.left_top.x)*(ThingLandedOn.bounding_box.right_bottom.y-ThingLandedOn.bounding_box.left_top.y), "neutral", "impact", ThingLandedOn)
                     ThingLandedOn.die()
