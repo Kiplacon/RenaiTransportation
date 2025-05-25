@@ -246,7 +246,7 @@ local function GetOnOrOffZipline(event) -- has .name = event ID number, .tick = 
 			elseif (player.character and player.character.driving == false and PlayerProperties.state == "default" and ThingHovering.type == "electric-pole" and string.find(player.character.name, "-jetpack")) then
 				player.print({"zipline-stuff.range"})
 
-			elseif (player.character and player.character.driving == false and PlayerProperties.state == "default" and ThingHovering.type == "electric-pole" and #ThingHovering.neighbours == 0) then
+			elseif (player.character and player.character.driving == false and PlayerProperties.state == "default" and ThingHovering.type == "electric-pole" and #ThingHovering.get_wire_connector(defines.wire_connector_id.pole_copper, true).real_connections == 0) then
 				player.print({"zipline-stuff.NotConnected"})
 
 			end

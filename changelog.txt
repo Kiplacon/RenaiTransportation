@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.9
+Date: 5/25/2025
+  Bugfixes:
+    - Fixed a crash when trying to change the display type of an empty Zipline terminal list. Reported by Zantigar
+---------------------------------------------------------------------------------------------------
 Version: 2.1.8
 Date: 5/20/2025
   Changes:

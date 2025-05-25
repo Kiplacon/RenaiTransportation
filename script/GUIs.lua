@@ -151,6 +151,7 @@ function AIZiplineControllerTerminalList(player, CurrentPole)
          end
          table.sort(a)
          local sorted = {}
+         local AttachedToTerminal = false
          for each, name in pairs(a) do
             for each, terminal in pairs(storage.ZiplineTerminals) do
                if (terminal.name and string.lower(copy(terminal.name)) == name) then
@@ -159,9 +160,11 @@ function AIZiplineControllerTerminalList(player, CurrentPole)
                end
             end
          end
+         local TerminalsOnNetwork = 0
          for each, terminal in pairs(sorted) do
             local entity = terminal.entity
-            if (entity.valid == true and entity.electric_network_id == CurrentPole.electric_network_id) then
+            if (entity.valid == true and entity.electric_network_id == CurrentPole.electric_network_id and entity.unit_number ~= CurrentPole.unit_number) then
+               TerminalsOnNetwork = TerminalsOnNetwork + 1
                if (storage.ZiplineTerminals[script.register_on_object_destroyed(CurrentPole)] == nil) then
                   storage.ZiplineTerminals[script.register_on_object_destroyed(CurrentPole)] = {entity=CurrentPole}
                end
@@ -194,9 +197,15 @@ function AIZiplineControllerTerminalList(player, CurrentPole)
                end
             elseif (entity.valid == false) then
                storage.ZiplineTerminals[each] = nil
+            elseif (entity.unit_number == CurrentPole.unit_number) then
+               AttachedToTerminal = true
+               TerminalsOnNetwork = TerminalsOnNetwork + 1
             end
          end
    player.opened = frame
+   if (TerminalsOnNetwork == 0 or (TerminalsOnNetwork == 1 and AttachedToTerminal == true)) then
+      player.opened = nil
+   end
 end
 
 
