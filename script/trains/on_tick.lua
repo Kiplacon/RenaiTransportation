@@ -910,7 +910,14 @@ local function on_tick(event)
 									properties.entity.surface.spill_item_stack({position=properties.entity.position, stack=substack[1]})
 									substack.destroy()
 								else
-									properties.entity.surface.spill_item_stack({position=properties.entity.position, stack=stackk})
+									local entities = properties.entity.surface.spill_item_stack({position=properties.entity.position, stack=stackk})
+									if storage.Ultracube then
+										for _, entity in ipairs(entities) do
+											if storage.Ultracube.prototypes.cube[entity.name] then
+												remote.call("Ultracube", "hint_entity", entity)
+											end
+										end
+									end
 								end
 							end
 						end
