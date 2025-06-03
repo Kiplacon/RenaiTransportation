@@ -8,7 +8,9 @@ local function _create_token_init_data(FlyingTrain)
 		spill_position = FlyingTrain.GuideCar.position
 		-- Velocity will be set on second tick in air
 	}
-	FlyingTrain.Ultracube.prev_pos = FlyingTrain.GuideCar.position
+	if not FlyingTrain.Ultracube.prev_pos then
+		FlyingTrain.Ultracube.prev_pos = FlyingTrain.GuideCar.position
+	end
 	return data
 end
 
@@ -43,22 +45,22 @@ function cube_flying_trains.create_tokens_for_inventory(FlyingTrain, inventory, 
 end
 
 function cube_flying_trains.create_token_for_burning(FlyingTrain)
-	if FlyingTrain.CurrentlyBurning and storage.Ultracube.prototypes.irreplaceable[FlyingTrain.CurrentlyBurning.name] then -- There is a currently burning item for this FlyingTrain and it is an irreplaceable
+	if FlyingTrain.CurrentlyBurning and storage.Ultracube.prototypes.irreplaceable[FlyingTrain.CurrentlyBurning.name.name] then -- There is a currently burning item for this FlyingTrain and it is an irreplaceable
 		if FlyingTrain.Ultracube == nil then
 			FlyingTrain.Ultracube = {tokens={}, do_hint=false}
 		end
 		FlyingTrain.Ultracube.tokens["currently_burning"] = {
 			remote.call("Ultracube", "create_ownership_token",
-				FlyingTrain.CurrentlyBurning.name,
+				FlyingTrain.CurrentlyBurning.name.name,
 				1, -- There can only ever be one item burning,
 				FlyingTrain.AirTime+1,
 				_create_token_init_data(FlyingTrain)
 			)
 		}
-		if storage.Ultracube.prototypes.cube[FlyingTrain.CurrentlyBurning.name] then
+		if storage.Ultracube.prototypes.cube[FlyingTrain.CurrentlyBurning.name.name] then
 			FlyingTrain.Ultracube.do_hint = true
 		end
-		
+
 		-- Set up FlyingTrain data so that landing code will act as if nothing was burning in case Ultracube recalls the irreplaceable and it shouldn't be "put back in" the burner
 		FlyingTrain.CurrentlyBurning = nil
 		FlyingTrain.Ultracube.RemainingFuel = FlyingTrain.RemainingFuel -- Save remaining fuel for re-applying once token is released successfully
@@ -67,7 +69,7 @@ function cube_flying_trains.create_token_for_burning(FlyingTrain)
 end
 
 function cube_flying_trains.position_update(FlyingTrain)
-	local target = rendering.get_target(FlyingTrain.TrainImageID)
+	local target = FlyingTrain.TrainImageID.target
 	local position = target.position or FlyingTrain.GuideCar.position
 	local offset = target.entity_offset
 	if target.entity_offset then
@@ -87,13 +89,41 @@ function cube_flying_trains.position_update(FlyingTrain)
 				token_id,
 				FlyingTrain.LandTick - game.tick + 1, -- Update timeout for bounce pads and any really long jumps that go over Ultracube's normal limit
 				{
-					position = position, 
+					position = position,
 					velocity=velocity
 				}
 			)
 		end
 	end
 	FlyingTrain.Ultracube.prev_pos = position
+end
+
+-- For trapdoor wagons: releases the ownership token at Ultracube.tokens[inv_type][index] and recreates it with `count` fewer items, if any items are remaining
+-- If the token hasn't expired returns the associated item and count; in this case a new ownership token must be created in the same tick
+function cube_flying_trains.release_for_trapdoor(FlyingTrain, inv_type, index, count)
+	local token = FlyingTrain.Ultracube.tokens[inv_type] and FlyingTrain.Ultracube.tokens[inv_type][index]
+	if not token then
+		return nil
+	end
+
+	local stack = remote.call("Ultracube", "release_ownership_token", token)
+	if not stack then
+		table.remove(FlyingTrain.Ultracube.tokens[inv_type], index)
+		return nil
+	else
+		if stack.count > count then
+			FlyingTrain.Ultracube.tokens[inv_type][index] = remote.call("Ultracube", "create_ownership_token",
+				stack.name,
+				stack.count - count,
+				FlyingTrain.LandTick - game.tick + 1,
+				_create_token_init_data(FlyingTrain)
+			)
+			stack.count = count
+		else
+			table.remove(FlyingTrain.Ultracube.tokens[inv_type], index)
+		end
+		return stack
+	end
 end
 
 -- Inserts all irreplaceables associated with the given FlyingTrain into the given inventory, and sends hint_entity to Ultracube if relevant

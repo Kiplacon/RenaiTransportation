@@ -24,15 +24,30 @@ local function PersonalFitness(event)
                 and slot1.count == slot1.prototype.stack_size) then
                     local cannon = ItemCannonProperties.entity
                     if (prototypes.entity["RTItemShell"..slot1.name.."-Q-"..slot1.quality.name]) then
-                        cannon.surface.create_entity
+                        local target = OffsetPosition(cannon.position, targets[cannon.orientation])
+                        local projectile = cannon.surface.create_entity
                         {
                             name="RTItemShell"..slot1.name.."-Q-"..slot1.quality.name,
                             source = cannon,
                             position = cannon.position,
-                            target = OffsetPosition(cannon.position, targets[cannon.orientation]),
+                            target = target,
                             speed=storage.ItemCannonSpeed,
                             max_range = storage.ItemCannonRange or 200
                         }
+                        -- Ultracube irreplaceables detection & handling
+                        if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[slot1.name] then
+                            -- Create a dummy FlyingItem so we can track it for Ultracube
+                            InvokeThrownItem({
+                                type = "ItemShell",
+                                ItemName = slot1.name,
+                                count = slot1.prototype.stack_size,
+                                quality = slot1.quality.name,
+                                start = cannon.position,
+                                target = target,
+                                surface = cannon.surface,
+                                projectile = projectile,
+                            })
+                        end
                         slot1.clear()
                         --slot2.count = slot2.count - 1
                         if (ItemCannonProperties.CantLoad) then
