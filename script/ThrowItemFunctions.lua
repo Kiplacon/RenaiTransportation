@@ -438,7 +438,7 @@ function ResolveThrownItem(FlyingItem)
     if (FlyingItem.type == "ItemShell") then
         -- By the time this called the ownership token should have been released already
         -- If for some reason that's not the case, trigger Ultracube's forced recovery
-        if FlyingItem.cube_token_id then
+        if storage.Ultracube and FlyingItem.cube_token_id then
             CubeFlyingItems.panic(FlyingItem)
         end
 
