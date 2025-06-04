@@ -93,7 +93,7 @@ local function effect_triggered(event)
 			end
 			storage.PrimerThrowerLinks[DetectorNumber].ready = false
 		end
-		
+
 	elseif (string.find(event.effect_id, "RTItemShell")) then
 		local ItemName, QualityName = string.match(event.effect_id, "^RTItemShell(.+)%-Q%-(.*)$")
 		local eject = false
@@ -107,7 +107,6 @@ local function effect_triggered(event)
 		end
 
 		-- Ultracube irreplaceables detection & handling
-		local skip_ultracube = false
 		if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] then
 			-- Release the token so we can fire a bounced projectile / insert it into the world
 			-- If Ultracube recovered the item don't do anything
@@ -391,11 +390,6 @@ local function effect_triggered(event)
 					space = false,
 				})
 				RemainingCount = RemainingCount - count
-			end
-
-			-- Ultracube irreplaceables detection & handling: make sure the remaining items are spilled
-			if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] then
-
 			end
 			if (debris) then
 				surface.create_entity

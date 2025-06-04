@@ -8,9 +8,7 @@ local function _create_token_init_data(FlyingTrain)
 		spill_position = FlyingTrain.GuideCar.position
 		-- Velocity will be set on second tick in air
 	}
-	if not FlyingTrain.Ultracube.prev_pos then
-		FlyingTrain.Ultracube.prev_pos = FlyingTrain.GuideCar.position
-	end
+	FlyingTrain.Ultracube.prev_pos = FlyingTrain.GuideCar.position
 	return data
 end
 
@@ -128,7 +126,7 @@ end
 
 -- Inserts all irreplaceables associated with the given FlyingTrain into the given inventory, and sends hint_entity to Ultracube if relevant
 --[[
-	There doesn't appear to be an efficient way to maintain inventory order, 
+	There doesn't appear to be an efficient way to maintain inventory order,
 	but this will respect any filtered slots so long as the inventory has had them set before calling this function.
 ]]
 function cube_flying_trains.release_and_insert(FlyingTrain, inventory, inv_type, hint_entity)

@@ -843,7 +843,7 @@ function ResolveThrownItem(FlyingItem)
                     else
                         storage.ThrowerPaths[OnDestroyNumber][FlyingItem.tracing][FlyingItem.item] = true
                     end
-                    
+
                 elseif (ThingLandedOn.unit_number == nil) then -- cliffs/trees/other things without unit_numbers
                     storage.CatapultList[FlyingItem.tracing].targets[FlyingItem.item] = "nothing"
 
@@ -986,7 +986,7 @@ function ResolveThrownItem(FlyingItem)
         storage.CatapultList[FlyingItem.tracing].ImAlreadyTracer = "traced"
         storage.CatapultList[FlyingItem.tracing].targets[FlyingItem.item] = "nothing"
     end
-    
+
     -- cleanup
     -- overflow tracking
     if (FlyingItem.tracing == nil and ClearOverflowTracking == true and FlyingItem.DestinationDestroyNumber ~= nil and storage.OnTheWay[FlyingItem.DestinationDestroyNumber]) then

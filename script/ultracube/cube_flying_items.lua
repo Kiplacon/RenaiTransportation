@@ -1,7 +1,7 @@
 local cube_flying_items = {}
 
 -- Sets some additional properties normally not computed for ReskinnedStreams but are used to track the cube
-local function add_missing_stream_properties(FlyingItem)
+local function _add_missing_stream_properties(FlyingItem)
 	if FlyingItem.type == "ReskinnedStream" then
 		local start = FlyingItem.StreamStart or FlyingItem.ThrowerPosition
 		start.x = start.x or start[1]
@@ -36,7 +36,7 @@ end
 -- Create an ownership token and attach it to the FlyingItem
 -- If the FlyingItem already has a token, updates it instead
 function cube_flying_items.create_token_for(FlyingItem, velocity)
-	add_missing_stream_properties(FlyingItem)
+	_add_missing_stream_properties(FlyingItem)
 	FlyingItem.cube_token_id = remote.call("Ultracube", "create_ownership_token",
 		FlyingItem.item,
 		FlyingItem.amount,
@@ -56,20 +56,16 @@ function cube_flying_items.item_with_path_update(FlyingItem, duration)
 	local position = FlyingItem.path[duration] -- Ground position at current tick along its path
 	local height = FlyingItem.path[duration].height -- How high 'above' the ground the sprite is
 	-- Compute velocity based on position in next or previous tick
-	local velocity
+	local p1, p2
 	if FlyingItem.path[duration-1] then
-		local vspeed = height - FlyingItem.path[duration-1].height
-		velocity = {
-			x = position.x - FlyingItem.path[duration-1].x,
-			y = position.y - FlyingItem.path[duration-1].y - vspeed, -- minus vspeed because +y is south
-		}
-	elseif FlyingItem.path[duration+1] then
-		local vspeed = FlyingItem.path[duration+1].height - height
-		velocity = {
-			x = FlyingItem.path[duration+1].x - position.x,
-			y = FlyingItem.path[duration+1].y - position.y - vspeed, -- minus vspeed because +y is south
-		}
+		p1, p2 = FlyingItem.path[duration-1], position
+	else if FlyingItem.path[duration+1] then
+		p1, p2 = position, FlyingItem.path[duration+1]
 	end
+	local velocity = p1 and p2 and {
+		x = p2.x - p1.x,
+		y = p2.y - p1.y - (p2.height - p1.height), -- minus delta-height because +y is south
+	}
 	remote.call("Ultracube", "update_ownership_token",
 		FlyingItem.cube_token_id,
 		nil, -- Timeout already set on creation. If the train was somehow going fast enough to fling something into the air longer than Ultracube's timeout limit, it's probably best to just let it be forcibly recovered
@@ -81,7 +77,7 @@ function cube_flying_items.item_with_path_update(FlyingItem, duration)
 	)
 end
 
--- Used to update token for items using the stream projectile
+-- Used to update the ownership token for items using the stream projectile
 function cube_flying_items.item_with_stream_update(FlyingItem)
 	local delta = (game.tick-FlyingItem.StartTick)/FlyingItem.AirTime -- 0-1 float corresponding to how far along the item should be between starting and finishing position
 	-- Vector from start position to end position scaled by delta to get vector for distance traveled, and then added to start position to get a rough 'ground' position
@@ -124,7 +120,7 @@ end
 
 -- Used to update and transfer the ownership token for a FlyingItem after it lands on a bounce pad of any kind
 function cube_flying_items.bounce_update(bouncing, NewFlyingItem)
-	add_missing_stream_properties(NewFlyingItem)
+	_add_missing_stream_properties(NewFlyingItem)
 	NewFlyingItem.cube_token_id = bouncing.cube_token_id
 	NewFlyingItem.cube_should_hint = bouncing.cube_should_hint
 	bouncing.cube_token_id = nil

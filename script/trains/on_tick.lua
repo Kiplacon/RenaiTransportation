@@ -358,7 +358,7 @@ local function on_tick(event)
 						else
 							SpeedPolarity = -1
 						end
-						
+
 						if (properties.schedule ~= nil) then
 							reEnableSchedule(NewTrain.train, properties.schedule, properties.destinationStation, properties)
 						end
@@ -371,7 +371,7 @@ local function on_tick(event)
 						) then
 							NewTrain.train.manual_mode = properties.ManualMode -- TrainreEnableSchedules are default created in manual mode, and connecting a new carriage switches back to manual
 						end
-						
+
 						if (properties.leader == nil) then
 							if ((properties.ghostLoco ~= nil and properties.ghostLoco.valid == true and properties.RampOrientation == properties.ghostLoco.orientation)
 							or (properties.RampOrientation == properties.orientation))then
@@ -387,7 +387,7 @@ local function on_tick(event)
 							--end
 						end
 
-						
+
 						if (properties.gridd ~= nil and NewTrain.grid ~= nil) then
 							for each, equip in pairs(properties.gridd) do
 								NewTrain.grid.put
@@ -407,7 +407,7 @@ local function on_tick(event)
 								-- Ultracube handling
 								if storage.Ultracube then
 									remote.call("Ultracube", "reset_ultralocomotion_fuel", NewTrain) -- If locomotive was burning ultralocomotion fuel before launch, resets it on landing
-									
+
 									-- Ultracube irreplaceables handling for fuel/burnt slots & currently burning
 									if properties.Ultracube then -- Ultracube is active and this locomotive has irreplaceables in it
 										if properties.Ultracube.tokens[defines.inventory.fuel] then -- There were irreplaceables in the fuel inventory
@@ -421,14 +421,14 @@ local function on_tick(event)
 										end
 									end
 								end
-								
+
 								for each, stack in pairs(properties.FuelInventory) do
 									NewTrain.burner.inventory.insert({name=stack.name, count=stack.count, quality=stack.quality})
 								end
 								for each, stack in pairs(properties.BurntFuelInventory) do
 									NewTrain.burner.burnt_result_inventory.insert({name=stack.name, count=stack.count, quality=stack.quality})
 								end
-								
+
 							end
 						elseif (NewTrain.type == "cargo-wagon") then
 							local WagonInventory = NewTrain.get_inventory(defines.inventory.cargo_wagon)
@@ -678,7 +678,6 @@ local function on_tick(event)
 					if (NumItems > 0) then
 						local spill = {}
 						local wagon = GuideCar
-
 						local slot = math.random(NumItems)
 						local stack = items[slot]
 						if storage.Ultracube and properties.Ultracube and slot > #items then
