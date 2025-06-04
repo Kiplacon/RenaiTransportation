@@ -59,7 +59,7 @@ function cube_flying_items.item_with_path_update(FlyingItem, duration)
 	local p1, p2
 	if FlyingItem.path[duration-1] then
 		p1, p2 = FlyingItem.path[duration-1], position
-	else if FlyingItem.path[duration+1] then
+	elseif FlyingItem.path[duration+1] then
 		p1, p2 = position, FlyingItem.path[duration+1]
 	end
 	local velocity = p1 and p2 and {
@@ -77,7 +77,7 @@ function cube_flying_items.item_with_path_update(FlyingItem, duration)
 	)
 end
 
--- Used to update the ownership token for items using the stream projectile
+-- Used to update token for items using the stream projectile
 function cube_flying_items.item_with_stream_update(FlyingItem)
 	local delta = (game.tick-FlyingItem.StartTick)/FlyingItem.AirTime -- 0-1 float corresponding to how far along the item should be between starting and finishing position
 	-- Vector from start position to end position scaled by delta to get vector for distance traveled, and then added to start position to get a rough 'ground' position
