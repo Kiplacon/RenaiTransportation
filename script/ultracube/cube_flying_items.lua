@@ -3,26 +3,27 @@ local cube_flying_items = {}
 -- Sets some additional properties normally not computed for ReskinnedStreams but are used to track the cube
 local function add_missing_stream_properties(FlyingItem)
 	if FlyingItem.type == "ReskinnedStream" then
-		local StartX = FlyingItem.ThrowerPosition.x or FlyingItem.ThrowerPosition[1]
-		local StartY = FlyingItem.ThrowerPosition.y or FlyingItem.ThrowerPosition[2]
-		local TargetX = FlyingItem.target.x
-		local TargetY = FlyingItem.target.y
+		local start = FlyingItem.StreamStart or FlyingItem.ThrowerPosition
+		start.x = start.x or start[1]
+		start.y = start.y or start[2]
+		local target = FlyingItem.target
 		local speed = FlyingItem.speed or 0.18
-		local distance = math.sqrt((TargetX-StartX)*(TargetX-StartX) + (TargetY-StartY)*(TargetY-StartY))
-		FlyingItem.AirTime = math.ceil(distance / speed) + 2  -- takes some extra ticks for the stream to be destroyed
+		local distance = math.sqrt((target.x-start.x)*(target.x-start.x) + (target.y-start.y)*(target.y-start.y))
+		local AirTime = math.ceil(distance / speed)
+		FlyingItem.AirTime = AirTime + 2  -- takes some extra ticks for the stream to be destroyed
 		FlyingItem.StartTick = game.tick
 
 		if storage.Ultracube.prototypes.cube[FlyingItem.item] then
 			-- kinda expensive, but gives us a nice arc for the cube effects / cubecam
-			local vector = {x=TargetX-StartX, y=TargetY-StartY}
+			local vector = {x=target.x-start.x, y=target.y-start.y}
 			local path = {}
-			local MaxHeight = 0.0004*(distance*distance)/(speed*speed)
+			local MaxHeight = 0.00044*(distance*distance)/(speed*speed)
 			for j = 0, FlyingItem.AirTime do
-					local progress = j/FlyingItem.AirTime
+					local progress = math.min(1, j/AirTime)
 					path[j] =
 					{
-							x = StartX+(progress*vector.x),
-							y = StartY+(progress*vector.y),
+							x = start.x+(progress*vector.x),
+							y = start.y+(progress*vector.y),
 							height = 4*MaxHeight*(progress - (progress*progress))
 					}
 			end
@@ -75,7 +76,7 @@ function cube_flying_items.item_with_path_update(FlyingItem, duration)
 		{
 			position = {x=position.x, y=position.y - height}, -- Render position in-air (minus height because +y is south)
 			velocity = velocity,
-			height = height -- Used for modifying Ultracube explosion animation. Not related to where the camera follows nor the explosion's position
+			height = 0 -- Used for modifying Ultracube particle effects. Not related to where the camera follows nor the explosion's position
 		}
 	)
 end

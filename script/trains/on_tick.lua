@@ -901,7 +901,6 @@ local function on_tick(event)
 								end
 							-- Spill the selected items on the ground
 							else
-								-- WIP ultracube support spill on ground driectly from wagon goes here
 								if (stackk.item_number) then
 									local substack = game.create_inventory(1)
 									substack.insert(stackk) -- inserts a copy, doesnt transfer

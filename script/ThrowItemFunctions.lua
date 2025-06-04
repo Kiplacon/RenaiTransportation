@@ -67,7 +67,6 @@ function InvokeThrownItem(stuff)
                         target_position={TargetX, TargetY}
                     }
                 end
-                FlyingItem.speed = speed
                 local StreamDestroyNumber = script.register_on_object_destroyed(stream)
                 FlyingItem.StreamDestroyNumber = StreamDestroyNumber
                 storage.FlyingItems[StreamDestroyNumber] = FlyingItem
@@ -164,6 +163,9 @@ function InvokeThrownItem(stuff)
             -- Ultracube irreplaceables detection & handling
             if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] and FlyingItem.amount > 0 then -- Ultracube mod is active, and the held item is an irreplaceable
                 FlyingItem.speed = speed
+                if (stuff.thrower and stuff.thrower.name ~= "RTThrower-EjectorHatchRT") then
+                    FlyingItem.StreamStart = stuff.thrower.held_stack_position
+                end
                 if stuff.bouncing and stuff.bouncing.cube_token_id then
                     -- Update and transfer an existing cube_token_id to the new FlyingItem
                     CubeFlyingItems.bounce_update(stuff.bouncing, FlyingItem)
