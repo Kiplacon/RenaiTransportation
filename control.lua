@@ -135,9 +135,11 @@ function(event)
 		for i = 1, #container.get_output_inventory() do
 			local stack = container.get_output_inventory()[i]
 			if (stack.valid_for_read == true) then
-				stack.count = math.ceil(stack.count*0.5) -- half the items lost in the destruction
+				if not (storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[stack.name]) then
+					stack.count = math.ceil(stack.count*0.5) -- half the items lost in the destruction
+				end
 				local GroupSize = math.ceil((stack.count/17))
-				for _ = 1, math.floor(stack.count/GroupSize) do
+				while stack.count > 0 do
 					-- unit vector
 					local angle = math.random(0, 100)*0.01
 					local xUnit = math.cos(2*math.pi*angle)
@@ -158,11 +160,12 @@ function(event)
 							height = progress * (1-progress) / arc
 						}
 					end
+					local ThrowFromStackAmount = math.min(GroupSize, stack.count)
 					InvokeThrownItem({
 						type = "CustomPath",
 						render_layer = "elevated-higher-object",
 						stack = stack,
-						ThrowFromStackAmount = GroupSize,
+						ThrowFromStackAmount = ThrowFromStackAmount,
 						start = container.position,
 						target = {x=TargetX, y=TargetY},
 						path = path,

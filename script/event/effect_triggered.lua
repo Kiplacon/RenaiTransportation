@@ -93,7 +93,7 @@ local function effect_triggered(event)
 			end
 			storage.PrimerThrowerLinks[DetectorNumber].ready = false
 		end
-		
+
 	elseif (string.find(event.effect_id, "RTItemShell")) then
 		local ItemName, QualityName = string.match(event.effect_id, "^RTItemShell(.+)%-Q%-(.*)$")
 		local eject = false
@@ -105,6 +105,17 @@ local function effect_triggered(event)
 			speed = 0.75
 			LaserPointer = true
 		end
+
+		-- Ultracube irreplaceables detection & handling
+		if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] then
+			-- Release the token so we can fire a bounced projectile / insert it into the world
+			-- If Ultracube recovered the item don't do anything
+			local projectile = surface.find_entity(event.effect_id, event.target_position)
+			if not CubeFlyingItems.release_for_projectile(projectile) then
+				return
+			end
+		end
+
 		if (event.target_entity) then
 			local HitEntity = event.target_entity
 			if (HitEntity.name == "RTRicochetPanel") then
@@ -135,15 +146,32 @@ local function effect_triggered(event)
 						local r_x = v_x - 2 * dot * n_x
 						local r_y = v_y - 2 * dot * n_y
 						-- r_x, r_y now points in the bounced (reflected) direction.
-					surface.create_entity
+					local target = OffsetPosition(HitPosition, {100*r_x, 100*r_y})
+					local projectile = surface.create_entity
 					{
 						name=event.effect_id,
 						source = HitEntity,
 						position = HitPosition,
-						target = OffsetPosition(HitPosition, {100*r_x, 100*r_y}),
+						target = target,
 						speed=speed,
 						max_range = storage.ItemCannonRange or 200
 					}
+
+					-- Ultracube irreplaceables detection & handling
+					if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] then
+						-- Create a dummy FlyingItem so we can track it for Ultracube
+						InvokeThrownItem({
+							type = "ItemShell",
+							ItemName = ItemName,
+							count = prototypes.item[ItemName].stack_size,
+							quality = QualityName,
+							start = HitPosition,
+							target = target,
+							surface = surface,
+							projectile = projectile,
+						})
+					end
+
 					if (not LaserPointer) then
 						HitEntity.energy = 0
 						surface.play_sound
@@ -180,6 +208,11 @@ local function effect_triggered(event)
 					eject = true
 					debris = false
 				end
+				-- Ultracube irreplaceables detection & handling
+				if storage.Ultracube and inserted > 0 and storage.Ultracube.prototypes.cube[ItemName] then
+					-- hint if needed
+					remote.call("Ultracube", "hint_entity", HitEntity)
+				end
 			elseif (HitEntity.name == "RTMergingChute") then
 				if (HitEntity.energy/HitEntity.electric_buffer_size > 0.75) then
 					local start = event.source_position
@@ -190,15 +223,32 @@ local function effect_triggered(event)
 					local ProjectileOrientation = (angle / (2 * math.pi)) % 1
 					if (ProjectileOrientation ~= HitEntity.orientation and (ProjectileOrientation+0.5)%1 ~= HitEntity.orientation) then
 						local OutVector = storage.ChuteOrientationComponents[HitEntity.orientation]
-						surface.create_entity
+						local target = OffsetPosition(HitEntity.position, {100*OutVector.x, 100*OutVector.y})
+						local projectile = surface.create_entity
 						{
 							name=event.effect_id,
 							source = HitEntity,
 							position = HitEntity.position,
-							target = OffsetPosition(HitEntity.position, {100*OutVector.x, 100*OutVector.y}),
+							target = target,
 							speed=speed,
 							max_range = storage.ItemCannonRange or 200
 						}
+
+						-- Ultracube irreplaceables detection & handling
+						if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] then
+							-- Create a dummy FlyingItem so we can track it for Ultracube
+							InvokeThrownItem({
+								type = "ItemShell",
+								ItemName = ItemName,
+								count = prototypes.item[ItemName].stack_size,
+								quality = QualityName,
+								start = HitEntity.position,
+								target = target,
+								surface = surface,
+								projectile = projectile,
+							})
+						end
+
 						if (not LaserPointer) then
 							HitEntity.energy = 0
 							surface.play_sound
@@ -248,15 +298,31 @@ local function effect_triggered(event)
 							OutY = -OutY
 							HitEntity.destructible = true
 						end
-						surface.create_entity
+						local target = OffsetPosition(HitEntity.position, {100*OutX, 100*OutY})
+						local projectile = surface.create_entity
 						{
 							name=event.effect_id,
 							source = HitEntity,
 							position = HitEntity.position,
-							target = OffsetPosition(HitEntity.position, {100*OutX, 100*OutY}),
+							target = target,
 							speed=speed,
 							max_range = storage.ItemCannonRange or 200
 						}
+						-- Ultracube irreplaceables detection & handling
+						if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] then
+							-- Create a dummy FlyingItem so we can track it for Ultracube
+							InvokeThrownItem({
+								type = "ItemShell",
+								ItemName = ItemName,
+								count = prototypes.item[ItemName].stack_size,
+								quality = QualityName,
+								start = HitPosition,
+								target = target,
+								surface = surface,
+								projectile = projectile,
+							})
+						end
+
 						if (not LaserPointer) then
 							HitEntity.energy = 0
 							surface.play_sound
@@ -302,19 +368,20 @@ local function effect_triggered(event)
 			if (debris == false) then
 				StartOffset = {0, -1}
 			end
-			local count = prototypes.item[ItemName].stack_size - inserted
-			local GroupSize = math.ceil(count/17) -- each stack will launch out as maximum 17 projectiles per wagon
-			for _ = 1, math.floor(count/GroupSize) do
+			local RemainingCount = prototypes.item[ItemName].stack_size - inserted
+			local GroupSize = math.ceil(RemainingCount/17) -- each stack will launch out as maximum 17 projectiles per wagon (plus one for remainder)
+			while RemainingCount > 0 do
 				local AngleSpread = math.random(-40,40)*0.001
 				local xUnit = math.cos(2*math.pi*(ProjectileOrientation+AngleSpread))
 				local yUnit = math.sin(2*math.pi*(ProjectileOrientation+AngleSpread))
 				local ForwardSpread = math.random(1000,3000)*0.01
 				local TargetX = HitPosition.x + (ForwardSpread*0.6*xUnit)-- + (HorizontalSpread*wagon.speed*yUnit)
 				local TargetY = HitPosition.y + (ForwardSpread*0.6*yUnit)-- + (HorizontalSpread*wagon.speed*xUnit)
+				local count = math.min(GroupSize, RemainingCount)
 				InvokeThrownItem({
 					type = "ReskinnedStream",
 					ItemName = ItemName,
-					count = GroupSize,
+					count = count,
 					quality = QualityName,
 					speed = 0.6,
 					start = OffsetPosition(HitPosition, StartOffset),
@@ -322,6 +389,7 @@ local function effect_triggered(event)
 					surface = surface,
 					space = false,
 				})
+				RemainingCount = RemainingCount - count
 			end
 			if (debris) then
 				surface.create_entity

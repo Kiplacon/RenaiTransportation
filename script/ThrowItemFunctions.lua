@@ -117,16 +117,12 @@ function InvokeThrownItem(stuff)
                 storage.FlyingItems[FlightNumber] = FlyingItem
                 storage.CustomPathFlyingItemSprites[FlightNumber] = true
             elseif (ProjectileType == "ItemShell") then
-                local projectile = FlyingItem.surface.create_entity
-                {
-                    name="RTItemShell"..FlyingItem.item,
-                    source = stuff.cannon, -- so it doesnt clip the cannon
-                    position = stuff.cannon.position, -- start position
-                    target = FlyingItem.target,
-                    speed=storage.ItemCannonSpeed,
-                    max_range = 100
-                }
-                local ProjectileDestroyNumber = script.register_on_object_destroyed(projectile)
+                -- Only for Ultracube (otherwise item shells are handled entirely in effect_triggered)
+                -- Projectile creation already handled by on_tick_ItemCannons
+                FlyingItem.AirTime = math.ceil((storage.ItemCannonRange or 200) / storage.ItemCannonSpeed) -- err towards maximum possible AirTime
+                FlyingItem.StartTick = game.tick
+                FlyingItem.projectile = stuff.projectile
+                local ProjectileDestroyNumber = script.register_on_object_destroyed(stuff.projectile)
                 FlyingItem.StreamDestroyNumber = ProjectileDestroyNumber
                 storage.FlyingItems[ProjectileDestroyNumber] = FlyingItem
 
@@ -165,9 +161,18 @@ function InvokeThrownItem(stuff)
             end
 
             -- Ultracube irreplaceables detection & handling
-            if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] then -- Ultracube mod is active, and the held item is an irreplaceable
-                -- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
-                CubeFlyingItems.create_token_for(FlyingItem)
+            if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] and FlyingItem.amount > 0 then -- Ultracube mod is active, and the held item is an irreplaceable
+                FlyingItem.speed = speed
+                if (stuff.thrower and stuff.thrower.name ~= "RTThrower-EjectorHatchRT") then
+                    FlyingItem.StreamStart = stuff.thrower.held_stack_position
+                end
+                if stuff.bouncing and stuff.bouncing.cube_token_id then
+                    -- Update and transfer an existing cube_token_id to the new FlyingItem
+                    CubeFlyingItems.bounce_update(stuff.bouncing, FlyingItem)
+                else
+                    -- Sets cube_token_id and cube_should_hint for the new FlyingItems entry
+                    CubeFlyingItems.create_token_for(FlyingItem)
+                end
             end
             return FlyingItem
 
@@ -428,8 +433,19 @@ function ResolveThrownItem(FlyingItem)
             area = {{FlyingItem.target.x-0.5, FlyingItem.target.y-0.5}, {FlyingItem.target.x+0.5, FlyingItem.target.y+0.5}},
             type = "cargo-wagon"
         }[1]
+
+    -- dummy ItemShells for Ultracube
+    if (FlyingItem.type == "ItemShell") then
+        -- By the time this called the ownership token should have been released already
+        -- If for some reason that's not the case, trigger Ultracube's forced recovery
+        if storage.Ultracube and FlyingItem.cube_token_id then
+            CubeFlyingItems.panic(FlyingItem)
+        end
+
+        -- do nothing else except cleanup
+
     -- landed on something
-    if (ThingLandedOn) then
+    elseif (ThingLandedOn) then
         --game.print(ThingLandedOn.name)
         if (string.find(ThingLandedOn.name, "BouncePlate") and FlyingItem.type ~= "ItemShell") then -- if that thing was a bounce plate
             if (FlyingItem.sprite) then -- from impact unloader
@@ -827,7 +843,7 @@ function ResolveThrownItem(FlyingItem)
                     else
                         storage.ThrowerPaths[OnDestroyNumber][FlyingItem.tracing][FlyingItem.item] = true
                     end
-                    
+
                 elseif (ThingLandedOn.unit_number == nil) then -- cliffs/trees/other things without unit_numbers
                     storage.CatapultList[FlyingItem.tracing].targets[FlyingItem.item] = "nothing"
 
@@ -970,7 +986,7 @@ function ResolveThrownItem(FlyingItem)
         storage.CatapultList[FlyingItem.tracing].ImAlreadyTracer = "traced"
         storage.CatapultList[FlyingItem.tracing].targets[FlyingItem.item] = "nothing"
     end
-    
+
     -- cleanup
     -- overflow tracking
     if (FlyingItem.tracing == nil and ClearOverflowTracking == true and FlyingItem.DestinationDestroyNumber ~= nil and storage.OnTheWay[FlyingItem.DestinationDestroyNumber]) then

@@ -358,7 +358,7 @@ local function on_tick(event)
 						else
 							SpeedPolarity = -1
 						end
-						
+
 						if (properties.schedule ~= nil) then
 							reEnableSchedule(NewTrain.train, properties.schedule, properties.destinationStation, properties)
 						end
@@ -371,7 +371,7 @@ local function on_tick(event)
 						) then
 							NewTrain.train.manual_mode = properties.ManualMode -- TrainreEnableSchedules are default created in manual mode, and connecting a new carriage switches back to manual
 						end
-						
+
 						if (properties.leader == nil) then
 							if ((properties.ghostLoco ~= nil and properties.ghostLoco.valid == true and properties.RampOrientation == properties.ghostLoco.orientation)
 							or (properties.RampOrientation == properties.orientation))then
@@ -387,7 +387,7 @@ local function on_tick(event)
 							--end
 						end
 
-						
+
 						if (properties.gridd ~= nil and NewTrain.grid ~= nil) then
 							for each, equip in pairs(properties.gridd) do
 								NewTrain.grid.put
@@ -407,7 +407,7 @@ local function on_tick(event)
 								-- Ultracube handling
 								if storage.Ultracube then
 									remote.call("Ultracube", "reset_ultralocomotion_fuel", NewTrain) -- If locomotive was burning ultralocomotion fuel before launch, resets it on landing
-									
+
 									-- Ultracube irreplaceables handling for fuel/burnt slots & currently burning
 									if properties.Ultracube then -- Ultracube is active and this locomotive has irreplaceables in it
 										if properties.Ultracube.tokens[defines.inventory.fuel] then -- There were irreplaceables in the fuel inventory
@@ -421,14 +421,14 @@ local function on_tick(event)
 										end
 									end
 								end
-								
+
 								for each, stack in pairs(properties.FuelInventory) do
 									NewTrain.burner.inventory.insert({name=stack.name, count=stack.count, quality=stack.quality})
 								end
 								for each, stack in pairs(properties.BurntFuelInventory) do
 									NewTrain.burner.burnt_result_inventory.insert({name=stack.name, count=stack.count, quality=stack.quality})
 								end
-								
+
 							end
 						elseif (NewTrain.type == "cargo-wagon") then
 							local WagonInventory = NewTrain.get_inventory(defines.inventory.cargo_wagon)
@@ -663,33 +663,46 @@ local function on_tick(event)
 				end
 			end
 
-			-- Ultracube position handling
-			if storage.Ultracube and properties.Ultracube then -- Mod is active and this FlyingTrain is one that contains Ultracube irreplaceables
-				CubeFlyingTrains.position_update(properties)
-			end
-
 			-- open trapdoor wagon spilling items out during flight
-			if (properties.trapdoor and #properties.cargo ~= 0 and not (height < 1.5 and VerticalSpeed > 0)) then
+			if (properties.trapdoor and (#properties.cargo ~= 0 or (storage.Ultracube and properties.Ultracube)) and not (height < 1.5 and VerticalSpeed > 0)) then
 			--if (properties.trapdoor and #properties.cargo ~= 0 and ((height > 1.5 and VerticalSpeed > 0) or VerticalSpeed <= 0)) then
 				local ItemsPerDrop = 2
 				local items = properties.cargo
 				for drop = 1, 5 do
 					-- Randomly select up to 10 items to spill
-					if (#items > 0) then
+					local NumItems = #items
+					-- If Ultracube is active, include Ultracube irreplaceables which have been set aside
+					if storage.Ultracube and properties.Ultracube then
+						NumItems = NumItems + #properties.Ultracube.tokens[defines.inventory.cargo_wagon]
+					end
+					if (NumItems > 0) then
 						local spill = {}
 						local wagon = GuideCar
-						local slot = math.random(#items)
+						local slot = math.random(NumItems)
 						local stack = items[slot]
+						if storage.Ultracube and properties.Ultracube and slot > #items then
+							-- If an Ultracube item was randomly selected, handle its ownership token
+							stack = CubeFlyingTrains.release_for_trapdoor(properties, defines.inventory.cargo_wagon, slot - #items, ItemsPerDrop)
+							if stack then
+								stack.Ultracube = true
+							end
+						end
+
 						-- Take X from each stack
-						if (stack.object_name) then -- only a script inventory would have an object_name
-							stack=stack[1]
-							table.insert(spill, stack)
-						else
-							local take = math.min(stack.count, ItemsPerDrop)
-							table.insert(spill, {name=stack.name, count=take, health=stack.health, quality=stack.quality, spoil_percent=stack.spoil_percent})
-							stack.count = stack.count-take
-							if (stack.count <= 0) then
-								table.remove(items, slot)
+						if stack then
+							if (stack.Ultracube) then
+								-- No need to remove Ultracube items from the wagon's cargo as they're already tracked separately
+								table.insert(spill, {name=stack.name, count=stack.count, quality="normal"})
+							elseif (stack.object_name) then -- only a script inventory would have an object_name
+								stack=stack[1]
+								table.insert(spill, stack)
+							else
+								local take = math.min(stack.count, ItemsPerDrop)
+								table.insert(spill, {name=stack.name, count=take, health=stack.health, quality=stack.quality, spoil_percent=stack.spoil_percent})
+								stack.count = stack.count-take
+								if (stack.count <= 0) then
+									table.remove(items, slot)
+								end
 							end
 						end
 						-- Spill the selected items on the ground
@@ -745,6 +758,11 @@ local function on_tick(event)
 						end
 					end
 				end
+			end
+
+			-- Ultracube position handling
+			if storage.Ultracube and properties.Ultracube then -- Mod is active and this FlyingTrain is one that contains Ultracube irreplaceables
+				CubeFlyingTrains.position_update(properties)
 			end
 
 		--|| Landing speed control
@@ -882,7 +900,6 @@ local function on_tick(event)
 								end
 							-- Spill the selected items on the ground
 							else
-								-- WIP ultracube support spill on ground driectly from wagon goes here
 								if (stackk.item_number) then
 									local substack = game.create_inventory(1)
 									substack.insert(stackk) -- inserts a copy, doesnt transfer
@@ -891,7 +908,14 @@ local function on_tick(event)
 									properties.entity.surface.spill_item_stack({position=properties.entity.position, stack=substack[1]})
 									substack.destroy()
 								else
-									properties.entity.surface.spill_item_stack({position=properties.entity.position, stack=stackk})
+									local entities = properties.entity.surface.spill_item_stack({position=properties.entity.position, stack=stackk})
+									if storage.Ultracube then
+										for _, entity in ipairs(entities) do
+											if storage.Ultracube.prototypes.cube[entity.name] then
+												remote.call("Ultracube", "hint_entity", entity)
+											end
+										end
+									end
 								end
 							end
 						end
