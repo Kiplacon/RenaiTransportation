@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.10
+Date: 6/7/2025
+  Changes:
+    - Updates to the Ultracube compatability by kevin1055 to better work with Item cannons and Trapdoor wagons.
+  Bugfixes:
+    - Fixed that the Director bounce pad bounced things at a 90 degree offset. Reported by Finny0
+    - Fixed that Hatches weren't rotatable in blueprints.
+    - Hopefully fixed a very rare crash that could happen if you removed a Vacuum hatch on the exact tick it was placed. Reported by Toruk_Makto
+---------------------------------------------------------------------------------------------------
 Version: 2.1.9
 Date: 5/25/2025
   Bugfixes:

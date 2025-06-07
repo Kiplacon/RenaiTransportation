@@ -95,6 +95,9 @@ local function entity_built(event)
 			storage.PrimerThrowerLinks[OnDestroyNumber2] = {thrower = entity, ready = false}--, box = box}
 		end
 
+	elseif (entity.name == "HatchRT") then
+		entity.direction = defines.direction.north
+
 	elseif (entity.name == "PlayerLauncher") then
 		entity.active = false
 
