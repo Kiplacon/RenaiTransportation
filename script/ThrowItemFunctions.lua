@@ -455,19 +455,19 @@ function ResolveThrownItem(FlyingItem)
                     for slot = 1, 10 do
                         local setting = ThingLandedOn.get_or_create_control_behavior().get_section(section).get_slot(slot).value
                         if (setting and setting.name and setting.name == FlyingItem.item) then
-                            if (section == 1) then
+                            if (section == 2) then
                                 unitx = 0
                                 unity = -1
                                 effect = "BouncePlateParticlered"
-                            elseif (section == 2) then
+                            elseif (section == 3) then
                                 unitx = 1
                                 unity = 0
                                 effect = "BouncePlateParticlegreen"
-                            elseif (section == 3) then
+                            elseif (section == 4) then
                                 unitx = 0
                                 unity = 1
                                 effect = "BouncePlateParticleblue"
-                            elseif (section == 4) then
+                            elseif (section == 5) then
                                 unitx = -1
                                 unity = 0
                                 effect = "BouncePlateParticleyellow"

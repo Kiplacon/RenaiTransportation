@@ -48,7 +48,7 @@ local function werew(event)
 					end
 				end
 			else
-				if (VacuumHatchStuff.ParticleAnimation.visible) then
+				if (VacuumHatchStuff.ParticleAnimation and VacuumHatchStuff.ParticleAnimation.visible) then
 					VacuumHatchStuff.ParticleAnimation.visible = false
 				end
 			end
