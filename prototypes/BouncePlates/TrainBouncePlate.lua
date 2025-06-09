@@ -10,6 +10,7 @@ data:extend({
 		corpse = "medium-remnants",
         dying_explosion = "medium-explosion",
 		collision_box = {{-1.75, -1.75}, {1.75, 1.75}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+		collision_mask = BouncePadMask,
 		selection_box = {{-2, -2}, {2, 2}},
 		fast_replaceable_group = "TrainBouncers",
 		picture = 
@@ -82,6 +83,7 @@ data:extend({
 		corpse = "medium-remnants",
         dying_explosion = "medium-explosion",
 		collision_box = {{-1.75, -1.75}, {1.75, 1.75}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+		collision_mask = BouncePadMask,
 		selection_box = {{-2, -2}, {2, 2}},
 		fast_replaceable_group = "TrainBouncers",
 		picture =

@@ -471,7 +471,7 @@ function(event)
 				target = {
 					entity = player.character,
 				},
-				surface = player.surface,
+				surface = player.character.surface,
 				time_to_live = 120,
 				animation_speed = 0.5
 			}

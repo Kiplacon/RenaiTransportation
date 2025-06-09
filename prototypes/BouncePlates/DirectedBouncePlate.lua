@@ -25,6 +25,7 @@ data:extend({
       corpse = "small-remnants",
       dying_explosion = "iron-chest-explosion",
       collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+      collision_mask = BouncePadMask,
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
       activity_led_sprites = {filename = "__RenaiTransportation__/graphics/nothing.png", size = 1},

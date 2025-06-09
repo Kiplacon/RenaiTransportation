@@ -3,6 +3,7 @@ require("prototypes.sounds")
 require("prototypes.TabSortingStuff")
 require("prototypes.TrainGoBrrrr.PropHunt")
 require("prototypes.RailPlacerPrototypeStuff")
+BouncePadMask = {layers={object=true, player=true, water_tile=true, is_object=true}} -- no item layer or lower_object so that inserters can "place" items onto them which lets them swing
 
 if (settings.startup["RTThrowersSetting"].value == true) then
 	require("prototypes.BouncePlates.BouncePlate")

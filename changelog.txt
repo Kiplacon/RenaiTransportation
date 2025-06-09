@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.11
+Date: 6/9/2025
+  Changes:
+    - Removed ground item collision for all Bounce pads. This is a workaround for the Factorio 2.0.50 bugfix for inserters that inadvertantly broke Thrower inserters. Not perfect because this means placing Bounce pads on top of items on the ground will cover them up insead of remove them, but it's the best I could come up with for now and it gets the working again lol
+  Bugfixes:
+    - Fixed a crash that would happen if you were shot by a vehicle with a multi-hit attack like an Atomic bomb. Reported by Stratifax
+    - Fixed a loading crash with Miniloader redux. Reported by xxxjchrist
+---------------------------------------------------------------------------------------------------
 Version: 2.1.10
 Date: 6/7/2025
   Changes:
