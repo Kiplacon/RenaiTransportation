@@ -85,6 +85,12 @@ local function finalizeLandedTrain(PropUnitNumber, properties) -- happens when t
 				end
 			end
 		end
+		--[[ if (properties.LandedTrain.train.speed>0) then
+			properties.LandedTrain.train.speed = math.abs(properties.speed)
+		elseif (properties.LandedTrain.train.speed<0) then
+			properties.LandedTrain.train.speed = -math.abs(properties.speed)
+		else
+		end ]]
 	end
 
 	storage.FlyingTrains[PropUnitNumber] = nil
@@ -350,7 +356,7 @@ local function on_tick(event)
 						end
 
 						-- this order of setting speed -> manual mode -> schedule is very important, other orders mess up a lot more
-						-- in 2.0, setting manua mode before speed works better, old way causes stuttering when following carriages reconnect
+						-- NEW in 2.0, setting schedule -> manual mode -> speed works better, old way causes stuttering when following carriages reconnect
 						--game.print(NewTrain.train.speed.."    "..properties.speed)
 						local SpeedPolarity
 						if (NewTrain.train.speed >= 0) then
@@ -769,7 +775,7 @@ local function on_tick(event)
 		elseif (game.tick > properties.LandTick and properties.LandedTrain and properties.LandedTrain.valid) then
 			-- if there is a following wagon that hasn't landed yet
 			if (properties.follower and properties.followerID and storage.FlyingTrains[properties.followerID] and storage.FlyingTrains[properties.followerID].LandedTrain == nil) then
-				--game.print("not all here")
+				--game.print(game.tick.." not all here")
 				if (properties.LandedTrain.train.speed>0) then
 					properties.LandedTrain.train.speed = math.abs(properties.speed)
 				elseif (properties.LandedTrain.train.speed<0) then

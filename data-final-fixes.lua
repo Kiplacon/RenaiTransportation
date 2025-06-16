@@ -437,19 +437,20 @@ end
 
 ---------------------------------------Thrower----------------------------------------------------------------------
 function MakeThrowerVariant(ThingData, PlacingItemName)
-log("--------Creating thrower variant for "..ThingData.name.."-----------")
-if (PlacingItemName == nil) then
-	if (ThingData.minable.result) then
-		PlacingItemName = ThingData.minable.result
-	elseif (ThingData.minable.results) then
-		for _, result in pairs(ThingData.minable.results) do
-			if (result.type == "item") then
-				PlacingItemName = result.name
+	log("--------Creating thrower variant for "..ThingData.name.."-----------")
+	if (PlacingItemName == nil) then
+		if (ThingData.minable.result) then
+			PlacingItemName = ThingData.minable.result
+		elseif (ThingData.minable.results) then
+			for _, result in pairs(ThingData.minable.results) do
+				if (result.type == "item") then
+					PlacingItemName = result.name
+				end
 			end
 		end
 	end
-end
-TheItem = table.deepcopy(data.raw.item[PlacingItemName])
+
+	local TheItem = table.deepcopy(data.raw.item[PlacingItemName])
 	TheItem.name = "RTThrower-"..TheItem.name.."-Item"
 	TheItem.subgroup = "throwers"
 	TheItem.place_result = "RTThrower-"..ThingData.name
@@ -472,12 +473,12 @@ TheItem = table.deepcopy(data.raw.item[PlacingItemName])
 		table.insert(TheItem.icons, {icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",	icon_size = 64, icon_mipmaps = 4})
 	end
 
-if (ThingData.name == "inserter" or ThingData.name == "burner-inserter") then
-	isitenabled = true
-else
-	isitenabled = false
-end
-TheRecipe =
+	if (ThingData.name == "inserter" or ThingData.name == "burner-inserter") then
+		isitenabled = true
+	else
+		isitenabled = false
+	end
+	local TheRecipe =
 	{
 		type = "recipe",
 		name = "RTThrower-"..ThingData.name.."-Recipe",
@@ -491,10 +492,11 @@ TheRecipe =
 			},
 		results = {
 			{type="item", name=TheItem.name, amount=1}
-		}
+		},
+		auto_recycle = true
 	}
 
-TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
+	local TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	if (TheThrower.icon) then
 		TheThrower.icons =
 			{
@@ -587,6 +589,51 @@ TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 		data:extend({TheThrower, TheItem, TheRecipe})
 		if (isitenabled == false) then
 			table.insert(data.raw["technology"]["RTThrowerTime"].effects,{type="unlock-recipe",recipe=TheRecipe.name})
+		end
+		if mods["quality"] then
+			local icons =
+			{
+				{
+					icon = "__quality__/graphics/icons/recycling.png"
+				}
+			}
+			for i = 1, #TheItem.icons do
+				local icon = table.deepcopy(TheItem.icons[i]) -- we are gonna change the scale, so must copy the table
+				icon.scale = ((icon.scale == nil) and (0.5 * defines.default_icon_size / (icon.icon_size or defines.default_icon_size)) or icon.scale) * 0.8
+				icon.shift = util.mul_shift(icon.shift, 0.8)
+				icons[#icons + 1] = icon
+			end
+			icons[#icons + 1] =
+			{
+				icon = "__quality__/graphics/icons/recycling-top.png"
+			}
+			data:extend({
+				{
+					type = "recipe",
+					name = TheRecipe.name.."-recycling",
+					icons = {
+						{
+							icon = "__quality__/graphics/icons/recycling.png"
+						},
+						{
+							icon = TheItem.icon,
+							icon_size = TheItem.icon_size,
+							scale = (0.5 * defines.default_icon_size / (TheItem.icon_size or defines.default_icon_size)) * 0.8,
+						},
+						{
+							icon = "__quality__/graphics/icons/recycling-top.png"
+						},
+					},
+					category = "recycling",
+					subgroup = TheRecipe.subgroup,
+					enabled = true,
+					hidden = true,
+					unlock_results = false,
+					ingredients = {{type = "item", name = TheItem.name, amount = 1, ignored_by_stats = 1}},
+					results = {{type = "item", name = TheItem.name, amount = 1, probability = 0.25, ignored_by_stats = 1}}, -- Will show as consumed when item is destroyed
+					energy_required = (data.raw.recipe[TheItem.name] and data.raw.recipe[TheItem.name].energy_required or 0.5 )/16,
+				}
+			})
 		end
 	end
 end

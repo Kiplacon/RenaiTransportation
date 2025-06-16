@@ -83,33 +83,34 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		--game.print(DestroyNumber)
 		--|| Adjusting Thrower Range
 		if (settings.startup["RTThrowersSetting"].value == true and ThingHovering.valid and ThingHovering.type == "inserter" and string.find(ThingHovering.name, "RTThrower-") and ThingHovering.name ~= "RTThrower-PrimerThrower" and storage.CatapultList[DestroyNumber].RangeAdjustable == true) then
-			local CurrentRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
-			if (CurrentRange >= ThingHovering.prototype.inserter_drop_position[2]) then
+			local CurrentRange = storage.CatapultList[DestroyNumber].range or math.floor(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
+			if (CurrentRange >= ThingHovering.prototype.inserter_drop_position[2]-0.2) then
 				ThingHovering.drop_position =
 					{
-						ThingHovering.drop_position.x+(CurrentRange-2)*storage.OrientationUnitComponents[ThingHovering.orientation].x,
-						ThingHovering.drop_position.y+(CurrentRange-2)*storage.OrientationUnitComponents[ThingHovering.orientation].y
+						ThingHovering.position.x - 1.2*storage.OrientationUnitComponents[ThingHovering.orientation].x,
+						ThingHovering.position.y - 1.2*storage.OrientationUnitComponents[ThingHovering.orientation].y
 					}
+				storage.CatapultList[DestroyNumber].range = 1
 			else
 				ThingHovering.drop_position =
 					{
-						ThingHovering.drop_position.x - storage.OrientationUnitComponents[ThingHovering.orientation].x,
-						ThingHovering.drop_position.y - storage.OrientationUnitComponents[ThingHovering.orientation].y
+						ThingHovering.position.x - (CurrentRange+1)*storage.OrientationUnitComponents[ThingHovering.orientation].x,
+						ThingHovering.position.y - (CurrentRange+1)*storage.OrientationUnitComponents[ThingHovering.orientation].y
 					}
+				storage.CatapultList[DestroyNumber].range = CurrentRange+1
 			end
-			local NewRange = math.ceil(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
 			player.create_local_flying_text
 				{
 					position = ThingHovering.position,
-					text = "Range: "..NewRange-1
+					text = "Range: "..storage.CatapultList[DestroyNumber].range
 				}
 			player.play_sound{
 				path="utility/gui_click",
 				position=player.position,
 				volume_modifier=1
 				}
-			storage.CatapultList[DestroyNumber].range = NewRange
 			ResetThrowerOverflowTracking(ThingHovering)
+			AdjustThrowerArrow(ThingHovering)
 		end
 		--|| Swap Primer Modes
 		if (settings.startup["RTBounceSetting"].value == true and ThingHovering.valid) then

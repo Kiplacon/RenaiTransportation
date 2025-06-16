@@ -43,6 +43,7 @@ local function entity_built(event)
 		if (string.find(entity.name, "RTThrower-") and entity.name ~= "RTThrower-PrimerThrower" and entity.force.technologies["RTFocusedFlinging"].researched == true) then
 			properties.RangeAdjustable = true
 		end
+		properties.range = math.floor(math.abs(entity.drop_position.x-entity.position.x + entity.drop_position.y-entity.position.y))
 
 		if (entity.surface.platform or string.find(entity.surface.name, " Orbit") or string.find(entity.surface.name, " Field") or string.find(entity.surface.name, " Belt")) then
 			properties.InSpace = true

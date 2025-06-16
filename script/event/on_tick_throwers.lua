@@ -47,6 +47,7 @@ local function ThrowersOnTick(event)
                                     }
                                 properties.range = range
                                 ResetThrowerOverflowTracking(ThrowerEntity)
+                                AdjustThrowerArrow(ThrowerEntity)
                             end
                         end
                     end
@@ -172,6 +173,7 @@ local function ThrowersOnTick(event)
                                     DestinationDestroyNumber = DestinationDestroyNumber,
                                     surface = ThrowerEntity.surface,
                                     space = false,
+                                    adjustment = properties.TrajectoryAdjust,
                                 })
                             else
                                 x = x + (-storage.OrientationUnitComponents[ThrowerEntity.orientation].x * 100)

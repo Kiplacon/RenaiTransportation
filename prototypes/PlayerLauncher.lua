@@ -19,8 +19,8 @@ local PikachuFace = table.deepcopy(data.raw.inserter["inserter"])
 		{
 		filename = "__RenaiTransportation__/graphics/nothing.png",
         priority = "extra-high",
-        width = 32,
-        height = 32,
+        width = 1,
+        height = 1,
         scale = 0.25
 		}
 	PikachuFace.hand_base_picture = nothing

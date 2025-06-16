@@ -42,13 +42,21 @@ function InvokeThrownItem(stuff)
                 space=space,
                 surface=surface, -- to search for things by the landing zone
             }
+            local adjustment = stuff.adjustment
 
             -- create the visual projectile
-            if (ProjectileType == "ReskinnedStream") then
+            if ((ProjectileType == "ReskinnedStream" and adjustment == nil)
+            or (adjustment and (adjustment.type == "target" or adjustment.type == "offset"))) then
                 local stream
                 local StreamStart = start
                 if (stuff.thrower and stuff.thrower.name ~= "RTThrower-EjectorHatchRT") then
                     StreamStart = stuff.thrower.held_stack_position
+                end
+                local targett = {TargetX, TargetY}
+                if (adjustment and adjustment.type == "target") then
+                    targett = adjustment.position
+                elseif (adjustment and adjustment.type == "offset") then
+                    targett = {start.x+adjustment.offset.x, start.y+adjustment.offset.y}
                 end
                 if (prototypes.entity["RTItemProjectile-"..ItemName..speed*100]) then
                     stream = FlyingItem.surface.create_entity
@@ -56,7 +64,7 @@ function InvokeThrownItem(stuff)
                         name="RTItemProjectile-"..ItemName..speed*100,
                         position=start,
                         source_position=OffsetPosition(StreamStart, (stuff.StartOffset or {0,0})), -- offset should be pretty small so that the calculated air time lines up with the visual
-                        target_position={TargetX, TargetY}
+                        target_position=targett
                     }
                 else
                     stream = FlyingItem.surface.create_entity
@@ -64,17 +72,52 @@ function InvokeThrownItem(stuff)
                         name="RTTestProjectile"..speed*100,
                         position=start,
                         source_position=OffsetPosition(StreamStart, (stuff.StartOffset or {0,0})), -- offset should be pretty small so that the calculated air time lines up with the visual
-                        target_position={TargetX, TargetY}
+                        target_position=targett
                     }
                 end
                 local StreamDestroyNumber = script.register_on_object_destroyed(stream)
                 FlyingItem.StreamDestroyNumber = StreamDestroyNumber
                 storage.FlyingItems[StreamDestroyNumber] = FlyingItem
-            elseif (ProjectileType == "CustomPath") then
-                if (stuff.path and stuff.AirTime) then
+            elseif ((ProjectileType == "CustomPath" and adjustment == nil)
+            or (adjustment and (adjustment.type == "force" or adjustment.type == "path" or adjustment.type == "interface"))) then
+                if (adjustment) then
+                    stuff.path = adjustment.path -- bounce pads and ejectors and interface adjustments will have paths
+                    if (stuff.path == nil and stuff.thrower) then -- only throwers won't have saved altered paths (bounce pads and ejectors always use the same path, impact/trapdoor wagons come with paths)
+                        local distance = storage.CatapultList[script.register_on_object_destroyed(stuff.thrower)].range
+                        local AirTime = math.max(1, math.floor(distance/speed))
+                        local vector =
+                            {
+                                x = (stuff.thrower.position.x - distance*storage.OrientationUnitComponents[stuff.thrower.orientation].x) - stuff.thrower.held_stack_position.x,
+                                y = (stuff.thrower.position.y - distance*storage.OrientationUnitComponents[stuff.thrower.orientation].y) - stuff.thrower.held_stack_position.y,
+                            }
+                        local path = {}
+                        for i = 1, AirTime do
+                            local progress = i/AirTime
+                            path[i] =
+                            {
+                                x = stuff.thrower.held_stack_position.x+(progress*vector.x),
+                                y = stuff.thrower.held_stack_position.y+(progress*vector.y),
+                                height = progress * (1-progress) / (0.3236*distance^-0.404)
+                            }
+                        end
+                        stuff.path = path
+                        stuff.AirTime = AirTime
+                    end
+                    if (adjustment.type == "force") then
+                        for i = 1, #stuff.path do
+                            stuff.path[i].x = stuff.path[i].x + (adjustment.vector.x*i*i/3600)
+                            stuff.path[i].y = stuff.path[i].y + (adjustment.vector.y*i*i/3600)
+                        end
+                    elseif (adjustment.type == "path") then
+                        stuff.path = adjustment.path
+                        stuff.AirTime = #adjustment.path
+                    elseif (adjustment.type == "interface") then
+                        stuff.path = adjustment.path
+                        stuff.AirTime = #adjustment.path
+                    end
+                end
+                if (stuff.path and stuff.AirTime and stuff.AirTime > 0) then
                     FlyingItem.path = stuff.path
-                    --[[ local distance = math.sqrt((TargetX-(start.x or start[1]))^2 + (TargetY-(start.y or start[2]))^2)
-                    local AirTime = math.max(1, math.floor(distance/speed)) ]]
                     FlyingItem.AirTime = stuff.AirTime
                     FlyingItem.StartTick = game.tick
                     FlyingItem.LandTick = game.tick+stuff.AirTime
@@ -105,7 +148,7 @@ function InvokeThrownItem(stuff)
                     storage.FlyingItems[FlightNumber] = FlyingItem
                     storage.CustomPathFlyingItemSprites[FlightNumber] = true
                 else
-                    error("CustomPath requires a path and air time")
+                    error("CustomPath requires a path and positive air time")
                 end
             elseif (ProjectileType == "tracer") then
                 FlyingItem.AirTime = 1

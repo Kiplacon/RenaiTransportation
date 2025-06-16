@@ -53,10 +53,8 @@ data:extend({
 			{
 				filename = "__RenaiTransportation__/graphics/nothing.png",
 				priority = "medium",
-				width = 32,
-				height = 32,
-				shift = util.by_pixel(-0.5, -0.5),
-				scale = 0.5
+				width = 1,
+				height = 1,
 			},
 		activity_led_light_offsets =
 			{

@@ -94,6 +94,7 @@ local function rotate(event)
 		end
 		if (storage.CatapultList[EntityDestroyNumber]) then
 			ResetThrowerOverflowTracking(entity)
+			AdjustThrowerArrow(entity)
 		end
 
 		

@@ -22,7 +22,7 @@ MLG.turret_animation = nil
 MLG.animation =
 	{
 	filename = "__RenaiTransportation__/graphics/nothing.png",
-	size = 32,
+	size = 1,
 	direction_count = 1
 	}
 MLG.light_animation = MLG.animation

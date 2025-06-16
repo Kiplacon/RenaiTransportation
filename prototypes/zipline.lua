@@ -226,9 +226,8 @@ succ.pictures =
 	{
       filename = "__RenaiTransportation__/graphics/nothing.png",
       priority = "low",
-      width = 32,
-      height = 32,
-      scale = 0.5,
+      width = 1,
+      height = 1,
       apply_projection = false,
       direction_count = 1,
       line_length = 1

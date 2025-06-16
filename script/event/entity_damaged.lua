@@ -686,6 +686,7 @@ local function entity_damaged(event)
 		or event.cause.type == "fluid-wagon"
 		or event.cause.type == "artillery-wagon")
 	and event.entity.type == "character"
+	and event.entity.player
 	and event.damage_type.name == "impact"
 	and string.find(event.entity.name, "RTGhost") == nil
 	and event.entity.health > 0

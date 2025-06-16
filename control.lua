@@ -373,6 +373,7 @@ end)
 require("script.MiscFunctions")
 require("script.GUIs")
 require("script.ThrowItemFunctions")
+require("script.remote")
 
 script.on_event(defines.events.on_gui_click,
 	require("script.event.ClickGUI")
@@ -462,6 +463,12 @@ function(event)
 				target_position=event.cursor_position
 			}
 		end
+	--[[ elseif (player.selected and string.find(player.selected.name, "RTThrower")) then
+		local adjustment = {
+			type = "offset",
+			offset = {x=5, y=5},
+		}
+		SetTrajectoryAdjust(player.selected, adjustment) ]]
 	elseif (player.character) then
 		rendering.draw_animation
 			{

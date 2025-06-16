@@ -18,14 +18,14 @@ type = "simple-entity-with-owner",
 name = "HatchRT",
 icon = "__RenaiTransportation__/graphics/hatch/icon.png",
 icon_size = 64,
-flags = {"placeable-neutral", "player-creation", "not-rotatable"},
+flags = {"placeable-neutral", "player-creation"},
 collision_mask = {layers={[RememberNoUnderscores]=true}},
 collision_box = {{-0.35, -0.3}, {0.35, 0.55}},
 selection_box = {{-0.35, -0.3}, {0.35, 0.55}},
 selection_priority = 255,
 dying_explosion = "iron-chest-explosion",
 minable = {mining_time = 0.2, result = "HatchRT"},
-render_layer = "arrow",
+render_layer = "under-elevated",
 picture =
 	{
 		filename = "__RenaiTransportation__/graphics/hatch/hatch.png",
@@ -75,7 +75,7 @@ picture =
 	selection_priority = 255,
 	dying_explosion = "iron-chest-explosion",
 	minable = {mining_time = 0.2, result = "RTThrower-EjectorHatchRT"},
-	render_layer = "higher-object-under",
+	render_layer = "under-elevated",
 	filter_count = 5,
 	energy_source =
 	{

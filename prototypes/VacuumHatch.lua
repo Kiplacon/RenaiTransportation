@@ -22,7 +22,7 @@ data:extend({
 			drain = "5kW",
 		},
 	energy_usage = "200kW",
-	gui_mode = "all",
+	gui_mode = "none",
 	animations =
 	{
 		north =

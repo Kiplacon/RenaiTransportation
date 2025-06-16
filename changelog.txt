@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.12
+Date: 6/9/2025
+  Additions:
+    - Remote interface for other mods to add custom adjustments for Thrower inserters trajectories
+  Bugfixes:
+    - Made recycling recipes generate for Thrower inserters if the Quality mod is installed. Suggested by xxxjchrist
+---------------------------------------------------------------------------------------------------
 Version: 2.1.11
 Date: 6/9/2025
   Changes:
