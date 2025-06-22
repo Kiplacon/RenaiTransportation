@@ -38,6 +38,7 @@ function AdjustThrowerArrow(thrower)
                 end
                 local AirTime = math.ceil(distance/speed)
                 ThrowerProperties.TrajectoryAdjust.path = remote.call(ThrowerProperties.TrajectoryAdjust.interface, ThrowerProperties.TrajectoryAdjust.name, ThrowerProperties.TrajectoryAdjust.parameters, AirTime)
+                --game.print(serpent.block(ThrowerProperties.TrajectoryAdjust.path[1]))
             end
         end
     end
@@ -57,7 +58,7 @@ function ClearTrajectoryAdjust(ThrowerInserter)
         }
         storage.CatapultList[DestroyNumber].TrajectoryAdjust = nil
     else
-        return false
+        return
     end
 end
 function SetTrajectoryAdjust(ThrowerInserter, adjustment)
@@ -65,16 +66,27 @@ function SetTrajectoryAdjust(ThrowerInserter, adjustment)
     if not storage.CatapultList[DestroyNumber] then
         return
     else
-        if (adjustment.type == "target" and adjustment.position and (adjustment.position.x and adjustment.position.y and type(adjustment.position.x) == "number" and type(adjustment.position.adjustment.y) == "number")) -- map position. eg adjustment = {type="target", position={x=420, y=69}}
-        or (adjustment.type == "force" and adjustment.vector and (adjustment.vector.x and adjustment.vector.y and type(adjustment.vector.x) == "number" and type(adjustment.vector.y) == "number")) -- acceleration vector in tiles per second^2. eg adjustment = {type="force", vector={x=2, y=5}}
-        or (adjustment.type == "path" and adjustment.path and type(adjustment.path) == "table") -- a list of path points which are x and y map positions and a height. eg adjustment = {type="path", path={{x=0, y=0, height=0}, {x=0.11, y=0.1, height=0.05}, ...}}. Thrown item moves at one path point per tick
-        or (adjustment.type == "interface" and adjustment.interface and adjustment.name and adjustment.parameters) -- Bounce back to the requesting mod to send its own calculated path. eg adjustment = {type="interface", interface="modname", name="functionname", parameters={param1, param2, ...}}. The function must return a table of path points which are x and y map positions and a height like in the "path" adjustment type.
+        -- Note: for all these adjustments if you have the thrower target a position behind itself then the arm will just stretch out to that position and drop the item there instead of throwing it.
+        if (adjustment.type == "target" and adjustment.position and (adjustment.position.x and adjustment.position.y and type(adjustment.position.x) == "number" and type(adjustment.position.adjustment.y) == "number"))
+            -- the thrower will always throw at the given map position. 
+            -- example: adjustment={type="target", position={x=420, y=69}}
+        or (adjustment.type == "force" and adjustment.vector and (adjustment.vector.x and adjustment.vector.y and type(adjustment.vector.x) == "number" and type(adjustment.vector.y) == "number"))
+            -- acceleration vector in tiles per second^2. 
+            -- example: adjustment={type="force", vector={x=2, y=5}}
+        or (adjustment.type == "path" and adjustment.path and type(adjustment.path) == "table")
+            -- a list of path points which are x and y map positions and a height. 
+            -- example: adjustment={type="path", path={{x=0, y=0, height=0}, {x=0.11, y=0.1, height=0.05}, ...}}. Thrown item moves at one path point per tick. Height is in tiles. For refrence, teh Factorio API says elevated rails are height 3
+        or (adjustment.type == "interface" and adjustment.interface and adjustment.name and adjustment.parameters)
+            -- Send a call back to the requesting mod's remote interface to send its own calculated path. 
+            -- example: adjustment={type="interface", interface="modname", name="functionname", parameters={param1, param2, ...}}. 
+            -- The function must return a table of path points which are x and y map positions and a height, like in the "path" adjustment type. 
+            -- The call also includes the "unadjusted" air time of the throw in ticks so the function can calculate a path for that duration, but it doesn't necessarily have to be that long.
         then
             storage.CatapultList[DestroyNumber].TrajectoryAdjust = adjustment
             AdjustThrowerArrow(ThrowerInserter)
             return true
         else
-            error("Invalid adjustment settings")
+            error("Invalid adjustment settings. Check the notes in the script/remote.lua file for the formating.")
         end
     end
 end

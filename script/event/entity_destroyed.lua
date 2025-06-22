@@ -10,6 +10,15 @@ local function entity_destroyed(event)
 			end
 		end
 		storage.CatapultList[event.registration_number] = nil
+		if (storage.ThrowerPaths) then
+			for ComponentNumber, TrackedStuff in pairs(storage.ThrowerPaths) do
+				for ThrowerUN, _ in pairs(TrackedStuff) do
+					if (ThrowerUN == event.registration_number) then
+						storage.ThrowerPaths[ComponentNumber][ThrowerUN] = nil
+					end
+				end
+			end
+		end
 	end
 
 	if (storage.PrimerThrowerLinks[event.registration_number]) then

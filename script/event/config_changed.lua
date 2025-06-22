@@ -58,21 +58,28 @@ local function config_changed()
 	storage.OrientationNumberToDefinition[slice*15] = defines.direction.northnorthwest
 
 	storage.InsertInventory = {}
+	storage.InsertInventory["agricultural-tower"] = defines.inventory.agricultural_tower_input
 	storage.InsertInventory["ammo-turret"] = defines.inventory.turret_ammo
 	storage.InsertInventory["artillery-turret"] = defines.inventory.artillery_turret_ammo
-	storage.InsertInventory["assembling-machine"] = defines.inventory.assembling_machine_input
+	storage.InsertInventory["artillery-wagon"] = defines.inventory.artillery_wagon_ammo
+	storage.InsertInventory["assembling-machine"] = defines.inventory.crafter_input
 	storage.InsertInventory["beacon"] = defines.inventory.beacon_modules
 	storage.InsertInventory["boiler"] = defines.inventory.fuel
 	storage.InsertInventory["burner-generator"] = defines.inventory.fuel
+	storage.InsertInventory["cargo-landing-pad"] = defines.inventory.cargo_landing_pad_main
+	storage.InsertInventory["cargo-wagon"] = defines.inventory.cargo_wagon
 	storage.InsertInventory["container"] = defines.inventory.chest
-	storage.InsertInventory["furnace"] = defines.inventory.furnace_source
+	storage.InsertInventory["furnace"] = defines.inventory.crafter_input
+	storage.InsertInventory["fusion-reactor"] = defines.inventory.fuel
+	storage.InsertInventory["infinity-container"] = defines.inventory.chest
 	storage.InsertInventory["lab"] = defines.inventory.lab_input
 	storage.InsertInventory["linked-container"] = defines.inventory.chest
+	storage.InsertInventory["locomotive"] = defines.inventory.fuel
 	storage.InsertInventory["logistic-container"] = defines.inventory.chest
+	storage.InsertInventory["proxy-container"] = defines.inventory.proxy_main
 	storage.InsertInventory["reactor"] = defines.inventory.fuel
 	storage.InsertInventory["roboport"] = defines.inventory.roboport_robot
-	storage.InsertInventory["rocket-silo"] = defines.inventory.rocket_silo_input
-	storage.InsertInventory["proxy-container"] = defines.inventory.proxy_main
+	storage.InsertInventory["rocket-silo"] = defines.inventory.crafter_input
 
 	storage.Dir2Ori = {}
 	storage.Dir2Ori[0] = 0

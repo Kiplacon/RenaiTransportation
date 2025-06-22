@@ -1,10 +1,13 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.1.12
-Date: 6/9/2025
+Date: 6/22/2025
   Additions:
-    - Remote interface for other mods to add custom adjustments for Thrower inserters trajectories
+    - Rudimentary remote interface allowing other mods to adjust Thrower inserter targeting and trajectory paths. Requested by LoupAndSnoop
+    - Throwers can now throw at Underground belts. Requested by Finny0
+  Changes:
+    - When overflow prevention is enabled and a Thrower can't find space in its target, it will wait for a brief moment before trying again. This is to help reduce lag when there are a lot of throwers constantly checking their target inventory for free space. A setting for adjusting/disabling the timeout is added too.
   Bugfixes:
-    - Made recycling recipes generate for Thrower inserters if the Quality mod is installed. Suggested by xxxjchrist
+    - Made recycling recipes generate for Thrower inserters if the Quality mod is installed. Reported by xxxjchrist
 ---------------------------------------------------------------------------------------------------
 Version: 2.1.11
 Date: 6/9/2025

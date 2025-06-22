@@ -1166,3 +1166,7 @@ if (settings.startup["RTZiplineSetting"].value == true) then
 		end
 	end
 end
+-- some mods make land mines snap to grid, which causes a crash when it shifts these detector land mines to not be on top of the belt ramps
+if (settings.startup["RTThrowersSetting"].value == true) then
+	data.raw["land-mine"].RTBeltRampPlayerTrigger.flags = {"not-on-map", "placeable-off-grid", "not-selectable-in-game", "no-copy-paste", "not-blueprintable", "not-deconstructable"}
+end

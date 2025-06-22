@@ -82,6 +82,13 @@ data:extend({
 	order = "a"
 },
 {
+	type = "double-setting",
+	name = "RTOverflowTimeout",
+	setting_type = "runtime-global",
+	default_value = 0.5,
+	order = "aa"
+},
+{
 	type = "int-setting",
 	name = "RTMagRampRange",
 	setting_type = "runtime-global",

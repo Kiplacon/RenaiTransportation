@@ -427,100 +427,67 @@ local function effect_triggered(event)
 			position = trigger.position,
 			limit = 1
 		}[1]
-		local ranges =
-		{
-			RTBeltRamp = 10,
-			RTfastBeltRamp = 20,
-			RTexpressBeltRamp = 30,
-			RTturboBeltRamp = 40,
-		}
-		local range = ranges[ramp.name]
-		local speeds =
-		{
-			RTBeltRamp = 0.15,
-			RTfastBeltRamp = 0.25,
-			RTexpressBeltRamp = 0.35,
-			RTturboBeltRamp = 0.45,
-		}
-		local speed = speeds[ramp.name]
-		local orientation = ramp.orientation
-		local characters = trigger.surface.find_entities_filtered
-		{
-			type = "character",
-			position = trigger.position,
-			radius = 0.7
-		}
-		for _, kharacter in pairs(characters) do
-			local player = kharacter.player
-			local PlayerProperties = storage.AllPlayers[player.index]
-			PlayerProperties.state = "jumping"
-			local OG, shadow = SwapToGhost(player)
-			local TargetX = math.floor(trigger.position.x + range*storage.OrientationUnitComponents[orientation].x)+0.5
-			local TargetY = math.floor(trigger.position.y + range*storage.OrientationUnitComponents[orientation].y)+0.5
-			local distance = DistanceBetween(trigger.position, {x=TargetX, y=TargetY})
-			local AirTime = math.floor(distance/speed)
-			local arc = 0.3236*distance^-0.404 -- lower number is higher arc
-			local vector = {x=TargetX-player.position.x, y=TargetY-player.position.y}
-			local path = {}
-			for j = 0, AirTime do
-				local progress = j/AirTime
-				path[j] =
-				{
-					x = player.character.position.x+(progress*vector.x),
-					y = player.character.position.y+(progress*vector.y),
-					height = progress * (1-progress) / arc
-				}
+		if (not ramp or not ramp.valid) then
+			local ranges =
+			{
+				RTBeltRamp = 10,
+				RTfastBeltRamp = 20,
+				RTexpressBeltRamp = 30,
+				RTturboBeltRamp = 40,
+			}
+			local range = ranges[ramp.name]
+			local speeds =
+			{
+				RTBeltRamp = 0.15,
+				RTfastBeltRamp = 0.25,
+				RTexpressBeltRamp = 0.35,
+				RTturboBeltRamp = 0.45,
+			}
+			local speed = speeds[ramp.name]
+			local orientation = ramp.orientation
+			local characters = trigger.surface.find_entities_filtered
+			{
+				type = "character",
+				position = trigger.position,
+				radius = 0.7
+			}
+			for _, kharacter in pairs(characters) do
+				local player = kharacter.player
+				local PlayerProperties = storage.AllPlayers[player.index]
+				PlayerProperties.state = "jumping"
+				local OG, shadow = SwapToGhost(player)
+				local TargetX = math.floor(trigger.position.x + range*storage.OrientationUnitComponents[orientation].x)+0.5
+				local TargetY = math.floor(trigger.position.y + range*storage.OrientationUnitComponents[orientation].y)+0.5
+				local distance = DistanceBetween(trigger.position, {x=TargetX, y=TargetY})
+				local AirTime = math.floor(distance/speed)
+				local arc = 0.3236*distance^-0.404 -- lower number is higher arc
+				local vector = {x=TargetX-player.position.x, y=TargetY-player.position.y}
+				local path = {}
+				for j = 0, AirTime do
+					local progress = j/AirTime
+					path[j] =
+					{
+						x = player.character.position.x+(progress*vector.x),
+						y = player.character.position.y+(progress*vector.y),
+						height = progress * (1-progress) / arc
+					}
+				end
+				local FlyingItem = InvokeThrownItem({
+					type = "PlayerGuide",
+					player = player,
+					shadow = shadow,
+					AirTime = AirTime,
+					SwapBack = OG,
+					IAmSpeed = player.character.character_running_speed_modifier,
+					path = path,
+					start = player.position,
+					target={x=TargetX, y=TargetY},
+					surface=player.surface,
+				})
+				PlayerProperties.PlayerLauncher.tracker = FlyingItem.FlightNumber
+				PlayerProperties.PlayerLauncher.direction = storage.OrientationUnitComponents[orientation].name
 			end
-			local FlyingItem = InvokeThrownItem({
-				type = "PlayerGuide",
-				player = player,
-				shadow = shadow,
-				AirTime = AirTime,
-				SwapBack = OG,
-				IAmSpeed = player.character.character_running_speed_modifier,
-				path = path,
-				start = player.position,
-				target={x=TargetX, y=TargetY},
-				surface=player.surface,
-			})
-			PlayerProperties.PlayerLauncher.tracker = FlyingItem.FlightNumber
-			PlayerProperties.PlayerLauncher.direction = storage.OrientationUnitComponents[orientation].name
 		end
-		--[[ rendering.draw_line
-		{
-			color = {r = 1, g = 0.6, b = 0, a=1},
-			width = 5,
-			from = start,
-			to = HitPosition,
-			surface = surface,
-			time_to_live = 5
-		} ]]
-	--[[ elseif (event.effect_id == "RTTestProjectileRegularEffect") then
-		game.print(game.tick.." Regular effect triggered")
-	elseif (event.effect_id == "RTTestProjectileWaterEffect") then
-		game.print("Water effect triggered")
-		rendering.draw_circle
-		{
-			color = {r = 0, g = 0, b = 1},
-			radius = 0.2,
-			width = 1,
-			filled = false,
-			target = event.target_position,
-			surface = surface,
-			time_to_live = 60
-		}
-	elseif (event.effect_id == "RTTestProjectileGroundEffect") then
-		game.print("Ground effect triggered")
-		rendering.draw_circle
-		{
-			color = {r = 0, g = 1, b = 0},
-			radius = 0.2,
-			width = 1,
-			filled = false,
-			target = event.target_position,
-			surface = surface,
-			time_to_live = 60
-		} ]]
 	end
 end
 

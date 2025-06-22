@@ -696,7 +696,7 @@ local function on_tick(event)
 
 						-- Take X from each stack
 						if stack then
-							if (stack.Ultracube) then
+							if (storage.Ultracube and properties.Ultracube and stack.Ultracube) then
 								-- No need to remove Ultracube items from the wagon's cargo as they're already tracked separately
 								table.insert(spill, {name=stack.name, count=stack.count, quality="normal"})
 							elseif (stack.object_name) then -- only a script inventory would have an object_name

@@ -225,10 +225,9 @@ function InvokeThrownItem(stuff)
     end
 end
 
-function CanFitThrownItem(stuff)
+--[[ function CanFitThrownItem(stuff)
     local TargetEntity = stuff.TargetEntity
     local ItemStack = stuff.ItemStack
-    local thrower = stuff.thrower --optional
     -- Checks if the item can be thrown into the target entity taking into account items still in the air
     local ItemName = ItemStack.name
     local ItemCount = ItemStack.count
@@ -238,7 +237,7 @@ function CanFitThrownItem(stuff)
     local TargetDestroyNumber = script.register_on_object_destroyed(TargetEntity)
     if storage.OnTheWay[TargetDestroyNumber] -- receptions are being tracked for the entity
     and storage.OnTheWay[TargetDestroyNumber][ItemName] then -- receptions are being tracked for the entity for the particular item
-        if (TargetEntity.type ~= "transport-belt") then
+        if (TargetEntity.type ~= "transport-belt" and TargetEntity.type ~= "underground-belt") then
             if (storage.OnTheWay[TargetDestroyNumber][ItemName] < 0) then
                 storage.OnTheWay[TargetDestroyNumber][ItemName] = 0  -- correct any miscalculaltions resulting in negative values
             end
@@ -252,14 +251,55 @@ function CanFitThrownItem(stuff)
             if (inserted > 0) then -- when the destination is full. Have to check otherwise there's an error
                 TargetEntity.remove_item({name=ItemName, count=inserted, quality=ItemQuality})
             end
-        elseif (TargetEntity.type == "transport-belt") then
+        elseif (TargetEntity.type == "transport-belt" or TargetEntity.type == "underground-belt") then
             local incomming = 0
             for name, count in pairs(storage.OnTheWay[TargetDestroyNumber]) do
                 incomming = incomming + count
             end
             local total = incomming + TargetEntity.get_transport_line(1).get_item_count() + TargetEntity.get_transport_line(2).get_item_count() + ItemCount
-            if (TargetEntity.belt_shape == "straight" and total <= 8)
-            or (TargetEntity.belt_shape ~= "straight" and total <= 7) then
+            if (TargetEntity.type == "underground-belt" and total <= 6)
+            or (TargetEntity.type == "transport-belt" and ((TargetEntity.belt_shape == "straight" and total <= 8) or ( TargetEntity.belt_shape ~= "straight" and total <= 7))) then
+                CanFit = true
+            else
+                CanFit = false
+            end
+        end
+    else
+        CanFit = true
+    end
+    return CanFit
+end ]]
+function CanFitThrownItem(stuff)
+    local TargetEntity = stuff.TargetEntity
+    local ItemStack = stuff.ItemStack
+    -- Checks if the item can be thrown into the target entity taking into account items still in the air
+    local ItemName = ItemStack.name
+    local ItemCount = ItemStack.count
+    local ItemQuality = ItemStack.quality.name
+    --local ItemSpoilage = ItemStack.spoil_percent
+    local CanFit = false
+    local TargetDestroyNumber = script.register_on_object_destroyed(TargetEntity)
+    if (storage.OnTheWay[TargetDestroyNumber] -- receptions are being tracked for the entity
+    and storage.OnTheWay[TargetDestroyNumber][ItemName]) then -- receptions are being tracked for the entity for the particular item
+        if (storage.OnTheWay[TargetDestroyNumber][ItemName] < 0) then
+            storage.OnTheWay[TargetDestroyNumber][ItemName] = 0  -- correct any miscalculaltions resulting in negative values
+        end
+        if (storage.InsertInventory[TargetEntity.type]) then -- not a belt
+            local total = storage.OnTheWay[TargetDestroyNumber][ItemName] + ItemCount
+            local CanInsert = TargetEntity.get_inventory(storage.InsertInventory[TargetEntity.type]).get_insertable_count({name=ItemName, quality=ItemQuality})
+            if (CanInsert < total) then
+                CanFit = false
+            else
+                CanFit = true
+            end
+        elseif (TargetEntity.type == "transport-belt" or TargetEntity.type == "underground-belt") then -- a belt
+            local incomming = 0
+            for _, count in pairs(storage.OnTheWay[TargetDestroyNumber]) do
+                incomming = incomming + count
+            end
+            local total = incomming + TargetEntity.get_transport_line(1).get_item_count() + TargetEntity.get_transport_line(2).get_item_count() + ItemCount
+            if (TargetEntity.type == "underground-belt" and total <= 6)
+            or (TargetEntity.type == "transport-belt" and ((TargetEntity.belt_shape == "straight" and total <= 8) or ( TargetEntity.belt_shape ~= "straight" and total <= 7))) then
                 CanFit = true
             else
                 CanFit = false
@@ -270,6 +310,7 @@ function CanFitThrownItem(stuff)
     end
     return CanFit
 end
+
 
 function ResetThrowerOverflowTracking(thrower)
     local ThrowerDestroyNumber = script.register_on_object_destroyed(thrower)
@@ -292,6 +333,10 @@ function ResetPathComponentOverflowTracking(component)
                 for item, asthma in pairs(TrackedItems) do
                     storage.CatapultList[ThrowerUN].targets[item] = nil
                 end
+            else
+                -- if the thrower is not in the list, it means it was destroyed before the component
+                -- so we can just remove the tracked items for this component
+                storage.ThrowerPaths[ComponentDestroyNumber][ThrowerUN] = nil
             end
         end
         storage.ThrowerPaths[ComponentDestroyNumber] = {}
@@ -428,7 +473,7 @@ local function DropOntoBelt(FlyingItem, belt, SpillExcess)
         end
     else
         local total = FlyingItem.amount
-        if (belt.type == "transport-belt") then
+        if (belt.type == "transport-belt" or belt.type == "underground-belt") then
             for _, l in pairs(order) do
                 for i = 0, 0.9, 0.1 do
                     if (total > 0 and belt.get_transport_line(l).can_insert_at(i) == true) then
@@ -763,7 +808,7 @@ function ResolveThrownItem(FlyingItem)
                     }
 
                 ---- If the thing it landed on has an inventory and a hatch, insert the item ----
-                elseif (ThingLandedOn.type ~= "transport-belt"
+                elseif (ThingLandedOn.type ~= "transport-belt" and ThingLandedOn.type ~= "underground-belt"
                 and settings.startup["RTThrowersSetting"].value == true  -- if false, HatchRT doesn't exist. With 2.1, there are potentially more possible ways thrown items can exist without the base thrower and hatch stuff
                 and ThingLandedOn.surface.find_entities_filtered(
                     {
@@ -812,7 +857,7 @@ function ResolveThrownItem(FlyingItem)
                     end
                     local deposited = false
                     if (properties.output and properties.output.valid) then
-                        if (properties.output.type == "transport-belt") then
+                        if (properties.output.type == "transport-belt" or properties.output.type == "underground-belt") then
                             deposited = DropOntoBelt(FlyingItem, properties.output, false)
                         elseif (properties.output.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
                             if (FlyingItem.CloudStorage) then
@@ -862,7 +907,7 @@ function ResolveThrownItem(FlyingItem)
                     CubeFlyingItems.release_and_spill(FlyingItem, ThingLandedOn)
 
                 -- transport belt
-                elseif (ThingLandedOn.type == "transport-belt") then
+                elseif (ThingLandedOn.type == "transport-belt" or ThingLandedOn.type == "underground-belt") then
                     DropOntoBelt(FlyingItem, ThingLandedOn)
 
                 ---- otherwise it bounces off whatever it landed on and lands as an item on the nearest empty space within 10 tiles. destroyed if no space ----
