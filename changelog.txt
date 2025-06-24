@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.13
+Date: 6/24/2025
+  Bugfixes:
+    - Fixed a load crash with generating recycling recipies for inserters with layered icons, reported by lord_farquat
+---------------------------------------------------------------------------------------------------
 Version: 2.1.12
 Date: 6/22/2025
   Additions:

@@ -274,9 +274,6 @@ function CanFitThrownItem(stuff)
     local ItemStack = stuff.ItemStack
     -- Checks if the item can be thrown into the target entity taking into account items still in the air
     local ItemName = ItemStack.name
-    local ItemCount = ItemStack.count
-    local ItemQuality = ItemStack.quality.name
-    --local ItemSpoilage = ItemStack.spoil_percent
     local CanFit = false
     local TargetDestroyNumber = script.register_on_object_destroyed(TargetEntity)
     if (storage.OnTheWay[TargetDestroyNumber] -- receptions are being tracked for the entity
@@ -284,25 +281,36 @@ function CanFitThrownItem(stuff)
         if (storage.OnTheWay[TargetDestroyNumber][ItemName] < 0) then
             storage.OnTheWay[TargetDestroyNumber][ItemName] = 0  -- correct any miscalculaltions resulting in negative values
         end
-        if (storage.InsertInventory[TargetEntity.type]) then -- not a belt
-            local total = storage.OnTheWay[TargetDestroyNumber][ItemName] + ItemCount
-            local CanInsert = TargetEntity.get_inventory(storage.InsertInventory[TargetEntity.type]).get_insertable_count({name=ItemName, quality=ItemQuality})
-            if (CanInsert < total) then
-                CanFit = false
-            else
-                CanFit = true
-            end
-        elseif (TargetEntity.type == "transport-belt" or TargetEntity.type == "underground-belt") then -- a belt
+        local ItemCount = ItemStack.count
+        local TargetType = TargetEntity.type
+        if (TargetType == "transport-belt" or TargetType == "underground-belt") then -- belts
             local incomming = 0
             for _, count in pairs(storage.OnTheWay[TargetDestroyNumber]) do
                 incomming = incomming + count
             end
             local total = incomming + TargetEntity.get_transport_line(1).get_item_count() + TargetEntity.get_transport_line(2).get_item_count() + ItemCount
-            if (TargetEntity.type == "underground-belt" and total <= 6)
-            or (TargetEntity.type == "transport-belt" and ((TargetEntity.belt_shape == "straight" and total <= 8) or ( TargetEntity.belt_shape ~= "straight" and total <= 7))) then
+            local shape = TargetEntity.belt_shape
+            if (TargetType == "underground-belt" and total <= 6)
+            or (TargetType == "transport-belt" and ((shape == "straight" and total <= 8) or (shape ~= "straight" and total <= 7))) then
                 CanFit = true
             else
                 CanFit = false
+            end
+        else
+            local ItemQuality = ItemStack.quality.name
+            local ItemSpoilage = ItemStack.spoil_percent
+            if (storage.OnTheWay[TargetDestroyNumber][ItemName] < 0) then
+                storage.OnTheWay[TargetDestroyNumber][ItemName] = 0  -- correct any miscalculaltions resulting in negative values
+            end
+            local total = storage.OnTheWay[TargetDestroyNumber][ItemName] + ItemCount
+            local inserted = TargetEntity.insert({name=ItemName, count=total, quality=ItemQuality, spoil_percent=ItemSpoilage})
+            if (inserted < total) then
+                CanFit = false
+            else
+                CanFit = true
+            end
+            if (inserted > 0) then -- when the destination is full. Have to check otherwise there's an error
+                TargetEntity.remove_item({name=ItemName, count=inserted, quality=ItemQuality})
             end
         end
     else

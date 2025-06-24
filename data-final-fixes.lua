@@ -597,11 +597,20 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 					icon = "__quality__/graphics/icons/recycling.png"
 				}
 			}
-			for i = 1, #TheItem.icons do
-				local icon = table.deepcopy(TheItem.icons[i]) -- we are gonna change the scale, so must copy the table
-				icon.scale = ((icon.scale == nil) and (0.5 * defines.default_icon_size / (icon.icon_size or defines.default_icon_size)) or icon.scale) * 0.8
-				icon.shift = util.mul_shift(icon.shift, 0.8)
-				icons[#icons + 1] = icon
+			if TheItem.icons then
+				for i = 1, #TheItem.icons do
+					local icon = table.deepcopy(TheItem.icons[i]) -- we are gonna change the scale, so must copy the table
+					icon.scale = ((icon.scale == nil) and (0.5 * defines.default_icon_size / (icon.icon_size or defines.default_icon_size)) or icon.scale) * 0.8
+					icon.shift = util.mul_shift(icon.shift, 0.8)
+					icons[#icons + 1] = icon
+				end
+			else
+				icons[#icons + 1] =
+				{
+					icon = TheItem.icon,
+					icon_size = TheItem.icon_size,
+					scale = (0.5 * defines.default_icon_size / (TheItem.icon_size or defines.default_icon_size)) * 0.8,
+				}
 			end
 			icons[#icons + 1] =
 			{
@@ -611,19 +620,7 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 				{
 					type = "recipe",
 					name = TheRecipe.name.."-recycling",
-					icons = {
-						{
-							icon = "__quality__/graphics/icons/recycling.png"
-						},
-						{
-							icon = TheItem.icon,
-							icon_size = TheItem.icon_size,
-							scale = (0.5 * defines.default_icon_size / (TheItem.icon_size or defines.default_icon_size)) * 0.8,
-						},
-						{
-							icon = "__quality__/graphics/icons/recycling-top.png"
-						},
-					},
+					icons = icons,
 					category = "recycling",
 					subgroup = TheRecipe.subgroup,
 					enabled = true,

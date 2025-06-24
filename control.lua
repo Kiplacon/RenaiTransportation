@@ -75,6 +75,10 @@ require('util')
 -- magnet ramp migration ✅
 -- director pad migration ✅
 -- losing train groups when incrementing schedules. Use train.get_schedule() and use go_to_station(schedule_index) if train had a group ✅
+-- high speed trains "bounce back" when impacting ramps at inconsistent distances making reconnecting wagons sometimes fail with how far the following wagon is bumped back
+
+------- future stuff
+--- 3 position switch for inserters to enable/follow setting/disable overflow prevention
 
 ------- possible future stuff
 -- deflector pad, diagonal
