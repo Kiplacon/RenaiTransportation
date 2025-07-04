@@ -73,9 +73,7 @@ data:extend({
 		life_time = 8,
 		pictures =
 			{
-				filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Particle.png",
-				--width = 64,
-				--height = 64,
+				filename = renaiEntity .. "BouncePlate/Particle.png",
 				size = 32,
 				priority = "extra-high",
 				line_length = 4, -- frames per row

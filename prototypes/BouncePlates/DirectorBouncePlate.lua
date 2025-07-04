@@ -2,7 +2,7 @@ data:extend({
 	{ --------- Bounce plate entity --------------
 		type = "constant-combinator",
 		name = "DirectorBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/DirectorPlateIcon.png",
+		icon = renaiIcons .. "DirectorPlateIcon.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation", "hide-alt-info"},
 		minable = {mining_time = 0.2, result = "DirectorBouncePlate"},
@@ -18,15 +18,16 @@ data:extend({
 			layers =
 				{
 					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/shadow.png",
+						filename = renaiEntity .. "DirectorBouncePlate/Plate_shadow.png",
 						priority = "medium",
 						width = 66,
 						height = 76,
 						shift = util.by_pixel(8, -0.5),
+						draw_as_shadow = true,
 						scale = 0.5
 					},
 					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/DirectorPlate.png",
+						filename = renaiEntity .. "DirectorBouncePlate/DirectorPlate.png",
 						priority = "medium",
 						width = 66,
 						height = 76,
@@ -53,7 +54,7 @@ data:extend({
 	{ --------- The Bounce plate item -------------
 		type = "item",
 		name = "DirectorBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/DirectorPlateIcon.png",
+		icon = renaiIcons .. "DirectorPlateIcon.png",
 		icon_size = 64,
 		subgroup = "RT",
 		order = "a-b",

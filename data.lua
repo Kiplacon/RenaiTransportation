@@ -122,28 +122,28 @@ data:extend({
 {
 	type = "virtual-signal",
 	name = "DirectorBouncePlateUp",
-	icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Up.png",
+	icon = renaiIcons .. "DirectorBouncePlate_Up.png",
 	icon_size = 64,
 	subgroup = "virtual-signal"
 },
 {
 	type = "virtual-signal",
 	name = "DirectorBouncePlateRight",
-	icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Right.png",
+	icon = renaiIcons .. "DirectorBouncePlate_Right.png",
 	icon_size = 64,
 	subgroup = "virtual-signal"
 },
 {
 	type = "virtual-signal",
 	name = "DirectorBouncePlateDown",
-	icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Down.png",
+	icon = renaiIcons .. "DirectorBouncePlate_Down.png",
 	icon_size = 64,
 	subgroup = "virtual-signal"
 },
 {
 	type = "virtual-signal",
 	name = "DirectorBouncePlateLeft",
-	icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Left.png",
+	icon = renaiIcons .. "DirectorBouncePlate_Left.png",
 	icon_size = 64,
 	subgroup = "virtual-signal"
 },

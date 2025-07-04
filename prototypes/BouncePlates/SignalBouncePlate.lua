@@ -17,7 +17,7 @@ data:extend({
 	{ --------- Bounce plate entity --------------
 		type = "constant-combinator",
 		name = "SignalBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlateIconn.png",
+		icon = renaiIcons .. "SignalPlateIconn.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation", "hide-alt-info"},
 		minable = {mining_time = 0.2, result = "SignalBouncePlate"},
@@ -32,15 +32,16 @@ data:extend({
 			layers =
 				{
 					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/shadow.png",
+						filename = renaiEntity .. "SignalBouncePlate/Plate_shadow.png",
 						priority = "medium",
 						width = 66,
 						height = 76,
 						shift = util.by_pixel(8, -0.5),
+						draw_as_shadow = true,
 						scale = 0.5
 					},
 					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlate.png",
+						filename = renaiEntity .. "SignalBouncePlate/SignalPlate.png",
 						priority = "medium",
 						width = 66,
 						height = 76,
@@ -85,7 +86,7 @@ data:extend({
 	{ --------- The Bounce plate item -------------
 		type = "item",
 		name = "SignalBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalPlateIconn.png",
+		icon = renaiIcons .. "SignalPlateIconn.png",
 		icon_size = 64,
 		subgroup = "RT",
 		order = "a-c",
@@ -115,7 +116,7 @@ data:extend({
 		render_layer = "higher-object-above",
 		pictures =
 			{
-			  filename = "__RenaiTransportation__/graphics/BouncePlates/SignalBouncePlate/SignalParticle.png",
+			  filename = renaiEntity .. "SignalBouncePlate/SignalParticle.png",
 			  --width = 64,
 			  --height = 64,
 			  size = 32,
