@@ -6,7 +6,6 @@ OhYouLikeTrains.icons =
 	{
 		icon = "__base__/graphics/icons/cargo-wagon.png",
 		icon_size = 64,
-		icon_mipmaps = 4,
 		tint = color
 	}
 }
@@ -47,7 +46,6 @@ OhYouLikeTrains,
 	{
 		{
 			icon = "__base__/graphics/icons/cargo-wagon.png",
-			icon_mipmaps = 4,
 			tint = color
 		}
 	},

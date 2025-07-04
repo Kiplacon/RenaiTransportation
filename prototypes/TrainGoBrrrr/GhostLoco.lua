@@ -5,7 +5,7 @@ data:extend{
 		type = "locomotive",
 		name = "RT-ghostLocomotive",
 		icon = baseLoco.icon,
-		icon_size = 64, icon_mipmaps = 4,
+		icon_size = 64,
 		flags = {"placeable-neutral", "placeable-off-grid", "not-on-map",  "not-selectable-in-game"},
 		hidden = true,
 		collision_box = baseLoco.collision_box,

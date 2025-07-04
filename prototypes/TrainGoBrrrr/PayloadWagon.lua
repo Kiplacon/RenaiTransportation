@@ -44,7 +44,6 @@ OhYouLikeTrains,
 	{
 		{
 			icon = "__base__/graphics/icons/cargo-wagon.png",
-			icon_mipmaps = 4,
 			tint = {220,150,50}
 		}
 	},

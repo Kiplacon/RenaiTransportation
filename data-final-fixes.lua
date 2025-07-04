@@ -374,7 +374,7 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 				type = "turret",
 				name = "RTPrimerThrowerShooter-"..ThingData.name,
 				icon = "__base__/graphics/icons/big-worm.png",
-				icon_size = 64, icon_mipmaps = 4,
+				icon_size = 64,
 				flags = {"placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-selectable-in-game"},
 				hidden = true,
 				max_health = 750,
@@ -459,14 +459,12 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 			{
 				{
 				icon = TheItem.icon,
-				icon_size = TheItem.icon_size,
-				icon_mipmaps = TheItem.icon_mipmaps
+				icon_size = TheItem.icon_size
 				},
 
 				{
 				icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",
-				icon_size = 64,
-				icon_mipmaps = 4
+				icon_size = 64
 				}
 			}
 	else
@@ -502,18 +500,16 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 			{
 				{
 					icon = TheThrower.icon,
-					icon_size = TheThrower.icon_size,
-					icon_mipmaps = TheThrower.icon_mipmaps
+					icon_size = TheThrower.icon_size
 				},
 
 				{
 					icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",
-					icon_size = 64,
-					icon_mipmaps = 4
+					icon_size = 64
 				}
 			}
 	else
-		table.insert(TheThrower.icons, {icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",	icon_size = 64, icon_mipmaps = 4})
+		table.insert(TheThrower.icons, {icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",	icon_size = 64})
 	end
 	TheThrower.name = "RTThrower-"..ThingData.name
 	TheThrower.minable = {mining_time = 0.1, result = TheItem.name}

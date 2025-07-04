@@ -54,7 +54,7 @@ data:extend({
 		type = "item",
 		name = "DirectorBouncePlate",
 		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/DirectorPlateIcon.png",
-		icon_size = 64, --icon_mipmaps = 4,
+		icon_size = 64,
 		subgroup = "RT",
 		order = "a-b",
 		place_result = "DirectorBouncePlate",
