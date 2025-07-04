@@ -234,7 +234,7 @@ data:extend({
             layers =
             {
                 {
-                    filename = "__RenaiTransportation__/graphics/TrainRamp/range.png",
+                    filename = renaiEntity .. "range.png",
                     size = 64,
                     tint = {1,0,0,0.5},
                     frame_count = 1,

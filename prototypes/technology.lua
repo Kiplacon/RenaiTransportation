@@ -41,7 +41,7 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 			{
 				type = "nothing",
 				effect_description = "Thrower Range can be set by this signal",
-				icon = "__RenaiTransportation__/graphics/RangeSignaling.png",
+				icon = renaiIcons .. "RangeSignaling.png",
 				icon_size = 64,
 			}
 		},

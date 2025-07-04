@@ -456,19 +456,19 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 	TheItem.place_result = "RTThrower-"..ThingData.name
 	if (TheItem.icon) then
 		TheItem.icons =
+		{
 			{
-				{
 				icon = TheItem.icon,
 				icon_size = TheItem.icon_size
-				},
+			},
 
-				{
-				icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",
+			{
+				icon = renaiIcons .. "ThrowerInserteroverlay.png",
 				icon_size = 64
-				}
 			}
+		}
 	else
-		table.insert(TheItem.icons, {icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",	icon_size = 64, icon_mipmaps = 4})
+		table.insert(TheItem.icons, {icon = renaiIcons .. "ThrowerInserteroverlay.png",	icon_size = 64, icon_mipmaps = 4})
 	end
 
 	if (ThingData.name == "inserter" or ThingData.name == "burner-inserter") then
@@ -504,12 +504,12 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 				},
 
 				{
-					icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",
+					icon = renaiIcons .. "ThrowerInserteroverlay.png",
 					icon_size = 64
 				}
 			}
 	else
-		table.insert(TheThrower.icons, {icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",	icon_size = 64})
+		table.insert(TheThrower.icons, {icon = renaiIcons .. "ThrowerInserteroverlay.png",	icon_size = 64})
 	end
 	TheThrower.name = "RTThrower-"..ThingData.name
 	TheThrower.minable = {mining_time = 0.1, result = TheItem.name}
@@ -556,7 +556,7 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 	TheThrower.hand_size = 0
 	TheThrower.hand_base_picture =
 		{
-		filename = "__RenaiTransportation__/graphics/ThrowerInserter/hr-inserter-hand-base.png",
+		filename = renaiEntity .. "ThrowerInserter/hr-inserter-hand-base.png",
         priority = "extra-high",
         width = 32,
         height = 136,
@@ -564,7 +564,7 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 		}
 	TheThrower.hand_closed_picture =
 		{
-		filename = "__RenaiTransportation__/graphics/ThrowerInserter/hr-inserter-hand-closed.png",
+		filename = renaiEntity .. "ThrowerInserter/hr-inserter-hand-closed.png",
         priority = "extra-high",
         width = 72,
         height = 164,
@@ -572,7 +572,7 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 		}
 	TheThrower.hand_open_picture =
 		{
-		filename = "__RenaiTransportation__/graphics/ThrowerInserter/hr-inserter-hand-open.png",
+		filename = renaiEntity .. "ThrowerInserter/hr-inserter-hand-open.png",
         priority = "extra-high",
         width = 72,
         height = 164,
@@ -636,26 +636,26 @@ function MakeCarriageSprites(ThingData)
 	log("--------Extracting train sprites for "..ThingData.type..": "..ThingData.name.."-----------")
 	--if (ThingData.pictures and ThingData.pictures.rotated.layers) then
 		local UpSprites = {{
-							filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WheelsVertical.png",
+							filename = renaiEntity .. "trains/WheelsVertical.png",
 							size = {200,500},
 							scale = 0.5,
 							tint = {0.5, 0.5, 0.5}
 							}}
 		local RightSprites = {{
-							filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WheelsHorizontal.png",
+							filename = renaiEntity .. "trains/WheelsHorizontal.png",
 							size = {500,200},
 							shift = {0,-0.5},
 							scale = 0.5,
 							tint = {0.5, 0.5, 0.5}
 							}}
 		local DownSprites = {{
-							filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WheelsVertical.png",
+							filename = renaiEntity .. "trains/WheelsVertical.png",
 							size = {200,500},
 							scale = 0.5,
 							tint = {0.5, 0.5, 0.5}
 							}}
 		local LeftSprites = {{
-							filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WheelsHorizontal.png",
+							filename = renaiEntity .. "trains/WheelsHorizontal.png",
 							size = {500,200},
 							shift = {0,-0.5},
 							scale = 0.5,

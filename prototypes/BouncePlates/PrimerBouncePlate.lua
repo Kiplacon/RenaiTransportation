@@ -2,13 +2,13 @@ data:extend({
 	{
 		type = "sprite",
 		name = "RTPrimerRangeOverlay",
-		filename = "__RenaiTransportation__/graphics/PrimeRange.png",
+		filename = renaiEntity .. "PrimerBouncePlate/PrimeRange.png",
 		size = 640
 	},
 	{
 		type = "sprite",
 		name = "RTPrimerSpreadRangeOverlay",
-		filename = "__RenaiTransportation__/graphics/PrimeSpreadRange.png",
+		filename = renaiEntity .. "PrimerBouncePlate/PrimeSpreadRange.png",
 		size = 640
 	},
 	
@@ -53,7 +53,7 @@ data:extend({
 			{
 				sprite = 
 					{
-						filename = "__RenaiTransportation__/graphics/PrimeRange.png",
+						filename = renaiEntity .. "PrimerBouncePlate/PrimeRange.png",
 						size = 640
 					},
 				draw_on_selection = false,
@@ -146,7 +146,7 @@ data:extend({
 		{
 			sprite = 
 			{
-				filename = "__RenaiTransportation__/graphics/PrimeSpreadRange.png",
+				filename = renaiEntity .. "PrimerBouncePlate/PrimeSpreadRange.png",
 				size = 640
 			},
 			draw_on_selection = true,

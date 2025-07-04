@@ -65,7 +65,7 @@ data:extend({
 	--render_layer = "arrow",
 	radius_visualisation_specification = {
 		sprite = {
-			filename = "__RenaiTransportation__/graphics/TrainRamp/range.png",
+			filename = renaiEntity .. "range.png",
 			size = 64,
 			tint = {1, 0.5, 0}
 		},

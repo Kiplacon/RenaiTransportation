@@ -38,7 +38,7 @@ local PictureSet =
 		layers =
 		{
 			{
-				filename = "__RenaiTransportation__/graphics/TrapdoorSwitch/TrapdoorSwitch.png",
+				filename = renaiEntity .. "TrapdoorSwitch/TrapdoorSwitch.png",
 				size = 128,
 				frame_count = 1,
 				direction_count = 16,
@@ -85,7 +85,7 @@ local PictureSetPlacer =
 		layers =
 		{
 			{
-				filename = "__RenaiTransportation__/graphics/TrapdoorSwitch/TrapdoorSwitchPlacer.png",
+				filename = renaiEntity .. "TrapdoorSwitch/TrapdoorSwitchPlacer.png",
 				size = 192,
 				frame_count = 1,
 				direction_count = 16,
@@ -148,14 +148,14 @@ data:extend({
 	{
 		type = "sprite",
 		name = "RTTrapdoorWagonOpen",
-		filename = "__RenaiTransportation__/graphics/TrapdoorSwitch/open.png",
+		filename = renaiEntity .. "TrapdoorSwitch/open.png",
 		size = 100,
 		scale = 0.5
 	},
 	{
 		type = "sprite",
 		name = "RTTrapdoorWagonClosed",
-		filename = "__RenaiTransportation__/graphics/TrapdoorSwitch/closed.png",
+		filename = renaiEntity .. "TrapdoorSwitch/closed.png",
 		size = 100,
 		scale = 0.5
 	},
@@ -216,7 +216,7 @@ data:extend({
 { -- Switch entity
 	type = "rail-signal",
 	name = "RTTrapdoorSwitch",
-	icon = "__RenaiTransportation__/graphics/TrapdoorSwitch/TrapdoorSwitchIcon.png",
+	icon = renaiIcons .. "TrapdoorSwitchIcon.png",
 	icon_size = 64,
 	flags = {"filter-directions", "not-on-map", "player-creation", "building-direction-16-way", "hide-alt-info", "not-flammable"},
 	minable = { mining_time = 0.5, result = "RTTrapdoorSwitch" },-- Minable so they can get the item back if the placer swap bugs out
@@ -234,7 +234,7 @@ data:extend({
 { -- switch placer entity
 	type = "rail-signal",
 	name = "RTTrapdoorSwitch-placer",
-	icon = "__RenaiTransportation__/graphics/TrapdoorSwitch/TrapdoorSwitchIcon.png",
+	icon = renaiIcons .. "TrapdoorSwitchIcon.png",
 	icon_size = 64,
 	flags = {"filter-directions", "not-on-map", "player-creation", "building-direction-16-way"},
 	hidden = true,
@@ -252,7 +252,7 @@ data:extend({
 {
 	type = "item",
 	name = "RTTrapdoorSwitch",
-	icon = "__RenaiTransportation__/graphics/TrapdoorSwitch/TrapdoorSwitchIcon.png",
+	icon = renaiIcons .. "TrapdoorSwitchIcon.png",
 	icon_size = 64,
 	subgroup = "RTTrainStuff",
 	order = "gb",
@@ -268,7 +268,7 @@ data:extend({
 {
 	type = "virtual-signal",
 	name = "StationTrapdoorWagonSignal",
-	icon = "__RenaiTransportation__/graphics/TrapdoorSignal.png",
+	icon = renaiIcons .. "TrapdoorSignal.png",
 	icon_size = 64,
 	subgroup = "virtual-signal"
 },
@@ -278,7 +278,7 @@ for i = 0, 15 do
 	{ -- down
 		type = "sprite",
 		name = "RTTrapdoorSwitch"..i,
-		filename = "__RenaiTransportation__/graphics/TrapdoorSwitch/TrapdoorSwitch.png",
+		filename = renaiEntity .. "TrapdoorSwitch/TrapdoorSwitch.png",
 		size = 128,
 		y = 128*i,
 		scale = 0.5
@@ -339,7 +339,7 @@ if (data.raw.item["tungsten-plate"] and data.raw.tool["metallurgic-science-pack"
 				{
 					type = "nothing",
 					effect_description = {"technology-description.TrapdoorSignal"},
-					icon = "__RenaiTransportation__/graphics/TrapdoorSignal.png",
+					icon = renaiIcons .. "TrapdoorSignal.png",
 					icon_size = 64,
 				}
 			},
@@ -446,7 +446,7 @@ else
 				{
 					type = "nothing",
 					effect_description = {"technology-description.TrapdoorSignal"},
-					icon = "__RenaiTransportation__/graphics/TrapdoorSignal.png",
+					icon = renaiIcons .. "TrapdoorSignal.png",
 					icon_size = 64,
 				}
 			},

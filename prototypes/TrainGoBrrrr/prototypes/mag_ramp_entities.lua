@@ -33,15 +33,15 @@ magRampEntities = {
 	{ -- range sprite
 		type = "sprite",
 		name = "RTMagnetTrainRampRange",
-		filename = "__RenaiTransportation__/graphics/TrainRamp/range.png",
+		filename = renaiEntity .. "range.png",
 		size = 64
 	},
 	
 	{ -- "rail" tile
 		type = "simple-entity-with-owner",
 		name = "RTMagnetRail",
-		icon = "__RenaiTransportation__/graphics/TrainRamp/magnetrail.png",
-		icon_size = 16,
+		icon = renaiIcons .. "magnetrail_icon.png",
+		icon_size = 64,
 		flags = {"placeable-neutral", "placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-flammable", "no-copy-paste"},
 		hidden = true,
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
@@ -50,7 +50,7 @@ magRampEntities = {
 		render_layer = "rail-stone-path",
 		picture =
 			{
-				filename = "__RenaiTransportation__/graphics/TrainRamp/magnetrail2.png",
+				filename = renaiEntity .. "MagnetRail/magnetrail2.png",
 				size = 64,
 				scale = 0.5
 			},
@@ -59,7 +59,7 @@ magRampEntities = {
 	--[[ { -- "rail" sprite because entities cant have altered render layers
 		type = "sprite",
 		name = "RTMagnetRailSprite",
-		filename = "__RenaiTransportation__/graphics/TrainRamp/magnetrail2.png",
+		filename = renaiEntity .. "MagnetRail/magnetrail2.png",
 		size = 64,
 		scale = 0.5
 	}, ]]
@@ -67,7 +67,7 @@ magRampEntities = {
 	{
 		type = "animation",
 		name = "RTPush",
-		filename = "__RenaiTransportation__/graphics/TrainRamp/testhue.png",
+		filename = renaiEntity .. "MagnetRail/testhue.png",
 		size = {105,169},
 		frame_count = 99,
 		line_length = 3
@@ -76,7 +76,7 @@ magRampEntities = {
 	{
 		type = "animation",
 		name = "RTPull",
-		filename = "__RenaiTransportation__/graphics/TrainRamp/testhuerev.png",
+		filename = renaiEntity .. "MagnetRail/testhuerev.png",
 		size = {105,169},
 		frame_count = 99,
 		line_length = 3
@@ -85,7 +85,7 @@ magRampEntities = {
 	{
 		type = "electric-energy-interface",
 		name = "RTMagnetRampDrain",
-		icon = "__RenaiTransportation__/graphics/TrainRamp/magnetrail.png",
+		icon = renaiIcons .. "magnetrail_icon.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-flammable", "no-copy-paste"},
 		hidden = true,

@@ -93,14 +93,14 @@ data:extend({
 {
 	type = "sprite",
 	name = "RTCharacterGhostStanding",
-	filename = "__RenaiTransportation__/graphics/zipline/StandingShadow.png",
+	filename = renaiEntity .. "zipline/StandingShadow.png",
 	width = 190,
 	height = 72
 },
 {
 	type = "sprite",
 	name = "RTCharacterGhostMoving",
-	filename = "__RenaiTransportation__/graphics/zipline/DrivingShadow.png",
+	filename = renaiEntity .. "zipline/DrivingShadow.png",
 	width = 190,
 	height = 72
 },
@@ -150,7 +150,7 @@ data:extend({
 {
 	type = "animation",
 	name = "RTHoojinTime",
-	filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WatchHimHooj.png",
+	filename = "__RenaiTransportation__/graphics/meme/WatchHimHooj.png",
 	size = {128,222},
 	frame_count = 7,
 	line_length = 7,
@@ -165,7 +165,7 @@ data:extend({
 	{
 		sound =
 		{
-			filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/Crank dat Hooja Boi.ogg",
+			filename = "__RenaiTransportation__/graphics/meme/Crank dat Hooja Boi.ogg",
 			volume = 0.5,
 		},
 		use_doppler_shift = false,
@@ -182,7 +182,7 @@ data:extend({
 {
 	type = "virtual-signal",
 	name = "ThrowerRangeSignal",
-	icon = "__RenaiTransportation__/graphics/RangeSignaling.png",
+	icon = renaiIcons .. "RangeSignaling.png",
 	icon_size = 64,
 	subgroup = "virtual-signal"
 },
@@ -314,7 +314,7 @@ if (data.raw.tree.lickmaw and data.raw["item-subgroup"]["agriculture-processes"]
 		{
 			type = "capsule",
 			name = "RTLickmawBalls",
-			icon = "__RenaiTransportation__/graphics/LickmawBALLS.png",
+			icon = renaiIcons .. "LickmawBALLS.png",
 			icon_size = 64,
 			subgroup = "agriculture-processes",
 			default_import_location = "gleba",

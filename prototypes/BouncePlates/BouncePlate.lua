@@ -106,7 +106,7 @@ data:extend({
 		render_layer = "under-elevated",
 		pictures =
 			{
-				filename = "__RenaiTransportation__/graphics/LickmawBALLS.png",
+				filename = "__RenaiTransportation__/graphics/meme/LickmawBALLS.png",
 				size = 64,
 				scale = 0.3,
 				priority = "high",
@@ -115,7 +115,7 @@ data:extend({
 			},
 		shadows =
 			{
-				filename = "__RenaiTransportation__/graphics/LickmawBALLS.png",
+				filename = "__RenaiTransportation__/graphics/meme/LickmawBALLS.png",
 				size = 64,
 				scale = 0.3,
 				priority = "high",
