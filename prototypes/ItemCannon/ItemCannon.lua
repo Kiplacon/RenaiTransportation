@@ -283,8 +283,8 @@ if (data.raw.item["holmium-plate"] and data.raw.tool["electromagnetic-science-pa
 		{
             type = "technology",
             name = "RTItemCannonTech",
-            icon = "__RenaiTransportation__/graphics/tech/ItemCannonTech.png",
-            icon_size = 130,
+            icon = renaiTechIcons .. "ItemCannonTech.png",
+            icon_size = 256,
             effects =
             {
                 --[[ {
@@ -322,8 +322,8 @@ if (data.raw.item["holmium-plate"] and data.raw.tool["electromagnetic-science-pa
         {
             type = "technology",
             name = "RTItemCannonLogisticsTech",
-            icon = "__RenaiTransportation__/graphics/tech/ItemCannonLogisticsTech.png",
-            icon_size = 128,
+            icon = renaiTechIcons .. "ItemCannonLogisticsTech.png",
+            icon_size = 1256,
             effects =
             {
                 {
@@ -372,8 +372,8 @@ else
 		{
             type = "technology",
             name = "RTItemCannonTech",
-            icon = "__RenaiTransportation__/graphics/tech/ItemCannonTech.png",
-            icon_size = 130,
+            icon = renaiTechIcons .. "ItemCannonTech.png",
+            icon_size = 256,
             effects =
             {
                 --[[ {
@@ -410,8 +410,8 @@ else
         {
             type = "technology",
             name = "RTItemCannonLogisticsTech",
-            icon = "__RenaiTransportation__/graphics/tech/ItemCannonLogisticsTech.png",
-            icon_size = 128,
+            icon = renaiTechIcons .. "ItemCannonLogisticsTech.png",
+            icon_size = 256,
             effects =
             {
                 {

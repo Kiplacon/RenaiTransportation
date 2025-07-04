@@ -95,8 +95,8 @@ if (data.raw.item["carbon-fiber"] and data.raw.tool["agricultural-science-pack"]
 		{
 			type = "technology",
 			name = "PrimerThrowerTech",
-			icon = "__RenaiTransportation__/graphics/tech/PrimerThrower.png",
-			icon_size = 128,
+			icon = renaiTechIcons .. "PrimerThrower.png",
+			icon_size = 256,
 			effects =
 			{
 				{
@@ -141,8 +141,8 @@ else
 		{
 			type = "technology",
 			name = "PrimerThrowerTech",
-			icon = "__RenaiTransportation__/graphics/tech/PrimerThrower.png",
-			icon_size = 128,
+			icon = renaiTechIcons .. "PrimerThrower.png",
+			icon_size = 256,
 			effects =
 			{
 				{

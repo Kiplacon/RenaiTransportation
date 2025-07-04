@@ -593,8 +593,8 @@ data:extend({
    {
 		type = "technology",
 		name = "RTZiplineTech",
-		icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-		icon_size = 64,
+		icon = renaiTechIcons .. "Zipline1.png",
+		icon_size = 256,
 		effects =
 		{
 			{
@@ -620,8 +620,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTZiplineControlTech1",
-		icon = "__RenaiTransportation__/graphics/zipline/crankcontrols.png",
-		icon_size = 64,
+		icon = renaiTechIcons .. "Zipline_crankcontrols.png",
+		icon_size = 256,
 		effects =
 		{
 			{
@@ -643,13 +643,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTZiplineTech2",
-		icons = {
-			{
-				icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-				icon_size = 64,
-				tint = {1,0.9,0},
-			}
-		},
+      icon = renaiTechIcons .. "Zipline2.png",
+      icon_size = 256,
 		effects =
 		{
 			{
@@ -672,13 +667,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTZiplineTech3",
-		icons = {
-			{
-				icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-				icon_size = 64,
-				tint = {255,35,35},
-			}
-		},
+      icon = renaiTechIcons .. "Zipline3.png",
+      icon_size = 256,
 		effects =
 		{
 			{
@@ -702,13 +692,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTZiplineTech4",
-		icons = {
-			{
-				icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-				icon_size = 64,
-				tint = {18,201,233},
-			}
-		},
+      icon = renaiTechIcons .. "Zipline4.png",
+      icon_size = 256,
 		effects =
 		{
 			{
@@ -732,13 +717,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTZiplineTech5",
-		icons = {
-			{
-				icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-				icon_size = 64,
-				tint = {83,255,26},
-			}
-		},
+      icon = renaiTechIcons .. "Zipline5.png",
+      icon_size = 256,
 		effects =
 		{
 			{	
@@ -764,8 +744,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTProgrammableZiplineControlTech",
-		icon = "__RenaiTransportation__/graphics/zipline/terminaltech.png",
-		icon_size = 128,
+		icon = renaiTechIcons .. "Zipline_terminaltech.png",
+		icon_size = 256,
 		effects =
 		{
 			{
@@ -813,8 +793,8 @@ if (data.raw.item["carbon-fiber"] and data.raw.item["pentapod-egg"] and data.raw
 		{
          type = "technology",
          name = "RTAIZiplineControlTech",
-         icon = "__RenaiTransportation__/graphics/tech/AIZiplineTech.png",
-         icon_size = 128,
+         icon = renaiTechIcons .. "AIZiplineTech.png",
+         icon_size = 256,
          effects =
          {
             {
@@ -859,8 +839,8 @@ else
 		{
          type = "technology",
          name = "RTAIZiplineControlTech",
-         icon = "__RenaiTransportation__/graphics/tech/AIZiplineTech.png",
-         icon_size = 128,
+         icon = renaiTechIcons .. "AIZiplineTech.png",
+         icon_size = 256,
          effects =
          {
             {

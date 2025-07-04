@@ -114,8 +114,8 @@ data:extend({
 {
 	type = "technology",
 	name = "RTVacuumHatchTech",
-	icon = "__RenaiTransportation__/graphics/tech/VacuumHatchTech.png",
-	icon_size = 128,
+	icon = renaiTechIcons .. "VacuumHatchTech.png",
+	icon_size = 256,
 	effects =
 	{
 		{

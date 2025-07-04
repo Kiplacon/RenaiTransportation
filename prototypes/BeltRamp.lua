@@ -283,8 +283,8 @@ data:extend({
 {
     type = "technology",
     name = "RTBeltRampTech",
-    icon = "__RenaiTransportation__/graphics/tech/BeltRampTech.png",
-    icon_size = 150,
+    icon = renaiTechIcons .. "BeltRampTech.png",
+    icon_size = 256,
     effects = unlocks,
     prerequisites = {"se-no", "electric-engine", "logistics"},
     unit =

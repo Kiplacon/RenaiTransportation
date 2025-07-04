@@ -588,7 +588,7 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 	else
 		data:extend({TheThrower, TheItem, TheRecipe})
 		if (isitenabled == false) then
-			table.insert(data.raw["technology"]["RTThrowerTime"].effects,{type="unlock-recipe",recipe=TheRecipe.name})
+			table.insert(data.raw["technology"]["RTThrowerTime"].effects, {type="unlock-recipe", recipe=TheRecipe.name})
 		end
 		if mods["quality"] then
 			local icons =

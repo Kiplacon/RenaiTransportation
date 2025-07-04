@@ -73,8 +73,8 @@ OhYouLikeTrains,
 {
 	type = "technology",
 	name = "RTDeliverThePayload",
-	icon = "__RenaiTransportation__/graphics/tech/boom.png",
-	icon_size = 128,
+	icon = renaiTechIcons .. "boom.png",
+	icon_size = 256,
 	effects =
 	{
 		{

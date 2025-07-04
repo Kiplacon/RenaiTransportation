@@ -90,8 +90,8 @@ OhYouLikeTrains,
 {
 	type = "technology",
 	name = "RTImpactTech",
-	icon = "__RenaiTransportation__/graphics/tech/Impact.png",
-	icon_size = 128,
+	icon = renaiTechIcons .. "Impact.png",
+	icon_size = 256,
 	effects =
 	{
 		{

@@ -1,3 +1,5 @@
+renaiTechIcons = "__RenaiTransportation__/graphics/technology/"
+
 require("prototypes.technology")
 require("prototypes.sounds")
 require("prototypes.TabSortingStuff")

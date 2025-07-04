@@ -147,8 +147,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTFreightPlates",
-		icon = "__RenaiTransportation__/graphics/tech/FlyingFreightPlate.png",
-		icon_size = 128,
+		icon = renaiTechIcons .. "FlyingFreightPlate.png",
+		icon_size = 256,
 		effects =
 		{
 			{

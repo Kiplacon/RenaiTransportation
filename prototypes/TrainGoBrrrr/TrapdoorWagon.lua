@@ -326,8 +326,8 @@ if (data.raw.item["tungsten-plate"] and data.raw.tool["metallurgic-science-pack"
 		{ --- wagon tech
 			type = "technology",
 			name = "RTTrapdoorWagonTech",
-			icon = "__RenaiTransportation__/graphics/tech/TrapdoorWagonTech.png",
-			icon_size = 128,
+			icon = renaiTechIcons .. "TrapdoorWagonTech.png",
+			icon_size = 256,
 			effects =
 			{
 				{
@@ -367,8 +367,8 @@ if (data.raw.item["tungsten-plate"] and data.raw.tool["metallurgic-science-pack"
 			{
 				type = "technology",
 				name = "RTSwitchRampTech",
-				icon = "__RenaiTransportation__/graphics/tech/SwitchRampTech.png",
-				icon_size = 128,
+				icon = renaiTechIcons .. "SwitchRampTech.png",
+				icon_size = 256,
 				effects =
 				{
 					{
@@ -433,8 +433,8 @@ else
 		{ --- wagon tech
 			type = "technology",
 			name = "RTTrapdoorWagonTech",
-			icon = "__RenaiTransportation__/graphics/tech/TrapdoorWagonTech.png",
-			icon_size = 128,
+			icon = renaiTechIcons .. "TrapdoorWagonTech.png",
+			icon_size = 256,
 			effects =
 			{
 				{
@@ -472,8 +472,8 @@ else
 			{
 				type = "technology",
 				name = "RTSwitchRampTech",
-				icon = "__RenaiTransportation__/graphics/tech/SwitchRampTech.png",
-				icon_size = 128,
+				icon = renaiTechIcons .. "SwitchRampTech.png",
+				icon_size = 256,
 				effects =
 				{
 					{

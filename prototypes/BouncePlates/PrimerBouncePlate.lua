@@ -155,8 +155,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "PrimerPlateTech",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerPlateIconn.png",
-		icon_size = 64,
+		icon = renaiTechIcons .. "PrimerPlateIconn.png",
+		icon_size = 256,
 		effects =
 		{
 			{

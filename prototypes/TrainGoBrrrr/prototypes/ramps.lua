@@ -96,8 +96,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTFlyingFreight",
-		icon = "__RenaiTransportation__/graphics/tech/FlyingFreight.png",
-		icon_size = 128,
+		icon = renaiTechIcons .. "FlyingFreight.png",
+		icon_size = 256,
 		effects =
 		{
 			{
@@ -120,8 +120,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTMagnetTrainRamps",
-		icon = "__RenaiTransportation__/graphics/tech/MagnetFreight.png",
-		icon_size = 128,
+		icon = renaiTechIcons .. "MagnetFreight.png",
+		icon_size = 256,
 		effects =
 		{
 			{
