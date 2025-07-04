@@ -1,4 +1,6 @@
 renaiTechIcons = "__RenaiTransportation__/graphics/technology/"
+renaiIcons = "__RenaiTransportation__/graphics/icons/"
+renaiEntity = "__RenaiTransportation__/graphics/entity/"
 
 require("prototypes.technology")
 require("prototypes.sounds")

@@ -3,15 +3,15 @@ data:extend({
 	{
 		type = "sprite",
 		name = "RTDirectedRangeOverlayRL",
-		filename = "__RenaiTransportation__/graphics/testRL.png",
-		size = 640
+		filename = "__RenaiTransportation__/graphics/testRL2.png",
+		size = 1280
 	},
 
 	{
 		type = "sprite",
 		name = "RTDirectedRangeOverlayUD",
-		filename = "__RenaiTransportation__/graphics/testUD.png",
-		size = 640
+		filename = "__RenaiTransportation__/graphics/testUD2.png",
+		size = 1280
 	},
 
 	{ --------- Bounce plate entity --------------
