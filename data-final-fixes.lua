@@ -149,7 +149,7 @@ function MakeItemShellStuff(ThingData)
 					layers =
 					{
 						{
-							filename = "__RenaiTransportation__/graphics/ItemCannon/EmptyItemShell.png",
+							filename = renaiEntity .. "ItemCannon/EmptyItemShell.png",
 							size = 64,
 							frame_count = 1,
 							priority = "high",
@@ -159,7 +159,7 @@ function MakeItemShellStuff(ThingData)
 				},
 				shadow =
 				{
-					filename = "__RenaiTransportation__/graphics/ItemCannon/EmptyItemShell.png",
+					filename = renaiEntity .. "ItemCannon/EmptyItemShell_shadow.png",
 					size = 64,
 					frame_count = 1,
 					priority = "high",

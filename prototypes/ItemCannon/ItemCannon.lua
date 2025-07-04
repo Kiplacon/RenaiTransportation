@@ -11,8 +11,8 @@ data:extend({
     { --------- entity
         type = "electric-energy-interface",
         name = "RTItemCannon",
-        icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
-        icon_size = 130,
+        icon = renaiIcons .. "ItemCannonIcon.png",
+        icon_size = 64,
         flags = {"placeable-neutral", "player-creation"},
         minable = {mining_time = 0.2, result = "RTItemCannon"},
         max_health = 500,
@@ -33,7 +33,7 @@ data:extend({
         {
             sheets = {
                 {
-                    filename = "__RenaiTransportation__/graphics/ItemCannon/ItemCannon.png",
+                    filename = renaiEntity .. "ItemCannon/ItemCannon.png",
                     width = 512,
                     height = 512,
                     direction_count = 4,
@@ -42,7 +42,7 @@ data:extend({
                     scale = 0.5
                 },
                 {
-                    filename = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonShadows.png",
+                    filename = renaiEntity .. "ItemCannon/ItemCannonShadows.png",
                     width = 512,
                     height = 512,
                     direction_count = 4,
@@ -57,8 +57,8 @@ data:extend({
     { --------- item -------------
         type = "item",
         name = "RTItemCannon",
-        icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
-        icon_size = 130,
+        icon = renaiIcons .. "ItemCannonIcon.png",
+        icon_size = 64,
         subgroup = "RTCannonStuff",
         order = "a",
         place_result = "RTItemCannon",
@@ -82,8 +82,8 @@ data:extend({
     { --------- mask
         type = "simple-entity-with-owner",
         name = "RTItemCannonMask",
-        icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
-        icon_size = 130,
+        icon = renaiIcons .. "ItemCannonIcon.png",
+        icon_size = 64,
         flags = {"placeable-neutral", "not-on-map", "not-blueprintable", "not-deconstructable", "placeable-off-grid", "hide-alt-info"},
         hidden = true,
         collision_box = nil,
@@ -91,7 +91,7 @@ data:extend({
         picture =
         {
             sheet = {
-                filename = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonMask.png",
+                filename = renaiEntity .. "ItemCannon/ItemCannonMask.png",
                 width = 512,
                 height = 512,
                 direction_count = 4,

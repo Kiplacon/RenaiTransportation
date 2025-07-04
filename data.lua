@@ -150,7 +150,7 @@ data:extend({
 {
 	type = "animation",
 	name = "RTHoojinTime",
-	filename = "__RenaiTransportation__/graphics/meme/WatchHimHooj.png",
+	filename = renaiEntity .. "meme/WatchHimHooj.png",
 	size = {128,222},
 	frame_count = 7,
 	line_length = 7,
@@ -165,7 +165,7 @@ data:extend({
 	{
 		sound =
 		{
-			filename = "__RenaiTransportation__/graphics/meme/Crank dat Hooja Boi.ogg",
+			filename = renaiEntity .. "meme/Crank dat Hooja Boi.ogg",
 			volume = 0.5,
 		},
 		use_doppler_shift = false,
