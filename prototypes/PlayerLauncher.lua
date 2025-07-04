@@ -44,7 +44,7 @@ data:extend({
 	{ --------- The thrower item -------------
 		type = "item",
 		name = "PlayerLauncher",
-		icon = renaiIcons .. "PlayerLauncher.png"
+		icon = renaiIcons .. "PlayerLauncher.png",
 		icon_size = 64,
 		subgroup = "RT",
 		order = "c",
