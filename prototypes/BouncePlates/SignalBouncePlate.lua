@@ -75,8 +75,8 @@ data:extend({
 			{
 				sprite = 
 					{
-						filename = "__RenaiTransportation__/graphics/testalt.png",
-						size = 640
+						filename = "__RenaiTransportation__/graphics/testalt2.png",
+						size = 1280
 					},
 				draw_on_selection = true,
 				distance = 10

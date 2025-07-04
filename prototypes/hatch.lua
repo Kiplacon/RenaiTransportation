@@ -16,7 +16,7 @@ data:extend({
 {
 type = "simple-entity-with-owner",
 name = "HatchRT",
-icon = "__RenaiTransportation__/graphics/hatch/icon.png",
+icon = renaiIcons .. "hatch_icon.png",
 icon_size = 64,
 flags = {"placeable-neutral", "player-creation"},
 collision_mask = {layers={[RememberNoUnderscores]=true}},
@@ -28,17 +28,17 @@ minable = {mining_time = 0.2, result = "HatchRT"},
 render_layer = "under-elevated",
 picture =
 	{
-		filename = "__RenaiTransportation__/graphics/hatch/hatch.png",
-		width = 28,
-		height = 42,
-		scale = 0.75
+		filename = renaiEntity .. "hatch/hatch.png",
+		width = 64,
+		height = 64,
+		scale = 0.5
 	}
 },
 
 { --------- The hatch item -------------
 	type = "item",
 	name = "HatchRT",
-	icon = "__RenaiTransportation__/graphics/hatch/icon.png",
+	icon = renaiIcons .. "hatch_icon.png",
 	icon_size = 64,
 	subgroup = "RT",
 	order = "f",
@@ -66,8 +66,8 @@ picture =
 {
 	type = "inserter",
 	name = "RTThrower-EjectorHatchRT",
-	icon = "__RenaiTransportation__/graphics/hatch/EjeectorIccon.png",
-	icon_size = 43,
+	icon = renaiIcons .. "EjeectorIccon.png",
+	icon_size = 64,
 	flags = {"placeable-neutral", "player-creation"},
 	collision_mask = {layers={[RememberNoUnderscores]=true}},
 	collision_box = {{-0.35, -0.35}, {0.35, 0.35}},
@@ -99,11 +99,11 @@ picture =
 	{
 		sheet =
 		{
-			filename = "__RenaiTransportation__/graphics/hatch/EjectorHatch.png",
+			filename = renaiEntity .. "hatch/EjectorHatch.png",
 			priority = "extra-high",
-			width = 64,
-			height = 64,
-			scale = 0.75
+			width = 96,
+			height = 96,
+			scale = 0.5
 		}
 	},
 	circuit_wire_connection_points = circuit_connector_definitions["inserter"].points,
@@ -115,8 +115,8 @@ picture =
 { --------- The ejector hatch item -------------
 	type = "item",
 	name = "RTThrower-EjectorHatchRT",
-	icon = "__RenaiTransportation__/graphics/hatch/EjeectorIccon.png",
-	icon_size = 43,
+	icon = renaiIcons .. "EjeectorIccon.png",
+	icon_size = 64,
 	subgroup = "RT",
 	order = "f",
 	place_result = "RTThrower-EjectorHatchRT",
@@ -142,12 +142,12 @@ picture =
 {
 	type = "animation",
 	name = "EjectorHatchFrames",
-	filename = "__RenaiTransportation__/graphics/hatch/EjectorHatch.png",
-	size = 64,
+	filename = renaiEntity .. "hatch/EjectorHatch.png",
+	size = 96,
 	frame_count = 4,
 	line_length = 4,
 	animation_speed = 0.1,
-	scale = 0.75
+	scale = 0.5
 },
 
 })

@@ -3,7 +3,7 @@ data:extend({
 {
 	type = "electric-energy-interface",
 	name = "RTVacuumHatch",
-	icon = "__RenaiTransportation__/graphics/hatch/vacuumhatchicon.png",
+	icon = renaiIcons .. "vacuumhatchicon.png",
 	icon_size = 64,
 	flags = {"placeable-neutral", "player-creation"},
 	max_health = 150,
@@ -27,38 +27,38 @@ data:extend({
 	{
 		north =
 		{
-			filename = "__RenaiTransportation__/graphics/hatch/VacuumHatchN.png",
+			filename = renaiEntity .. "VacuumHatch/VacuumHatchN.png",
 			frame_count = 4,
 			line_length = 4,
-			size = 80,
-			scale = 0.6,
+			size = 96,
+			scale = 0.5,
 			animation_speed = 0.01
 		},
 		east =
 		{
-			filename = "__RenaiTransportation__/graphics/hatch/VacuumHatchE.png",
+			filename = renaiEntity .. "VacuumHatch/VacuumHatchE.png",
 			frame_count = 4,
 			line_length = 4,
-			size = 80,
-			scale = 0.6,
+			size = 96,
+			scale = 0.5,
 			animation_speed = 0.01
 		},
 		south =
 		{
-			filename = "__RenaiTransportation__/graphics/hatch/VacuumHatchS.png",
+			filename = renaiEntity .. "VacuumHatch/VacuumHatchS.png",
 			frame_count = 4,
 			line_length = 4,
-			size = 80,
-			scale = 0.6,
+			size = 96,
+			scale = 0.5,
 			animation_speed = 0.01
 		},
 		west =
 		{
-			filename = "__RenaiTransportation__/graphics/hatch/VacuumHatchW.png",
+			filename = renaiEntity .. "VacuumHatch/VacuumHatchW.png",
 			frame_count = 4,
 			line_length = 4,
-			size = 80,
-			scale = 0.6,
+			size = 96,
+			scale = 0.5,
 			animation_speed = 0.01
 		},
 	},
@@ -93,7 +93,7 @@ data:extend({
 { --------- The vacuum hatch item -------------
 	type = "item",
 	name = "RTVacuumHatch",
-	icon = "__RenaiTransportation__/graphics/hatch/vacuumhatchicon.png",
+	icon = renaiIcons .. "vacuumhatchicon.png",
 	icon_size = 64,
 	subgroup = "RT",
 	order = "f-c",
@@ -104,7 +104,7 @@ data:extend({
 {
 	type = "animation",
 	name = "VacuumHatchSucc",
-	filename = "__RenaiTransportation__/graphics/hatch/VacuumHatchParticles.png",
+	filename = renaiEntity .. "VacuumHatch/VacuumHatchParticles.png",
 	size = {160, 142},
 	frame_count = 105,
 	line_length = 5,

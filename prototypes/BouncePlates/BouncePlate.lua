@@ -50,8 +50,8 @@ data:extend({
 		{
 			sprite =
 			{
-				filename = "__RenaiTransportation__/graphics/testalt.png",
-				size = 640
+				filename = "__RenaiTransportation__/graphics/testalt2.png",
+				size = 1280
 			},
 			draw_on_selection = false,
 			distance = 10
@@ -176,38 +176,38 @@ data:extend({
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
 		picture =
-			{
+		{
 			layers =
-				{
-					{
-						filename = renaiEntity .. "BouncePlate/Plate_shadow.png",
-						priority = "medium",
-						width = 66,
-						height = 76,
-						shift = util.by_pixel(8, -0.5),
-						draw_as_shadow = true,
-						scale = 0.5
-					},
-					{
-						filename = renaiEntity .. "BouncePlate/Plate.png",
-						priority = "medium",
-						width = 66,
-						height = 76,
-						shift = util.by_pixel(-0.5, -0.5),
-						scale = 0.5
-					}
-				}
-			},
-		radius_visualisation_specification =
 			{
-				sprite =
-					{
-						filename = "__RenaiTransportation__/graphics/testalt.png",
-						size = 640
-					},
-				draw_on_selection = true,
-				distance = 5
+				{
+					filename = renaiEntity .. "BouncePlate/Plate_shadow.png",
+					priority = "medium",
+					width = 66,
+					height = 76,
+					shift = util.by_pixel(8, -0.5),
+					draw_as_shadow = true,
+					scale = 0.5
+				},
+				{
+					filename = renaiEntity .. "BouncePlate/Plate.png",
+					priority = "medium",
+					width = 66,
+					height = 76,
+					shift = util.by_pixel(-0.5, -0.5),
+					scale = 0.5
+				}
 			}
+		},
+		radius_visualisation_specification =
+		{
+			sprite =
+			{
+				filename = "__RenaiTransportation__/graphics/testalt2.png",
+				size = 1280
+			},
+			draw_on_selection = true,
+			distance = 5
+		}
 	},
 	{ --------- Bounce plate entity 15 --------------
 		type = "simple-entity-with-owner",
@@ -223,38 +223,38 @@ data:extend({
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
 		picture =
-			{
+		{
 			layers =
-				{
-					{
-						filename = renaiEntity .. "BouncePlate/Plate_shadow.png",
-						priority = "medium",
-						width = 66,
-						height = 76,
-						shift = util.by_pixel(8, -0.5),
-						draw_as_shadow = true,
-						scale = 0.5
-					},
-					{
-						filename = renaiEntity .. "BouncePlate/Plate.png",
-						priority = "medium",
-						width = 66,
-						height = 76,
-						shift = util.by_pixel(-0.5, -0.5),
-						scale = 0.5
-					}
-				}
-			},
-		radius_visualisation_specification =
 			{
-				sprite =
-					{
-						filename = "__RenaiTransportation__/graphics/testalt.png",
-						size = 640
-					},
-				draw_on_selection = true,
-				distance = 15
+				{
+					filename = renaiEntity .. "BouncePlate/Plate_shadow.png",
+					priority = "medium",
+					width = 66,
+					height = 76,
+					shift = util.by_pixel(8, -0.5),
+					draw_as_shadow = true,
+					scale = 0.5
+				},
+				{
+					filename = renaiEntity .. "BouncePlate/Plate.png",
+					priority = "medium",
+					width = 66,
+					height = 76,
+					shift = util.by_pixel(-0.5, -0.5),
+					scale = 0.5
+				}
 			}
+		},
+		radius_visualisation_specification =
+		{
+			sprite =
+			{
+				filename = "__RenaiTransportation__/graphics/testalt2.png",
+				size = 1280
+			},
+			draw_on_selection = true,
+			distance = 15
+		}
 	},
 
 })
