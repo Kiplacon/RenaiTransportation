@@ -251,7 +251,7 @@ script.on_event(
 
 -- Zipline mount/dismount
 script.on_event(
-	"RTOnOffZipline",
+	{"RTOnOffZipline", defines.events.on_pre_player_toggled_map_editor},
 	require("script.event.GetOnOrOffZipline")
 )
 

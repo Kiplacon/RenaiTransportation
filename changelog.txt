@@ -6,6 +6,8 @@ Date: 6/_____/2025
   Graphics:
     - South Directed Plate has a visible red part
     - Reorganized graphics internally
+  Bugfixes:
+    - Fixed crash when accessing editor mode from a zipline
 ---------------------------------------------------------------------------------------------------
 Version: 2.1.13
 Date: 6/24/2025
