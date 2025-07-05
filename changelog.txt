@@ -5,7 +5,11 @@ Date: 6/_____/2025
     - Update by snouz
   Graphics:
     - South Directed Plate has a visible red part
+    - Reworked icons, entity and tech icon for: jump belts, hatch, item thrower, item catcher, open container
+    - Adjusted the resolution of some icons and entities
     - Reorganized graphics internally
+  Changes:
+    - Adjusted hatch selection box
   Bugfixes:
     - Fixed crash when accessing editor mode from a zipline
 ---------------------------------------------------------------------------------------------------
