@@ -1,14 +1,8 @@
 local OhYouLikeTrains = table.deepcopy(data.raw["cargo-wagon"]["cargo-wagon"])
 local color = {100,100,100}
 OhYouLikeTrains.name = "RTImpactWagon"
-OhYouLikeTrains.icons =
-{
-	{
-		icon = "__base__/graphics/icons/cargo-wagon.png",
-		icon_size = 64,
-		tint = color
-	}
-}
+OhYouLikeTrains.icon = renaiIcons .. "wagon_impact.png"
+OhYouLikeTrains.icon_size = 64
 OhYouLikeTrains.minable = {mining_time = 0.5, result = "RTImpactWagon"}
 
 for _, part in pairs({"rotated", "sloped"}) do
@@ -41,14 +35,8 @@ OhYouLikeTrains,
 { --------- wagon item -------------
 	type = "item",
 	name = "RTImpactWagon",
+	icon = renaiIcons .. "wagon_impact.png",
 	icon_size = 64,
-	icons =
-	{
-		{
-			icon = "__base__/graphics/icons/cargo-wagon.png",
-			tint = color
-		}
-	},
 	subgroup = "RTTrainStuff",
 	order = "e",
 	place_result = "RTImpactWagon",

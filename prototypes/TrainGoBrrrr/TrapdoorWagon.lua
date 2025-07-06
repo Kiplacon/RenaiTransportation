@@ -1,20 +1,16 @@
 local OhYouLikeTrains = table.deepcopy(data.raw["cargo-wagon"]["cargo-wagon"])
 local color = {135,120,255}
 OhYouLikeTrains.name = "RTTrapdoorWagon"
-OhYouLikeTrains.icons =
-{
-	{
-		icon = "__base__/graphics/icons/cargo-wagon.png",
-		icon_size = 64,
-		tint = color
-	}
-}
+OhYouLikeTrains.icon = renaiIcons .. "wagon_trapdoor.png"
+OhYouLikeTrains.icon_size = 64
 OhYouLikeTrains.minable = {mining_time = 0.5, result = "RTTrapdoorWagon"}
 
 for _, part in pairs({"rotated", "sloped"}) do
 	if OhYouLikeTrains.pictures[part] and OhYouLikeTrains.pictures[part].layers then
 		for i, layer in pairs(OhYouLikeTrains.pictures[part].layers) do
 			layer.tint = color
+			--OhYouLikeTrains.pictures[part].layers[2].tint = color
+			--OhYouLikeTrains.pictures[part].layers[2].apply_runtime_tint = false
 		end
 	elseif OhYouLikeTrains.pictures[part] then
 		OhYouLikeTrains.pictures[part].tint = color
@@ -24,6 +20,8 @@ for _, part in pairs({"horizontal_doors", "vertical_doors"}) do
 	if OhYouLikeTrains[part] and OhYouLikeTrains[part].layers then
 		for i, layer in pairs(OhYouLikeTrains[part].layers) do
 			layer.tint = color
+			--OhYouLikeTrains[part].layers[2].tint = color
+			--OhYouLikeTrains[part].layers[2].apply_runtime_tint = false
 		end
 	elseif OhYouLikeTrains[part] then
 		OhYouLikeTrains[part].tint = color
@@ -133,13 +131,7 @@ data:extend({
 		type = "item",
 		name = "RTTrapdoorWagon",
 		icon_size = 64,
-		icons =
-		{
-			{
-				icon = "__base__/graphics/icons/cargo-wagon.png",
-				tint = color
-			}
-		},
+		icon = renaiIcons .. "wagon_trapdoor.png",
 		subgroup = "RTTrainStuff",
 		order = "ga",
 		place_result = "RTTrapdoorWagon",
@@ -160,15 +152,15 @@ data:extend({
 		scale = 0.5
 	},
 	{
-        type = "sound",
-        name = "RTTrapdoorOpenSound",
-        filename = "__RenaiTransportation__/sickw0bs/TrapdoorOpen.ogg",
+    type = "sound",
+    name = "RTTrapdoorOpenSound",
+    filename = "__RenaiTransportation__/sickw0bs/TrapdoorOpen.ogg",
 		volume = 0.5
     },
 	{
-        type = "sound",
-        name = "RTTrapdoorCloseSound",
-        filename = "__RenaiTransportation__/sickw0bs/TrapdoorClose.ogg",
+    type = "sound",
+    name = "RTTrapdoorCloseSound",
+    filename = "__RenaiTransportation__/sickw0bs/TrapdoorClose.ogg",
 		volume = 0.3
     }
 })

@@ -1,15 +1,8 @@
 local OhYouLikeTrains = table.deepcopy(data.raw["cargo-wagon"]["cargo-wagon"])
 local color = {220,125,0}
 OhYouLikeTrains.name = "RTPayloadWagon"
-OhYouLikeTrains.icons =
-{
-	{
-		icon = "__base__/graphics/icons/cargo-wagon.png",
-		icon_size = 64, 
-		icon_mipmaps = 4,
-		tint = color
-	}
-}
+OhYouLikeTrains.icon = renaiIcons .. "wagon_payload.png"
+OhYouLikeTrains.icon_size = 64
 OhYouLikeTrains.minable = {mining_time = 0.5, result = "RTPayloadWagon"}
 OhYouLikeTrains.inventory_size = 8
 
@@ -40,13 +33,7 @@ OhYouLikeTrains,
 	type = "item",
 	name = "RTPayloadWagon",
 	icon_size = 64,
-	icons = 
-	{
-		{
-			icon = "__base__/graphics/icons/cargo-wagon.png",
-			tint = {220,150,50}
-		}
-	},
+	icon = renaiIcons .. "wagon_payload.png",
 	subgroup = "RTTrainStuff",
 	order = "f",
 	place_result = "RTPayloadWagon",

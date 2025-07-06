@@ -484,10 +484,10 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 		energy_required = 1,
 		localised_name =  "Thrower "..ThingData.name:gsub("-i"," i"),
 		ingredients =
-			{
-				{type="item", name=PlacingItemName, amount=1},
-				{type="item", name="copper-cable", amount=4}
-			},
+		{
+			{type="item", name=PlacingItemName, amount=1},
+			{type="item", name="copper-cable", amount=4}
+		},
 		results = {
 			{type="item", name=TheItem.name, amount=1}
 		},
@@ -497,17 +497,16 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 	local TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	if (TheThrower.icon) then
 		TheThrower.icons =
+		{
 			{
-				{
-					icon = TheThrower.icon,
-					icon_size = TheThrower.icon_size
-				},
-
-				{
-					icon = renaiIcons .. "ThrowerInserteroverlay.png",
-					icon_size = 64
-				}
+				icon = TheThrower.icon,
+				icon_size = TheThrower.icon_size
+			},
+			{
+				icon = renaiIcons .. "ThrowerInserteroverlay.png",
+				icon_size = 64
 			}
+		}
 	else
 		table.insert(TheThrower.icons, {icon = renaiIcons .. "ThrowerInserteroverlay.png",	icon_size = 64})
 	end
