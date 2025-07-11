@@ -3,14 +3,14 @@ data:extend({
 {
 	type = "sprite",
 	name = "RTNoMask",
-	filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/NoMask.png",
+	filename = renaiEntity .. "trains/NoMask.png",
 	size = {500,200},
 	shift = {0,-1}
 },
 {
 	type = "sprite",
 	name = "GenericShadow",
-	filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/shadow.png",
+	filename = renaiEntity .. "trains/shadow.png",
 	size = {200,500}
 },
 ---- locomotive -----
@@ -125,10 +125,11 @@ data:extend({
 	-- size = {200,500}
 -- },
 ---- artillery ----
+
 {
 	type = "sprite",
 	name = "RTartillery-wagonleft",
-	filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/artillery-wagonLeft.png",
+	filename = renaiEntity .. "trains/artillery-wagonLeft.png",
 	size = {500,200},
 	shift = {0,-1.3},
 	scale = 0.5
@@ -136,7 +137,7 @@ data:extend({
 {
 	type = "sprite",
 	name = "RTartillery-wagonright",
-	filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/artillery-wagonRight.png",
+	filename = renaiEntity .. "trains/artillery-wagonRight.png",
 	size = {500,200},
 	shift = {0,-1.3},
 	scale = 0.5
@@ -144,14 +145,14 @@ data:extend({
 {
 	type = "sprite",
 	name = "RTartillery-wagondown",
-	filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/artillery-wagonDown.png",
+	filename = renaiEntity .. "trains/artillery-wagonDown.png",
 	size = {200,500},
 	scale = 0.5
 },
 {
 	type = "sprite",
 	name = "RTartillery-wagonup",
-	filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/artillery-wagonUp.png",
+	filename = renaiEntity .. "trains/artillery-wagonUp.png",
 	size = {200,500},
 	scale = 0.5
 }

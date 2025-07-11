@@ -2,7 +2,7 @@ data.extend({
     { --------- entity
         type = "container",
         name = "RTCatchingChute",
-        icon = "__RenaiTransportation__/graphics/ItemCannon/CatchingChuteIcon.png",
+        icon = renaiIcons .. "CatchingChuteIcon.png",
         icon_size = 64,
         flags = {"placeable-neutral", "player-creation"},
         minable = {mining_time = 0.5, result = "RTCatchingChute"},
@@ -30,14 +30,14 @@ data.extend({
         picture = {
             layers = {
             {
-                filename = "__RenaiTransportation__/graphics/ItemCannon/CatchingChute.png",
+                filename = renaiEntity .. "ItemCannon/CatchingChute.png",
                 shift = {0, -0.72},
                 size = 260,
                 priority = "high",
                 scale = 0.3
             },
             {
-                filename = "__RenaiTransportation__/graphics/ItemCannon/CatchingChuteShadow.png",
+                filename = renaiEntity .. "ItemCannon/CatchingChuteShadow.png",
                 shift = {0, -0.72},
                 size = 512,
                 draw_as_shadow = true,
@@ -50,7 +50,7 @@ data.extend({
     { --------- item -------------
         type = "item",
         name = "RTCatchingChute",
-        icon = "__RenaiTransportation__/graphics/ItemCannon/CatchingChuteIcon.png",
+        icon = renaiIcons .. "CatchingChuteIcon.png",
         icon_size = 64,
         subgroup = "RTCannonStuff",
         order = "d",
@@ -62,7 +62,7 @@ data.extend({
     { --------- entity
         type = "electric-energy-interface",
         name = "RTDivergingChute",
-        icon = "__RenaiTransportation__/graphics/ItemCannon/DivergingChuteIcon.png",
+        icon = renaiIcons .. "DivergingChuteIcon.png",
         icon_size = 64,
         flags = {"placeable-neutral", "player-creation"},
         minable = {mining_time = 0.5, result = "RTDivergingChute"},
@@ -96,14 +96,14 @@ data.extend({
         pictures = {
             sheets = {
                 {
-                    filename = "__RenaiTransportation__/graphics/ItemCannon/DivergingChute.png",
+                    filename = renaiEntity .. "ItemCannon/DivergingChute.png",
                     shift = {0, -0.72},
                     size = 260,
                     priority = "high",
                     scale = 0.3
                 },
                 {
-                    filename = "__RenaiTransportation__/graphics/ItemCannon/DivergingChuteShadow.png",
+                    filename = renaiEntity .. "ItemCannon/DivergingChuteShadow.png",
                     shift = {0, -0.72},
                     size = 512,
                     draw_as_shadow = true,
@@ -116,7 +116,7 @@ data.extend({
     { --------- item -------------
         type = "item",
         name = "RTDivergingChute",
-        icon = "__RenaiTransportation__/graphics/ItemCannon/DivergingChuteIcon.png",
+        icon = renaiIcons .. "DivergingChuteIcon.png",
         icon_size = 64,
         subgroup = "RTCannonStuff",
         order = "db",
@@ -128,7 +128,7 @@ data.extend({
     { --------- entity
         type = "electric-energy-interface",
         name = "RTMergingChute",
-        icon = "__RenaiTransportation__/graphics/ItemCannon/MergingChuteIcon.png",
+        icon = renaiIcons .. "MergingChuteIcon.png",
         icon_size = 64,
         flags = {"placeable-neutral", "player-creation"},
         minable = {mining_time = 0.5, result = "RTMergingChute"},
@@ -162,14 +162,14 @@ data.extend({
         pictures = {
             sheets = {
                 {
-                    filename = "__RenaiTransportation__/graphics/ItemCannon/MergingChute.png",
+                    filename = renaiEntity .. "ItemCannon/MergingChute.png",
                     shift = {0, -0.72},
                     size = 260,
                     priority = "high",
                     scale = 0.3
                 },
                 {
-                    filename = "__RenaiTransportation__/graphics/ItemCannon/MergingChuteShadow.png",
+                    filename = renaiEntity .. "ItemCannon/MergingChuteShadow.png",
                     shift = {0, -0.72},
                     size = 512,
                     draw_as_shadow = true,
@@ -183,7 +183,7 @@ data.extend({
     { --------- item -------------
         type = "item",
         name = "RTMergingChute",
-        icon = "__RenaiTransportation__/graphics/ItemCannon/MergingChuteIcon.png",
+        icon = renaiIcons .. "MergingChuteIcon.png",
         icon_size = 64,
         subgroup = "RTCannonStuff",
         order = "da",

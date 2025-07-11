@@ -3,7 +3,7 @@ data:extend({
   type = "turret",
   name = "RTPrimerThrowerDetector",
   icon = "__base__/graphics/icons/big-worm.png",
-  icon_size = 64, icon_mipmaps = 4,
+  icon_size = 64,
   flags = {"placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-selectable-in-game"},
   hidden = true,
   max_health = 750,

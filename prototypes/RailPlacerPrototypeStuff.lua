@@ -7,10 +7,11 @@ function RampPictureSets(FilePath)
 			{
 				{
 					filename = FilePath,
-					size = 128,
+					size = 256,
 					frame_count = 1,
 					direction_count = 4,
 					line_length = 4,
+					scale = 0.5,
 				}
 			}
 		},
@@ -56,10 +57,11 @@ function makeRampPlacerEntity(name, icon, pictureFileName, placerItem)
 			{
 				{
 					filename = pictureFileName,
-					width = 200,
-					height = 200,
+					width = 400,
+					height = 400,
 					frame_count = 1,
 					direction_count = 4,
+					scale = 0.5,
 				}
 			}
 		},
@@ -122,29 +124,33 @@ function CreateRampSprites(name, FilePath)
 			type = "sprite",
 			name = name..8,
 			filename = FilePath,
-			size = 128,
-			x = 128*2
+			size = 256,
+			scale = 0.5,
+			x = 256*2
 		},
 		{ -- right
 			type = "sprite",
 			name = name..12,
 			filename = FilePath,
-			size = 128,
-			x = 128*3
+			size = 256,
+			scale = 0.5,
+			x = 256*3
 		},
 		{ -- down
 			type = "sprite",
 			name = name..0,
 			filename = FilePath,
-			size = 128,
+			size = 256,
+			scale = 0.5,
 			x = 0
 		},
 		{ -- left
 			type = "sprite",
 			name = name..4,
 			filename = FilePath,
-			size = 128,
-			x = 128
+			size = 256,
+			scale = 0.5,
+			x = 256
 		},
 	})
 end

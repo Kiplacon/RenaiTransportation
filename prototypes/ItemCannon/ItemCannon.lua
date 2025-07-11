@@ -11,8 +11,8 @@ data:extend({
     { --------- entity
         type = "electric-energy-interface",
         name = "RTItemCannon",
-        icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
-        icon_size = 130,
+        icon = renaiIcons .. "ItemCannonIcon.png",
+        icon_size = 64,
         flags = {"placeable-neutral", "player-creation"},
         minable = {mining_time = 0.2, result = "RTItemCannon"},
         max_health = 500,
@@ -33,7 +33,7 @@ data:extend({
         {
             sheets = {
                 {
-                    filename = "__RenaiTransportation__/graphics/ItemCannon/ItemCannon.png",
+                    filename = renaiEntity .. "ItemCannon/ItemCannon.png",
                     width = 512,
                     height = 512,
                     direction_count = 4,
@@ -42,7 +42,7 @@ data:extend({
                     scale = 0.5
                 },
                 {
-                    filename = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonShadows.png",
+                    filename = renaiEntity .. "ItemCannon/ItemCannonShadows.png",
                     width = 512,
                     height = 512,
                     direction_count = 4,
@@ -57,8 +57,8 @@ data:extend({
     { --------- item -------------
         type = "item",
         name = "RTItemCannon",
-        icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
-        icon_size = 130,
+        icon = renaiIcons .. "ItemCannonIcon.png",
+        icon_size = 64,
         subgroup = "RTCannonStuff",
         order = "a",
         place_result = "RTItemCannon",
@@ -82,8 +82,8 @@ data:extend({
     { --------- mask
         type = "simple-entity-with-owner",
         name = "RTItemCannonMask",
-        icon = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonIcon.png",
-        icon_size = 130,
+        icon = renaiIcons .. "ItemCannonIcon.png",
+        icon_size = 64,
         flags = {"placeable-neutral", "not-on-map", "not-blueprintable", "not-deconstructable", "placeable-off-grid", "hide-alt-info"},
         hidden = true,
         collision_box = nil,
@@ -91,7 +91,7 @@ data:extend({
         picture =
         {
             sheet = {
-                filename = "__RenaiTransportation__/graphics/ItemCannon/ItemCannonMask.png",
+                filename = renaiEntity .. "ItemCannon/ItemCannonMask.png",
                 width = 512,
                 height = 512,
                 direction_count = 4,
@@ -234,7 +234,7 @@ data:extend({
             layers =
             {
                 {
-                    filename = "__RenaiTransportation__/graphics/TrainRamp/range.png",
+                    filename = renaiEntity .. "range.png",
                     size = 64,
                     tint = {1,0,0,0.5},
                     frame_count = 1,
@@ -283,8 +283,8 @@ if (data.raw.item["holmium-plate"] and data.raw.tool["electromagnetic-science-pa
 		{
             type = "technology",
             name = "RTItemCannonTech",
-            icon = "__RenaiTransportation__/graphics/tech/ItemCannonTech.png",
-            icon_size = 130,
+            icon = renaiTechIcons .. "ItemCannonTech.png",
+            icon_size = 256,
             effects =
             {
                 --[[ {
@@ -322,8 +322,8 @@ if (data.raw.item["holmium-plate"] and data.raw.tool["electromagnetic-science-pa
         {
             type = "technology",
             name = "RTItemCannonLogisticsTech",
-            icon = "__RenaiTransportation__/graphics/tech/ItemCannonLogisticsTech.png",
-            icon_size = 128,
+            icon = renaiTechIcons .. "ItemCannonLogisticsTech.png",
+            icon_size = 1256,
             effects =
             {
                 {
@@ -372,8 +372,8 @@ else
 		{
             type = "technology",
             name = "RTItemCannonTech",
-            icon = "__RenaiTransportation__/graphics/tech/ItemCannonTech.png",
-            icon_size = 130,
+            icon = renaiTechIcons .. "ItemCannonTech.png",
+            icon_size = 256,
             effects =
             {
                 --[[ {
@@ -410,8 +410,8 @@ else
         {
             type = "technology",
             name = "RTItemCannonLogisticsTech",
-            icon = "__RenaiTransportation__/graphics/tech/ItemCannonLogisticsTech.png",
-            icon_size = 128,
+            icon = renaiTechIcons .. "ItemCannonLogisticsTech.png",
+            icon_size = 256,
             effects =
             {
                 {

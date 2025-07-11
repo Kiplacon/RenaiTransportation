@@ -7,8 +7,8 @@ data.extend({
     { --------- entity
         type = "electric-energy-interface",
         name = "RTRicochetPanel",
-        icon = "__RenaiTransportation__/graphics/ItemCannon/RicochetPanelIcon.png",
-        icon_size = 128,
+        icon = renaiIcons .. "RicochetPanelIcon.png",
+        icon_size = 64,
         flags = {"placeable-neutral", "player-creation"},
         minable = {mining_time = 0.2, result = "RTRicochetPanel"},
         hidden = true,
@@ -41,7 +41,7 @@ data.extend({
         },
         pictures = {
             sheet = {
-                filename = "__RenaiTransportation__/graphics/ItemCannon/RicochetPanel.png",
+                filename = renaiEntity .. "ItemCannon/RicochetPanel.png",
                 shift = {0, -0.6},
                 width = 66,
                 height = 128,
@@ -53,8 +53,8 @@ data.extend({
     { --------- item -------------
         type = "item",
         name = "RTRicochetPanel",
-        icon = "__RenaiTransportation__/graphics/ItemCannon/RicochetPanelIcon.png",
-        icon_size = 128,
+        icon = renaiIcons .. "RicochetPanelIcon.png",
+        icon_size = 64,
         subgroup = "RTCannonStuff",
         order = "c",
         place_result = "RTRicochetPanel",

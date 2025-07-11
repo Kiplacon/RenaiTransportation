@@ -1,9 +1,9 @@
 -------------Open Container Entity ---------------------
 local datboi = table.deepcopy(data.raw.container["iron-chest"])
 	datboi.name = "OpenContainer"
-	datboi.icon = "__RenaiTransportation__/graphics/OpenContainer/icon.png"
+	datboi.icon = renaiIcons .. "OpenContainer_icon.png"
 	datboi.picture = {
-		filename = "__RenaiTransportation__/graphics/OpenContainer/hrOpenContainer.png",
+		filename = renaiEntity .. "OpenContainer/OpenContainer.png",
 		priority = "extra-high",
 		width = 66,
 		height = 76,
@@ -18,7 +18,7 @@ data:extend({
 	{ --------- The container item -------------
 		type = "item",
 		name = "OpenContainer",
-		icon = "__RenaiTransportation__/graphics/OpenContainer/icon.png",
+		icon = renaiIcons .. "OpenContainer_icon.png",
 		icon_size = 64,
 		subgroup = "RT",
 		order = "b",

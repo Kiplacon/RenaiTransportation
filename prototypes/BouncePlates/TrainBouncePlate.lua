@@ -2,55 +2,56 @@ data:extend({
 	{ --------- Bounce plate entity --------------
 		type = "simple-entity-with-owner",
 		name = "RTTrainBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/TrainBouncePlate/TrainPlate.png",
+		icon = renaiIcons .. "TrainPlateIcon.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
 		minable = {mining_time = 0.5, result = "RTTrainBouncePlate"},
 		max_health = 400,
 		corpse = "medium-remnants",
-        dying_explosion = "medium-explosion",
+    dying_explosion = "medium-explosion",
 		collision_box = {{-1.75, -1.75}, {1.75, 1.75}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		collision_mask = BouncePadMask,
 		selection_box = {{-2, -2}, {2, 2}},
 		fast_replaceable_group = "TrainBouncers",
 		picture = 
-			{
-				layers =
+		{
+			layers =
+				{
 					{
-						{
-							filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/shadow.png",
-							priority = "medium",
-							width = 66,
-							height = 76,
-							shift = util.by_pixel(33, -0.5),
-							scale = 2
-						},
-						{
-							filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Plate.png",
-							priority = "medium",
-							width = 66,
-							height = 76,
-							shift = util.by_pixel(-0.5, -0.5),
-							scale = 2
-						}
-					}
-			},
-		radius_visualisation_specification =
-			{
-				sprite = 
-					{
-						filename = "__RenaiTransportation__/graphics/test2.png",
-						size = 640
+						filename = renaiEntity .. "TrainBouncePlate/Train_Plate_shadow.png",
+						priority = "medium",
+						width = 264,
+						height = 304,
+						shift = util.by_pixel(32, -2),
+				    draw_as_shadow = true,
+						scale = 0.5
 					},
-				draw_on_selection = true,
-				distance = 40
-			}
+					{
+						filename = renaiEntity .. "TrainBouncePlate/Train_Plate.png",
+						priority = "medium",
+						width = 264,
+						height = 304,
+						shift = util.by_pixel(-2, -2),
+						scale = 0.5
+					}
+				}
+		},
+		radius_visualisation_specification =
+		{
+			sprite = 
+			{
+				filename = "__RenaiTransportation__/graphics/test2.png",
+				size = 640
+			},
+			draw_on_selection = true,
+			distance = 40
+		}
 	},
 	{ --------- The Bounce plate item -------------
 		type = "item",
 		name = "RTTrainBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/TrainBouncePlate/TrainPlate.png",
-		icon_size = 64, --icon_mipmaps = 4,
+		icon = renaiIcons .. "TrainPlateIcon.png",
+		icon_size = 64,
 		subgroup = "RTTrainStuff",
 		order = "da",
 		place_result = "RTTrainBouncePlate",
@@ -75,13 +76,13 @@ data:extend({
 	{ --------- Bounce plate entity --------------
 		type = "simple-entity-with-owner",
 		name = "RTTrainDirectedBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/TrainBouncePlate/DirectedTrainPlate.png",
+		icon = renaiIcons .. "DirectedTrainPlateIcon.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
 		minable = {mining_time = 0.5, result = "RTTrainDirectedBouncePlate"},
 		max_health = 400,
 		corpse = "medium-remnants",
-        dying_explosion = "medium-explosion",
+    dying_explosion = "medium-explosion",
 		collision_box = {{-1.75, -1.75}, {1.75, 1.75}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		collision_mask = BouncePadMask,
 		selection_box = {{-2, -2}, {2, 2}},
@@ -91,19 +92,20 @@ data:extend({
 				sheets =
 				{
 					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlateShadow.png",
+						filename = renaiEntity .. "DirectedTrainBouncePlate/DirectedTrainPlateShadow.png",
 						priority = "medium",
-						width = 64,
-						height = 64,
-						shift = util.by_pixel(55,-2),
-						scale = 2
+						width = 256,
+						height = 256,
+						shift = util.by_pixel(56,-2),
+            draw_as_shadow = true,
+						scale = 0.5
 					},
 					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/DirectedBouncePlate/DirectedPlate.png",
+						filename = renaiEntity .. "DirectedTrainBouncePlate/DirectedTrainPlate.png",
 						priority = "medium",
-						width = 64,
-						height = 64,
-						scale = 2
+						width = 256,
+						height = 256,
+						scale = 0.5
 					}
 				}
 			},
@@ -121,8 +123,8 @@ data:extend({
 	{ --------- The Bounce plate item -------------
 		type = "item",
 		name = "RTTrainDirectedBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/TrainBouncePlate/DirectedTrainPlate.png",
-		icon_size = 64, --icon_mipmaps = 4,
+		icon = renaiIcons .. "DirectedTrainPlateIcon.png",
+		icon_size = 64,
 		subgroup = "RTTrainStuff",
 		order = "db",
 		place_result = "RTTrainDirectedBouncePlate",
@@ -134,11 +136,11 @@ data:extend({
 		enabled = false,
 		energy_required = 1,
 		ingredients = 
-			{
-				{type="item", name="iron-plate", amount=50},
-				{type="item", name="steel-plate", amount=30},
-				{type="item", name="automation-science-pack", amount=10}
-			},
+		{
+			{type="item", name="iron-plate", amount=50},
+			{type="item", name="steel-plate", amount=30},
+			{type="item", name="automation-science-pack", amount=10}
+		},
 		results = {
 			{type="item", name="RTTrainDirectedBouncePlate", amount=1}
 		}
@@ -147,8 +149,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTFreightPlates",
-		icon = "__RenaiTransportation__/graphics/tech/FlyingFreightPlate.png",
-		icon_size = 128,
+		icon = renaiTechIcons .. "FlyingFreightPlate.png",
+		icon_size = 256,
 		effects =
 		{
 			{
@@ -180,7 +182,7 @@ data:extend({
 		render_layer = "higher-object-above",
 		pictures =
 			{
-				filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Particle.png",
+				filename = renaiEntity .. "BouncePlate/Particle.png",
 				--width = 64,
 				--height = 64,
 				size = 32,
