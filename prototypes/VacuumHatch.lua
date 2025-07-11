@@ -1,3 +1,5 @@
+local animspeed = 0.03
+
 data:extend({
 ---- vacuum hatch ----
 {
@@ -15,51 +17,107 @@ data:extend({
 	--selection_priority = 255,
 	minable = {mining_time = 0.5, result = "RTVacuumHatch"},
 	energy_source =
-		{
-			type = "electric",
-			usage_priority = "secondary-input",
-			buffer_capacity = "25J", -- for some reason this helps the animation play slow enough to actually see
-			drain = "5kW",
-		},
+	{
+		type = "electric",
+		usage_priority = "secondary-input",
+		buffer_capacity = "25J", -- for some reason this helps the animation play slow enough to actually see
+		drain = "5kW",
+	},
 	energy_usage = "200kW",
 	gui_mode = "none",
 	animations =
 	{
 		north =
 		{
-			filename = renaiEntity .. "VacuumHatch/VacuumHatchN.png",
-			frame_count = 4,
-			line_length = 4,
-			size = 96,
-			scale = 0.5,
-			animation_speed = 0.01
+			layers = {
+				{
+					filename = renaiEntity .. "VacuumHatch/VacuumHatchN.png",
+					repeat_count = 16,
+					width = 128,
+					height = 128,
+					scale = 0.5,
+					animation_speed = animspeed
+				},
+				{
+					filename = renaiEntity .. "VacuumHatch/VacuumHatchVertiAnim.png",
+					frame_count = 16,
+					line_length = 8,
+					width = 85,
+					height = 96,
+					scale = 0.5,
+					shift = util.by_pixel(0, -3),
+					animation_speed = animspeed
+				}
+			}
 		},
 		east =
 		{
-			filename = renaiEntity .. "VacuumHatch/VacuumHatchE.png",
-			frame_count = 4,
-			line_length = 4,
-			size = 96,
-			scale = 0.5,
-			animation_speed = 0.01
+			layers = {
+				{
+					filename = renaiEntity .. "VacuumHatch/VacuumHatchE.png",
+					repeat_count = 16,
+					width = 128,
+					height = 128,
+					scale = 0.5,
+					animation_speed = animspeed
+				},
+				{
+					filename = renaiEntity .. "VacuumHatch/VacuumHatchHoriAnim.png",
+					frame_count = 16,
+					line_length = 8,
+					width = 85,
+					height = 96,
+					scale = 0.5,
+					shift = util.by_pixel(0, -3),
+					animation_speed = animspeed
+				}
+			}
 		},
 		south =
 		{
-			filename = renaiEntity .. "VacuumHatch/VacuumHatchS.png",
-			frame_count = 4,
-			line_length = 4,
-			size = 96,
-			scale = 0.5,
-			animation_speed = 0.01
+			layers = {
+				{
+					filename = renaiEntity .. "VacuumHatch/VacuumHatchS.png",
+					repeat_count = 16,
+					width = 128,
+					height = 128,
+					scale = 0.5,
+					animation_speed = animspeed
+				},
+				{
+					filename = renaiEntity .. "VacuumHatch/VacuumHatchVertiAnim.png",
+					frame_count = 16,
+					line_length = 8,
+					width = 85,
+					height = 96,
+					scale = 0.5,
+					shift = util.by_pixel(0, -3),
+					animation_speed = animspeed
+				}
+			}
 		},
 		west =
 		{
-			filename = renaiEntity .. "VacuumHatch/VacuumHatchW.png",
-			frame_count = 4,
-			line_length = 4,
-			size = 96,
-			scale = 0.5,
-			animation_speed = 0.01
+			layers = {
+				{
+					filename = renaiEntity .. "VacuumHatch/VacuumHatchW.png",
+					repeat_count = 16,
+					width = 128,
+					height = 128,
+					scale = 0.5,
+					animation_speed = animspeed
+				},
+				{
+					filename = renaiEntity .. "VacuumHatch/VacuumHatchHoriAnim.png",
+					frame_count = 16,
+					line_length = 8,
+					width = 85,
+					height = 96,
+					scale = 0.5,
+					shift = util.by_pixel(0, -3),
+					animation_speed = animspeed
+				}
+			}
 		},
 	},
 	--render_layer = "arrow",

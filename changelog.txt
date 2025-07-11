@@ -5,7 +5,7 @@ Date: 6/_____/2025
     - Update by snouz
   Graphics:
     - South Directed Plate has a visible red part
-    - Reworked icons, entity and/or tech icon for: jump belts, hatch, item thrower, item catcher, open container, magnets, wagons
+    - Reworked icons, entity and/or tech icon for: jump belts, hatch, vacuum hatch, thrower inserter, item catcher, open container, magnets, wagons
     - Adjusted the resolution of some icons and entities
     - Reorganized graphics internally
   Changes:
