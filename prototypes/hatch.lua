@@ -1,3 +1,4 @@
+require("sound-util")
 local nothing = {
 		filename = "__RenaiTransportation__/graphics/nothing.png",
 		width = 1,
@@ -83,18 +84,56 @@ picture =
 		usage_priority = "secondary-input",
 		drain = "0.4kW"
 	},
+	--[[working_sound = {
+	  match_progress_to_activity = true,
+	  sound =
+	  {
+	    variations = sound_variations("__RenaiTransportation__/sickw0bs/pop", 15, 0.8, {volume_multiplier("main-menu", 2), volume_multiplier("tips-and-tricks", 1.8)}),
+	    audible_distance_modifier = 0.8
+	  },
+	},]]
 	energy_per_movement = "5kJ",
 	energy_per_rotation = "5kJ",
 	extension_speed = 0.03,
 	rotation_speed = 0.014,
 	pickup_position = {0, -0.2},
 	insert_position = {0, 19.9},
+	--starting_distance 
 	allow_custom_vectors = false,
 	chases_belt_items = false,
 	draw_held_item = false,
 	hand_base_picture = nothing,
 	hand_open_picture = nothing,
 	hand_closed_picture = nothing,
+
+
+
+	--[[hand_base_picture =
+	{
+	  filename = "__base__/graphics/entity/inserter/inserter-hand-base.png",
+	  priority = "extra-high",
+	  width = 32,
+	  height = 136,
+	  scale = 0.25
+	},
+	hand_closed_picture =
+	{
+	  filename = "__base__/graphics/entity/inserter/inserter-hand-closed.png",
+	  priority = "extra-high",
+	  width = 72,
+	  height = 164,
+	  scale = 0.25
+	},
+	hand_open_picture =
+	{
+	  filename = "__base__/graphics/entity/inserter/inserter-hand-open.png",
+	  priority = "extra-high",
+	  width = 72,
+	  height = 164,
+	  scale = 0.25
+	},]]
+
+	--integration_patch_render_layer = "air-object",
 	platform_picture =
 	{
 		sheet =
@@ -110,6 +149,13 @@ picture =
 	circuit_connector_sprites = circuit_connector_definitions["inserter"].sprites,
 	circuit_wire_max_distance = inserter_circuit_wire_max_distance,
 	default_stack_control_input_signal = inserter_default_stack_control_input_signal
+},
+
+{
+	type = "sound",
+	name = "RTThrower-EjectorHatchRT-sound",
+  variations = sound_variations("__RenaiTransportation__/sickw0bs/pop", 15, 0.8, {volume_multiplier("main-menu", 2), volume_multiplier("tips-and-tricks", 1.8)}),
+  audible_distance_modifier = 0.8
 },
 
 { --------- The ejector hatch item -------------

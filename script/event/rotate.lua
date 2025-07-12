@@ -37,7 +37,7 @@ local function rotate(event)
 					y_scale = yflip*HomeOnThe/10,
 					tint = {r = 0.4, g = 0.4, b = 0.4, a = 0}
 				}
-		elseif ((entity.name == "RTThrower-EjectorHatchRT" or entity.name == "RTThrower-FilterEjectorHatchRT") and storage.CatapultList[EntityDestroyNumber] ~= nil) then
+		elseif ((entity.name == "RTThrower-EjectorHatchRT" or entity.name == "RTThrower-FilterEjectorHatchRT") and storage.CatapultList[EntityDestroyNumber] ~= nil and storage.CatapultList[EntityDestroyNumber].sprite) then
 			storage.CatapultList[EntityDestroyNumber].sprite.animation_offset = storage.EjectorPointing[entity.direction]
 		elseif (entity.name == "RTVacuumHatch") then
 			local properties = storage.VacuumHatches[script.register_on_object_destroyed(entity)]

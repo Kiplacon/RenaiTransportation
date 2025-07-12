@@ -66,6 +66,7 @@ function InvokeThrownItem(stuff)
                         source_position=OffsetPosition(StreamStart, (stuff.StartOffset or {0,0})), -- offset should be pretty small so that the calculated air time lines up with the visual
                         target_position=targett
                     }
+                    surface.play_sound({path = "RTThrower-EjectorHatchRT-sound", position = start})
                 else
                     stream = FlyingItem.surface.create_entity
                     {
@@ -74,6 +75,7 @@ function InvokeThrownItem(stuff)
                         source_position=OffsetPosition(StreamStart, (stuff.StartOffset or {0,0})), -- offset should be pretty small so that the calculated air time lines up with the visual
                         target_position=targett
                     }
+                    surface.play_sound({path = "RTThrower-EjectorHatchRT-sound", position = start})
                 end
                 local StreamDestroyNumber = script.register_on_object_destroyed(stream)
                 FlyingItem.StreamDestroyNumber = StreamDestroyNumber
