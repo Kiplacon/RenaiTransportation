@@ -151,18 +151,6 @@ data:extend({
 		size = 100,
 		scale = 0.5
 	},
-	{
-    type = "sound",
-    name = "RTTrapdoorOpenSound",
-    filename = "__RenaiTransportation__/sickw0bs/TrapdoorOpen.ogg",
-		volume = 0.5
-    },
-	{
-    type = "sound",
-    name = "RTTrapdoorCloseSound",
-    filename = "__RenaiTransportation__/sickw0bs/TrapdoorClose.ogg",
-		volume = 0.3
-    }
 })
 
 
@@ -250,12 +238,6 @@ data:extend({
 	order = "gb",
 	place_result = "RTTrapdoorSwitch-placer",
 	stack_size = 10
-},
-{
-	type = "sound",
-	name = "RTTrapdoorSwitchSound",
-	filename = "__RenaiTransportation__/sickw0bs/TrapdoorSwitch.ogg",
-	volume = 0.5
 },
 {
 	type = "virtual-signal",

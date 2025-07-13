@@ -135,7 +135,7 @@ data:extend({
 	  match_progress_to_activity = true,
 	  sound =
 	  {
-	    variations = sound_variations("__RenaiTransportation__/sickw0bs/vacuum", 1, 0.3, {volume_multiplier("main-menu", 2), volume_multiplier("tips-and-tricks", 1.8)}),
+	    variations = sound_variations(renaiSounds .. "vacuum", 1, 0.3, {volume_multiplier("main-menu", 2), volume_multiplier("tips-and-tricks", 1.8)}),
 	    audible_distance_modifier = 0.8
 	  },
 	  max_sounds_per_prototype = 2,

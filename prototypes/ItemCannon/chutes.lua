@@ -190,28 +190,6 @@ data.extend({
         place_result = "RTMergingChute",
         stack_size = 50
     },
-
-    {
-        type = "sound",
-        name = "RTHitWrongAngle",
-        variations=
-        {
-            {
-                filename = "__RenaiTransportation__/sickw0bs/HitWrongAngle1.ogg",
-                volume = 0.75,
-            },
-            {
-                filename = "__RenaiTransportation__/sickw0bs/HitWrongAngle2.ogg",
-                volume = 0.75,
-            },
-        },
-        aggregation =
-		{
-			max_count = 2,
-			remove = true,
-			count_already_playing = true
-		}
-    }
 })
 
 data:extend({

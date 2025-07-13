@@ -73,15 +73,15 @@ for _, tier in pairs(tiers) do
         west_to_south_index = 4,
       },
       radius_visualisation_specification =
-			{
-				sprite =
-				{
-					filename = "__RenaiTransportation__/graphics/testalt2.png",
-					size = 1280
-				},
-				draw_on_selection = false,
-				distance = TierRange
-			}
+      {
+        sprite =
+        {
+          filename = "__RenaiTransportation__/graphics/testalt2.png",
+          size = 1280
+        },
+        draw_on_selection = false,
+        distance = TierRange
+      }
     },
     { --------- The Bounce plate item -------------
       type = "item",
@@ -183,15 +183,15 @@ if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt t
         west_to_south_index = 4,
       },
       radius_visualisation_specification =
-			{
-				sprite =
-					{
-						filename = "__RenaiTransportation__/graphics/testalt2.png",
-						size = 1280
-					},
-				draw_on_selection = false,
-				distance = 40
-			}
+      {
+        sprite =
+          {
+            filename = "__RenaiTransportation__/graphics/testalt2.png",
+            size = 1280
+          },
+        draw_on_selection = false,
+        distance = 40
+      }
     },
     { --------- The Bounce plate item -------------
       type = "item",

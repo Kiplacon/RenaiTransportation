@@ -1,7 +1,4 @@
-local sounds = {}
-for i = 1, 14 do
-    table.insert(sounds, {filename = "__RenaiTransportation__/sickw0bs/impact"..i..".ogg", volume = 0.5})
-end
+
 
 data.extend({
     { --------- entity
@@ -59,32 +56,6 @@ data.extend({
         order = "c",
         place_result = "RTRicochetPanel",
         stack_size = 50
-    },
-    {
-        type = "sound",
-        name = "RTRicochetPanelSound",
-        variations=sounds,
-        aggregation =
-		{
-			max_count = 4,
-			remove = true,
-			count_already_playing = true
-		}
-    },
-    {
-        type = "sound",
-        name = "RTRicochetPanelSpark",
-        variations={
-            {filename = "__RenaiTransportation__/sickw0bs/zap1.ogg"},
-            {filename = "__RenaiTransportation__/sickw0bs/zap2.ogg"},
-            {filename = "__RenaiTransportation__/sickw0bs/zap3.ogg"},
-        },
-        aggregation =
-		{
-			max_count = 2,
-			remove = true,
-			count_already_playing = true
-		}
     },
     {
         type = "animation",

@@ -1,6 +1,7 @@
 renaiTechIcons = "__RenaiTransportation__/graphics/technology/"
 renaiIcons = "__RenaiTransportation__/graphics/icons/"
 renaiEntity = "__RenaiTransportation__/graphics/entity/"
+renaiSounds = "__RenaiTransportation__/sickw0bs/"
 
 require("prototypes.technology")
 require("prototypes.sounds")
@@ -103,12 +104,6 @@ data:extend({
 	filename = renaiEntity .. "zipline/DrivingShadow.png",
 	width = 190,
 	height = 72
-},
-{
-	type = "sound",
-	name = "RTImpactPlayerLaunch",
-	filename = "__base__/sound/car-metal-impact-6.ogg",
-	volume = 0.5
 },
 {
 	type = "animation",

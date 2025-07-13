@@ -90,14 +90,14 @@ data:extend({
 		life_time = 8,
 		render_layer = "higher-object-above",
 		pictures =
-			{
-				filename = renaiEntity .. "BouncePlate/Particle.png",
-				size = 32,
-				priority = "extra-high",
-				line_length = 4, -- frames per row
-				frame_count = 4, -- total frames
-				animation_speed = 0.5
-			}
+		{
+			filename = renaiEntity .. "BouncePlate/Particle.png",
+			size = 32,
+			priority = "extra-high",
+			line_length = 4, -- frames per row
+			frame_count = 4, -- total frames
+			animation_speed = 0.5
+		}
 	},
 	{ --------- bounce effect ----------
 		type = "optimized-particle",
@@ -105,23 +105,23 @@ data:extend({
 		life_time = 60*5,
 		render_layer = "under-elevated",
 		pictures =
-			{
-				filename = renaiEntity .. "meme/LickmawBALLS.png",
-				size = 64,
-				scale = 0.3,
-				priority = "high",
-				line_length = 1, -- frames per row
-				frame_count = 1, -- total frames
-			},
+		{
+			filename = renaiEntity .. "meme/LickmawBALLS.png",
+			size = 64,
+			scale = 0.3,
+			priority = "high",
+			line_length = 1, -- frames per row
+			frame_count = 1, -- total frames
+		},
 		shadows =
-			{
-				filename = renaiEntity .. "meme/LickmawBALLS.png",
-				size = 64,
-				scale = 0.3,
-				priority = "high",
-				line_length = 1, -- frames per row
-				frame_count = 1, -- total frames
-			},
+		{
+			filename = renaiEntity .. "meme/LickmawBALLS.png",
+			size = 64,
+			scale = 0.3,
+			priority = "high",
+			line_length = 1, -- frames per row
+			frame_count = 1, -- total frames
+		},
 		draw_shadow_when_on_ground = false,
 		--regular_trigger_effect = {type="script", effect_id="RTTestProjectileRegularEffect"}, -- while in flight
 		--regular_trigger_effect_frequency = 30, -- how ofter while in flight
@@ -146,15 +146,15 @@ for color, tint in pairs(colors) do
 			life_time = 8,
 			render_layer = "higher-object-above",
 			pictures =
-				{
-				  filename = renaiEntity .. "BouncePlate/Particle2.png",
-				  tint = tint,
-				  size = 32,
-				  priority = "extra-high",
-				  line_length = 4, -- frames per row
-				  frame_count = 4, -- total frames
-				  animation_speed = 0.5
-				}
+			{
+			  filename = renaiEntity .. "BouncePlate/Particle2.png",
+			  tint = tint,
+			  size = 32,
+			  priority = "extra-high",
+			  line_length = 4, -- frames per row
+			  frame_count = 4, -- total frames
+			  animation_speed = 0.5
+			}
 		}
 	})
 end
@@ -172,7 +172,7 @@ data:extend({
 		minable = {mining_time = 0.2, result = "RTBouncePlate"},
 		placeable_by = {item="RTBouncePlate", count=1},
 		max_health = 200,
-	   	collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+		collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
 		picture =

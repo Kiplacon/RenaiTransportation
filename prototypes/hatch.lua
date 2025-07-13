@@ -88,7 +88,7 @@ picture =
 	  match_progress_to_activity = true,
 	  sound =
 	  {
-	    variations = sound_variations("__RenaiTransportation__/sickw0bs/pop", 15, 0.8, {volume_multiplier("main-menu", 2), volume_multiplier("tips-and-tricks", 1.8)}),
+	    variations = sound_variations(renaiSounds .. "pop", 15, 0.8, {volume_multiplier("main-menu", 2), volume_multiplier("tips-and-tricks", 1.8)}),
 	    audible_distance_modifier = 0.8
 	  },
 	},]]
@@ -110,27 +110,27 @@ picture =
 
 	--[[hand_base_picture =
 	{
-	  filename = "__base__/graphics/entity/inserter/inserter-hand-base.png",
-	  priority = "extra-high",
-	  width = 32,
-	  height = 136,
-	  scale = 0.25
+		filename = "__base__/graphics/entity/inserter/inserter-hand-base.png",
+		priority = "extra-high",
+		width = 32,
+		height = 136,
+		scale = 0.25
 	},
 	hand_closed_picture =
 	{
-	  filename = "__base__/graphics/entity/inserter/inserter-hand-closed.png",
-	  priority = "extra-high",
-	  width = 72,
-	  height = 164,
-	  scale = 0.25
+		filename = "__base__/graphics/entity/inserter/inserter-hand-closed.png",
+		priority = "extra-high",
+		width = 72,
+		height = 164,
+		scale = 0.25
 	},
 	hand_open_picture =
 	{
-	  filename = "__base__/graphics/entity/inserter/inserter-hand-open.png",
-	  priority = "extra-high",
-	  width = 72,
-	  height = 164,
-	  scale = 0.25
+		filename = "__base__/graphics/entity/inserter/inserter-hand-open.png",
+		priority = "extra-high",
+		width = 72,
+		height = 164,
+		scale = 0.25
 	},]]
 
 	--integration_patch_render_layer = "air-object",
@@ -151,13 +151,6 @@ picture =
 	default_stack_control_input_signal = inserter_default_stack_control_input_signal
 },
 
-{
-	type = "sound",
-	name = "RTThrower-EjectorHatchRT-sound",
-  variations = sound_variations("__RenaiTransportation__/sickw0bs/pop", 15, 0.8, {volume_multiplier("main-menu", 2), volume_multiplier("tips-and-tricks", 1.8)}),
-  audible_distance_modifier = 0.8
-},
-
 { --------- The ejector hatch item -------------
 	type = "item",
 	name = "RTThrower-EjectorHatchRT",
@@ -175,11 +168,11 @@ picture =
 	enabled = false,
 	energy_required = 1,
 	ingredients =
-		{
-			{type="item", name="HatchRT", amount=1},
-			{type="item", name="RTBouncePlate", amount=1},
-			{type="item", name="electronic-circuit", amount=2}
-		},
+	{
+		{type="item", name="HatchRT", amount=1},
+		{type="item", name="RTBouncePlate", amount=1},
+		{type="item", name="electronic-circuit", amount=2}
+	},
 	results = {
 		{type="item", name="RTThrower-EjectorHatchRT", amount=1}
 	}
