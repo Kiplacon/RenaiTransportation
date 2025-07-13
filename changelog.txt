@@ -7,6 +7,7 @@ Date: 6/_____/2025
     - South Directed Plate has a visible red part
     - Reworked icons, entity and/or tech icon for: jump belts, hatch, ejector hatch, vacuum hatch, thrower inserter, item catcher, open container, magnets, wagons
     - Adjusted the resolution of some icons and entities
+    - Adjusted position of item cannon
     - Reorganized graphics internally
   Sounds:
     - Added sound for ejector hatch and vaccum hatch
