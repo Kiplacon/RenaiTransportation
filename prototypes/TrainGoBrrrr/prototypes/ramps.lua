@@ -13,7 +13,7 @@ for _, variants in pairs(
 		{
 			type = "rail-signal",
 			name = "RT"..variant,
-			icon = renaiIcons..variant.."Icon.png",
+			icon = renaiIcons .. "ramp_" .. variant .. "Icon.png",
 			icon_size = 64,
 			flags = {"player-creation", "not-on-map", "placeable-off-grid", "hide-alt-info", "not-flammable"},
 			hidden = true,
@@ -27,8 +27,8 @@ for _, variants in pairs(
 			elevated_selection_priority = 100,
 			collision_mask = GroundMask,
 			elevated_collision_mask = ElevMask,
-			ground_picture_set = RampPictureSets(renaiEntity .."Train_ramps/"..variant..".png"),
-			elevated_picture_set = RampPictureSets(renaiEntity .."Train_ramps/"..variant..".png"),
+			ground_picture_set = RampPictureSets(variant),
+			elevated_picture_set = RampPictureSets(variant),
 			placeable_by = { item = "RT"..variant:gsub("NoSkip", ""), count = 1 }, -- Controls `q` and blueprint behavior
 			resistances = {
 				{
@@ -40,7 +40,7 @@ for _, variants in pairs(
 		{
 			type = "item",
 			name = "RT"..variant,
-			icon = renaiIcons..variant.."Icon.png",
+			icon = renaiIcons .. "ramp_" .. variant .. "Icon.png",
 			icon_size = 64,
 			subgroup = "RTTrainStuff",
 			hidden = hidden,
@@ -50,11 +50,11 @@ for _, variants in pairs(
 		},
 		makeRampPlacerEntity(
 				"RT"..variant.."-placer",
-				renaiIcons..variant.."Icon.png",
-				renaiEntity .."Train_ramps/"..variant.."Placer.png",
+				renaiIcons .. "ramp_" .. variant .. "Icon.png",
+				renaiEntity .."Train_ramps/TrainRamp_Placer.png",
 				"RT"..variant
 			),
-		CreateRampSprites("RT"..variant.."", renaiEntity .."Train_ramps/"..variant..".png")
+		CreateRampSprites("RT"..variant.."", variant)
 	})
 end
 

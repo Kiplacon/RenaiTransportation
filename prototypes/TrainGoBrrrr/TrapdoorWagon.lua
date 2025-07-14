@@ -87,6 +87,9 @@ local PictureSetPlacer =
 				size = 192,
 				frame_count = 1,
 				direction_count = 16,
+				--shift = {1, 0},
+				--rotate_shift = true,
+				--scale = 0.5,
 			}
 		}
 	},

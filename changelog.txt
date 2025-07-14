@@ -5,14 +5,19 @@ Date: 6/_____/2025
     - Update by snouz
   Graphics:
     - South Directed Plate has a visible red part
-    - Reworked icons, entity and/or tech icon for: jump belts, hatch, ejector hatch, vacuum hatch, thrower inserter, item catcher, open container, magnets, wagons
-    - Adjusted the resolution of some icons and entities
+    - New hatch, ejector hatch and vacuum hatch entities graphics
+    - New train ramp, trapdoor switch and magnets entity graphics
+    - Reworked jump belts entity
+    - Reworked thrower inserter entity
+    - Reworked open container entity
+    - Reworked item cannon and catcher
+    - New icon for a lot of items
+    - Some new tech icons (hatch, vacuum hatch) and rescaled some
     - Adjusted position of item cannon
-    - Reorganized graphics internally
+    - Reorganized graphics internally (filepaths, ramp layering...)
+    - Adjusted hatch and Train ramp accumulator selection boxes
   Sounds:
-    - Added sound for ejector hatch and vaccum hatch
-  Changes:
-    - Adjusted hatch selection box
+    - ejector hatch and vaccum hatch have continuous and popping sounds
   Bugfixes:
     - Fixed crash when accessing editor mode from a zipline
 ---------------------------------------------------------------------------------------------------

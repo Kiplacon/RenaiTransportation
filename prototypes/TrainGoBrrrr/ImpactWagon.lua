@@ -130,8 +130,8 @@ for _, variants in pairs(
 			elevated_selection_priority = 100,
 			collision_mask = GroundMask,
 			elevated_collision_mask = ElevMask,
-			ground_picture_set = RampPictureSets(renaiEntity .."Train_ramps/"..variant..".png"),
-			elevated_picture_set = RampPictureSets(renaiEntity .."Train_ramps/"..variant..".png"),
+			ground_picture_set = RampPictureSets(variant),
+			elevated_picture_set = RampPictureSets(variant),
 			placeable_by = { item = "RT"..variant:gsub("NoSkip", ""), count = 1 }, -- Controls `q` and blueprint behavior
 			resistances = {
 				{
@@ -157,6 +157,6 @@ for _, variants in pairs(
 				renaiEntity .."Train_ramps/"..variant.."Placer.png",
 				"RT"..variant
 			),
-		CreateRampSprites("RT"..variant.."", renaiEntity .."Train_ramps/"..variant..".png")
+		CreateRampSprites("RT"..variant.."", variant)
 	})
 end

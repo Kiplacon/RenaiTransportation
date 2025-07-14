@@ -1,5 +1,11 @@
 --local util = require('util')
 
+local nothing = {
+		filename = "__RenaiTransportation__/graphics/nothing.png",
+		width = 1,
+		height = 1
+	}
+
 local accumulator = table.deepcopy(data.raw.accumulator.accumulator)
 
 local function foreach_sprite_definition(sprite, func)
@@ -89,8 +95,8 @@ magRampEntities = {
 		icon_size = 64,
 		flags = {"placeable-neutral", "placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-flammable", "no-copy-paste"},
 		hidden = true,
-		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
-		collision_box = {{-0.4, -0.4}, {0.4, 0.4}},
+		selection_box = {{0.2, -0.4}, {0.8, 0.4}},
+		collision_box = {{-0.1, -0.1}, {0.1, 0.1}},
 		selection_priority = 101,
 		collision_mask = {layers={}},
 		render_layer = "lower-object-above-shadow",
@@ -99,8 +105,8 @@ magRampEntities = {
 			usage_priority = "secondary-input",
 			input_flow_limit = "40MW"
 		},
-		picture = removeShift(scaleSprite(accumulator.chargable_graphics.picture, 0.4)),
-		animation = removeShift(scaleSprite(accumulator.chargable_graphics.charge_animation, 0.4)),
+		picture = nothing, --removeShift(scaleSprite(accumulator.chargable_graphics.picture, 0.4)),
+		animation = nothing, --removeShift(scaleSprite(accumulator.chargable_graphics.charge_animation, 0.4)),
 		light = accumulator.charge_light,
 		working_sound = accumulator.working_sound
 	}	
