@@ -100,3 +100,10 @@ See the FAQ for some specific details
 ## Other
 
 Sound effects from https://www.zapsplat.com/
+
+## Credits
+
+ - Item cannon by NikTheMimic
+ - 2.2 New hatches, ramps, icons, tech icons, item catcher, ricochet panel, trapdoor switch... by snouz
+ - Ricochet bouncer include some graphics by Yuoki (MIT)
+ - The vacuum hatch and ejector hatch include some graphics from Fishbus' Factorio+ (MIT)
