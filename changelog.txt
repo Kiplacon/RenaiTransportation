@@ -6,6 +6,7 @@ Date: 6/_____/2025
   Graphics:
     - New hatch, ejector hatch and vacuum hatch entities graphics
     - New train ramp, trapdoor switch and magnets entity graphics
+    - New ricochet panel entity graphics
     - Reworked jump belts entity
     - Reworked thrower inserter entity
     - Reworked open container entity

@@ -144,10 +144,10 @@ data:extend({
 {
 	type = "sound",
 	name = "RTRicochetPanelSound",
-	variations = sound_variations(renaiSounds .. "impact", 14, 0.5),
+	variations = sound_variations(renaiSounds .. "impact", 14, 0.7),
 	aggregation =
 	{
-		max_count = 4,
+		max_count = 6,
 		remove = true,
 		count_already_playing = true
 	}
