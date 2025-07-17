@@ -97,13 +97,10 @@ See the FAQ for some specific details
 - Mods that use train IDs, like Logistics Train Network, probably won't work right with train jumps because trains will have a different train ID before and after jumping. Vehicle Wagons 2 being an exception because compatibility was specifically programmed in for it
 - Using cut/copy on a thrower and then trying to adjust its range before placement may cause crashes. At the moment I have no idea why this happens or how it differs from using Q to add the thrower ghost to hand, which works just fine with the range adjusting.
 
-## Other
-
-Sound effects from https://www.zapsplat.com/
-
 ## Credits
 
- - Item cannon by NikTheMimic
+ - Item cannon and belt ramps by NikTheMimic
  - 2.2 New hatches, ramps, icons, tech icons, item catcher, ricochet panel, trapdoor switch... by snouz
  - Ricochet bouncer include some graphics by Yuoki (MIT)
  - The vacuum hatch and ejector hatch include some graphics from Fishbus' Factorio+ (MIT)
+ - Sound effects from https://www.zapsplat.com/

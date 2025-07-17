@@ -68,7 +68,7 @@ function RampPictureSets(variant)
 end
 function makeRampPlacerEntity(name, icon, pictureFileName, placerItem)
 	local placerimg = {}
-	if name == "RTImpactUnloader" then
+	if name == "RTImpactUnloader-placer" then
 		placerimg = 
 		{
 			filename = pictureFileName,
