@@ -372,7 +372,7 @@ data:extend({
    { --------- zipline item -------------
       type = "gun",
       name = "RTZiplineTrolley4",
-      icon = renaiIcons .. "zipline_icon2.png",
+      icon = renaiIcons .. "zipline_icon4.png",
       icon_size = 64,
       subgroup = "RTZiplineStuff",
       order = "ad",
