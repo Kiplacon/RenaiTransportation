@@ -14,21 +14,13 @@ local PikachuFace = table.deepcopy(data.raw.inserter["inserter"])
 	PikachuFace.rotation_speed = 0.03 -- default 0.014 
 	PikachuFace.fast_replaceable_group = nil
 	PikachuFace.next_upgrade = nil
-	PikachuFace.energy_source = {type = "void"}	
-	local nothing =
-	{
-		filename = "__RenaiTransportation__/graphics/nothing.png",
-		priority = "extra-high",
-		width = 1,
-		height = 1,
-		scale = 0.25
-	}
-	PikachuFace.hand_base_picture = nothing
-	PikachuFace.hand_closed_picture = nothing
-	PikachuFace.hand_open_picture = nothing
-	PikachuFace.hand_base_shadow = nothing
-	PikachuFace.hand_closed_shadow = nothing
-	PikachuFace.hand_open_shadow = nothing
+	PikachuFace.energy_source = {type = "void"}
+	PikachuFace.hand_base_picture = emptypic
+	PikachuFace.hand_closed_picture = emptypic
+	PikachuFace.hand_open_picture = emptypic
+	PikachuFace.hand_base_shadow = emptypic
+	PikachuFace.hand_closed_shadow = emptypic
+	PikachuFace.hand_open_shadow = emptypic
 	PikachuFace.platform_picture.sheet =
 	{
 		filename = renaiEntity .. "PlayerLauncher/PlayerLauncher.png",

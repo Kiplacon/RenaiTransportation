@@ -20,7 +20,7 @@ data:extend({
 		collision_mask = BouncePadMask,
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
-		activity_led_sprites = {filename = "__RenaiTransportation__/graphics/nothing.png", size = 1},
+		activity_led_sprites = emptypic,
 		activity_led_light_offsets = {{0,0},{0,0},{0,0},{0,0}},
 		circuit_wire_connection_points = {{wire={}, shadow={}},{wire={}, shadow={}},{wire={}, shadow={}},{wire={}, shadow={}}},
 		sprites =

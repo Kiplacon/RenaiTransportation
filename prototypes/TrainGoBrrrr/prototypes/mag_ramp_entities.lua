@@ -1,11 +1,4 @@
 --local util = require('util')
-
-local nothing = {
-		filename = "__RenaiTransportation__/graphics/nothing.png",
-		width = 1,
-		height = 1
-	}
-
 local accumulator = table.deepcopy(data.raw.accumulator.accumulator)
 
 local function foreach_sprite_definition(sprite, func)
@@ -105,8 +98,8 @@ magRampEntities = {
 			usage_priority = "secondary-input",
 			input_flow_limit = "40MW"
 		},
-		picture = nothing, --removeShift(scaleSprite(accumulator.chargable_graphics.picture, 0.4)),
-		animation = nothing, --removeShift(scaleSprite(accumulator.chargable_graphics.charge_animation, 0.4)),
+		picture = emptypic, --removeShift(scaleSprite(accumulator.chargable_graphics.picture, 0.4)),
+		animation = emptypic, --removeShift(scaleSprite(accumulator.chargable_graphics.charge_animation, 0.4)),
 		light = accumulator.charge_light,
 		working_sound = accumulator.working_sound
 	}	

@@ -1,16 +1,16 @@
 local ConnectionPoints =
-    {
-      shadow =
-      {
-        red = util.by_pixel(12, 14),
-        green = util.by_pixel(5, 14)
-      },
-      wire =
-      {
-        red = util.by_pixel(11, 13),
-        green = util.by_pixel(5, 12)
-      }
-    }
+		{
+			shadow =
+			{
+				red = util.by_pixel(12, 14),
+				green = util.by_pixel(5, 14)
+			},
+			wire =
+			{
+				red = util.by_pixel(11, 13),
+				green = util.by_pixel(5, 12)
+			}
+		}
 
 data:extend({
 
@@ -22,7 +22,7 @@ data:extend({
 		flags = {"placeable-neutral", "player-creation", "hide-alt-info"},
 		minable = {mining_time = 0.2, result = "SignalBouncePlate"},
 		max_health = 200,
-	    collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+			collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
 		item_slot_count = 18,
@@ -50,27 +50,21 @@ data:extend({
 					}
 				}
 			},
-		activity_led_sprites =
-			{
-				filename = "__RenaiTransportation__/graphics/nothing.png",
-				priority = "medium",
-				width = 1,
-				height = 1,
-			},
+		activity_led_sprites = emptypic,
 		activity_led_light_offsets =
-			{
-			  {0.296875, -0.40625},
-			  {0.25, -0.03125},
-			  {-0.296875, -0.078125},
-			  {-0.21875, -0.46875}
-			},
+		{
+			{0.296875, -0.40625},
+			{0.25, -0.03125},
+			{-0.296875, -0.078125},
+			{-0.21875, -0.46875}
+		},
 		circuit_wire_connection_points =
-		  {
+		{
 			ConnectionPoints,
 			ConnectionPoints,
 			ConnectionPoints,
 			ConnectionPoints
-		  },
+		},
 		radius_visualisation_specification =
 			{
 				sprite = 
@@ -116,14 +110,14 @@ data:extend({
 		render_layer = "higher-object-above",
 		pictures =
 			{
-			  filename = renaiEntity .. "SignalBouncePlate/SignalParticle.png",
-			  --width = 64,
-			  --height = 64,
-			  size = 32,
-			  priority = "extra-high",
-			  line_length = 4, -- frames per row
-			  frame_count = 4, -- total frames
-			  animation_speed = 0.5
+				filename = renaiEntity .. "SignalBouncePlate/SignalParticle.png",
+				--width = 64,
+				--height = 64,
+				size = 32,
+				priority = "extra-high",
+				line_length = 4, -- frames per row
+				frame_count = 4, -- total frames
+				animation_speed = 0.5
 			}
 	}
 })	

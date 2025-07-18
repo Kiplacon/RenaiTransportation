@@ -224,7 +224,7 @@ succ.energy_source =
 succ.energy_usage = "450kW"
 succ.pictures =
 	{
-      filename = "__RenaiTransportation__/graphics/nothing.png",
+      filename = emptypng,
       priority = "low",
       width = 1,
       height = 1,

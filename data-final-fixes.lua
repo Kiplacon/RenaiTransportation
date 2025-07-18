@@ -398,7 +398,7 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 				--selection_box = {{-1.4, -1.2}, {1.4, 1.2}},
 				selection_box = nil,
 				rotation_speed = 1,
-				folded_animation = {direction_count=4, filename = "__RenaiTransportation__/graphics/nothing.png", size=1},
+				folded_animation = {direction_count=4, filename = emptypng, size=1},
 				graphics_set = {},
 				starting_attack_speed = 1,
 				ending_attack_speed = 1,
@@ -660,22 +660,10 @@ function MakeCarriageSprites(ThingData)
 							scale = 0.5,
 							tint = {0.5, 0.5, 0.5}
 							}}
-		local MaskUpSprites = {{
-							filename = "__RenaiTransportation__/graphics/nothing.png",
-							size = 1,
-							}}
-		local MaskRightSprites = {{
-							filename = "__RenaiTransportation__/graphics/nothing.png",
-							size = 1,
-							}}
-		local MaskDownSprites = {{
-							filename = "__RenaiTransportation__/graphics/nothing.png",
-							size = 1,
-							}}
-		local MaskLeftSprites = {{
-							filename = "__RenaiTransportation__/graphics/nothing.png",
-							size = 1,
-							}}
+		local MaskUpSprites = {emptypic}
+		local MaskRightSprites = {emptypic}
+		local MaskDownSprites = {emptypic}
+		local MaskLeftSprites = {emptypic}
 		-- local SpriteSize = {1,1}
 		-- local SpriteScale = 1
 		local SpriteSets
@@ -1093,7 +1081,7 @@ for Category, ThingsTable in pairs(data.raw) do
 					if (type(sprites) == "table" and sprites.layers) then
 						for i, sprite in pairs(sprites.layers) do
 							if (sprite.draw_as_shadow) then
-								sprite.filename = "__RenaiTransportation__/graphics/nothing.png"
+								sprite.filename = emptypng
 								sprite.size = 1
 							end
 						end

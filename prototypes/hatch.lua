@@ -1,10 +1,4 @@
 require("sound-util")
-local nothing = {
-		filename = "__RenaiTransportation__/graphics/nothing.png",
-		width = 1,
-		height = 1
-	}
-
 local RememberNoUnderscores = "RTHatches"
 
 data:extend({
@@ -102,9 +96,9 @@ picture =
 	allow_custom_vectors = false,
 	chases_belt_items = false,
 	draw_held_item = false,
-	hand_base_picture = nothing,
-	hand_open_picture = nothing,
-	hand_closed_picture = nothing,
+	hand_base_picture = emptypic,
+	hand_open_picture = emptypic,
+	hand_closed_picture = emptypic,
 
 
 

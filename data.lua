@@ -3,6 +3,16 @@ renaiIcons = "__RenaiTransportation__/graphics/icons/"
 renaiEntity = "__RenaiTransportation__/graphics/entity/"
 renaiSounds = "__RenaiTransportation__/sickw0bs/"
 
+emptypng = "__core__/graphics/empty.png"
+emptypic = {
+  filename = "__core__/graphics/empty.png",
+  priority = "low",
+  width = 1,
+  height = 1
+}
+
+
+
 require("prototypes.technology")
 require("prototypes.sounds")
 require("prototypes.TabSortingStuff")
@@ -88,7 +98,7 @@ data:extend({
 {
 	type = "sprite",
 	name = "RTBlank",
-	filename = "__RenaiTransportation__/graphics/nothing.png",
+	filename = emptypng,
 	size = 1
 },
 {

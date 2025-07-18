@@ -271,11 +271,7 @@ for name, mask in pairs({
 					percent = 100
 				}
 			},
-			picture = {
-				filename = "__RenaiTransportation__/graphics/nothing.png",
-				size = 1,
-				priority = "very-low",
-			}
+			picture = emptypic,
 		},
 	})
 end

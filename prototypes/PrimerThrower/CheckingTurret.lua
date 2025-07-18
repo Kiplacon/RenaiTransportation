@@ -26,7 +26,7 @@ data:extend({
   --selection_box = {{-0.4, -0.4}, {0.4, 0.4}},
   rotation_speed = 1,
   graphics_set = {},
-  folded_animation = {direction_count=4, filename = "__RenaiTransportation__/graphics/nothing.png", size=1},
+  folded_animation = {direction_count=4, filename = emptypng, size=1},
   starting_attack_speed = 0.5,
   ending_attack_speed = 0.5,
   allow_turning_when_starting_attack = true,
