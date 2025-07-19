@@ -893,6 +893,12 @@ function ResolveThrownItem(FlyingItem)
                             target = {XBounce, YBounce},
                             speed = 0.25
                         })
+                        ThingLandedOn.surface.play_sound
+                        {
+                            path = "RTClunk",
+                            position = ThingLandedOn.position,
+                            volume_modifier = 0.4
+                        }
                     else
                         ThingLandedOn.surface.play_sound
                         {
