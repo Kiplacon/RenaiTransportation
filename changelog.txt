@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.14
+Date: 6/24/2025
+  Bugfixes:
+    - Fixed that throwers wouldn't adjust their range off circuit signal input while it wasn't swinging, ie. pointing at a target that doesn't need items. Reported by divante
+    - Fixed that schedule interrupts were lost during train jumps.
+    - Fixed a crash when removing a power pole that was used as a starting point for the AI zipline controller autopathing. Reported by HolySpacePapa
+---------------------------------------------------------------------------------------------------
 Version: 2.1.13
 Date: 6/24/2025
   Bugfixes:

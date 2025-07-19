@@ -30,26 +30,27 @@ local function ThrowersOnTick(event)
                                 time_to_live = storage.ThrowerGroups
                             }
                     end
-                    -- check if inserter is ready to throw
                     local ThrowerPosition = ThrowerEntity.position
                     local ThrowerStack = ThrowerEntity.held_stack
-                    -- if it's passed the "half swing" point
-                    if (ArmPastHalfway[ThrowerEntity.orientation](ThrowerEntity.held_stack_position, ThrowerPosition, properties.BurnerSelfRefuelCompensation) and ThrowerStack.valid_for_read) then -- if the arm is past halfway
-                        if (properties.RangeAdjustable == true) then
-                            local range = ThrowerEntity.get_signal({type="virtual", name="ThrowerRangeSignal"}, defines.wire_connector_id.circuit_red, defines.wire_connector_id.circuit_green)
-                            if (properties.range==nil or properties.range~=range) then
-                                if (range > 0 and range <= ThrowerEntity.prototype.inserter_drop_position[2]+0.1) then
-                                    ThrowerEntity.drop_position =
-                                        {
-                                            ThrowerPosition.x + -range*storage.OrientationUnitComponents[ThrowerEntity.orientation].x,
-                                            ThrowerPosition.y + -range*storage.OrientationUnitComponents[ThrowerEntity.orientation].y
-                                        }
-                                    properties.range = range
-                                    ResetThrowerOverflowTracking(ThrowerEntity)
-                                    AdjustThrowerArrow(ThrowerEntity)
-                                end
+                    if (properties.RangeAdjustable == true) then
+                        local range = ThrowerEntity.get_signal({type="virtual", name="ThrowerRangeSignal"}, defines.wire_connector_id.circuit_red, defines.wire_connector_id.circuit_green)
+                        if (properties.range==nil or properties.range~=range) then
+                            if (range > 0 and range <= ThrowerEntity.prototype.inserter_drop_position[2]+0.1) then
+                                ThrowerEntity.drop_position =
+                                    {
+                                        ThrowerPosition.x + -range*storage.OrientationUnitComponents[ThrowerEntity.orientation].x,
+                                        ThrowerPosition.y + -range*storage.OrientationUnitComponents[ThrowerEntity.orientation].y
+                                    }
+                                properties.range = range
+                                ResetThrowerOverflowTracking(ThrowerEntity)
+                                AdjustThrowerArrow(ThrowerEntity)
                             end
                         end
+                    end
+                    -- check if inserter is ready to throw
+                    -- if it's passed the "half swing" point
+                    if (ArmPastHalfway[ThrowerEntity.orientation](ThrowerEntity.held_stack_position, ThrowerPosition, properties.BurnerSelfRefuelCompensation) and ThrowerStack.valid_for_read) then -- if the arm is past halfway
+                        
                         local HandPosition = ThrowerEntity.held_stack_position
                         local HeldItem = ThrowerStack.name
                         local DestinationDestroyNumber

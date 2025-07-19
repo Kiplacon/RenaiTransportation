@@ -3,79 +3,14 @@ if script.active_mods["Ultracube"] then CubeFlyingItems = require("script.ultrac
 
 TrainConstants = require("__RenaiTransportation__/script/trains/constants")
 require('util')
----- Space Age keikaku
-------- improvements ✅
--- director pad range adjusting ✅
-	-- change bounde pads from simple-entity to constant combinator ✅
-	-- change on-build to default to 10 range, or set range/indicator according to the ghost signal value ✅
-	-- copy/paste setting change bounce range value ✅
-	-- Bounce pad ✅
-	-- directed bounce pad ✅
-	-- director bounce pad ✅
-	-- migration names ✅
-	-- interact cycling of range ✅
--- remove shadows from character ghosts ✅
-	-- remove shadow layer from character prototype ✅
-	-- animate character shadow separately ✅
-		-- separate shadow sprite for manual animation ✅
--- generalize player launching with custom path ✅
--- better unloading of impact wagons at non-cardinal angles ✅
--- messages when toggling stuff ✅
--- zipline path to furthest connection ✅
-
+---- keikaku
+------- improvements
+--
 ------- New stuff
--- trapdoor wagon ✅
-	-- trapdoor switch (rail signal all 16 directions) ✅
-	-- trapdoor switch ramp ✅
-		-- toggles trapdoor only while train is in flight, switches back upon landing ✅
-	-- trapdoor switch placer graphics ✅
-	-- trapdoor open/close sound ✅
-	-- trapdoor open/close graphic ✅
-	-- trapdoor toggles when stopping/leaving a station with a certain signal fed into it ✅
--- electromagnetic item cannon (rail gun)? ✅
-	-- not placable in space ✅
-	-- seal 1 stack of an item into a shell ✅
-		-- procedural recipe/shell for every game item. Failsafe for items loaded after ✅
-	-- can bounce off of reinforced plates that can be rotated to face the 4 cardinal directions. up/down and left/right are basically the same thing for this ✅
-	-- falls to the ground if nothing hit after X tiles ✅
-		-- damages things in a small area ✅
-		-- vomits out the contents of the shell (lose some?) ✅
-	-- catcher chute catches shell and drops contents into chest ✅
-	-- merging chute. X-shaped, shells can enter from different directions and leave from one ✅
-	-- diverging chure. T-shaped, shells enter from one and alternate leaving from the other two ✅
-	-- laser pointer to test trail ✅
--- belt ramp ✅
-	-- fast, express, and tungsten variants ✅
-	-- items fly off into space at an angle ✅
-	-- player can be launched by it ✅
--- vacuum hatch ✅
-	-- connection to entity behind it ✅
-	-- SUCC particles ✅
--- dynamic zipline, get on from anywhere and autodrive anywhere ✅
-	-- include terminal list pop up ✅
-	-- pentapod egg for SA, fish for vanilla ✅
--- techs for the above ✅
-	-- nauvis: belt ramp, vacuum hatch ✅
-	-- Fulgora: item cannon, ricochet panels, chutes ✅
-	-- Gleba: AI zipline controller, primer throwers ✅
-	-- Vulcanus: trapdoor wagon and switches and switch ramps ✅
-	-- Aquilo: nothing yet
-	-- check with vanilla start ✅
--- straight up grief ✅
-	-- items in destroyed chests/containers fly out ✅
-	-- getting hit by a train/car knocks you away assuming you survive the hit ✅
-	-- items on the floor of a space platform fly away when the ship takes off ✅
-	-- settings to turn these off ✅
+--
 
 ------- bugs
--- crash on interact to toggle things not currently enabled ✅
--- rotating blueprints of trapdoor switches on angles doesnt always work due to rounding errors or something idk if you dont rotate it its fine ✅
--- vacuum hatch full inventory loop (is fine actually, just bounce them off a short distance and only suck up 1 item per tick) ✅
--- hover range indicator for bounce pads not synced with current setting ✅
--- magnet ramp migration ✅
--- director pad migration ✅
--- losing train groups when incrementing schedules. Use train.get_schedule() and use go_to_station(schedule_index) if train had a group ✅
--- high speed trains "bounce back" when impacting ramps at inconsistent distances making reconnecting wagons sometimes fail with how far the following wagon is bumped back
+-- high speed trains "bounce back" when impacting ramps at varying distances making reconnecting wagons sometimes fail with how far the following wagon is bumped back
 
 ------- future stuff
 --- 3 position switch for inserters to enable/follow setting/disable overflow prevention
@@ -89,6 +24,8 @@ require('util')
 	-- particle for each item
 	-- 10000 invisible particles with unique trigger IDs to cycle through
 	-- sprite and invisible particle thrown on top of each other together to create the illusion of a single entity 
+-- there is no way to check to see if a train is going to an interrupt so if a train is using an inturrupt and goes off a ramp I can't know to resend the train to the interrupt
+-- if all trains in a train group jump into the air, that group will be deleted and when they land, they will have the group name but the group schedule will have nothing
 
 
 -- Setup tables and stuff for new/existing saves ----

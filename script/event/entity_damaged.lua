@@ -277,11 +277,9 @@ local function entity_damaged(event)
 
 		if (carriage.train.group ~= "") then -- it is specifically "" that means no group, not nil
 			FlyingTrainProperties.TrainGroup = carriage.train.group
-			--[[ if (carriage.train.get_schedule().get_record(carriage.train.get_schedule().current).temporary == true) then
-				FlyingTrainProperties.TemporaryStop = carriage.train.get_schedule().get_record(carriage.train.get_schedule().current)
-			end ]]
 		end
 		FlyingTrainProperties.schedule = carriage.train.schedule
+		FlyingTrainProperties.interrupts = carriage.train.get_schedule().get_interrupts()
 		if (SkippingRamps[ramp.name] and FlyingTrainProperties.schedule ~= nil) then
 			if (FlyingTrainProperties.schedule.current == table_size(FlyingTrainProperties.schedule.records)) then
 				FlyingTrainProperties.schedule.current = 1
