@@ -25,8 +25,14 @@ data:extend({
 {
 	type = "sound",
 	name = "RTThrow",
-	audible_distance_modifier = 0.5,
+	audible_distance_modifier = 0.3,
 	variations = sound_variations(renaiSounds .. "throw", 5, 1),
+	aggregation =
+	{
+		max_count = 5,
+		remove = true,
+		count_already_playing = true
+	}
 },
 
 {
@@ -34,7 +40,7 @@ data:extend({
 	name = "RTClunk",
 	audible_distance_modifier = 0.3,
 	allow_random_repeat = true,
-	variations = sound_variations(renaiSounds .. "clunk", 5, 0.4),
+	variations = sound_variations(renaiSounds .. "clunk", 5, 0.3),
 	aggregation =
 	{
 		max_count = 4,
@@ -92,8 +98,14 @@ data:extend({
 {
 	type = "sound",
 	name = "RTThrower-EjectorHatchRT-sound",
-	variations = sound_variations(renaiSounds .. "pop", 15, 0.8, {volume_multiplier("main-menu", 2), volume_multiplier("tips-and-tricks", 1.8)}),
-	audible_distance_modifier = 0.8
+	variations = sound_variations(renaiSounds .. "pop", 15, 0.6, {volume_multiplier("main-menu", 2), volume_multiplier("tips-and-tricks", 1.8)}),
+	audible_distance_modifier = 0.3,
+	aggregation =
+	{
+		max_count = 8,
+		remove = true,
+		count_already_playing = true
+	}
 },
 {
 	type = "sound",

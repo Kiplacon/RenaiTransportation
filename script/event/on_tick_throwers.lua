@@ -131,12 +131,11 @@ local function ThrowersOnTick(event)
                                 if (ThrowerEntity.name == "RTThrower-EjectorHatchRT" or ThrowerEntity.name == "RTThrower-FilterEjectorHatchRT") then
                                     distance = math.sqrt((x-ThrowerPosition.x)^2 + (y-ThrowerPosition.y)^2)
                                     speed = 0.25
-                                    --[[ catapult.surface.play_sound
+                                    ThrowerEntity.surface.play_sound
                                     {
-                                        path = "RTEjector",
-                                        position = catapult.position,
-                                        volume_modifier = 0.1
-                                    } ]]
+                                        path = "RTThrower-EjectorHatchRT-sound",
+                                        position = ThrowerPosition,
+                                    }
                                 else
                                     ThrowerEntity.surface.play_sound
                                     {

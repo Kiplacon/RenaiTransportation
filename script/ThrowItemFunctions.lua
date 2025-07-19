@@ -66,7 +66,7 @@ function InvokeThrownItem(stuff)
                         source_position=OffsetPosition(StreamStart, (stuff.StartOffset or {0,0})), -- offset should be pretty small so that the calculated air time lines up with the visual
                         target_position=targett
                     }
-                    surface.play_sound({path = "RTThrower-EjectorHatchRT-sound", position = start})
+                    --surface.play_sound({path = "RTThrower-EjectorHatchRT-sound", position = start})
                 else
                     stream = FlyingItem.surface.create_entity
                     {
@@ -75,7 +75,7 @@ function InvokeThrownItem(stuff)
                         source_position=OffsetPosition(StreamStart, (stuff.StartOffset or {0,0})), -- offset should be pretty small so that the calculated air time lines up with the visual
                         target_position=targett
                     }
-                    surface.play_sound({path = "RTThrower-EjectorHatchRT-sound", position = start})
+                    --surface.play_sound({path = "RTThrower-EjectorHatchRT-sound", position = start})
                 end
                 local StreamDestroyNumber = script.register_on_object_destroyed(stream)
                 FlyingItem.StreamDestroyNumber = StreamDestroyNumber
@@ -893,13 +893,15 @@ function ResolveThrownItem(FlyingItem)
                             target = {XBounce, YBounce},
                             speed = 0.25
                         })
+                    else
+                        ThingLandedOn.surface.play_sound
+                        {
+                            path = "RTThrower-EjectorHatchRT-sound",
+                            position = ThingLandedOn.position,
+                            volume_modifier = 0.4
+                        }
                     end
-                    ThingLandedOn.surface.play_sound
-                    {
-                        path = "RTClunk",
-                        position = ThingLandedOn.position,
-                        volume_modifier = 0.4
-                    }
+                    
 
                 ---- If it landed on something but there's also a cargo wagon there
                 elseif (LandedOnCargoWagon ~= nil and LandedOnCargoWagon.draw_data.height==0 and LandedOnCargoWagon.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then

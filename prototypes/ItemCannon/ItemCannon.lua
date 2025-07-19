@@ -89,6 +89,7 @@ data:extend({
     hidden = true,
     collision_box = nil,
     collision_mask = {layers={}},
+    render_layer = "higher-object-under",
     picture =
     {
       sheet = 

@@ -86,6 +86,7 @@ function handleMagnetRampBuilt(entity, player, MigrationRange)
 		direction = entity.direction,
 		force = entity.force
 	})
+	SUCC.rotatable = false
 	SUCC.electric_buffer_size = 1000000
 	SUCC.power_usage = 0
 	SUCC.destructible = false
