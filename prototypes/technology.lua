@@ -3,8 +3,8 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 	{
 		type = "technology",
 		name = "se-no",
-		icon = "__RenaiTransportation__/graphics/tech/start.png",
-		icon_size = 128,
+		icon = renaiTechIcons .. "start.png",
+		icon_size = 256,
 		effects =
 		{
 			{
@@ -30,8 +30,8 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 	{
 		type = "technology",
 		name = "RTFocusedFlinging",
-		icon = "__RenaiTransportation__/graphics/tech/focus.png",
-		icon_size = 128,
+		icon = renaiTechIcons .. "focus.png",
+		icon_size = 256,
 		effects =
 		{
 			{
@@ -41,7 +41,7 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 			{
 				type = "nothing",
 				effect_description = "Thrower Range can be set by this signal",
-				icon = "__RenaiTransportation__/graphics/RangeSignaling.png",
+				icon = renaiIcons .. "RangeSignaling.png",
 				icon_size = 64,
 			}
 		},
@@ -60,8 +60,8 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 	{
 		type = "technology",
 		name = "HatchRTTech",
-		icon = "__RenaiTransportation__/graphics/hatch/icon.png",
-		icon_size = 64,
+		icon = renaiTechIcons .. "Hatch.png",
+		icon_size = 256,
 		effects =
 		{
 			{
@@ -83,8 +83,8 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 	{
 		type = "technology",
 		name = "EjectorHatchRTTech",
-		icon = "__RenaiTransportation__/graphics/hatch/EjeectorIccon.png",
-		icon_size = 43,
+		icon = renaiTechIcons .. "EjeectorIccon.png",
+		icon_size = 256,
 		effects =
 		{
 			{
@@ -111,8 +111,8 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 	{
 		type = "technology",
 		name = "RTThrowerTime",
-		icon = "__RenaiTransportation__/graphics/tech/ThrowerTech.png",
-		icon_size = 128,
+		icon = renaiTechIcons .. "ThrowerTech.png",
+		icon_size = 256,
 		effects =
 		{
 		},
@@ -131,8 +131,8 @@ if (settings.startup["RTThrowersSetting"].value == true) then
 	{
 		type = "technology",
 		name = "RTSimonSays",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/DirectorPlateIcon.png",
-		icon_size = 64,
+		icon = renaiTechIcons .. "DirectorPlateIcon.png",
+		icon_size = 256,
 		effects =
 		{
 		{
@@ -159,8 +159,8 @@ else
 	{
 		type = "technology",
 		name = "se-no",
-		icon = "__RenaiTransportation__/graphics/tech/start.png",
-		icon_size = 128,
+		icon = renaiTechIcons .. "start.png",
+		icon_size = 256,
 		effects =
 		{},
 		prerequisites = {"automation-science-pack"},

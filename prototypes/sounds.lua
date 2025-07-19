@@ -5,45 +5,28 @@ data:extend({
 	name = "bounce",
 	audible_distance_modifier = 0.5,
 	variations=
+	{
 		{
-			{
-			filename = "__RenaiTransportation__/sickw0bs/a.ogg"
-			},
-			{
-			filename = "__RenaiTransportation__/sickw0bs/b.ogg",
-			volume = 0.7
-			}
+			filename = renaiSounds .. "a.ogg"
 		},
-	aggregation =
 		{
-			max_count = 4,
-			remove = true,
-			count_already_playing = true
+			filename = renaiSounds .. "b.ogg",
+			volume = 0.7
 		}
+	},
+	aggregation =
+	{
+		max_count = 4,
+		remove = true,
+		count_already_playing = true
+	}
 },
 
 {
 	type = "sound",
 	name = "RTThrow",
 	audible_distance_modifier = 0.5,
-	variations=
-		{
-			{
-			filename = "__RenaiTransportation__/sickw0bs/throw1.ogg"
-			},
-			{
-			filename = "__RenaiTransportation__/sickw0bs/throw2.ogg"
-			},
-			{
-			filename = "__RenaiTransportation__/sickw0bs/throw3.ogg"
-			},
-			{
-			filename = "__RenaiTransportation__/sickw0bs/throw4.ogg"
-			},
-			{
-			filename = "__RenaiTransportation__/sickw0bs/throw5.ogg"
-			},
-		}
+	variations = sound_variations(renaiSounds .. "throw", 5, 1),
 },
 
 {
@@ -51,59 +34,34 @@ data:extend({
 	name = "RTClunk",
 	audible_distance_modifier = 0.3,
 	allow_random_repeat = true,
-	variations=
-		{
-			{
-			filename = "__RenaiTransportation__/sickw0bs/clunk1.ogg",
-			volume = 0.4,
-			},
-			{
-			filename = "__RenaiTransportation__/sickw0bs/clunk2.ogg",
-			volume = 0.4,
-			},
-			{
-			filename = "__RenaiTransportation__/sickw0bs/clunk3.ogg",
-			volume = 0.4,
-			},
-			{
-			filename = "__RenaiTransportation__/sickw0bs/clunk4.ogg",
-			volume = 0.4,
-			},
-			{
-			filename = "__RenaiTransportation__/sickw0bs/clunk5.ogg",
-			volume = 0.4,
-			}
-		},
+	variations = sound_variations(renaiSounds .. "clunk", 5, 0.4),
 	aggregation =
-		{
-			max_count = 4,
-			remove = true,
-			count_already_playing = true
-		}
+	{
+		max_count = 4,
+		remove = true,
+		count_already_playing = true
+	}
 },
-
 {
 	type = "sound",
 	name = "RTEjector",
-	filename = "__RenaiTransportation__/sickw0bs/cannon.ogg",
+	filename = renaiSounds .. "cannon.ogg",
 	audible_distance_modifier = 0.65,
 	volume = 1
 },
-
 {
 	type = "sound",
 	name = "PrimeClick",
-	filename = "__RenaiTransportation__/sickw0bs/click.ogg",
+	filename = renaiSounds .. "click.ogg",
 	audible_distance_modifier = 0.5,
 	volume = 0.75,
 	aggregation =
-		{
-			max_count = 3,
-			remove = true,
-			count_already_playing = true
-		}
+	{
+		max_count = 3,
+		remove = true,
+		count_already_playing = true
+	}
 },
-
 {
 	type = "sound",
 	name = "RTZipAttach",
@@ -128,7 +86,82 @@ data:extend({
 {
 	type = "sound",
 	name = "RTZipBrake",
-	filename = "__RenaiTransportation__/sickw0bs/brake.ogg",
+	filename = renaiSounds .. "brake.ogg",
 	audible_distance_modifier = 0.5,
-}
+},
+{
+	type = "sound",
+	name = "RTThrower-EjectorHatchRT-sound",
+	variations = sound_variations(renaiSounds .. "pop", 15, 0.8, {volume_multiplier("main-menu", 2), volume_multiplier("tips-and-tricks", 1.8)}),
+	audible_distance_modifier = 0.8
+},
+{
+	type = "sound",
+	name = "RTTrapdoorOpenSound",
+	filename = renaiSounds .. "TrapdoorOpen.ogg",
+	volume = 0.5
+},
+{
+	type = "sound",
+	name = "RTTrapdoorCloseSound",
+	filename = renaiSounds .. "TrapdoorClose.ogg",
+	volume = 0.3
+},
+{
+	type = "sound",
+	name = "RTImpactPlayerLaunch",
+	filename = "__base__/sound/car-metal-impact-6.ogg",
+	volume = 0.5
+},
+{
+	type = "sound",
+	name = "RTHitWrongAngle",
+	variations = sound_variations(renaiSounds .. "HitWrongAngle", 2, 0.75),
+	aggregation =
+	{
+		max_count = 2,
+		remove = true,
+		count_already_playing = true
+	}
+},
+{
+	type = "sound",
+	name = "RTItemCannonFireSound",
+	filename = renaiSounds .. "ItemCannonFire1.ogg",
+	aggregation =
+	{
+		max_count = 4,
+		remove = true,
+		count_already_playing = true
+	}
+},
+{
+	type = "sound",
+	name = "RTTrapdoorSwitchSound",
+	filename = renaiSounds .. "TrapdoorSwitch.ogg",
+	volume = 0.5
+},
+{
+	type = "sound",
+	name = "RTRicochetPanelSound",
+	variations = sound_variations(renaiSounds .. "impact", 14, 0.7),
+	aggregation =
+	{
+		max_count = 6,
+		remove = true,
+		count_already_playing = true
+	}
+},
+{
+	type = "sound",
+	name = "RTRicochetPanelSpark",
+	variations = sound_variations(renaiSounds .. "zap", 3, 1),
+	aggregation =
+	{
+		max_count = 2,
+		remove = true,
+		count_already_playing = true
+	}
+},
+
 })

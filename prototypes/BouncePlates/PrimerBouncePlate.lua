@@ -2,20 +2,20 @@ data:extend({
 	{
 		type = "sprite",
 		name = "RTPrimerRangeOverlay",
-		filename = "__RenaiTransportation__/graphics/PrimeRange.png",
+		filename = renaiEntity .. "PrimerBouncePlate/PrimeRange.png",
 		size = 640
 	},
 	{
 		type = "sprite",
 		name = "RTPrimerSpreadRangeOverlay",
-		filename = "__RenaiTransportation__/graphics/PrimeSpreadRange.png",
+		filename = renaiEntity .. "PrimerBouncePlate/PrimeSpreadRange.png",
 		size = 640
 	},
 	
 	{ --------- Bounce plate entity --------------
 		type = "simple-entity-with-owner",
 		name = "PrimerBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerPlateIconn.png",
+		icon = renaiIcons .. "PrimerPlateIconn.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
 		minable = {mining_time = 0.2, result = "PrimerBouncePlate"},
@@ -27,32 +27,33 @@ data:extend({
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
 		picture =
-			{
+		{
 			layers =
+			{
 				{
-					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/shadow.png",
-						priority = "medium",
-						width = 66,
-						height = 76,
-						shift = util.by_pixel(8, -0.5),
-						scale = 0.5
-					},
-					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerPlate.png",
-						priority = "medium",
-						width = 66,
-						height = 76,
-						shift = util.by_pixel(-0.5, -0.5),
-						scale = 0.5
-					},
-				}
-			},
+					filename = renaiEntity .. "PrimerBouncePlate/Plate_shadow.png",
+					priority = "medium",
+					width = 66,
+					height = 76,
+					shift = util.by_pixel(8, -0.5),
+				  draw_as_shadow = true,
+					scale = 0.5
+				},
+				{
+					filename = renaiEntity .. "PrimerBouncePlate/PrimerPlate.png",
+					priority = "medium",
+					width = 66,
+					height = 76,
+					shift = util.by_pixel(-0.5, -0.5),
+					scale = 0.5
+				},
+			}
+		},
 		radius_visualisation_specification =
 			{
 				sprite = 
 					{
-						filename = "__RenaiTransportation__/graphics/PrimeRange.png",
+						filename = renaiEntity .. "PrimerBouncePlate/PrimeRange.png",
 						size = 640
 					},
 				draw_on_selection = false,
@@ -62,8 +63,8 @@ data:extend({
 	{ --------- The Bounce plate item -------------
 		type = "item",
 		name = "PrimerBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerPlateIconn.png",
-		icon_size = 64, --icon_mipmaps = 4,
+		icon = renaiIcons .. "PrimerPlateIconn.png",
+		icon_size = 64,
 		subgroup = "RT",
 		order = "a-b",
 		place_result = "PrimerBouncePlate",
@@ -92,7 +93,7 @@ data:extend({
 		render_layer = "higher-object-above",		
 		pictures =
 			{
-				filename = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerParticle.png",
+				filename = renaiEntity .. "PrimerBouncePlate/PrimerParticle.png",
 				--width = 64,
 				--height = 64,
 				size = 32,
@@ -106,7 +107,7 @@ data:extend({
 	{ --------- Spread mode entity --------------
 		type = "simple-entity-with-owner",
 		name = "PrimerSpreadBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerPlateIconn.png",
+		icon = renaiIcons .. "PrimerPlateIconn.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
 		minable = {mining_time = 0.2, result = "PrimerBouncePlate"},
@@ -119,44 +120,45 @@ data:extend({
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
 		picture = 
-			{
+		{
 			layers =
-				{
-					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/shadow.png",
-						priority = "medium",
-						width = 66,
-						height = 76,
-						shift = util.by_pixel(8, -0.5),
-						scale = 0.5
-					},
-					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerSpreadPlate.png",
-						priority = "medium",
-						width = 66,
-						height = 76,
-						shift = util.by_pixel(-0.5, -0.5),
-						scale = 0.5
-					}
-				}
-			},
-		radius_visualisation_specification =
 			{
-				sprite = 
-					{
-						filename = "__RenaiTransportation__/graphics/PrimeSpreadRange.png",
-						size = 640
-					},
-				draw_on_selection = true,
-				distance = 40
+				{
+					filename = renaiEntity .. "BouncePlate/Plate_shadow.png",
+					priority = "medium",
+					width = 66,
+					height = 76,
+					shift = util.by_pixel(8, -0.5),
+					draw_as_shadow = true,
+					scale = 0.5
+				},
+				{
+					filename = renaiEntity .. "PrimerBouncePlate/PrimerSpreadPlate.png",
+					priority = "medium",
+					width = 66,
+					height = 76,
+					shift = util.by_pixel(-0.5, -0.5),
+					scale = 0.5
+				}
 			}
+		},
+		radius_visualisation_specification =
+		{
+			sprite = 
+			{
+				filename = renaiEntity .. "PrimerBouncePlate/PrimeSpreadRange.png",
+				size = 640
+			},
+			draw_on_selection = true,
+			distance = 40
+		}
 	},
 
 	{
 		type = "technology",
 		name = "PrimerPlateTech",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/PrimerBouncePlate/PrimerPlateIconn.png",
-		icon_size = 64,
+		icon = renaiTechIcons .. "PrimerPlateIconn.png",
+		icon_size = 256,
 		effects =
 		{
 			{

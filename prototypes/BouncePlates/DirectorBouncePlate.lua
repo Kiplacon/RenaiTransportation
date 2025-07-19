@@ -2,7 +2,7 @@ data:extend({
 	{ --------- Bounce plate entity --------------
 		type = "constant-combinator",
 		name = "DirectorBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/DirectorPlateIcon.png",
+		icon = renaiIcons .. "DirectorPlateIcon.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation", "hide-alt-info"},
 		minable = {mining_time = 0.2, result = "DirectorBouncePlate"},
@@ -18,15 +18,16 @@ data:extend({
 			layers =
 				{
 					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/shadow.png",
+						filename = renaiEntity .. "DirectorBouncePlate/Plate_shadow.png",
 						priority = "medium",
 						width = 66,
 						height = 76,
 						shift = util.by_pixel(8, -0.5),
+						draw_as_shadow = true,
 						scale = 0.5
 					},
 					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/DirectorPlate.png",
+						filename = renaiEntity .. "DirectorBouncePlate/DirectorPlate.png",
 						priority = "medium",
 						width = 66,
 						height = 76,
@@ -35,15 +36,15 @@ data:extend({
 					}
 				}
 			},
-		activity_led_sprites = {filename = "__RenaiTransportation__/graphics/nothing.png", size = 1},
+		activity_led_sprites = emptypic,
 		activity_led_light_offsets = {{0,0},{0,0},{0,0},{0,0}},
 		circuit_wire_connection_points = {{wire={}, shadow={}},{wire={}, shadow={}},{wire={}, shadow={}},{wire={}, shadow={}}},
 		radius_visualisation_specification =
 			{
 				sprite =
 					{
-						filename = "__RenaiTransportation__/graphics/testalt.png",
-						size = 640
+						filename = "__RenaiTransportation__/graphics/testalt2.png",
+						size = 1280
 					},
 				draw_on_selection = false,
 				distance = 10
@@ -53,8 +54,8 @@ data:extend({
 	{ --------- The Bounce plate item -------------
 		type = "item",
 		name = "DirectorBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/DirectorPlateIcon.png",
-		icon_size = 64, --icon_mipmaps = 4,
+		icon = renaiIcons .. "DirectorPlateIcon.png",
+		icon_size = 64,
 		subgroup = "RT",
 		order = "a-b",
 		place_result = "DirectorBouncePlate",

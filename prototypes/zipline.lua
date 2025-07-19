@@ -18,7 +18,7 @@ brrr.radius_minimap_visualisation_color = { r = 0.059, g = 0.092, b = 0.235, a =
 brrr.rotation_speed = 0.1
 brrr.pictures =
 	{
-      filename = "__RenaiTransportation__/graphics/zipline/ZipUnderPlayer.png",
+      filename = renaiEntity .. "zipline/ZipUnderPlayer.png",
       priority = "high",
       width = 128,
       height = 128,
@@ -36,7 +36,7 @@ brrr.working_sound =
       {
          {
             --filename = "__base__/sound/transport-belt-working.ogg",
-            filename = "__RenaiTransportation__/sickw0bs/zapline.ogg",
+            filename = renaiSounds .. "zapline.ogg",
             volume = 0.35
          }
       },
@@ -59,7 +59,7 @@ brrr,
 { --------- zipline item -------------
 	type = "gun",
 	name = "RTZiplineTrolley",
-	icon = "__RenaiTransportation__/graphics/zipline/icon.png",
+	icon = renaiIcons .. "zipline_icon1.png",
 	icon_size = 64,
 	subgroup = "RTZiplineStuff",
 	order = "aa",
@@ -79,7 +79,7 @@ brrr,
 { --------- zipline controls -------------
 	type = "ammo",
 	name = "RTZiplineControls",
-	icon = "__RenaiTransportation__/graphics/zipline/controls.png",
+	icon = renaiIcons .. "zipline_controls.png",
 	icon_size = 64,
 	subgroup = "RTZiplineStuff",
 	order = "ba",
@@ -110,7 +110,7 @@ brrr,
 { --------- zipline crank controls -------------
 	type = "ammo",
 	name = "RTZiplineCrankControls",
-	icon = "__RenaiTransportation__/graphics/zipline/crankcontrols.png",
+	icon = renaiIcons .. "zipline_crankcontrols.png",
 	icon_size = 64,
 	subgroup = "RTZiplineStuff",
 	order = "bb",
@@ -163,7 +163,7 @@ brrr,
 { --------- programmabel zipline controls -------------
 	type = "ammo",
 	name = "RTProgrammableZiplineControls",
-	icon = "__RenaiTransportation__/graphics/zipline/autocontrols.png",
+	icon = renaiIcons .. "zipline_autocontrols.png",
 	icon_size = 64,
 	subgroup = "RTZiplineStuff",
 	order = "bc",
@@ -192,7 +192,7 @@ brrr,
 { ------ zipline over player graphic -----------
 	type = "animation",
 	name = "RTZiplineOverGFX",
-	filename = "__RenaiTransportation__/graphics/zipline/ZipOverPlayer.png",
+	filename = renaiEntity .. "zipline/ZipOverPlayer.png",
 	size = 128, --{128,128},
 	frame_count = 2,
 	line_length = 2,
@@ -201,14 +201,14 @@ brrr,
 {
 	type = "sprite",
 	name = "RTZiplineHarnessGFX",
-	filename = "__RenaiTransportation__/graphics/zipline/ZipHarness.png",
+	filename = renaiEntity .. "zipline/ZipHarness.png",
 	size = 70
 },
 })
 
 local succ = table.deepcopy(data.raw.radar["RTZipline"])
 succ.name = "RTZiplinePowerDrain"
-succ.icon = "__RenaiTransportation__/graphics/zipline/icon.png"
+succ.icon = renaiIcons .. "zipline_icon1.png"
 succ.icon_size = 64
 succ.energy_per_sector = "69TJ"
 succ.energy_per_nearby_scan = "420TJ"
@@ -224,7 +224,7 @@ succ.energy_source =
 succ.energy_usage = "450kW"
 succ.pictures =
 	{
-      filename = "__RenaiTransportation__/graphics/nothing.png",
+      filename = emptypng,
       priority = "low",
       width = 1,
       height = 1,
@@ -281,26 +281,16 @@ end
 --============ trolley 2 ==================
 local succ2 = table.deepcopy(data.raw.radar["RTZiplinePowerDrain"])
 succ2.name = "RTZiplinePowerDrain2"
-succ2.icons = {
-   {
-      icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-      icon_size = 64,
-      tint = {1,0.9,0},
-   }
-}
+succ2.icon = renaiIcons .. "zipline_icon2.png"
+succ2.icon_size = 64
 succ2.energy_usage = "1MW"
 data:extend({ succ2 })
 data:extend({
    { --------- zipline item -------------
       type = "gun",
       name = "RTZiplineTrolley2",
-      icons = {
-         {
-            icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-            icon_size = 64,
-            tint = {1,0.9,0},
-         }
-      },
+      icon = renaiIcons .. "zipline_icon2.png",
+      icon_size = 64,
       subgroup = "RTZiplineStuff",
       order = "ab",
       stack_size = 1,
@@ -332,26 +322,16 @@ data:extend({
 --============ trolley 3 ==================
 local succ3 = table.deepcopy(data.raw.radar["RTZiplinePowerDrain"])
 succ3.name = "RTZiplinePowerDrain3"
-succ3.icons = {
-   {
-      icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-      icon_size = 64,
-      tint = {255,35,35},
-   }
-}
+succ3.icon = renaiIcons .. "zipline_icon3.png"
+succ3icon_size = 64
 succ3.energy_usage = "5MW"
 data:extend({ succ3 })
 data:extend({
    { --------- zipline item -------------
       type = "gun",
       name = "RTZiplineTrolley3",
-      icons = {
-         {
-            icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-            icon_size = 64,
-            tint = {255,35,35},
-         }
-      },
+      icon = renaiIcons .. "zipline_icon3.png",
+      icon_size = 64,
       subgroup = "RTZiplineStuff",
       order = "ac",
       stack_size = 1,
@@ -384,26 +364,16 @@ data:extend({
 --============ trolley 4 ==================
 local succ4 = table.deepcopy(data.raw.radar["RTZiplinePowerDrain"])
 succ4.name = "RTZiplinePowerDrain4"
-succ4.icons = {
-   {
-      icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-      icon_size = 64,
-      tint = {18,201,233},
-   }
-}
+succ4.icon = renaiIcons .. "zipline_icon4.png"
+succ4.icon_size = 64
 succ4.energy_usage = "10MW"
 data:extend({ succ4 })
 data:extend({
    { --------- zipline item -------------
       type = "gun",
       name = "RTZiplineTrolley4",
-      icons = {
-         {
-            icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-            icon_size = 64,
-            tint = {18,201,233},
-         }
-      },
+      icon = renaiIcons .. "zipline_icon4.png",
+      icon_size = 64,
       subgroup = "RTZiplineStuff",
       order = "ad",
       stack_size = 1,
@@ -436,26 +406,16 @@ data:extend({
 --============ trolley 5 ==================
 local succ5 = table.deepcopy(data.raw.radar["RTZiplinePowerDrain"])
 succ5.name = "RTZiplinePowerDrain5"
-succ5.icons = {
-   {
-      icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-      icon_size = 64,
-      tint = {83,255,26},
-   }
-}
+succ5.icon = renaiIcons .. "zipline_icon1.png"
+succ5.icon_size = 64
 succ5.energy_usage = "50MW"
 data:extend({ succ5 })
 data:extend({
    { --------- zipline item -------------
       type = "gun",
       name = "RTZiplineTrolley5",
-      icons = {
-         {
-            icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-            icon_size = 64,
-            tint = {83,255,26},
-         }
-      },
+      icon = renaiIcons .. "zipline_icon5.png",
+      icon_size = 64,
       subgroup = "RTZiplineStuff",
       order = "ae",
       stack_size = 1,
@@ -487,7 +447,7 @@ data:extend({
 })
 
 local RTZiplineTerminal = table.deepcopy(data.raw["electric-pole"]["medium-electric-pole"])
-   RTZiplineTerminal.icon = "__RenaiTransportation__/graphics/zipline/terminalicon.png"
+   RTZiplineTerminal.icon = renaiIcons .. "zipline_terminalicon.png"
    RTZiplineTerminal.icon_size = 64
    RTZiplineTerminal.name = "RTZiplineTerminal"
    RTZiplineTerminal.minable = {mining_time = 0.5, result = "RTZiplineTerminal"}
@@ -498,7 +458,7 @@ local RTZiplineTerminal = table.deepcopy(data.raw["electric-pole"]["medium-elect
       layers =
       {
          {
-            filename = "__RenaiTransportation__/graphics/zipline/terminal.png",
+            filename = renaiEntity .. "zipline/terminal.png",
             priority = "extra-high",
             width = 125,
             height = 250,
@@ -507,7 +467,7 @@ local RTZiplineTerminal = table.deepcopy(data.raw["electric-pole"]["medium-elect
             scale = 0.5
          },
          {
-            filename = "__RenaiTransportation__/graphics/zipline/OwTheEdge.png",
+            filename = renaiEntity .. "zipline/OwTheEdge.png",
             priority = "extra-high",
             width = 212,
             height = 48,
@@ -540,7 +500,7 @@ local RTZiplineTerminal = table.deepcopy(data.raw["electric-pole"]["medium-elect
 
 local RTZiplineTerminalItemP = table.deepcopy(data.raw.item["medium-electric-pole"])
    RTZiplineTerminalItemP.name = "RTZiplineTerminal"
-   RTZiplineTerminalItemP.icon = "__RenaiTransportation__/graphics/zipline/terminalicon.png"
+   RTZiplineTerminalItemP.icon = renaiIcons .. "zipline_terminalicon.png"
    RTZiplineTerminalItemP.icon_size = 64
    RTZiplineTerminalItemP.place_result = "RTZiplineTerminal"
    RTZiplineTerminalItemP.order = "a[energy]-x[ZiplineTerminal]"
@@ -571,11 +531,8 @@ data:extend({
    { --------- AI zipline controls -------------
       type = "ammo",
       name = "RTAIZiplineControls",
-      icons = {
-         {
-            icon = "__RenaiTransportation__/graphics/zipline/AIcontrols.png",
-         }
-      },
+      icon = renaiIcons .. "zipline_AIcontrols.png",
+      icon_size = 64,
       subgroup = "RTZiplineStuff",
       order = "bd",
       stack_size = 1,
@@ -593,8 +550,8 @@ data:extend({
    {
 		type = "technology",
 		name = "RTZiplineTech",
-		icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-		icon_size = 64,
+		icon = renaiTechIcons .. "Zipline1.png",
+		icon_size = 256,
 		effects =
 		{
 			{
@@ -620,8 +577,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTZiplineControlTech1",
-		icon = "__RenaiTransportation__/graphics/zipline/crankcontrols.png",
-		icon_size = 64,
+		icon = renaiTechIcons .. "Zipline_crankcontrols.png",
+		icon_size = 256,
 		effects =
 		{
 			{
@@ -643,13 +600,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTZiplineTech2",
-		icons = {
-			{
-				icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-				icon_size = 64,
-				tint = {1,0.9,0},
-			}
-		},
+      icon = renaiTechIcons .. "Zipline2.png",
+      icon_size = 256,
 		effects =
 		{
 			{
@@ -672,13 +624,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTZiplineTech3",
-		icons = {
-			{
-				icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-				icon_size = 64,
-				tint = {255,35,35},
-			}
-		},
+      icon = renaiTechIcons .. "Zipline3.png",
+      icon_size = 256,
 		effects =
 		{
 			{
@@ -702,13 +649,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTZiplineTech4",
-		icons = {
-			{
-				icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-				icon_size = 64,
-				tint = {18,201,233},
-			}
-		},
+      icon = renaiTechIcons .. "Zipline4.png",
+      icon_size = 256,
 		effects =
 		{
 			{
@@ -732,13 +674,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTZiplineTech5",
-		icons = {
-			{
-				icon = "__RenaiTransportation__/graphics/zipline/icon.png",
-				icon_size = 64,
-				tint = {83,255,26},
-			}
-		},
+      icon = renaiTechIcons .. "Zipline5.png",
+      icon_size = 256,
 		effects =
 		{
 			{	
@@ -764,8 +701,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTProgrammableZiplineControlTech",
-		icon = "__RenaiTransportation__/graphics/zipline/terminaltech.png",
-		icon_size = 128,
+		icon = renaiTechIcons .. "Zipline_terminaltech.png",
+		icon_size = 256,
 		effects =
 		{
 			{
@@ -813,8 +750,8 @@ if (data.raw.item["carbon-fiber"] and data.raw.item["pentapod-egg"] and data.raw
 		{
          type = "technology",
          name = "RTAIZiplineControlTech",
-         icon = "__RenaiTransportation__/graphics/tech/AIZiplineTech.png",
-         icon_size = 128,
+         icon = renaiTechIcons .. "AIZiplineTech.png",
+         icon_size = 256,
          effects =
          {
             {
@@ -859,8 +796,8 @@ else
 		{
          type = "technology",
          name = "RTAIZiplineControlTech",
-         icon = "__RenaiTransportation__/graphics/tech/AIZiplineTech.png",
-         icon_size = 128,
+         icon = renaiTechIcons .. "AIZiplineTech.png",
+         icon_size = 256,
          effects =
          {
             {

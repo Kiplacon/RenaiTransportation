@@ -135,10 +135,9 @@ function GetOffZipline(player, PlayerProperties)
 	ZiplineStuff.ChuggaChugga.destroy()
 	ZiplineStuff.succ.destroy()
 	ZiplineStuff.braking = nil
-	if (player.character.get_inventory(defines.inventory.character_armor)
-	and player.character.get_inventory(defines.inventory.character_armor).is_full()
-	and player.character.get_inventory(defines.inventory.character_armor)[1].prototype.provides_flight == true) then
-		-- don't drop
+	if player.character and player.character.valid and (player.character.get_inventory(defines.inventory.character_armor)
+		and player.character.get_inventory(defines.inventory.character_armor).is_full() and player.character.get_inventory(defines.inventory.character_armor)[1].prototype.provides_flight == true) then
+			-- don't drop
 	else
 		player.teleport(player.surface.find_non_colliding_position("character", {player.position.x, player.position.y+2}, 0, 0.01))
 	end

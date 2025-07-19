@@ -149,7 +149,7 @@ function MakeItemShellStuff(ThingData)
 					layers =
 					{
 						{
-							filename = "__RenaiTransportation__/graphics/ItemCannon/EmptyItemShell.png",
+							filename = renaiEntity .. "ItemCannon/EmptyItemShell.png",
 							size = 64,
 							frame_count = 1,
 							priority = "high",
@@ -159,7 +159,7 @@ function MakeItemShellStuff(ThingData)
 				},
 				shadow =
 				{
-					filename = "__RenaiTransportation__/graphics/ItemCannon/EmptyItemShell.png",
+					filename = renaiEntity .. "ItemCannon/EmptyItemShell_shadow.png",
 					size = 64,
 					frame_count = 1,
 					priority = "high",
@@ -374,7 +374,7 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 				type = "turret",
 				name = "RTPrimerThrowerShooter-"..ThingData.name,
 				icon = "__base__/graphics/icons/big-worm.png",
-				icon_size = 64, icon_mipmaps = 4,
+				icon_size = 64,
 				flags = {"placeable-off-grid", "not-on-map", "not-blueprintable", "not-deconstructable", "not-selectable-in-game"},
 				hidden = true,
 				max_health = 750,
@@ -398,7 +398,7 @@ TheProjectile = table.deepcopy(data.raw.stream["acid-stream-spitter-small"])
 				--selection_box = {{-1.4, -1.2}, {1.4, 1.2}},
 				selection_box = nil,
 				rotation_speed = 1,
-				folded_animation = {direction_count=4, filename = "__RenaiTransportation__/graphics/nothing.png", size=1},
+				folded_animation = {direction_count=4, filename = emptypng, size=1},
 				graphics_set = {},
 				starting_attack_speed = 1,
 				ending_attack_speed = 1,
@@ -456,21 +456,19 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 	TheItem.place_result = "RTThrower-"..ThingData.name
 	if (TheItem.icon) then
 		TheItem.icons =
+		{
 			{
-				{
 				icon = TheItem.icon,
-				icon_size = TheItem.icon_size,
-				icon_mipmaps = TheItem.icon_mipmaps
-				},
+				icon_size = TheItem.icon_size
+			},
 
-				{
-				icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",
-				icon_size = 64,
-				icon_mipmaps = 4
-				}
+			{
+				icon = renaiIcons .. "ThrowerInserteroverlay.png",
+				icon_size = 64
 			}
+		}
 	else
-		table.insert(TheItem.icons, {icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",	icon_size = 64, icon_mipmaps = 4})
+		table.insert(TheItem.icons, {icon = renaiIcons .. "ThrowerInserteroverlay.png",	icon_size = 64, icon_mipmaps = 4})
 	end
 
 	if (ThingData.name == "inserter" or ThingData.name == "burner-inserter") then
@@ -486,10 +484,10 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 		energy_required = 1,
 		localised_name =  "Thrower "..ThingData.name:gsub("-i"," i"),
 		ingredients =
-			{
-				{type="item", name=PlacingItemName, amount=1},
-				{type="item", name="copper-cable", amount=4}
-			},
+		{
+			{type="item", name=PlacingItemName, amount=1},
+			{type="item", name="copper-cable", amount=4}
+		},
 		results = {
 			{type="item", name=TheItem.name, amount=1}
 		},
@@ -499,21 +497,18 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 	local TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
 	if (TheThrower.icon) then
 		TheThrower.icons =
+		{
 			{
-				{
-					icon = TheThrower.icon,
-					icon_size = TheThrower.icon_size,
-					icon_mipmaps = TheThrower.icon_mipmaps
-				},
-
-				{
-					icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",
-					icon_size = 64,
-					icon_mipmaps = 4
-				}
+				icon = TheThrower.icon,
+				icon_size = TheThrower.icon_size
+			},
+			{
+				icon = renaiIcons .. "ThrowerInserteroverlay.png",
+				icon_size = 64
 			}
+		}
 	else
-		table.insert(TheThrower.icons, {icon = "__RenaiTransportation__/graphics/ThrowerInserter/overlay.png",	icon_size = 64, icon_mipmaps = 4})
+		table.insert(TheThrower.icons, {icon = renaiIcons .. "ThrowerInserteroverlay.png",	icon_size = 64})
 	end
 	TheThrower.name = "RTThrower-"..ThingData.name
 	TheThrower.minable = {mining_time = 0.1, result = TheItem.name}
@@ -560,7 +555,7 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 	TheThrower.hand_size = 0
 	TheThrower.hand_base_picture =
 		{
-		filename = "__RenaiTransportation__/graphics/ThrowerInserter/hr-inserter-hand-base.png",
+		filename = renaiEntity .. "ThrowerInserter/hr-inserter-hand-base.png",
         priority = "extra-high",
         width = 32,
         height = 136,
@@ -568,7 +563,7 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 		}
 	TheThrower.hand_closed_picture =
 		{
-		filename = "__RenaiTransportation__/graphics/ThrowerInserter/hr-inserter-hand-closed.png",
+		filename = renaiEntity .. "ThrowerInserter/hr-inserter-hand-closed.png",
         priority = "extra-high",
         width = 72,
         height = 164,
@@ -576,7 +571,7 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 		}
 	TheThrower.hand_open_picture =
 		{
-		filename = "__RenaiTransportation__/graphics/ThrowerInserter/hr-inserter-hand-open.png",
+		filename = renaiEntity .. "ThrowerInserter/hr-inserter-hand-open.png",
         priority = "extra-high",
         width = 72,
         height = 164,
@@ -588,7 +583,7 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 	else
 		data:extend({TheThrower, TheItem, TheRecipe})
 		if (isitenabled == false) then
-			table.insert(data.raw["technology"]["RTThrowerTime"].effects,{type="unlock-recipe",recipe=TheRecipe.name})
+			table.insert(data.raw["technology"]["RTThrowerTime"].effects, {type="unlock-recipe", recipe=TheRecipe.name})
 		end
 		if mods["quality"] then
 			local icons =
@@ -640,47 +635,35 @@ function MakeCarriageSprites(ThingData)
 	log("--------Extracting train sprites for "..ThingData.type..": "..ThingData.name.."-----------")
 	--if (ThingData.pictures and ThingData.pictures.rotated.layers) then
 		local UpSprites = {{
-							filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WheelsVertical.png",
+							filename = renaiEntity .. "trains/WheelsVertical.png",
 							size = {200,500},
 							scale = 0.5,
 							tint = {0.5, 0.5, 0.5}
 							}}
 		local RightSprites = {{
-							filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WheelsHorizontal.png",
+							filename = renaiEntity .. "trains/WheelsHorizontal.png",
 							size = {500,200},
 							shift = {0,-0.5},
 							scale = 0.5,
 							tint = {0.5, 0.5, 0.5}
 							}}
 		local DownSprites = {{
-							filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WheelsVertical.png",
+							filename = renaiEntity .. "trains/WheelsVertical.png",
 							size = {200,500},
 							scale = 0.5,
 							tint = {0.5, 0.5, 0.5}
 							}}
 		local LeftSprites = {{
-							filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WheelsHorizontal.png",
+							filename = renaiEntity .. "trains/WheelsHorizontal.png",
 							size = {500,200},
 							shift = {0,-0.5},
 							scale = 0.5,
 							tint = {0.5, 0.5, 0.5}
 							}}
-		local MaskUpSprites = {{
-							filename = "__RenaiTransportation__/graphics/nothing.png",
-							size = 1,
-							}}
-		local MaskRightSprites = {{
-							filename = "__RenaiTransportation__/graphics/nothing.png",
-							size = 1,
-							}}
-		local MaskDownSprites = {{
-							filename = "__RenaiTransportation__/graphics/nothing.png",
-							size = 1,
-							}}
-		local MaskLeftSprites = {{
-							filename = "__RenaiTransportation__/graphics/nothing.png",
-							size = 1,
-							}}
+		local MaskUpSprites = {emptypic}
+		local MaskRightSprites = {emptypic}
+		local MaskDownSprites = {emptypic}
+		local MaskLeftSprites = {emptypic}
 		-- local SpriteSize = {1,1}
 		-- local SpriteScale = 1
 		local SpriteSets
@@ -1098,7 +1081,7 @@ for Category, ThingsTable in pairs(data.raw) do
 					if (type(sprites) == "table" and sprites.layers) then
 						for i, sprite in pairs(sprites.layers) do
 							if (sprite.draw_as_shadow) then
-								sprite.filename = "__RenaiTransportation__/graphics/nothing.png"
+								sprite.filename = emptypng
 								sprite.size = 1
 							end
 						end

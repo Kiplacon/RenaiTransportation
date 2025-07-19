@@ -9,7 +9,7 @@ data:extend({
 	{ --------- Bounce plate entity --------------
 		type = "constant-combinator",
 		name = "RTBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/PlateIconn.png",
+		icon = renaiIcons .. "BouncePlate.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation", "hide-alt-info"},
 		minable = {mining_time = 0.2, result = "RTBouncePlate"},
@@ -20,49 +20,49 @@ data:extend({
 		collision_mask = BouncePadMask,
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
-		activity_led_sprites = {filename = "__RenaiTransportation__/graphics/nothing.png", size = 1},
+		activity_led_sprites = emptypic,
 		activity_led_light_offsets = {{0,0},{0,0},{0,0},{0,0}},
 		circuit_wire_connection_points = {{wire={}, shadow={}},{wire={}, shadow={}},{wire={}, shadow={}},{wire={}, shadow={}}},
 		sprites =
-			{
+		{
 			layers =
-				{
-					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/shadow.png",
-						priority = "medium",
-						width = 66,
-						height = 76,
-						shift = util.by_pixel(8, -0.5),
-						scale = 0.5
-					},
-					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Plate.png",
-						priority = "medium",
-						width = 66,
-						height = 76,
-						shift = util.by_pixel(-0.5, -0.5),
-						scale = 0.5
-					}
-				}
-			},
-		
-		radius_visualisation_specification =
 			{
-				sprite =
-					{
-						filename = "__RenaiTransportation__/graphics/testalt.png",
-						size = 640
-					},
-				draw_on_selection = false,
-				distance = 10
+				{
+					filename = renaiEntity .. "BouncePlate/Plate_shadow.png",
+					priority = "medium",
+					width = 66,
+					height = 76,
+					shift = util.by_pixel(8, -0.5),
+					draw_as_shadow = true,
+					scale = 0.5
+				},
+				{
+					filename = renaiEntity .. "BouncePlate/Plate.png",
+					priority = "medium",
+					width = 66,
+					height = 76,
+					shift = util.by_pixel(-0.5, -0.5),
+					scale = 0.5
+				}
 			}
+		},
+		radius_visualisation_specification =
+		{
+			sprite =
+			{
+				filename = "__RenaiTransportation__/graphics/testalt2.png",
+				size = 1280
+			},
+			draw_on_selection = false,
+			distance = 10
+		}
 	},
 
 	{ --------- The Bounce plate item -------------
 		type = "item",
 		name = "RTBouncePlate",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/PlateIconn.png",
-		icon_size = 64, --icon_mipmaps = 4,
+		icon = renaiIcons .. "BouncePlate.png",
+		icon_size = 64,
 		subgroup = "RT",
 		order = "a",
 		place_result = "RTBouncePlate",
@@ -90,16 +90,14 @@ data:extend({
 		life_time = 8,
 		render_layer = "higher-object-above",
 		pictures =
-			{
-				filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Particle.png",
-				--width = 64,
-				--height = 64,
-				size = 32,
-				priority = "extra-high",
-				line_length = 4, -- frames per row
-				frame_count = 4, -- total frames
-				animation_speed = 0.5
-			}
+		{
+			filename = renaiEntity .. "BouncePlate/Particle.png",
+			size = 32,
+			priority = "extra-high",
+			line_length = 4, -- frames per row
+			frame_count = 4, -- total frames
+			animation_speed = 0.5
+		}
 	},
 	{ --------- bounce effect ----------
 		type = "optimized-particle",
@@ -107,27 +105,23 @@ data:extend({
 		life_time = 60*5,
 		render_layer = "under-elevated",
 		pictures =
-			{
-				filename = "__RenaiTransportation__/graphics/LickmawBALLS.png",
-				--width = 64,
-				--height = 64,
-				size = 64,
-				scale = 0.3,
-				priority = "high",
-				line_length = 1, -- frames per row
-				frame_count = 1, -- total frames
-			},
+		{
+			filename = renaiEntity .. "meme/LickmawBALLS.png",
+			size = 64,
+			scale = 0.3,
+			priority = "high",
+			line_length = 1, -- frames per row
+			frame_count = 1, -- total frames
+		},
 		shadows =
-			{
-				filename = "__RenaiTransportation__/graphics/LickmawBALLS.png",
-				--width = 64,
-				--height = 64,
-				size = 64,
-				scale = 0.3,
-				priority = "high",
-				line_length = 1, -- frames per row
-				frame_count = 1, -- total frames
-			},
+		{
+			filename = renaiEntity .. "meme/LickmawBALLS.png",
+			size = 64,
+			scale = 0.3,
+			priority = "high",
+			line_length = 1, -- frames per row
+			frame_count = 1, -- total frames
+		},
 		draw_shadow_when_on_ground = false,
 		--regular_trigger_effect = {type="script", effect_id="RTTestProjectileRegularEffect"}, -- while in flight
 		--regular_trigger_effect_frequency = 30, -- how ofter while in flight
@@ -152,15 +146,15 @@ for color, tint in pairs(colors) do
 			life_time = 8,
 			render_layer = "higher-object-above",
 			pictures =
-				{
-				  filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Particle2.png",
-				  tint = tint,
-				  size = 32,
-				  priority = "extra-high",
-				  line_length = 4, -- frames per row
-				  frame_count = 4, -- total frames
-				  animation_speed = 0.5
-				}
+			{
+			  filename = renaiEntity .. "BouncePlate/Particle2.png",
+			  tint = tint,
+			  size = 32,
+			  priority = "extra-high",
+			  line_length = 4, -- frames per row
+			  frame_count = 4, -- total frames
+			  animation_speed = 0.5
+			}
 		}
 	})
 end
@@ -171,53 +165,7 @@ data:extend({
 	{ --------- Bounce plate entity 5 --------------
 		type = "simple-entity-with-owner",
 		name = "BouncePlate5",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/PlateIconn.png",
-		icon_size = 64,
-		flags = {"placeable-neutral", "player-creation"},
-		hidden = true,
-		minable = {mining_time = 0.2, result = "RTBouncePlate"},
-		placeable_by = {item="RTBouncePlate", count=1},
-		max_health = 200,
-	   	collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
-		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
-		fast_replaceable_group = "bouncers",
-		picture =
-			{
-			layers =
-				{
-					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/shadow.png",
-						priority = "medium",
-						width = 66,
-						height = 76,
-						shift = util.by_pixel(8, -0.5),
-						scale = 0.5
-					},
-					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Plate.png",
-						priority = "medium",
-						width = 66,
-						height = 76,
-						shift = util.by_pixel(-0.5, -0.5),
-						scale = 0.5
-					}
-				}
-			},
-		radius_visualisation_specification =
-			{
-				sprite =
-					{
-						filename = "__RenaiTransportation__/graphics/testalt.png",
-						size = 640
-					},
-				draw_on_selection = true,
-				distance = 5
-			}
-	},
-	{ --------- Bounce plate entity 15 --------------
-		type = "simple-entity-with-owner",
-		name = "BouncePlate15",
-		icon = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/PlateIconn.png",
+		icon = renaiIcons .. "BouncePlate.png",
 		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation"},
 		hidden = true,
@@ -228,37 +176,85 @@ data:extend({
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
 		fast_replaceable_group = "bouncers",
 		picture =
-			{
+		{
 			layers =
-				{
-					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/shadow.png",
-						priority = "medium",
-						width = 66,
-						height = 76,
-						shift = util.by_pixel(8, -0.5),
-						scale = 0.5
-					},
-					{
-						filename = "__RenaiTransportation__/graphics/BouncePlates/BouncePlate/Plate.png",
-						priority = "medium",
-						width = 66,
-						height = 76,
-						shift = util.by_pixel(-0.5, -0.5),
-						scale = 0.5
-					}
-				}
-			},
-		radius_visualisation_specification =
 			{
-				sprite =
-					{
-						filename = "__RenaiTransportation__/graphics/testalt.png",
-						size = 640
-					},
-				draw_on_selection = true,
-				distance = 15
+				{
+					filename = renaiEntity .. "BouncePlate/Plate_shadow.png",
+					priority = "medium",
+					width = 66,
+					height = 76,
+					shift = util.by_pixel(8, -0.5),
+					draw_as_shadow = true,
+					scale = 0.5
+				},
+				{
+					filename = renaiEntity .. "BouncePlate/Plate.png",
+					priority = "medium",
+					width = 66,
+					height = 76,
+					shift = util.by_pixel(-0.5, -0.5),
+					scale = 0.5
+				}
 			}
+		},
+		radius_visualisation_specification =
+		{
+			sprite =
+			{
+				filename = "__RenaiTransportation__/graphics/testalt2.png",
+				size = 1280
+			},
+			draw_on_selection = true,
+			distance = 5
+		}
+	},
+	{ --------- Bounce plate entity 15 --------------
+		type = "simple-entity-with-owner",
+		name = "BouncePlate15",
+		icon = renaiIcons .. "BouncePlate.png",
+		icon_size = 64,
+		flags = {"placeable-neutral", "player-creation"},
+		hidden = true,
+		minable = {mining_time = 0.2, result = "RTBouncePlate"},
+		placeable_by = {item="RTBouncePlate", count=1},
+		max_health = 200,
+		collision_box = {{-0.25, -0.25}, {0.25, 0.25}}, --{{-0.35, -0.35}, {0.35, 0.35}},
+		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
+		fast_replaceable_group = "bouncers",
+		picture =
+		{
+			layers =
+			{
+				{
+					filename = renaiEntity .. "BouncePlate/Plate_shadow.png",
+					priority = "medium",
+					width = 66,
+					height = 76,
+					shift = util.by_pixel(8, -0.5),
+					draw_as_shadow = true,
+					scale = 0.5
+				},
+				{
+					filename = renaiEntity .. "BouncePlate/Plate.png",
+					priority = "medium",
+					width = 66,
+					height = 76,
+					shift = util.by_pixel(-0.5, -0.5),
+					scale = 0.5
+				}
+			}
+		},
+		radius_visualisation_specification =
+		{
+			sprite =
+			{
+				filename = "__RenaiTransportation__/graphics/testalt2.png",
+				size = 1280
+			},
+			draw_on_selection = true,
+			distance = 15
+		}
 	},
 
 })

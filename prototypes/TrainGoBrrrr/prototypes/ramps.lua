@@ -13,7 +13,7 @@ for _, variants in pairs(
 		{
 			type = "rail-signal",
 			name = "RT"..variant,
-			icon = "__RenaiTransportation__/graphics/TrainRamp/icons/"..variant.."Icon.png",
+			icon = renaiIcons .. "ramp_" .. variant .. "Icon.png",
 			icon_size = 64,
 			flags = {"player-creation", "not-on-map", "placeable-off-grid", "hide-alt-info", "not-flammable"},
 			hidden = true,
@@ -27,8 +27,8 @@ for _, variants in pairs(
 			elevated_selection_priority = 100,
 			collision_mask = GroundMask,
 			elevated_collision_mask = ElevMask,
-			ground_picture_set = RampPictureSets("__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png"),
-			elevated_picture_set = RampPictureSets("__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png"),
+			ground_picture_set = RampPictureSets(variant),
+			elevated_picture_set = RampPictureSets(variant),
 			placeable_by = { item = "RT"..variant:gsub("NoSkip", ""), count = 1 }, -- Controls `q` and blueprint behavior
 			resistances = {
 				{
@@ -40,7 +40,7 @@ for _, variants in pairs(
 		{
 			type = "item",
 			name = "RT"..variant,
-			icon = "__RenaiTransportation__/graphics/TrainRamp/icons/"..variant.."Icon.png",
+			icon = renaiIcons .. "ramp_" .. variant .. "Icon.png",
 			icon_size = 64,
 			subgroup = "RTTrainStuff",
 			hidden = hidden,
@@ -50,11 +50,11 @@ for _, variants in pairs(
 		},
 		makeRampPlacerEntity(
 				"RT"..variant.."-placer",
-				"__RenaiTransportation__/graphics/TrainRamp/icons/"..variant.."Icon.png",
-				"__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant.."Placer.png",
+				renaiIcons .. "ramp_" .. variant .. "Icon.png",
+				renaiEntity .."Train_ramps/TrainRamp_Placer.png",
 				"RT"..variant
 			),
-		CreateRampSprites("RT"..variant.."", "__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png")
+		CreateRampSprites("RT"..variant.."", variant)
 	})
 end
 
@@ -96,8 +96,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTFlyingFreight",
-		icon = "__RenaiTransportation__/graphics/tech/FlyingFreight.png",
-		icon_size = 128,
+		icon = renaiTechIcons .. "FlyingFreight.png",
+		icon_size = 256,
 		effects =
 		{
 			{
@@ -120,8 +120,8 @@ data:extend({
 	{
 		type = "technology",
 		name = "RTMagnetTrainRamps",
-		icon = "__RenaiTransportation__/graphics/tech/MagnetFreight.png",
-		icon_size = 128,
+		icon = renaiTechIcons .. "MagnetFreight.png",
+		icon_size = 256,
 		effects =
 		{
 			{

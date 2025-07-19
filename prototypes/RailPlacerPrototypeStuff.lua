@@ -1,18 +1,37 @@
-function RampPictureSets(FilePath)
+local function makelayer(name)
+	return {
+		filename = renaiEntity .. "Train_ramps/" .. name .. ".png",
+		width = 512,
+		height = 512,
+		frame_count = 1,
+		direction_count = 4,
+		line_length = 4,
+		scale = 0.5,
+	}
+end
+
+function RampPictureSets(variant)
+	local layers = {}
+	if variant == "ImpactUnloader" then
+		table.insert(layers, makelayer("ImpactUnloader"))
+	else
+		table.insert(layers, makelayer("TrainRamp_base"))
+	end
+	if string.find(variant, "Switch") ~= nil then
+		table.insert(layers, makelayer("TrainRamp_trapswitch"))
+	end
+	if string.find(variant, "NoSkip") ~= nil then
+		table.insert(layers, makelayer("TrainRamp_noskip"))
+	end
+	if string.find(variant, "Magnet") ~= nil then
+		table.insert(layers, makelayer("TrainRamp_magnetic"))
+	end
+
 	return
 	{
 		structure =
 		{
-			layers =
-			{
-				{
-					filename = FilePath,
-					size = 128,
-					frame_count = 1,
-					direction_count = 4,
-					line_length = 4,
-				}
-			}
+			layers = layers,
 		},
 		signal_color_to_structure_frame_index =
 		{
@@ -48,19 +67,36 @@ function RampPictureSets(FilePath)
 	}
 end
 function makeRampPlacerEntity(name, icon, pictureFileName, placerItem)
+	local placerimg = {}
+	if name == "RTImpactUnloader-placer" then
+		placerimg = 
+		{
+			filename = pictureFileName,
+			width = 400,
+			height = 400,
+			frame_count = 1,
+			direction_count = 4,
+			scale = 0.5,
+		}
+	else
+		placerimg = 
+		{
+			filename = renaiEntity .."Train_ramps/TrainRamp_placer.png",
+			width = 400,
+			height = 400,
+			frame_count = 1,
+			direction_count = 4,
+			scale = 0.5,
+		}
+	end
+
 	local PictureSet =
 	{
 		structure =
 		{
 			layers =
 			{
-				{
-					filename = pictureFileName,
-					width = 200,
-					height = 200,
-					frame_count = 1,
-					direction_count = 4,
-				}
+				placerimg
 			}
 		},
 		signal_color_to_structure_frame_index =
@@ -116,35 +152,59 @@ function makeRampPlacerEntity(name, icon, pictureFileName, placerItem)
 		elevated_picture_set = PictureSet
 	}
 end
-function CreateRampSprites(name, FilePath)
+
+
+
+local function makelayers_forsprites(name, x)
+	return {
+		filename = renaiEntity .. "Train_ramps/" .. name .. ".png",
+		width = 512,
+		height = 512,
+		scale = 0.5,
+		x = x,
+	}
+end
+
+function RampSpriteSets(variant, x)
+	local layers = {}
+	if variant == "ImpactUnloader" then
+		table.insert(layers, makelayers_forsprites("ImpactUnloader",x))
+	else
+		table.insert(layers, makelayers_forsprites("TrainRamp_base",x))
+	end
+	if string.find(variant, "Switch") ~= nil then
+		table.insert(layers, makelayers_forsprites("TrainRamp_trapswitch",x))
+	end
+	if string.find(variant, "NoSkip") ~= nil then
+		table.insert(layers, makelayers_forsprites("TrainRamp_noskip",x))
+	end
+	if string.find(variant, "Magnet") ~= nil then
+		table.insert(layers, makelayers_forsprites("TrainRamp_magnetic",x))
+	end
+	return layers
+end
+
+function CreateRampSprites(name, variant)
 	data:extend({
-		{ -- up
-			type = "sprite",
-			name = name..8,
-			filename = FilePath,
-			size = 128,
-			x = 128*2
-		},
-		{ -- right
-			type = "sprite",
-			name = name..12,
-			filename = FilePath,
-			size = 128,
-			x = 128*3
-		},
 		{ -- down
 			type = "sprite",
 			name = name..0,
-			filename = FilePath,
-			size = 128,
-			x = 0
+			layers = RampSpriteSets(variant,0),
 		},
 		{ -- left
 			type = "sprite",
 			name = name..4,
-			filename = FilePath,
-			size = 128,
-			x = 128
+			layers = RampSpriteSets(variant,512),
+		},
+		{ -- up
+			type = "sprite",
+			name = name..8,
+			layers = RampSpriteSets(variant,512*2),
+		},
+		{ -- right
+			type = "sprite",
+			name = name..12,
+			layers = RampSpriteSets(variant,512*3),
 		},
 	})
 end
@@ -211,11 +271,7 @@ for name, mask in pairs({
 					percent = 100
 				}
 			},
-			picture = {
-				filename = "__RenaiTransportation__/graphics/nothing.png",
-				size = 1,
-				priority = "very-low",
-			}
+			picture = emptypic,
 		},
 	})
 end

@@ -1,15 +1,8 @@
 local OhYouLikeTrains = table.deepcopy(data.raw["cargo-wagon"]["cargo-wagon"])
 local color = {100,100,100}
 OhYouLikeTrains.name = "RTImpactWagon"
-OhYouLikeTrains.icons =
-{
-	{
-		icon = "__base__/graphics/icons/cargo-wagon.png",
-		icon_size = 64,
-		icon_mipmaps = 4,
-		tint = color
-	}
-}
+OhYouLikeTrains.icon = renaiIcons .. "wagon_impact.png"
+OhYouLikeTrains.icon_size = 64
 OhYouLikeTrains.minable = {mining_time = 0.5, result = "RTImpactWagon"}
 
 for _, part in pairs({"rotated", "sloped"}) do
@@ -42,15 +35,8 @@ OhYouLikeTrains,
 { --------- wagon item -------------
 	type = "item",
 	name = "RTImpactWagon",
+	icon = renaiIcons .. "wagon_impact.png",
 	icon_size = 64,
-	icons =
-	{
-		{
-			icon = "__base__/graphics/icons/cargo-wagon.png",
-			icon_mipmaps = 4,
-			tint = color
-		}
-	},
 	subgroup = "RTTrainStuff",
 	order = "e",
 	place_result = "RTImpactWagon",
@@ -90,8 +76,8 @@ OhYouLikeTrains,
 {
 	type = "technology",
 	name = "RTImpactTech",
-	icon = "__RenaiTransportation__/graphics/tech/Impact.png",
-	icon_size = 128,
+	icon = renaiTechIcons .. "Impact.png",
+	icon_size = 256,
 	effects =
 	{
 		{
@@ -132,7 +118,7 @@ for _, variants in pairs(
 		{
 			type = "rail-signal",
 			name = "RT"..variant,
-			icon = "__RenaiTransportation__/graphics/TrainRamp/icons/"..variant.."Icon.png",
+			icon = renaiIcons..variant.."Icon.png",
 			icon_size = 64,
 			flags = {"player-creation", "not-on-map", "placeable-off-grid", "hide-alt-info", "not-flammable"},
 			hidden = true,
@@ -144,8 +130,8 @@ for _, variants in pairs(
 			elevated_selection_priority = 100,
 			collision_mask = GroundMask,
 			elevated_collision_mask = ElevMask,
-			ground_picture_set = RampPictureSets("__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png"),
-			elevated_picture_set = RampPictureSets("__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png"),
+			ground_picture_set = RampPictureSets(variant),
+			elevated_picture_set = RampPictureSets(variant),
 			placeable_by = { item = "RT"..variant:gsub("NoSkip", ""), count = 1 }, -- Controls `q` and blueprint behavior
 			resistances = {
 				{
@@ -157,7 +143,7 @@ for _, variants in pairs(
 		{
 			type = "item",
 			name = "RT"..variant,
-			icon = "__RenaiTransportation__/graphics/TrainRamp/icons/"..variant.."Icon.png",
+			icon = renaiIcons..variant.."Icon.png",
 			icon_size = 64,
 			subgroup = "RTTrainStuff",
 			hidden = hidden,
@@ -167,10 +153,10 @@ for _, variants in pairs(
 		},
 		makeRampPlacerEntity(
 				"RT"..variant.."-placer",
-				"__RenaiTransportation__/graphics/TrainRamp/icons/"..variant.."Icon.png",
-				"__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant.."Placer.png",
+				renaiIcons..variant.."Icon.png",
+				renaiEntity .."Train_ramps/"..variant.."Placer.png",
 				"RT"..variant
 			),
-		CreateRampSprites("RT"..variant.."", "__RenaiTransportation__/graphics/TrainRamp/ramps/"..variant..".png")
+		CreateRampSprites("RT"..variant.."", variant)
 	})
 end

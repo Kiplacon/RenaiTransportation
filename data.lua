@@ -1,3 +1,18 @@
+renaiTechIcons = "__RenaiTransportation__/graphics/technology/"
+renaiIcons = "__RenaiTransportation__/graphics/icons/"
+renaiEntity = "__RenaiTransportation__/graphics/entity/"
+renaiSounds = "__RenaiTransportation__/sickw0bs/"
+
+emptypng = "__core__/graphics/empty.png"
+emptypic = {
+  filename = "__core__/graphics/empty.png",
+  priority = "low",
+  width = 1,
+  height = 1
+}
+
+
+
 require("prototypes.technology")
 require("prototypes.sounds")
 require("prototypes.TabSortingStuff")
@@ -83,28 +98,22 @@ data:extend({
 {
 	type = "sprite",
 	name = "RTBlank",
-	filename = "__RenaiTransportation__/graphics/nothing.png",
+	filename = emptypng,
 	size = 1
 },
 {
 	type = "sprite",
 	name = "RTCharacterGhostStanding",
-	filename = "__RenaiTransportation__/graphics/zipline/StandingShadow.png",
+	filename = renaiEntity .. "zipline/StandingShadow.png",
 	width = 190,
 	height = 72
 },
 {
 	type = "sprite",
 	name = "RTCharacterGhostMoving",
-	filename = "__RenaiTransportation__/graphics/zipline/DrivingShadow.png",
+	filename = renaiEntity .. "zipline/DrivingShadow.png",
 	width = 190,
 	height = 72
-},
-{
-	type = "sound",
-	name = "RTImpactPlayerLaunch",
-	filename = "__base__/sound/car-metal-impact-6.ogg",
-	volume = 0.5
 },
 {
 	type = "animation",
@@ -118,35 +127,35 @@ data:extend({
 {
 	type = "virtual-signal",
 	name = "DirectorBouncePlateUp",
-	icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Up.png",
+	icon = renaiIcons .. "DirectorBouncePlate_Up.png",
 	icon_size = 64,
 	subgroup = "virtual-signal"
 },
 {
 	type = "virtual-signal",
 	name = "DirectorBouncePlateRight",
-	icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Right.png",
+	icon = renaiIcons .. "DirectorBouncePlate_Right.png",
 	icon_size = 64,
 	subgroup = "virtual-signal"
 },
 {
 	type = "virtual-signal",
 	name = "DirectorBouncePlateDown",
-	icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Down.png",
+	icon = renaiIcons .. "DirectorBouncePlate_Down.png",
 	icon_size = 64,
 	subgroup = "virtual-signal"
 },
 {
 	type = "virtual-signal",
 	name = "DirectorBouncePlateLeft",
-	icon = "__RenaiTransportation__/graphics/BouncePlates/DirectorBouncePlate/Left.png",
+	icon = renaiIcons .. "DirectorBouncePlate_Left.png",
 	icon_size = 64,
 	subgroup = "virtual-signal"
 },
 {
 	type = "animation",
 	name = "RTHoojinTime",
-	filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/WatchHimHooj.png",
+	filename = renaiEntity .. "meme/WatchHimHooj.png",
 	size = {128,222},
 	frame_count = 7,
 	line_length = 7,
@@ -161,7 +170,7 @@ data:extend({
 	{
 		sound =
 		{
-			filename = "__RenaiTransportation__/graphics/TrainRamp/trains/base/Crank dat Hooja Boi.ogg",
+			filename = renaiEntity .. "meme/Crank dat Hooja Boi.ogg",
 			volume = 0.5,
 		},
 		use_doppler_shift = false,
@@ -178,7 +187,7 @@ data:extend({
 {
 	type = "virtual-signal",
 	name = "ThrowerRangeSignal",
-	icon = "__RenaiTransportation__/graphics/RangeSignaling.png",
+	icon = renaiIcons .. "RangeSignaling.png",
 	icon_size = 64,
 	subgroup = "virtual-signal"
 },
@@ -310,7 +319,7 @@ if (data.raw.tree.lickmaw and data.raw["item-subgroup"]["agriculture-processes"]
 		{
 			type = "capsule",
 			name = "RTLickmawBalls",
-			icon = "__RenaiTransportation__/graphics/LickmawBALLS.png",
+			icon = renaiIcons .. "LickmawBALLS.png",
 			icon_size = 64,
 			subgroup = "agriculture-processes",
 			default_import_location = "gleba",

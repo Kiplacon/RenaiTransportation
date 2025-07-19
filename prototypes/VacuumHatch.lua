@@ -1,9 +1,11 @@
+local animspeed = 0.03
+
 data:extend({
 ---- vacuum hatch ----
 {
 	type = "electric-energy-interface",
 	name = "RTVacuumHatch",
-	icon = "__RenaiTransportation__/graphics/hatch/vacuumhatchicon.png",
+	icon = renaiIcons .. "vacuumhatchicon.png",
 	icon_size = 64,
 	flags = {"placeable-neutral", "player-creation"},
 	max_health = 150,
@@ -15,64 +17,129 @@ data:extend({
 	--selection_priority = 255,
 	minable = {mining_time = 0.5, result = "RTVacuumHatch"},
 	energy_source =
-		{
-			type = "electric",
-			usage_priority = "secondary-input",
-			buffer_capacity = "25J", -- for some reason this helps the animation play slow enough to actually see
-			drain = "5kW",
-		},
+	{
+		type = "electric",
+		usage_priority = "secondary-input",
+		buffer_capacity = "25J", -- for some reason this helps the animation play slow enough to actually see
+		drain = "5kW",
+	},
 	energy_usage = "200kW",
 	gui_mode = "none",
 	animations =
 	{
 		north =
 		{
-			filename = "__RenaiTransportation__/graphics/hatch/VacuumHatchN.png",
-			frame_count = 4,
-			line_length = 4,
-			size = 80,
-			scale = 0.6,
-			animation_speed = 0.01
+			layers = {
+				{
+					filename = renaiEntity .. "VacuumHatch/VacuumHatchN.png",
+					repeat_count = 16,
+					width = 128,
+					height = 128,
+					scale = 0.5,
+					animation_speed = animspeed
+				},
+				{
+					filename = renaiEntity .. "VacuumHatch/VacuumHatchVertiAnim.png",
+					frame_count = 16,
+					line_length = 8,
+					width = 85,
+					height = 96,
+					scale = 0.5,
+					shift = util.by_pixel(0, -3),
+					animation_speed = animspeed
+				}
+			}
 		},
 		east =
 		{
-			filename = "__RenaiTransportation__/graphics/hatch/VacuumHatchE.png",
-			frame_count = 4,
-			line_length = 4,
-			size = 80,
-			scale = 0.6,
-			animation_speed = 0.01
+			layers = {
+				{
+					filename = renaiEntity .. "VacuumHatch/VacuumHatchE.png",
+					repeat_count = 16,
+					width = 128,
+					height = 128,
+					scale = 0.5,
+					animation_speed = animspeed
+				},
+				{
+					filename = renaiEntity .. "VacuumHatch/VacuumHatchHoriAnim.png",
+					frame_count = 16,
+					line_length = 8,
+					width = 85,
+					height = 96,
+					scale = 0.5,
+					shift = util.by_pixel(0, -3),
+					animation_speed = animspeed
+				}
+			}
 		},
 		south =
 		{
-			filename = "__RenaiTransportation__/graphics/hatch/VacuumHatchS.png",
-			frame_count = 4,
-			line_length = 4,
-			size = 80,
-			scale = 0.6,
-			animation_speed = 0.01
+			layers = {
+				{
+					filename = renaiEntity .. "VacuumHatch/VacuumHatchS.png",
+					repeat_count = 16,
+					width = 128,
+					height = 128,
+					scale = 0.5,
+					animation_speed = animspeed
+				},
+				{
+					filename = renaiEntity .. "VacuumHatch/VacuumHatchVertiAnim.png",
+					frame_count = 16,
+					line_length = 8,
+					width = 85,
+					height = 96,
+					scale = 0.5,
+					shift = util.by_pixel(0, -3),
+					animation_speed = animspeed
+				}
+			}
 		},
 		west =
 		{
-			filename = "__RenaiTransportation__/graphics/hatch/VacuumHatchW.png",
-			frame_count = 4,
-			line_length = 4,
-			size = 80,
-			scale = 0.6,
-			animation_speed = 0.01
+			layers = {
+				{
+					filename = renaiEntity .. "VacuumHatch/VacuumHatchW.png",
+					repeat_count = 16,
+					width = 128,
+					height = 128,
+					scale = 0.5,
+					animation_speed = animspeed
+				},
+				{
+					filename = renaiEntity .. "VacuumHatch/VacuumHatchHoriAnim.png",
+					frame_count = 16,
+					line_length = 8,
+					width = 85,
+					height = 96,
+					scale = 0.5,
+					shift = util.by_pixel(0, -3),
+					animation_speed = animspeed
+				}
+			}
 		},
 	},
 	--render_layer = "arrow",
 	radius_visualisation_specification = {
 		sprite = {
-			filename = "__RenaiTransportation__/graphics/TrainRamp/range.png",
+			filename = renaiEntity .. "range.png",
 			size = 64,
 			tint = {1, 0.5, 0}
 		},
 		draw_on_selection = true,
 		distance = 2.5,
 		offset = {0, -3},
-	}
+	},
+	working_sound = {
+	  match_progress_to_activity = true,
+	  sound =
+	  {
+	    variations = sound_variations(renaiSounds .. "vacuum", 1, 0.3, {volume_multiplier("main-menu", 2), volume_multiplier("tips-and-tricks", 1.8)}),
+	    audible_distance_modifier = 0.8
+	  },
+	  max_sounds_per_prototype = 2,
+	},
 },
 { --------- The vacuum hatch recipe ----------
 	type = "recipe",
@@ -93,7 +160,7 @@ data:extend({
 { --------- The vacuum hatch item -------------
 	type = "item",
 	name = "RTVacuumHatch",
-	icon = "__RenaiTransportation__/graphics/hatch/vacuumhatchicon.png",
+	icon = renaiIcons .. "vacuumhatchicon.png",
 	icon_size = 64,
 	subgroup = "RT",
 	order = "f-c",
@@ -104,7 +171,7 @@ data:extend({
 {
 	type = "animation",
 	name = "VacuumHatchSucc",
-	filename = "__RenaiTransportation__/graphics/hatch/VacuumHatchParticles.png",
+	filename = renaiEntity .. "VacuumHatch/VacuumHatchParticles.png",
 	size = {160, 142},
 	frame_count = 105,
 	line_length = 5,
@@ -114,8 +181,8 @@ data:extend({
 {
 	type = "technology",
 	name = "RTVacuumHatchTech",
-	icon = "__RenaiTransportation__/graphics/tech/VacuumHatchTech.png",
-	icon_size = 128,
+	icon = renaiTechIcons .. "VacuumHatchTech.png",
+	icon_size = 256,
 	effects =
 	{
 		{

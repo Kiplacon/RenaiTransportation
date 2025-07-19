@@ -1,6 +1,29 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.0
+Date: 7/19/2025
+  Info:
+    - Update by snouz
+  Graphics:
+    - New hatch, ejector hatch and vacuum hatch entities
+    - New train ramp, trapdoor switch and magnets entity
+    - New ricochet panel entity
+    - New impact unloader entity
+    - Reworked jump belts entity
+    - Reworked thrower inserter entity
+    - Reworked open container entity
+    - Reworked item cannon and catcher
+    - New icon for a lot of items
+    - Some new tech icons (hatch, vacuum hatch) and rescaled some
+    - Adjusted position of item cannon
+    - Reorganized graphics internally (filepaths, ramp layering...)
+    - Adjusted hatch and Train ramp accumulator selection boxes
+  Sounds:
+    - ejector hatch and vaccum hatch have continuous and popping sounds
+  Bugfixes:
+    - Fixed crash when accessing editor mode from a zipline
+---------------------------------------------------------------------------------------------------
 Version: 2.1.14
-Date: 6/24/2025
+Date: 7/18/2025
   Bugfixes:
     - Fixed that throwers wouldn't adjust their range off circuit signal input while it wasn't swinging, ie. pointing at a target that doesn't need items. Reported by divante
     - Fixed that schedule interrupts were lost during train jumps.
