@@ -66,7 +66,7 @@ local function entity_destroyed(event)
 	end
 
 	if (storage.ZiplineTerminals[event.registration_number] ~= nil) then
-		if (storage.ZiplineTerminals[event.registration_number].tag.valid) then
+		if (storage.ZiplineTerminals[event.registration_number].tag and storage.ZiplineTerminals[event.registration_number].tag.valid) then
 			storage.ZiplineTerminals[event.registration_number].tag.destroy()
 		end
 		for each, player in pairs(game.players) do

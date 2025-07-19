@@ -30,12 +30,14 @@ local function reEnableSchedule(train, schedule, destinationStation, properties)
 		else -- writing a schedule deletes a train's group
 			table.insert(schedule.records, schedule.current, tempStation)
 			train.schedule = schedule
+			train.get_schedule().set_interrupts(properties.interrupts)
 		end
 	else
 		if (properties.TrainGroup) then
 			train.group = properties.TrainGroup
 		else
 			train.schedule = schedule
+			train.get_schedule().set_interrupts(properties.interrupts)
 		end
 		if (train.path_end_stop and train.path_end_stop.valid and train.path_end_stop.trains_limit ~= 4294967295 and train.path_end_stop.connected_rail) then
 			local tempStation = {
@@ -52,6 +54,7 @@ local function reEnableSchedule(train, schedule, destinationStation, properties)
 				local newSchedule = table.deepcopy(train.schedule)
 				table.insert(newSchedule.records, newSchedule.current, tempStation)
 				train.schedule = newSchedule
+				train.get_schedule().set_interrupts(properties.interrupts)
 			end
 		end
 	end

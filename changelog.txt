@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.2.0
-Date: 6/_____/2025
+Date: 7/19/2025
   Info:
     - Update by snouz
   Graphics:
@@ -21,6 +21,13 @@ Date: 6/_____/2025
     - ejector hatch and vaccum hatch have continuous and popping sounds
   Bugfixes:
     - Fixed crash when accessing editor mode from a zipline
+---------------------------------------------------------------------------------------------------
+Version: 2.1.14
+Date: 7/18/2025
+  Bugfixes:
+    - Fixed that throwers wouldn't adjust their range off circuit signal input while it wasn't swinging, ie. pointing at a target that doesn't need items. Reported by divante
+    - Fixed that schedule interrupts were lost during train jumps.
+    - Fixed a crash when removing a power pole that was used as a starting point for the AI zipline controller autopathing. Reported by HolySpacePapa
 ---------------------------------------------------------------------------------------------------
 Version: 2.1.13
 Date: 6/24/2025
