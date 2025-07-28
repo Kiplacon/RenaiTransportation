@@ -44,6 +44,7 @@ local function entity_built(event)
 			properties.RangeAdjustable = true
 		end
 		properties.range = math.floor(math.abs(entity.drop_position.x-entity.position.x + entity.drop_position.y-entity.position.y))
+		properties.NormalRange = math.sqrt(prototypes.entity[entity.name].inserter_drop_position[1]^2 + prototypes.entity[entity.name].inserter_drop_position[2]^2)
 
 		if (entity.surface.platform or string.find(entity.surface.name, " Orbit") or string.find(entity.surface.name, " Field") or string.find(entity.surface.name, " Belt")) then
 			properties.InSpace = true

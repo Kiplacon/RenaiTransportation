@@ -24,7 +24,6 @@ require('util')
 	-- particle for each item
 	-- 10000 invisible particles with unique trigger IDs to cycle through
 	-- sprite and invisible particle thrown on top of each other together to create the illusion of a single entity 
--- there is no way to check to see if a train is going to an interrupt so if a train is using an inturrupt and goes off a ramp I can't know to resend the train to the interrupt
 -- if all trains in a train group jump into the air, that group will be deleted and when they land, they will have the group name but the group schedule will have nothing
 
 
@@ -184,6 +183,10 @@ script.on_event(
 script.on_event(
 	"RTInteract",
 	require("script.event.interact")
+)
+script.on_event(
+	"RTtcaretnI",
+	require("script.event.interact_reverse")
 )
 
 -- Zipline mount/dismount

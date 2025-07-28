@@ -427,7 +427,7 @@ local function effect_triggered(event)
 			position = trigger.position,
 			limit = 1
 		}[1]
-		if (not ramp or not ramp.valid) then
+		if (ramp and ramp.valid) then
 			local ranges =
 			{
 				RTBeltRamp = 10,
@@ -487,6 +487,8 @@ local function effect_triggered(event)
 				PlayerProperties.PlayerLauncher.tracker = FlyingItem.FlightNumber
 				PlayerProperties.PlayerLauncher.direction = storage.OrientationUnitComponents[orientation].name
 			end
+		else
+			trigger.destroy()
 		end
 	end
 end

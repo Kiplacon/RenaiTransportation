@@ -52,10 +52,10 @@ function MakeProjectile(ThingData, speed)
 		for iconlayer, iconspecs in pairs(ThingData.icons) do
 			local eeee = 64
 			local rrrr
-			local shiftt = {0,0}
+			--[[ local shiftt = {0,0}
 			if (iconspecs.shift) then
 				shiftt = {iconspecs.shift[1]/32, iconspecs.shift[2]/32}
-			end
+			end ]]
 			if (iconspecs.icon_size) then
 				eeee = iconspecs.icon_size
 			end
@@ -516,13 +516,13 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 	--TheThrower.localised_name = {"thrower-gen.name", {"entity-name."..ThingData.name}}
 	TheThrower.insert_position = {0, 15.2}
 	TheThrower.allow_custom_vectors = true
-	ItsRange = 15
+	local ItsRange = 15
 	if (TheThrower.fast_replaceable_group ~= nil) then
 		TheThrower.fast_replaceable_group = "thrower-"..TheThrower.fast_replaceable_group
 	else
 		TheThrower.fast_replaceable_group = "ThrowerInserters"
 	end
-	if (TheThrower.next_upgrade) then
+	if (TheThrower.next_upgrade and TheThrower.next_upgrade ~= "") then
 		TheThrower.next_upgrade = "RTThrower-"..TheThrower.next_upgrade
 	end
 
@@ -543,14 +543,22 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 
 	if settings.startup["RTThrowersDynamicRange"].value == true then
 		local original_inserter = data.raw.inserter[ThingData.name]
-		ItsRange = math.floor(math.sqrt(original_inserter.insert_position[1]^2 + original_inserter.insert_position[2]^2)) * 10 + 5
-		TheThrower.insert_position = {0, ItsRange+0.2}
+		ItsRange = math.sqrt(original_inserter.insert_position[1]^2 + original_inserter.insert_position[2]^2)
+		local unitX = original_inserter.insert_position[1] / ItsRange
+		local unitY = original_inserter.insert_position[2] / ItsRange
+		TheThrower.insert_position = 
+			{
+				unitX*math.floor(ItsRange)*10 + ((original_inserter.insert_position[1] ~= 0) and (unitX*5 + 0.2) or 0),
+				unitY*math.floor(ItsRange)*10 + ((original_inserter.insert_position[2] ~= 0) and (unitY*5 + 0.2) or 0)
+			}
+		--TheThrower.insert_position = {0, ItsRange+0.2}
 	end
 
+	local EffectiveRange = math.sqrt(TheThrower.insert_position[1]^2 + TheThrower.insert_position[2]^2)
 	if (TheThrower.localised_description) then
-		TheThrower.localised_description = {"thrower-gen.HasDesc", tostring(ItsRange), TheThrower.localised_description}
+		TheThrower.localised_description = {"thrower-gen.HasDesc", tostring(math.floor(EffectiveRange)), TheThrower.localised_description}
 	else
-		TheThrower.localised_description = {"thrower-gen.DefaultDesc", tostring(ItsRange)}
+		TheThrower.localised_description = {"thrower-gen.DefaultDesc", tostring(math.floor(EffectiveRange))}
 	end
 	TheThrower.hand_size = 0
 	TheThrower.hand_base_picture =
@@ -904,7 +912,7 @@ for ThingID, ThingData in pairs(data.raw.inserter) do
 						end
 					end
 				end
-				if (PlacingItem and data.raw.item[PlacingItem]) then
+				if (PlacingItem and data.raw.item[PlacingItem]) then -- and ThingData.insert_position[1] == 0) then
 					MakeThrowerVariant(ThingData, PlacingItem)
 				else
 					log("-----------"..ThingData.name.." doesn't have a valid item to place.")

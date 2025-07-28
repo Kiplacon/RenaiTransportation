@@ -82,23 +82,8 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 		local DestroyNumber = script.register_on_object_destroyed(ThingHovering)
 		--game.print(DestroyNumber)
 		--|| Adjusting Thrower Range
-		if (settings.startup["RTThrowersSetting"].value == true and ThingHovering.valid and ThingHovering.type == "inserter" and string.find(ThingHovering.name, "RTThrower-") and ThingHovering.name ~= "RTThrower-PrimerThrower" and storage.CatapultList[DestroyNumber].RangeAdjustable == true) then
-			local CurrentRange = storage.CatapultList[DestroyNumber].range or math.floor(math.abs(ThingHovering.drop_position.x-ThingHovering.position.x + ThingHovering.drop_position.y-ThingHovering.position.y))
-			if (CurrentRange >= ThingHovering.prototype.inserter_drop_position[2]-0.2) then
-				ThingHovering.drop_position =
-					{
-						ThingHovering.position.x - 1.2*storage.OrientationUnitComponents[ThingHovering.orientation].x,
-						ThingHovering.position.y - 1.2*storage.OrientationUnitComponents[ThingHovering.orientation].y
-					}
-				storage.CatapultList[DestroyNumber].range = 1
-			else
-				ThingHovering.drop_position =
-					{
-						ThingHovering.position.x - (CurrentRange+1)*storage.OrientationUnitComponents[ThingHovering.orientation].x,
-						ThingHovering.position.y - (CurrentRange+1)*storage.OrientationUnitComponents[ThingHovering.orientation].y
-					}
-				storage.CatapultList[DestroyNumber].range = CurrentRange+1
-			end
+		if (settings.startup["RTThrowersSetting"].value == true and player.force.technologies["RTFocusedFlinging"].researched == true and ThingHovering.valid and ThingHovering.type == "inserter" and string.find(ThingHovering.name, "RTThrower-") and ThingHovering.name ~= "RTThrower-PrimerThrower" and storage.CatapultList[DestroyNumber].RangeAdjustable == true) then
+			IncreaseThrowerRange(ThingHovering)
 			player.create_local_flying_text
 				{
 					position = ThingHovering.position,
@@ -109,8 +94,6 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				position=player.position,
 				volume_modifier=1
 				}
-			ResetThrowerOverflowTracking(ThingHovering)
-			AdjustThrowerArrow(ThingHovering)
 		end
 		--|| Swap Primer Modes
 		if (settings.startup["RTBounceSetting"].value == true and ThingHovering.valid) then
@@ -447,11 +430,14 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			else
 				ThrowerName = string.gsub(player.cursor_ghost.name.name, "-Item", "")
 			end
+			local ThrowerNormalRange = math.sqrt(prototypes.entity[ThrowerName].inserter_drop_position[1]^2 + prototypes.entity[ThrowerName].inserter_drop_position[2]^2)
+			local ThrowerUnitX = prototypes.entity[ThrowerName].inserter_drop_position[1]/ThrowerNormalRange
+			local ThrowerUnitY = prototypes.entity[ThrowerName].inserter_drop_position[2]/ThrowerNormalRange
 			player.clear_cursor()
 			player.cursor_stack.set_stack({name = "blueprint"})
 			player.cursor_stack.set_blueprint_entities(
 			{
-				{entity_number = 1, name = ThrowerName, position = {0,0}, direction = 8, drop_position = {0,-1.2} }
+				{entity_number = 1, name = ThrowerName, position = {0,0}, direction = 8, drop_position = {-ThrowerUnitX - ((ThrowerUnitX ~= 0) and (0.2) or 0), -ThrowerUnitY - ((ThrowerUnitY ~= 0) and (0.2) or 0)} }
 			})
 			player.cursor_stack_temporary = true
 			player.play_sound{
@@ -466,21 +452,29 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				}
 			PlayerProperties.RangeAdjusting = true
 			PlayerProperties.RangeAdjustingDirection = 8
-			PlayerProperties.RangeAdjustingRange = 1.2
+			PlayerProperties.RangeAdjustingRange = 1
 
 		--adjust range of blueprint thrower
 		elseif (PlayerProperties.RangeAdjusting == true) then
 			if (player.is_cursor_blueprint() == true) then
 				local thrower = player.cursor_stack.get_blueprint_entities()[1]
+				local ThrowerName = thrower.name
+				local ThrowerNormalRange = math.sqrt(prototypes.entity[ThrowerName].inserter_drop_position[1]^2 + prototypes.entity[ThrowerName].inserter_drop_position[2]^2)
+				local ThrowerUnitX = prototypes.entity[ThrowerName].inserter_drop_position[1]/ThrowerNormalRange
+				local ThrowerUnitY = prototypes.entity[ThrowerName].inserter_drop_position[2]/ThrowerNormalRange
 				local CurrentRange = PlayerProperties.RangeAdjustingRange
-				if (CurrentRange >= prototypes.entity[thrower.name].inserter_drop_position[2]) then
-					CurrentRange = 1.2
+				local NewDrop
+				--game.print("CurrentRange: "..CurrentRange.." ThrowerNormalRange: "..ThrowerNormalRange)
+				if (CurrentRange >= math.floor(ThrowerNormalRange)) then
+					CurrentRange = 1
+					NewDrop = {-ThrowerUnitX - ((ThrowerUnitX ~= 0) and (0.2) or 0), -ThrowerUnitY - ((ThrowerUnitY ~= 0) and (0.2) or 0)}
 				else
 					CurrentRange = CurrentRange + 1
+					NewDrop = {-ThrowerUnitX * CurrentRange - ((ThrowerUnitX ~= 0) and (0.2) or 0), -ThrowerUnitY * CurrentRange - ((ThrowerUnitY ~= 0) and (0.2) or 0)}
 				end
 				player.cursor_stack.set_blueprint_entities(
 					{
-						{entity_number = 1, name = thrower.name, position = {0,0}, direction = 8, drop_position = {0, -CurrentRange}}
+						{entity_number = 1, name = thrower.name, position = {0,0}, direction = 8, drop_position = NewDrop}
 					})
 				player.play_sound{
 					path="utility/gui_click",
@@ -492,7 +486,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				player.create_local_flying_text
 					{
 						position = CursorPosition,
-						text = "Range: "..CurrentRange-0.2
+						text = "Range: "..CurrentRange
 					}
 			else
 				PlayerProperties.RangeAdjusting = false

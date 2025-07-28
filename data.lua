@@ -75,8 +75,13 @@ data:extend({
 },
 {
 	type = "custom-input",
-	name = "RTThrow",
+	name = "RTtcaretnI",
 	key_sequence = "SHIFT + F"
+},
+{
+	type = "custom-input",
+	name = "RTThrow",
+	key_sequence = "SHIFT + Z"
 },
 {
 	type = "custom-input",

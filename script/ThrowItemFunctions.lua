@@ -1120,3 +1120,62 @@ function ResolveThrownItem(FlyingItem)
         storage.CustomPathFlyingItemSprites[FlightID] = nil
     end
 end
+
+function SetThrowerRange(ThrowerInserter, Range)
+    if (ThrowerInserter.valid) then
+        local properties = storage.CatapultList[script.register_on_object_destroyed(ThrowerInserter)]
+        local ThrowerName = ThrowerInserter.name
+        local ThrowerNormalRange = properties.NormalRange
+        local ThrowerUnitX = prototypes.entity[ThrowerName].inserter_drop_position[1]/ThrowerNormalRange
+        local ThrowerUnitY = prototypes.entity[ThrowerName].inserter_drop_position[2]/ThrowerNormalRange
+        local VectorX = ThrowerUnitX * math.floor(Range) + ((ThrowerUnitX ~= 0) and (0.2) or 0)
+        local VectorY = ThrowerUnitY * math.floor(Range) + ((ThrowerUnitY ~= 0) and (0.2) or 0)
+        if (ThrowerInserter.orientation == 0) then
+            VectorX2 = VectorX
+            VectorY2 = VectorY
+        elseif (ThrowerInserter.orientation == 0.25) then
+            VectorX2 = -VectorY
+            VectorY2 = VectorX
+        elseif (ThrowerInserter.orientation == 0.5) then
+            VectorX2 = -VectorX
+            VectorY2 = -VectorY
+        elseif (ThrowerInserter.orientation == 0.75) then
+            VectorX2 = VectorY
+            VectorY2 = -VectorX
+        end
+        ThrowerInserter.drop_position =
+            {
+                ThrowerInserter.position.x + VectorX2,
+                ThrowerInserter.position.y + VectorY2
+            }
+        properties.range = math.floor(Range)
+        ResetThrowerOverflowTracking(ThrowerInserter)
+        AdjustThrowerArrow(ThrowerInserter)
+    end
+end
+function IncreaseThrowerRange(ThrowerInserter)
+    if (ThrowerInserter.valid) then
+        local DestroyNumber = script.register_on_object_destroyed(ThrowerInserter)
+        local ThrowerName = ThrowerInserter.name
+        local ThrowerNormalRange = math.sqrt(prototypes.entity[ThrowerName].inserter_drop_position[1]^2 + prototypes.entity[ThrowerName].inserter_drop_position[2]^2)
+        local CurrentRange = storage.CatapultList[DestroyNumber].range or math.floor(math.sqrt((ThrowerInserter.drop_position.x-ThrowerInserter.position.x)^2 + (ThrowerInserter.drop_position.y-ThrowerInserter.position.y)^2))
+        if (CurrentRange >= math.floor(ThrowerNormalRange)) then
+            SetThrowerRange(ThrowerInserter, 1)
+        else
+            SetThrowerRange(ThrowerInserter, CurrentRange+1)
+        end
+    end
+end
+function DecreaseThrowerRange(ThrowerInserter)
+    if (ThrowerInserter.valid) then
+        local DestroyNumber = script.register_on_object_destroyed(ThrowerInserter)
+        local ThrowerName = ThrowerInserter.name
+        local ThrowerNormalRange = math.sqrt(prototypes.entity[ThrowerName].inserter_drop_position[1]^2 + prototypes.entity[ThrowerName].inserter_drop_position[2]^2)
+        local CurrentRange = storage.CatapultList[DestroyNumber].range or math.floor(math.sqrt((ThrowerInserter.drop_position.x-ThrowerInserter.position.x)^2 + (ThrowerInserter.drop_position.y-ThrowerInserter.position.y)^2))
+        if (CurrentRange <= 1) then
+            SetThrowerRange(ThrowerInserter, ThrowerNormalRange)
+        else
+            SetThrowerRange(ThrowerInserter, CurrentRange-1)
+        end
+    end
+end

@@ -558,36 +558,48 @@ local function on_tick(event)
 					if (properties.name == "RTPayloadWagon") then
 						local CrashSpread = 100
 						for each, stack in pairs(properties.cargo) do
-							local ItemName = stack.name
-							local quantity = stack.count
+							local ItemName, quantity
+							if (stack.object_name) then -- only the script inventory would have an object_name
+								ItemName = stack[1].name
+								quantity = stack[1].count
+							else
+								ItemName = stack.name
+								quantity = stack.count
+							end
 							if (ItemName == "explosives") then
 								CrashSpread = 100 + 2*quantity
 								break
 							end
 						end
 						for each, stack in pairs(properties.cargo) do
-							local ItemName = stack.name
-							local quantity = stack.count
-							if (prototypes.entity[ItemName.."-projectileFromRenaiTransportationPrimed"]) then
-								if (quantity > prototypes.item[ItemName].stack_size) then
-									quantity = prototypes.item[ItemName].stack_size
-								end
-								if (CrashSpread > 400) then
-									CrashSpread = 400
-								end
-								for i = 1, quantity do
-									local xshift = math.random(-CrashSpread,CrashSpread)/10
-									local yshift = math.random(-math.sqrt((CrashSpread^2)-(xshift*10)^2),math.sqrt((CrashSpread^2)-(xshift*10)^2))/10
-										GuideCar.surface.create_entity
-											({
-											name = ItemName.."-projectileFromRenaiTransportationPrimed",
-											position = GuideCar.position, --required setting for rendering, doesn't affect spawn
-											source_position = GuideCar.position,
-											target_position = {GuideCar.position.x + xshift, GuideCar.position.y + yshift},
-											force = GuideCar.force
-											})
-								end
+							local ItemName, quantity
+							if (stack.object_name) then -- only the script inventory would have an object_name
+								ItemName = stack[1].name
+								quantity = stack[1].count
+							else
+								ItemName = stack.name
+								quantity = stack.count
 							end
+							if (prototypes.entity[ItemName.."-projectileFromRenaiTransportationPrimed"]) then
+									if (quantity > prototypes.item[ItemName].stack_size) then
+										quantity = prototypes.item[ItemName].stack_size
+									end
+									if (CrashSpread > 400) then
+										CrashSpread = 400
+									end
+									for i = 1, quantity do
+										local xshift = math.random(-CrashSpread,CrashSpread)/10
+										local yshift = math.random(-math.sqrt((CrashSpread^2)-(xshift*10)^2),math.sqrt((CrashSpread^2)-(xshift*10)^2))/10
+											GuideCar.surface.create_entity
+												({
+												name = ItemName.."-projectileFromRenaiTransportationPrimed",
+												position = GuideCar.position, --required setting for rendering, doesn't affect spawn
+												source_position = GuideCar.position,
+												target_position = {GuideCar.position.x + xshift, GuideCar.position.y + yshift},
+												force = GuideCar.force
+												})
+									end
+								end
 						end
 					end
 

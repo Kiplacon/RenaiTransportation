@@ -1,4 +1,17 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.1
+Date: 7/28/2025
+  Additions:
+    - Added a Reverse Interact control Shift+F, at the moment it only decreases the range of Thrower inserters, the same way the normal Interact control increases it
+  Changes:
+    - Throw Item in Cursor changed from Shift+F to Shift+Z
+  Bugfixes:
+    - Fixed that that Belt ramps weren't launching players and potentially causing crashes with a lingering launch trigger. Reported by lev2022
+    - Fixed a load crash with generating thrower versions of inserters that had their next upgrade set to "" as opposed to just not being defined. Reported by Lord_Skarra
+    - Fixed a load crash with generating thrower versions of diagonal inserters. Reported by Lord_Skarra and Akasagi1539
+    - Improved range adjusting of throwers with non-straight drop points
+    - Fixes a crash with Payload wagons when they had items with certain metadata like item_numberZ. Reported by lev2022
+---------------------------------------------------------------------------------------------------
 Version: 2.2.0
 Date: 7/19/2025
   Info:

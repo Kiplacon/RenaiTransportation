@@ -35,15 +35,10 @@ local function ThrowersOnTick(event)
                     if (properties.RangeAdjustable == true) then
                         local range = ThrowerEntity.get_signal({type="virtual", name="ThrowerRangeSignal"}, defines.wire_connector_id.circuit_red, defines.wire_connector_id.circuit_green)
                         if (properties.range==nil or properties.range~=range) then
-                            if (range > 0 and range <= ThrowerEntity.prototype.inserter_drop_position[2]+0.1) then
-                                ThrowerEntity.drop_position =
-                                    {
-                                        ThrowerPosition.x + -range*storage.OrientationUnitComponents[ThrowerEntity.orientation].x,
-                                        ThrowerPosition.y + -range*storage.OrientationUnitComponents[ThrowerEntity.orientation].y
-                                    }
-                                properties.range = range
-                                ResetThrowerOverflowTracking(ThrowerEntity)
-                                AdjustThrowerArrow(ThrowerEntity)
+                            if (range > 0 and range <= properties.NormalRange) then
+                                SetThrowerRange(ThrowerEntity, range)
+                            elseif (range > properties.NormalRange) then
+                                SetThrowerRange(ThrowerEntity, properties.NormalRange)
                             end
                         end
                     end
