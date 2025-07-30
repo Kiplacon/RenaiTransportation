@@ -80,19 +80,19 @@ High-range, high-speed and highly destructive if pointed at the wrong target. Id
 
 See the FAQ for some specific details
 
-###Space Age Features
+##Space Age Features
 - Train Ramps, Impact unloaders and such placeable on Elevated rails
 - Thrower inserters and Belt ramps on space platforms throw items into the void of space
 - Throwing items backwards off a space platform generates a tiny bit of thrust
 
-###~~Bugs~~ Special Features
+##~~Bugs~~ Special Features
 - Mods that allow you to walk on water make it so that items don't splash and disappear.
 - Changing a thrower's pickup/drop location using another mod, like Bob's adjustable inserters, may cause strange behavior depending on the change
 - Nudging throwers and bounce pads with mods like Picker Dollies can mess up the overflow prevention calculations
 - Mods that use train IDs, like Logistics Train Network, probably won't work right with train jumps because trains will have a different train ID before and after jumping. Vehicle Wagons 2 being an exception because compatibility was specifically programmed in for it
 - Primer thrower inserters don't lead their shots at asteroids
 
-### Credits
+## Credits
 - Code/locale contributions from Xcelled, wrothmonk, kevin1055, RandomRDP, NikTheMimic, obfuscatedgenerated, killwort, mhansen718, Wiwiweb, Vortetty, snouz, PlexPt, kumquat-ir
 - Item cannon, Chutes, and Belt ramp graphics by NikTheMimic
 - 2.2 New hatches, ramps, icons, tech icons, item catcher, ricochet panel, trapdoor switch... by snouz
