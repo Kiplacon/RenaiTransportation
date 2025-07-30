@@ -80,12 +80,12 @@ High-range, high-speed and highly destructive if pointed at the wrong target. Id
 
 See the FAQ for some specific details
 
-##Space Age Features
+## Space Age Features
 - Train Ramps, Impact unloaders and such placeable on Elevated rails
 - Thrower inserters and Belt ramps on space platforms throw items into the void of space
 - Throwing items backwards off a space platform generates a tiny bit of thrust
 
-##~~Bugs~~ Special Features
+## ~~Bugs~~ Special Features
 - Mods that allow you to walk on water make it so that items don't splash and disappear.
 - Changing a thrower's pickup/drop location using another mod, like Bob's adjustable inserters, may cause strange behavior depending on the change
 - Nudging throwers and bounce pads with mods like Picker Dollies can mess up the overflow prevention calculations
