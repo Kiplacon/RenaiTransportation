@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.2
+Date: 8/2/2025
+  Bugfixes:
+    - Fixed a crash with Throwers aiming at underground belts. Reported by Kouji-001
+    - Fixed the graphic scaling for Directed bounce pads and Belt ramps
+---------------------------------------------------------------------------------------------------
 Version: 2.2.1
 Date: 7/28/2025
   Additions:

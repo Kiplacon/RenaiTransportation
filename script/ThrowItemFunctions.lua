@@ -291,9 +291,8 @@ function CanFitThrownItem(stuff)
                 incomming = incomming + count
             end
             local total = incomming + TargetEntity.get_transport_line(1).get_item_count() + TargetEntity.get_transport_line(2).get_item_count() + ItemCount
-            local shape = TargetEntity.belt_shape
             if (TargetType == "underground-belt" and total <= 6)
-            or (TargetType == "transport-belt" and ((shape == "straight" and total <= 8) or (shape ~= "straight" and total <= 7))) then
+            or (TargetType == "transport-belt" and ((TargetEntity.belt_shape == "straight" and total <= 8) or (TargetEntity.belt_shape ~= "straight" and total <= 7))) then
                 CanFit = true
             else
                 CanFit = false
