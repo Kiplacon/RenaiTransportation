@@ -352,6 +352,20 @@ function ResetPathComponentOverflowTracking(component)
     end
 end
 
+local function ProjectileSpill(FlyingItem, stack)
+    local spilt = FlyingItem.surface.spill_item_stack
+        {
+            position = FlyingItem.target,
+            stack = stack,
+            max_radius = 200
+        }
+    if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
+        for every, thing in pairs(spilt) do
+            thing.order_deconstruction("player")
+        end
+    end
+end
+
 local function DropOntoGround(FlyingItem)
     if (FlyingItem.CloudStorage) then
         if (settings.global["RTSpillSetting"].value == "Destroy") then
@@ -364,16 +378,7 @@ local function DropOntoGround(FlyingItem)
         else
             --game.print(game.tick.." "..FlyingItem.surface.name)
             --game.print(FlyingItem.item.." | "..FlyingItem.target.x..", "..FlyingItem.target.y)
-            local spilt = FlyingItem.surface.spill_item_stack
-                {
-                    position = FlyingItem.surface.find_non_colliding_position("item-on-ground", FlyingItem.target, 500, 0.1),
-                    stack = FlyingItem.CloudStorage[1]
-                }
-            if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
-                for every, thing in pairs(spilt) do
-                    thing.order_deconstruction("player")
-                end
-            end
+            ProjectileSpill(FlyingItem, FlyingItem.CloudStorage[1])
         end
         FlyingItem.CloudStorage.destroy()
     else
@@ -385,16 +390,7 @@ local function DropOntoGround(FlyingItem)
                 position = FlyingItem.target
             })
         else
-            local spilt = FlyingItem.surface.spill_item_stack
-            {
-                position = FlyingItem.surface.find_non_colliding_position("item-on-ground",FlyingItem.target, 500, 0.1),
-                stack = {name=FlyingItem.item, count=FlyingItem.amount, quality=FlyingItem.quality}
-            }
-            if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
-                for every, thing in pairs(spilt) do
-                    thing.order_deconstruction("player")
-                end
-            end
+            ProjectileSpill(FlyingItem, {name=FlyingItem.item, count=FlyingItem.amount, quality=FlyingItem.quality})
         end
     end
 end
@@ -464,16 +460,7 @@ local function DropOntoBelt(FlyingItem, belt, SpillExcess)
                     position = FlyingItem.target
                 })
             else
-                local spilt = FlyingItem.surface.spill_item_stack
-                    {
-                        position = FlyingItem.surface.find_non_colliding_position("item-on-ground", FlyingItem.target, 500, 0.1),
-                        stack = FlyingItem.CloudStorage[1]
-                    }
-                if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
-                    for _, thing in pairs(spilt) do
-                        thing.order_deconstruction("player")
-                    end
-                end
+                ProjectileSpill(FlyingItem, FlyingItem.CloudStorage[1])
             end
             deposited = true
         end
@@ -502,16 +489,7 @@ local function DropOntoBelt(FlyingItem, belt, SpillExcess)
                     position = FlyingItem.target
                 })
             else
-                local spilt = FlyingItem.surface.spill_item_stack
-                {
-                    position = FlyingItem.surface.find_non_colliding_position("item-on-ground",FlyingItem.target, 500, 0.1),
-                    stack = {name=FlyingItem.item, count=total, quality=FlyingItem.quality}
-                }
-                if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
-                    for _, thing in pairs(spilt) do
-                        thing.order_deconstruction("player")
-                    end
-                end
+                ProjectileSpill(FlyingItem, {name=FlyingItem.item, count=total, quality=FlyingItem.quality})
             end
             deposited = true
         end
@@ -1070,16 +1048,7 @@ function ResolveThrownItem(FlyingItem)
                     CubeFlyingItems.release_and_spill(FlyingItem)
                 elseif (FlyingItem.type == "ItemShell") then
                     -- the contents of the shell fly out over the ground
-                    local spilt = ProjectileSurface.spill_item_stack
-                        {
-                            position = ProjectileSurface.find_non_colliding_position("item-on-ground", FlyingItem.target, 500, 0.1),
-                            stack = {name=FlyingItem.item, count=FlyingItem.amount, quality=FlyingItem.quality}
-                        }
-                    if (settings.global["RTSpillSetting"].value == "Spill and Mark") then
-                        for every, thing in pairs(spilt) do
-                            thing.order_deconstruction("player")
-                        end
-                    end
+                    ProjectileSpill(FlyingItem, {name=FlyingItem.item, count=FlyingItem.amount, quality=FlyingItem.quality})
                 else
                     DropOntoGround(FlyingItem)
                 end

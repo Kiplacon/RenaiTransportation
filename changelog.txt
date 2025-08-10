@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.3
+Date: 8/10/2025
+  Changes:
+    - When a thrown item lands on the ground, it will search a 200 tile radius for a free spot. If none is found the items will be deleted.
+  Bugfixes:
+    - Fixed a crash when a thrower can't find a free spot to spill items onto the ground. Reported by grant1
+---------------------------------------------------------------------------------------------------
 Version: 2.2.2
 Date: 8/2/2025
   Bugfixes:
