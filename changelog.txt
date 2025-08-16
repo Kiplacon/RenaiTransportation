@@ -2,7 +2,7 @@
 Version: 2.2.4
 Date: 8/16/2025
   Additions:
-    - Added a setting to render thrown items as sprites instead of as game object projectiles. This is more laggy but it looks funnier and doesn't use any entity slots (for reference, projectile entities for 3 different speeds are currently generated for each item, and there's apparently a cap of 65535). Requested by grant1 and Dark-Zephyro
+    - Added a setting to render thrown items as sprites instead of as game object projectiles. This is more laggy but it looks funnier and doesn't use any entity slots. For reference, 4 projectiles are currently generated for each item (8 if you have Quality installed) and there's apparently a cap of 65535 [see https://mods.factorio.com/mod/RenaiTransportation/discussion/689404bfb5046cb6f89267b1]. This setting would remove 3 of them for each item. Requested by grant1 and Dark-Zephyro
   Bugfixes:
     - Fixed a loading crash with Ultracube, but some paths will also have to be adjusted on the Ultracube side as well before it'll work. Reported by DGamerL
 ---------------------------------------------------------------------------------------------------
