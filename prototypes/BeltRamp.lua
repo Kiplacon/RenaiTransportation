@@ -17,8 +17,20 @@ for _, tier in pairs(tiers) do
     { --------- Bounce plate entity --------------
       type = "transport-belt",
       name = "RT"..TierName.."BeltRamp",
-      icon = renaiIcons .. "RT"..TierName.."BeltRamp.png",
-      icon_size = 64,
+      --[[ icon = renaiIcons .. "RT"..TierName.."BeltRamp.png",
+      icon_size = 64, ]]
+      icons =
+      {
+          {
+              icon = renaiIcons.."BeltRampBase.png",
+              icon_size = 64,
+          },
+          {
+              icon = renaiIcons.."BeltRampArrows.png",
+              icon_size = 64,
+              tint = TierTint
+          },
+      },
       flags = {"placeable-neutral", "player-creation"},
       minable = {mining_time = 0.5, result = "RT"..TierName.."BeltRamp"},
       max_health = 200,
@@ -86,8 +98,20 @@ for _, tier in pairs(tiers) do
     { --------- The Bounce plate item -------------
       type = "item",
       name = "RT"..TierName.."BeltRamp",
-      icon = renaiIcons .. "RT"..TierName.."BeltRamp.png",
-      icon_size = 64,
+      --[[ icon = renaiIcons .. "RT"..TierName.."BeltRamp.png",
+      icon_size = 64, ]]
+      icons =
+      {
+          {
+              icon = renaiIcons.."BeltRampBase.png",
+              icon_size = 64,
+          },
+          {
+              icon = renaiIcons.."BeltRampArrows.png",
+              icon_size = 64,
+              tint = TierTint
+          },
+      },
       subgroup = "belt",
       order = "e-"..tier.order,
       place_result = "RT"..TierName.."BeltRamp",
@@ -144,8 +168,20 @@ if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt t
     { --------- Bounce plate entity --------------
       type = "transport-belt",
       name = "RTturboBeltRamp",
-      icon = renaiIcons .. "RTturboBeltRamp.png",
-      icon_size = 64,
+      --[[ icon = renaiIcons .. "RTturboBeltRamp.png",
+      icon_size = 64, ]]
+      icons =
+      {
+          {
+              icon = renaiIcons.."BeltRampBase.png",
+              icon_size = 64,
+          },
+          {
+              icon = renaiIcons.."BeltRampArrows.png",
+              icon_size = 64,
+              tint = {0,1,0}
+          },
+      },
       flags = {"placeable-neutral", "player-creation"},
       minable = {mining_time = 0.5, result = "RTturboBeltRamp"},
       max_health = 200,
@@ -196,8 +232,20 @@ if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt t
     { --------- The Bounce plate item -------------
       type = "item",
       name = "RTturboBeltRamp",
-      icon = renaiIcons .. "RTturboBeltRamp.png",
-      icon_size = 64,
+      --[[ icon = renaiIcons .. "RTturboBeltRamp.png",
+      icon_size = 64, ]]
+      icons =
+      {
+          {
+              icon = renaiIcons.."BeltRampBase.png",
+              icon_size = 64,
+          },
+          {
+              icon = renaiIcons.."BeltRampArrows.png",
+              icon_size = 64,
+              tint = {0,1,0}
+          },
+      },
       subgroup = "belt",
       order = "e-d",
       place_result = "RTturboBeltRamp",

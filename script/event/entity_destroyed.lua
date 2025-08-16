@@ -1,5 +1,5 @@
 local function entity_destroyed(event)
-	if (storage.FlyingItems[event.registration_number]) then -- ##### VERY IMPORTANT THIS IS HOW LANDING OF THROWN ITEMS IS DETECTED #####
+	if (storage.FlyingItems[event.registration_number]) then -- ##### VERY IMPORTANT!! THIS IS HOW LANDING OF THROWN ITEMS IS DETECTED ##### item shells are processed here just for ultracube, the actuall effects of the item shell are in effect_triggered.lua
 		ResolveThrownItem(storage.FlyingItems[event.registration_number])
 	end
 

@@ -2,10 +2,17 @@ data:extend({
 ---- startup
 {
 	type = "bool-setting",
-	name = "RTThrowersSetting",
+	name = "RTStreamSetting",
 	setting_type = "startup",
 	default_value = true,
 	order = "a"
+},
+{
+	type = "bool-setting",
+	name = "RTThrowersSetting",
+	setting_type = "startup",
+	default_value = true,
+	order = "aa"
 },
 {
 	type = "bool-setting",

@@ -149,6 +149,8 @@ local function on_int()
 	if script.active_mods["Ultracube"] then
 		ultracube_globals.setup_prototypes()
 	end
+
+	storage.StreamProjectiles = settings.startup["RTStreamSetting"].value
 end
 
 return on_int

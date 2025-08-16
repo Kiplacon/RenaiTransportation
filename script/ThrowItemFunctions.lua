@@ -1,7 +1,7 @@
 ---@diagnostic disable: newline-call
 function NewFlightNumber()
     storage.FlightNumber = storage.FlightNumber + 1
-    if (storage.FlightNumber > 1000000) then -- maybe unnecessary
+    if (storage.FlightNumber > 1000000) then -- maybe unnecessary, but if someone ever has more than 1 million thrown items at once they'll have some problems lmao
         storage.FlightNumber = 1
     end
     return storage.FlightNumber
@@ -58,28 +58,61 @@ function InvokeThrownItem(stuff)
                 elseif (adjustment and adjustment.type == "offset") then
                     targett = {start.x+adjustment.offset.x, start.y+adjustment.offset.y}
                 end
-                if (prototypes.entity["RTItemProjectile-"..ItemName..speed*100]) then
-                    stream = FlyingItem.surface.create_entity
-                    {
-                        name="RTItemProjectile-"..ItemName..speed*100,
-                        position=start,
-                        source_position=OffsetPosition(StreamStart, (stuff.StartOffset or {0,0})), -- offset should be pretty small so that the calculated air time lines up with the visual
-                        target_position=targett
-                    }
-                    --surface.play_sound({path = "RTThrower-EjectorHatchRT-sound", position = start})
+                if (settings.startup["RTStreamSetting"].value == true) then
+                    if (prototypes.entity["RTItemProjectile-"..ItemName..speed*100]) then
+                        stream = FlyingItem.surface.create_entity
+                        {
+                            name="RTItemProjectile-"..ItemName..speed*100,
+                            position=start,
+                            source_position=OffsetPosition(StreamStart, (stuff.StartOffset or {0,0})), -- offset should be pretty small so that the calculated air time lines up with the visual
+                            target_position=targett
+                        }
+                        --surface.play_sound({path = "RTThrower-EjectorHatchRT-sound", position = start})
+                    else
+                        stream = FlyingItem.surface.create_entity
+                        {
+                            name="RTTestProjectile"..speed*100,
+                            position=start,
+                            source_position=OffsetPosition(StreamStart, (stuff.StartOffset or {0,0})), -- offset should be pretty small so that the calculated air time lines up with the visual
+                            target_position=targett
+                        }
+                        --surface.play_sound({path = "RTThrower-EjectorHatchRT-sound", position = start})
+                    end
+                    local StreamDestroyNumber = script.register_on_object_destroyed(stream)
+                    FlyingItem.StreamDestroyNumber = StreamDestroyNumber
+                    storage.FlyingItems[StreamDestroyNumber] = FlyingItem
                 else
-                    stream = FlyingItem.surface.create_entity
-                    {
-                        name="RTTestProjectile"..speed*100,
-                        position=start,
-                        source_position=OffsetPosition(StreamStart, (stuff.StartOffset or {0,0})), -- offset should be pretty small so that the calculated air time lines up with the visual
-                        target_position=targett
-                    }
-                    --surface.play_sound({path = "RTThrower-EjectorHatchRT-sound", position = start})
+					local AirTime = math.ceil(DistanceBetween(StreamStart, targett)/speed)
+					local vector = {x=TargetX-StreamStart.x, y=TargetY-StreamStart.y}
+					local arc = 0.13
+					local path = {}
+					for j = 0, AirTime do
+						local progress = j/AirTime
+						path[j] =
+						{
+							x = StreamStart.x+(progress*vector.x),
+							y = StreamStart.y+(progress*vector.y),
+							height = progress * (1-progress) / arc
+						}
+					end
+                    InvokeThrownItem({
+						type = "CustomPath",
+						stack = stuff.stack,
+                        ItemName = ItemName,
+                        count = count,
+                        quality = quality,
+						start = StreamStart,
+						target={x=TargetX, y=TargetY},
+						surface=surface,
+						path = path,
+						AirTime = AirTime,
+                        -- optional stuff
+                        ThrowFromStackAmount = stuff.ThrowFromStackAmount,
+                        thrower = stuff.thrower,
+                        DestinationDestroyNumber=bounced.DestinationDestroyNumber or stuff.DestinationDestroyNumber
+					})
+                    return
                 end
-                local StreamDestroyNumber = script.register_on_object_destroyed(stream)
-                FlyingItem.StreamDestroyNumber = StreamDestroyNumber
-                storage.FlyingItems[StreamDestroyNumber] = FlyingItem
             elseif ((ProjectileType == "CustomPath" and adjustment == nil)
             or (adjustment and (adjustment.type == "force" or adjustment.type == "path" or adjustment.type == "interface"))) then
                 if (adjustment) then
@@ -1046,7 +1079,7 @@ function ResolveThrownItem(FlyingItem)
             if (FlyingItem.player == nil) then
                 if storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
                     CubeFlyingItems.release_and_spill(FlyingItem)
-                elseif (FlyingItem.type == "ItemShell") then
+                elseif (FlyingItem.type == "ItemShell") then -- never actually happens?
                     -- the contents of the shell fly out over the ground
                     ProjectileSpill(FlyingItem, {name=FlyingItem.item, count=FlyingItem.amount, quality=FlyingItem.quality})
                 else
