@@ -78,22 +78,15 @@ picture =
 		usage_priority = "secondary-input",
 		drain = "0.4kW"
 	},
-	--[[working_sound = {
-	  match_progress_to_activity = true,
-	  sound =
-	  {
-	    variations = sound_variations(renaiSounds .. "pop", 15, 0.8, {volume_multiplier("main-menu", 2), volume_multiplier("tips-and-tricks", 1.8)}),
-	    audible_distance_modifier = 0.8
-	  },
-	},]]
 	energy_per_movement = "5kJ",
 	energy_per_rotation = "5kJ",
 	extension_speed = 0.03,
 	rotation_speed = 0.014,
 	pickup_position = {0, -0.2},
-	insert_position = {0, 19.9},
+	insert_position = {0, 15.2},
+	allow_custom_vectors = true, -- in Factorio v2.0.66 a limit of 16 at load was enforced for some crazy reason so this is needed to bypass that when built
+	repair_speed_modifier = 19.9,
 	--starting_distance 
-	allow_custom_vectors = false,
 	chases_belt_items = false,
 	draw_held_item = false,
 	hand_base_picture = emptypic,
@@ -143,6 +136,15 @@ picture =
 	circuit_connector_sprites = circuit_connector_definitions["inserter"].sprites,
 	circuit_wire_max_distance = inserter_circuit_wire_max_distance,
 	default_stack_control_input_signal = inserter_default_stack_control_input_signal
+},
+{
+	type = "mod-data",
+	name = "RTRealRange".."RTThrower-EjectorHatchRT",
+	data =
+	{
+		x = 0,
+		y = 20
+	}
 },
 
 { --------- The ejector hatch item -------------

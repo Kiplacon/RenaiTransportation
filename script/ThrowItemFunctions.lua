@@ -6,6 +6,25 @@ function NewFlightNumber()
     end
     return storage.FlightNumber
 end
+function BasicArcPath(start, target, speed)
+    if (speed == nil or speed <= 0) then
+        speed = 0.18
+    end
+    local AirTime = math.ceil(DistanceBetween(start, target)/speed)
+    local vector = {x=target.x-start.x, y=target.y-start.y}
+    local arc = 0.13
+    local path = {}
+    for j = 0, AirTime do
+        local progress = j/AirTime
+        path[j] =
+        {
+            x = start.x+(progress*vector.x),
+            y = start.y+(progress*vector.y),
+            height = progress * (1-progress) / arc
+        }
+    end
+    return path, AirTime
+end
 
 function InvokeThrownItem(stuff)
     local ProjectileType = stuff.type
@@ -42,23 +61,115 @@ function InvokeThrownItem(stuff)
                 space=space,
                 surface=surface, -- to search for things by the landing zone
             }
-            local adjustment = stuff.adjustment
 
             -- create the visual projectile
-            if ((ProjectileType == "ReskinnedStream" and adjustment == nil)
-            or (adjustment and (adjustment.type == "target" or adjustment.type == "offset"))) then
-                local stream
+            if (stuff.adjustment) then
+                if (stuff.adjustment.type == "target") then
+                    InvokeThrownItem({
+						type = "ReskinnedStream",
+						stack = stuff.stack,
+                        ItemName = ItemName,
+                        count = count,
+                        quality = quality,
+						start = start,
+						target=stuff.adjustment.position,
+						surface=surface,
+                        -- optional stuff
+                        ThrowFromStackAmount = stuff.ThrowFromStackAmount,
+                        thrower = stuff.thrower,
+                        DestinationDestroyNumber=bounced.DestinationDestroyNumber or stuff.DestinationDestroyNumber
+					})
+                elseif (stuff.adjustment.type == "force") then
+                    if (not stuff.path) then
+                        local StreamStart = start
+                        if (stuff.thrower and stuff.thrower.name ~= "RTThrower-EjectorHatchRT") then -- adjust for thrower arm
+                            StreamStart = stuff.thrower.held_stack_position
+                        end
+                        stuff.path, stuff.AirTime = BasicArcPath(StreamStart, target, speed)
+                    end
+                    for i = 1, #stuff.path do
+                        stuff.path[i].x = stuff.path[i].x + (stuff.adjustment.vector.x*i*i/3600)
+                        stuff.path[i].y = stuff.path[i].y + (stuff.adjustment.vector.y*i*i/3600)
+                    end
+                    InvokeThrownItem({
+						type = "CustomPath",
+						stack = stuff.stack,
+                        ItemName = ItemName,
+                        count = count,
+                        quality = quality,
+						start = {x=stuff.path[1].x, y=stuff.path[1].y},
+						target={x=stuff.path[#stuff.path].x, y=stuff.path[#stuff.path].y},
+						surface=surface,
+                        path = stuff.path,
+                        AirTime = stuff.AirTime,
+                        -- optional stuff
+                        ThrowFromStackAmount = stuff.ThrowFromStackAmount,
+                        thrower = stuff.thrower,
+                        DestinationDestroyNumber=bounced.DestinationDestroyNumber or stuff.DestinationDestroyNumber
+					})
+                elseif (stuff.adjustment.type == "path" or stuff.adjustment.type == "interface") then
+                    InvokeThrownItem({
+						type = "CustomPath",
+						stack = stuff.stack,
+                        ItemName = ItemName,
+                        count = count,
+                        quality = quality,
+						start = {x=stuff.adjustment.path[1].x, y=stuff.adjustment.path[1].y},
+						target= {x=stuff.adjustment.path[#stuff.adjustment.path].x, y=stuff.adjustment.path[#stuff.adjustment.path].y},
+						surface=surface,
+                        path = stuff.adjustment.path,
+                        AirTime = #stuff.adjustment.path,
+                        -- optional stuff
+                        ThrowFromStackAmount = stuff.ThrowFromStackAmount,
+                        thrower = stuff.thrower,
+                        DestinationDestroyNumber=bounced.DestinationDestroyNumber or stuff.DestinationDestroyNumber
+					})
+                elseif (stuff.adjustment.type == "PathSet") then
+                    local CurrentRange = storage.CatapultList[script.register_on_object_destroyed(stuff.thrower)].range
+                    local path = stuff.adjustment.set[CurrentRange]
+                    if (path) then
+                        InvokeThrownItem({
+                            type = "CustomPath",
+                            stack = stuff.stack,
+                            ItemName = ItemName,
+                            count = count,
+                            quality = quality,
+                            start = {x=path[1].x, y=path[1].y},
+                            target= {x=path[#path].x, y=path[#path].y},
+                            surface=surface,
+                            path = path,
+                            AirTime = #path,
+                            -- optional stuff
+                            ThrowFromStackAmount = stuff.ThrowFromStackAmount,
+                            thrower = stuff.thrower,
+                            DestinationDestroyNumber=bounced.DestinationDestroyNumber or stuff.DestinationDestroyNumber
+                        })
+                    else
+                        InvokeThrownItem({
+                            type = "ReskinnedStream",
+                            stack = stuff.stack,
+                            ItemName = ItemName,
+                            count = count,
+                            quality = quality,
+                            start = start,
+                            target = target,
+                            surface = surface,
+                            -- optional stuff
+                            ThrowFromStackAmount = stuff.ThrowFromStackAmount,
+                            thrower = stuff.thrower,
+                            DestinationDestroyNumber=bounced.DestinationDestroyNumber or stuff.DestinationDestroyNumber
+                        })
+                    end
+                end
+                return
+            elseif (ProjectileType == "ReskinnedStream") then
                 local StreamStart = start
                 if (stuff.thrower and stuff.thrower.name ~= "RTThrower-EjectorHatchRT") then
                     StreamStart = stuff.thrower.held_stack_position
                 end
                 local targett = {TargetX, TargetY}
-                if (adjustment and adjustment.type == "target") then
-                    targett = adjustment.position
-                elseif (adjustment and adjustment.type == "offset") then
-                    targett = {start.x+adjustment.offset.x, start.y+adjustment.offset.y}
-                end
                 if (settings.startup["RTStreamSetting"].value == true) then
+                    local stream
                     if (prototypes.entity["RTItemProjectile-"..ItemName..speed*100]) then
                         stream = FlyingItem.surface.create_entity
                         {
@@ -82,19 +193,7 @@ function InvokeThrownItem(stuff)
                     FlyingItem.StreamDestroyNumber = StreamDestroyNumber
                     storage.FlyingItems[StreamDestroyNumber] = FlyingItem
                 else
-					local AirTime = math.ceil(DistanceBetween(StreamStart, targett)/speed)
-					local vector = {x=TargetX-StreamStart.x, y=TargetY-StreamStart.y}
-					local arc = 0.13
-					local path = {}
-					for j = 0, AirTime do
-						local progress = j/AirTime
-						path[j] =
-						{
-							x = StreamStart.x+(progress*vector.x),
-							y = StreamStart.y+(progress*vector.y),
-							height = progress * (1-progress) / arc
-						}
-					end
+                    local path, AirTime = BasicArcPath(StreamStart, targett, speed)
                     InvokeThrownItem({
 						type = "CustomPath",
 						stack = stuff.stack,
@@ -113,44 +212,7 @@ function InvokeThrownItem(stuff)
 					})
                     return
                 end
-            elseif ((ProjectileType == "CustomPath" and adjustment == nil)
-            or (adjustment and (adjustment.type == "force" or adjustment.type == "path" or adjustment.type == "interface"))) then
-                if (adjustment) then
-                    stuff.path = adjustment.path -- bounce pads and ejectors and interface adjustments will have paths
-                    if (stuff.path == nil and stuff.thrower) then -- only throwers won't have saved altered paths (bounce pads and ejectors always use the same path, impact/trapdoor wagons come with paths)
-                        local distance = storage.CatapultList[script.register_on_object_destroyed(stuff.thrower)].range
-                        local AirTime = math.max(1, math.floor(distance/speed))
-                        local vector =
-                            {
-                                x = (stuff.thrower.position.x - distance*storage.OrientationUnitComponents[stuff.thrower.orientation].x) - stuff.thrower.held_stack_position.x,
-                                y = (stuff.thrower.position.y - distance*storage.OrientationUnitComponents[stuff.thrower.orientation].y) - stuff.thrower.held_stack_position.y,
-                            }
-                        local path = {}
-                        for i = 1, AirTime do
-                            local progress = i/AirTime
-                            path[i] =
-                            {
-                                x = stuff.thrower.held_stack_position.x+(progress*vector.x),
-                                y = stuff.thrower.held_stack_position.y+(progress*vector.y),
-                                height = progress * (1-progress) / (0.3236*distance^-0.404)
-                            }
-                        end
-                        stuff.path = path
-                        stuff.AirTime = AirTime
-                    end
-                    if (adjustment.type == "force") then
-                        for i = 1, #stuff.path do
-                            stuff.path[i].x = stuff.path[i].x + (adjustment.vector.x*i*i/3600)
-                            stuff.path[i].y = stuff.path[i].y + (adjustment.vector.y*i*i/3600)
-                        end
-                    elseif (adjustment.type == "path") then
-                        stuff.path = adjustment.path
-                        stuff.AirTime = #adjustment.path
-                    elseif (adjustment.type == "interface") then
-                        stuff.path = adjustment.path
-                        stuff.AirTime = #adjustment.path
-                    end
-                end
+            elseif (ProjectileType == "CustomPath") then
                 if (stuff.path and stuff.AirTime and stuff.AirTime > 0) then
                     FlyingItem.path = stuff.path
                     FlyingItem.AirTime = stuff.AirTime
@@ -195,15 +257,14 @@ function InvokeThrownItem(stuff)
                 storage.FlyingItems[FlightNumber] = FlyingItem
                 storage.CustomPathFlyingItemSprites[FlightNumber] = true
             elseif (ProjectileType == "ItemShell") then
-                -- Only for Ultracube (otherwise item shells are handled entirely in effect_triggered)
-                -- Projectile creation already handled by on_tick_ItemCannons
+                -- Only for making data for Ultracube (otherwise item shells are handled entirely in effect_triggered)
+                -- Projectile creation already handled by on_tick_ItemCannons and passed as stuff.projectile
                 FlyingItem.AirTime = math.ceil((storage.ItemCannonRange or 200) / storage.ItemCannonSpeed) -- err towards maximum possible AirTime
                 FlyingItem.StartTick = game.tick
                 FlyingItem.projectile = stuff.projectile
                 local ProjectileDestroyNumber = script.register_on_object_destroyed(stuff.projectile)
                 FlyingItem.StreamDestroyNumber = ProjectileDestroyNumber
                 storage.FlyingItems[ProjectileDestroyNumber] = FlyingItem
-
             elseif (ProjectileType == "PlayerGuide") then
                 FlyingItem.AirTime = stuff.AirTime
                 FlyingItem.StartTick = game.tick
@@ -1122,13 +1183,24 @@ function ResolveThrownItem(FlyingItem)
     end
 end
 
-function SetThrowerRange(ThrowerInserter, Range)
-    if (ThrowerInserter.valid) then
+function RealMaxRange(ThrowerInserter)
+    if (type(ThrowerInserter) == "userdata") then
+        return prototypes["mod_data"]["RTRealRange"..ThrowerInserter.name].data
+    elseif (type(ThrowerInserter) == "string") then
+        return prototypes["mod_data"]["RTRealRange"..ThrowerInserter].data
+    end
+end
+
+function SetThrowerRange(ThrowerInserter, Range, force)
+    if (ThrowerInserter.valid and (ThrowerInserter.name ~= "RTThrower-EjectorHatchRT" or force)) then
         local properties = storage.CatapultList[script.register_on_object_destroyed(ThrowerInserter)]
-        local ThrowerName = ThrowerInserter.name
-        local ThrowerNormalRange = properties.NormalRange
-        local ThrowerUnitX = prototypes.entity[ThrowerName].inserter_drop_position[1]/ThrowerNormalRange
-        local ThrowerUnitY = prototypes.entity[ThrowerName].inserter_drop_position[2]/ThrowerNormalRange
+        if (Range > properties.NormalRange) then
+            Range = properties.NormalRange
+        elseif (Range < 1) then
+            Range = 1
+        end
+        local ThrowerUnitX = RealMaxRange(ThrowerInserter).x/properties.NormalRange
+        local ThrowerUnitY = RealMaxRange(ThrowerInserter).y/properties.NormalRange
         local VectorX = ThrowerUnitX * math.floor(Range) + ((ThrowerUnitX ~= 0) and (0.2) or 0)
         local VectorY = ThrowerUnitY * math.floor(Range) + ((ThrowerUnitY ~= 0) and (0.2) or 0)
         if (ThrowerInserter.orientation == 0) then
@@ -1157,8 +1229,8 @@ end
 function IncreaseThrowerRange(ThrowerInserter)
     if (ThrowerInserter.valid) then
         local DestroyNumber = script.register_on_object_destroyed(ThrowerInserter)
-        local ThrowerName = ThrowerInserter.name
-        local ThrowerNormalRange = math.sqrt(prototypes.entity[ThrowerName].inserter_drop_position[1]^2 + prototypes.entity[ThrowerName].inserter_drop_position[2]^2)
+        local properties = storage.CatapultList[DestroyNumber]
+        local ThrowerNormalRange = properties.NormalRange
         local CurrentRange = storage.CatapultList[DestroyNumber].range or math.floor(math.sqrt((ThrowerInserter.drop_position.x-ThrowerInserter.position.x)^2 + (ThrowerInserter.drop_position.y-ThrowerInserter.position.y)^2))
         if (CurrentRange >= math.floor(ThrowerNormalRange)) then
             SetThrowerRange(ThrowerInserter, 1)
@@ -1170,8 +1242,8 @@ end
 function DecreaseThrowerRange(ThrowerInserter)
     if (ThrowerInserter.valid) then
         local DestroyNumber = script.register_on_object_destroyed(ThrowerInserter)
-        local ThrowerName = ThrowerInserter.name
-        local ThrowerNormalRange = math.sqrt(prototypes.entity[ThrowerName].inserter_drop_position[1]^2 + prototypes.entity[ThrowerName].inserter_drop_position[2]^2)
+        local properties = storage.CatapultList[DestroyNumber]
+        local ThrowerNormalRange = properties.NormalRange
         local CurrentRange = storage.CatapultList[DestroyNumber].range or math.floor(math.sqrt((ThrowerInserter.drop_position.x-ThrowerInserter.position.x)^2 + (ThrowerInserter.drop_position.y-ThrowerInserter.position.y)^2))
         if (CurrentRange <= 1) then
             SetThrowerRange(ThrowerInserter, ThrowerNormalRange)

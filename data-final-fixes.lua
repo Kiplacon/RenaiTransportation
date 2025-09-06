@@ -537,22 +537,34 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 		TheThrower.extension_speed = 0.027 -- default 0.03, needs to be a but slower so we don't get LongB0is
 		TheThrower.rotation_speed = 0.020 -- default 0.014
 	elseif (TheThrower.name == "RTThrower-long-handed-inserter") then
-		TheThrower.insert_position = {0, 25.2}
+		--TheThrower.insert_position = {0, 25.2} -- in Factorio v2.0.66 a limit of 16 at load was enforced for some crazy reason
 		ItsRange = 25
 	end
 
-	if settings.startup["RTThrowersDynamicRange"].value == true then
+	--if settings.startup["RTThrowersDynamicRange"].value == true then
 		local original_inserter = data.raw.inserter[ThingData.name]
 		ItsRange = math.sqrt(original_inserter.insert_position[1]^2 + original_inserter.insert_position[2]^2)
 		local unitX = original_inserter.insert_position[1] / ItsRange
 		local unitY = original_inserter.insert_position[2] / ItsRange
-		TheThrower.insert_position = 
+		local rangeX = math.floor(unitX*math.floor(ItsRange)*10) + ((original_inserter.insert_position[1] ~= 0) and (math.floor(unitX*5) + 0.2) or 0)
+		local rangeY = math.floor(unitY*math.floor(ItsRange)*10) + ((original_inserter.insert_position[2] ~= 0) and (math.floor(unitY*5) + 0.2) or 0)
+		TheThrower.insert_position =
 			{
-				unitX*math.floor(ItsRange)*10 + ((original_inserter.insert_position[1] ~= 0) and (unitX*5 + 0.2) or 0),
-				unitY*math.floor(ItsRange)*10 + ((original_inserter.insert_position[2] ~= 0) and (unitY*5 + 0.2) or 0)
+				math.min(15.2, rangeX),
+				math.min(15.2, rangeY)
 			}
-		--TheThrower.insert_position = {0, ItsRange+0.2}
-	end
+		data:extend({
+			{
+				type = "mod-data",
+				name = "RTRealRange"..TheThrower.name,
+				data =
+				{
+					x = rangeX,
+					y = rangeY
+				}
+			}
+		})
+	--end
 
 	local EffectiveRange = math.sqrt(TheThrower.insert_position[1]^2 + TheThrower.insert_position[2]^2)
 	if (TheThrower.localised_description) then

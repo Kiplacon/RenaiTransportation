@@ -417,12 +417,14 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				and string.find(player.cursor_stack.name, "RTThrower-")
 				and player.cursor_stack.name ~= "RTThrower-EjectorHatchRT"
 				and player.cursor_stack.name ~= "RTThrower-FilterEjectorHatchRT"
+				and player.cursor_stack.name ~= "RTThrower-PrimerThrower"
 			)
 		or (
 				player.cursor_ghost ~= nil
 				and string.find(player.cursor_ghost.name.name, "RTThrower-")
 				and player.cursor_ghost.name.name ~= "RTThrower-EjectorHatchRT"
 				and player.cursor_ghost.name.name ~= "RTThrower-FilterEjectorHatchRT"
+				and player.cursor_stack.name.name ~= "RTThrower-PrimerThrower"
 		) then
 			local ThrowerName
 			if (player.cursor_stack.valid_for_read) then
@@ -430,9 +432,9 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			else
 				ThrowerName = string.gsub(player.cursor_ghost.name.name, "-Item", "")
 			end
-			local ThrowerNormalRange = math.sqrt(prototypes.entity[ThrowerName].inserter_drop_position[1]^2 + prototypes.entity[ThrowerName].inserter_drop_position[2]^2)
-			local ThrowerUnitX = prototypes.entity[ThrowerName].inserter_drop_position[1]/ThrowerNormalRange
-			local ThrowerUnitY = prototypes.entity[ThrowerName].inserter_drop_position[2]/ThrowerNormalRange
+			local ThrowerNormalRange = math.sqrt(RealMaxRange(ThrowerName).x^2 + RealMaxRange(ThrowerName).y^2)
+			local ThrowerUnitX = RealMaxRange(ThrowerName).x/ThrowerNormalRange
+			local ThrowerUnitY = RealMaxRange(ThrowerName).y/ThrowerNormalRange
 			player.clear_cursor()
 			player.cursor_stack.set_stack({name = "blueprint"})
 			player.cursor_stack.set_blueprint_entities(
@@ -459,9 +461,9 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			if (player.is_cursor_blueprint() == true) then
 				local thrower = player.cursor_stack.get_blueprint_entities()[1]
 				local ThrowerName = thrower.name
-				local ThrowerNormalRange = math.sqrt(prototypes.entity[ThrowerName].inserter_drop_position[1]^2 + prototypes.entity[ThrowerName].inserter_drop_position[2]^2)
-				local ThrowerUnitX = prototypes.entity[ThrowerName].inserter_drop_position[1]/ThrowerNormalRange
-				local ThrowerUnitY = prototypes.entity[ThrowerName].inserter_drop_position[2]/ThrowerNormalRange
+				local ThrowerNormalRange = math.sqrt(RealMaxRange(ThrowerName).x^2 + RealMaxRange(ThrowerName).y^2)
+				local ThrowerUnitX = RealMaxRange(ThrowerName).x/ThrowerNormalRange
+				local ThrowerUnitY = RealMaxRange(ThrowerName).y/ThrowerNormalRange
 				local CurrentRange = PlayerProperties.RangeAdjustingRange
 				local NewDrop
 				--game.print("CurrentRange: "..CurrentRange.." ThrowerNormalRange: "..ThrowerNormalRange)

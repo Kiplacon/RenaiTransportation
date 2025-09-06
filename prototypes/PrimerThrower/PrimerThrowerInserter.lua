@@ -9,7 +9,7 @@ local TheThrower = table.deepcopy(data.raw.inserter.inserter)
 	TheThrower.icon = renaiIcons .. "primerthrowericon.png"
 	TheThrower.name = "RTThrower-PrimerThrower"
 	TheThrower.minable = {mining_time = 0.1, result = TheItem.name}
-	TheThrower.insert_position = {0, 0.8}
+	TheThrower.insert_position = {0, 15.2}
 	TheThrower.allow_custom_vectors = false
 	TheThrower.draw_inserter_arrow = false
 	TheThrower.rotation_speed = 0.018
@@ -73,6 +73,15 @@ local TheThrower = table.deepcopy(data.raw.inserter.inserter)
 data:extend({
 	TheThrower,
 	TheItem,
+	{
+		type = "mod-data",
+		name = "RTRealRange".."RTThrower-PrimerThrower",
+		data =
+		{
+			x = 0,
+			y = 15.2
+		}
+	},
 })
 
 if (data.raw.item["carbon-fiber"] and data.raw.tool["agricultural-science-pack"]) then

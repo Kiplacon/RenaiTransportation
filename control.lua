@@ -407,12 +407,19 @@ function(event)
 				target_position=event.cursor_position
 			}
 		end
-	--[[ elseif (player.selected and string.find(player.selected.name, "RTThrower")) then
-		local adjustment = {
-			type = "offset",
-			offset = {x=5, y=5},
-		}
-		SetTrajectoryAdjust(player.selected, adjustment) ]]
+	elseif (player.selected and string.find(player.selected.name, "RTThrower")) then
+		game.print("boom")
+		local path, AirTime = BasicArcPath(player.selected.position, OffsetPosition(player.selected.position, {20, 0}))
+		local adjustment =
+			{
+				type = "PathSet",
+				set =
+				{
+					path,
+					path,
+				},
+			}
+		SetTrajectoryAdjust(player.selected, adjustment)
 	elseif (player.character) then
 		rendering.draw_animation
 			{

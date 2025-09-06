@@ -229,7 +229,7 @@ local function config_changed()
 		if (storage.FlyingItems) then
 			for each, FlyingItem in pairs(storage.FlyingItems) do
 				if (FlyingItem.sprite) then -- from impact unloader/space throw
-					if (type(FlyingItem.sprite) == "number" and rendering.get_object_by_id(FlyingItem.sprite) ~= nil) then
+					if (type(FlyingItem.sprite) == "number" and rendering.get_object_by_id(FlyingItem.sprite) ~= nil) then -- old versions of Factorio used to save the rendering ID only
 						rendering.get_object_by_id(FlyingItem.sprite).destroy()
 					else
 						FlyingItem.sprite.destroy()
@@ -246,6 +246,19 @@ local function config_changed()
 			storage.FlyingItems = {}
 		end
 		storage.StreamProjectiles = settings.startup["RTStreamSetting"].value
+	end
+	-- in case the configuration change modifies thrower ranges for some reason
+	if (settings.startup["RTThrowersSetting"].value == true and storage.CatapultList) then
+		local ref = {}
+		for ThrowerDestroyNumber, properties in pairs(storage.CatapultList) do
+			if (properties.entity and properties.entity.valid) then
+				local ThrowerName = properties.entity.name
+				if (ref[ThrowerName] == nil) then
+					ref[ThrowerName] = math.sqrt(RealMaxRange(properties.entity).x^2 + RealMaxRange(properties.entity).y^2)
+				end
+				properties.NormalRange = ref[ThrowerName]
+			end
+		end
 	end
 
 end

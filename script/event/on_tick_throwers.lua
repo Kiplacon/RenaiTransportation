@@ -45,7 +45,6 @@ local function ThrowersOnTick(event)
                     -- check if inserter is ready to throw
                     -- if it's passed the "half swing" point
                     if (ArmPastHalfway[ThrowerEntity.orientation](ThrowerEntity.held_stack_position, ThrowerPosition, properties.BurnerSelfRefuelCompensation) and ThrowerStack.valid_for_read) then -- if the arm is past halfway
-                        
                         local HandPosition = ThrowerEntity.held_stack_position
                         local HeldItem = ThrowerStack.name
                         local DestinationDestroyNumber

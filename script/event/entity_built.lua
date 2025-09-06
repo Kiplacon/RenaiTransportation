@@ -44,7 +44,7 @@ local function entity_built(event)
 			properties.RangeAdjustable = true
 		end
 		properties.range = math.floor(math.abs(entity.drop_position.x-entity.position.x + entity.drop_position.y-entity.position.y))
-		properties.NormalRange = math.sqrt(prototypes.entity[entity.name].inserter_drop_position[1]^2 + prototypes.entity[entity.name].inserter_drop_position[2]^2)
+		properties.NormalRange = math.sqrt(RealMaxRange(entity).x^2 + RealMaxRange(entity).y^2)
 
 		if (entity.surface.platform or string.find(entity.surface.name, " Orbit") or string.find(entity.surface.name, " Field") or string.find(entity.surface.name, " Belt")) then
 			properties.InSpace = true
@@ -68,19 +68,8 @@ local function entity_built(event)
 					animation_speed = 0,
 					only_in_alt_mode = false
 				}
-		elseif (entity.name == "RTThrower-FilterEjectorHatchRT") then
-			properties.sprite = rendering.draw_animation
-				{
-					animation = "FilterEjectorHatchFrames",
-					surface = entity.surface,
-					target = entity,
-					animation_offset = storage.EjectorPointing[entity.direction],
-					render_layer = 131,
-					animation_speed = 0,
-					only_in_alt_mode = false
-				}
+			SetThrowerRange(entity, 20, true)
 		elseif (entity.name == "RTThrower-PrimerThrower") then
-			
 			entity.inserter_stack_size_override = 1
 			local sherlock = entity.surface.create_entity
 			{

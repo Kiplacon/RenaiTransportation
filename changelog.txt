@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.5
+Date: 9/6/2025
+  Changes:
+    - Due to new limits imposed in Factorio v2.0.66, all Throwers and Ejector hatches will default to range 15 when placing. When an Ejector hatch is placed, it will snap to range 20.
+  Bugfixes:
+    - Fixed various remote interface features not working with signal adjustment of thrower range.
+---------------------------------------------------------------------------------------------------
 Version: 2.2.4
 Date: 8/16/2025
   Additions:
