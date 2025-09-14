@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.6
+Date: 9/6/2025
+  Changes:
+    - Added a range overlay for Ejector hatches to show their real range.
+  Bugfixes:
+    - Fixed some more remote interface features.
+---------------------------------------------------------------------------------------------------
 Version: 2.2.5
 Date: 9/6/2025
   Changes:

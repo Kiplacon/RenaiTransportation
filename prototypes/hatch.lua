@@ -92,7 +92,16 @@ picture =
 	hand_base_picture = emptypic,
 	hand_open_picture = emptypic,
 	hand_closed_picture = emptypic,
-
+	radius_visualisation_specification =
+	{
+		sprite =
+		{
+			filename = "__RenaiTransportation__/graphics/testalt2.png",
+			size = 1280
+		},
+		draw_on_selection = false,
+		distance = 20
+	},
 
 
 	--[[hand_base_picture =

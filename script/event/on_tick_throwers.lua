@@ -162,7 +162,7 @@ local function ThrowersOnTick(event)
                                         speed = speed,
                                         start = ThrowerPosition,
                                         target = {x=ThrowerEntity.drop_position.x, y=ThrowerEntity.drop_position.y},
-                                        DestinationDestroyNumber = DestinationDestroyNumber,
+                                        DestinationDestroyNumber = DestinationDestroyNumber, -- for overflow tracking
                                         surface = ThrowerEntity.surface,
                                         space = false,
                                         adjustment = properties.TrajectoryAdjust,

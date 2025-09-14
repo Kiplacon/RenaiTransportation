@@ -10,16 +10,20 @@ function BasicArcPath(start, target, speed)
     if (speed == nil or speed <= 0) then
         speed = 0.18
     end
+    local StartX = start.x or start[1]
+    local StartY = start.y or start[2]
+    local TargetX = target.x or target[1]
+    local TargetY = target.y or target[2]
     local AirTime = math.ceil(DistanceBetween(start, target)/speed)
-    local vector = {x=target.x-start.x, y=target.y-start.y}
+    local vector = {x=TargetX-StartX, y=TargetY-StartY}
     local arc = 0.13
     local path = {}
     for j = 0, AirTime do
         local progress = j/AirTime
         path[j] =
         {
-            x = start.x+(progress*vector.x),
-            y = start.y+(progress*vector.y),
+            x = StartX+(progress*vector.x),
+            y = StartY+(progress*vector.y),
             height = progress * (1-progress) / arc
         }
     end
@@ -107,7 +111,11 @@ function InvokeThrownItem(stuff)
                         thrower = stuff.thrower,
                         DestinationDestroyNumber=bounced.DestinationDestroyNumber or stuff.DestinationDestroyNumber
 					})
-                elseif (stuff.adjustment.type == "path" or stuff.adjustment.type == "interface") then
+                elseif (stuff.adjustment.type == "path" or stuff.adjustment.type == "interface_fixed" or stuff.adjustment.type == "interface_dynamic") then
+                    if (stuff.thrower and stuff.adjustment.type == "interface_dynamic") then
+                        local call = remote.call(stuff.adjustment.interface, stuff.adjustment.name, stuff.adjustment.parameters, math.ceil(DistanceBetween(stuff.thrower.held_stack_position, stuff.thrower.drop_position)/speed), stuff.thrower)
+                        stuff.adjustment.path = call -- updates the path to the latest version from the interface
+                    end
                     InvokeThrownItem({
 						type = "CustomPath",
 						stack = stuff.stack,
@@ -1175,7 +1183,7 @@ function ResolveThrownItem(FlyingItem)
         FlyingItem.shadow.destroy()
     end
     if ((FlyingItem.tracing or FlyingItem.player) and ClearOverflowTracking == false) then
-        -- let it cook
+        -- let it cook (path tracers and jumping players)
     else
         local FlightID = FlyingItem.StreamDestroyNumber or FlyingItem.FlightNumber -- should never have both
         storage.FlyingItems[FlightID] = nil
@@ -1191,39 +1199,12 @@ function RealMaxRange(ThrowerInserter)
     end
 end
 
-function SetThrowerRange(ThrowerInserter, Range, force)
-    if (ThrowerInserter.valid and (ThrowerInserter.name ~= "RTThrower-EjectorHatchRT" or force)) then
-        local properties = storage.CatapultList[script.register_on_object_destroyed(ThrowerInserter)]
-        if (Range > properties.NormalRange) then
-            Range = properties.NormalRange
-        elseif (Range < 1) then
-            Range = 1
-        end
-        local ThrowerUnitX = RealMaxRange(ThrowerInserter).x/properties.NormalRange
-        local ThrowerUnitY = RealMaxRange(ThrowerInserter).y/properties.NormalRange
-        local VectorX = ThrowerUnitX * math.floor(Range) + ((ThrowerUnitX ~= 0) and (0.2) or 0)
-        local VectorY = ThrowerUnitY * math.floor(Range) + ((ThrowerUnitY ~= 0) and (0.2) or 0)
-        if (ThrowerInserter.orientation == 0) then
-            VectorX2 = VectorX
-            VectorY2 = VectorY
-        elseif (ThrowerInserter.orientation == 0.25) then
-            VectorX2 = -VectorY
-            VectorY2 = VectorX
-        elseif (ThrowerInserter.orientation == 0.5) then
-            VectorX2 = -VectorX
-            VectorY2 = -VectorY
-        elseif (ThrowerInserter.orientation == 0.75) then
-            VectorX2 = VectorY
-            VectorY2 = -VectorX
-        end
-        ThrowerInserter.drop_position =
-            {
-                ThrowerInserter.position.x + VectorX2,
-                ThrowerInserter.position.y + VectorY2
-            }
-        properties.range = math.floor(Range)
+function SetThrowerRange(ThrowerInserter, Range, override)
+    if (ThrowerInserter.valid and (ThrowerInserter.name ~= "RTThrower-EjectorHatchRT" or override)) then
+        --local properties = storage.CatapultList[script.register_on_object_destroyed(ThrowerInserter)]
+        storage.CatapultList[script.register_on_object_destroyed(ThrowerInserter)].range = math.floor(Range)
         ResetThrowerOverflowTracking(ThrowerInserter)
-        AdjustThrowerArrow(ThrowerInserter)
+        AdjustThrowerArrow(ThrowerInserter, Range)
     end
 end
 function IncreaseThrowerRange(ThrowerInserter)
