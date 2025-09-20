@@ -131,11 +131,11 @@ function MakeProjectile(ThingData, speed)
 end
 
 function MakeItemShellStuff(ThingData)
-	for QualityName, quality in pairs(data.raw.quality) do
+	--for QualityName, quality in pairs(data.raw.quality) do
 		data:extend({
 			{
 				type = "projectile",
-				name = "RTItemShell"..ThingData.name.."-Q-"..QualityName,
+				name = "RTItemShell"..ThingData.name,--.."-Q-"..QualityName,
 				hidden = true,
 				acceleration = 0,
 				direction_only = true,
@@ -191,7 +191,7 @@ function MakeItemShellStuff(ThingData)
 						{
 							{
 								type = "script",
-								effect_id = "RTItemShell"..ThingData.name.."-Q-"..QualityName
+								effect_id = "RTItemShell"..ThingData.name --.."-Q-"..QualityName
 							},
 						}
 					}
@@ -205,7 +205,7 @@ function MakeItemShellStuff(ThingData)
 				},
 			}
 		})
-	end
+	--end
 end
 
 function MakePrimedProjectile(ThingData, ProjectileType)-------------------------------------------
@@ -976,11 +976,13 @@ for ThingID, ThingData in pairs(data.raw.inserter) do
 end
 
 -- item cannon shell projectils
-for Category, ThingsTable in pairs(data.raw) do
-	for ThingID, ThingData in pairs(ThingsTable) do
-		if (ThingData.stack_size and ThingData.hidden ~= true and ThingData.parameter ~= true and (ThingID == "RTItemShellItem" or not string.find(ThingID, "RTItemShell"))) then
-			log("==========Creating item cannon projectile for "..ThingData.type..": "..ThingData.name.."===========")
-			MakeItemShellStuff(table.deepcopy(ThingData))
+if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RTItemCannonSetting"].value == true) then
+	for Category, ThingsTable in pairs(data.raw) do
+		for ThingID, ThingData in pairs(ThingsTable) do
+			if (ThingData.stack_size and ThingData.hidden ~= true and ThingData.parameter ~= true and (ThingID == "RTItemShellItem" or not string.find(ThingID, "RTItemShell"))) then
+				log("==========Creating item cannon projectile for "..ThingData.type..": "..ThingData.name.."===========")
+				MakeItemShellStuff(table.deepcopy(ThingData))
+			end
 		end
 	end
 end

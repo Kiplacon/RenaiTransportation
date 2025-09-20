@@ -95,7 +95,8 @@ local function effect_triggered(event)
 		end
 
 	elseif (string.find(event.effect_id, "RTItemShell")) then
-		local ItemName, QualityName = string.match(event.effect_id, "^RTItemShell(.+)%-Q%-(.*)$")
+		local ItemName = string.match(event.effect_id, "^RTItemShell(.+)")
+		local QualityName = event.quality or "normal"
 		local eject = false
 		local inserted = 0
 		local debris = true
@@ -104,6 +105,16 @@ local function effect_triggered(event)
 		if (ItemName == "LaserPointer") then
 			speed = 0.75
 			LaserPointer = true
+		else
+			--[[ if event.source_entity then
+				game.print(event.source_entity.position)
+			end
+			if event.source_position then
+				game.print(event.source_position)
+			end
+			if event.quality then
+				game.print(event.quality)
+			end ]]
 		end
 
 		-- Ultracube irreplaceables detection & handling
@@ -154,7 +165,8 @@ local function effect_triggered(event)
 						position = HitPosition,
 						target = target,
 						speed=speed,
-						max_range = storage.ItemCannonRange or 200
+						max_range = storage.ItemCannonRange or 200,
+						quality = QualityName
 					}
 
 					-- Ultracube irreplaceables detection & handling
@@ -231,7 +243,8 @@ local function effect_triggered(event)
 							position = HitEntity.position,
 							target = target,
 							speed=speed,
-							max_range = storage.ItemCannonRange or 200
+							max_range = storage.ItemCannonRange or 200,
+							quality = QualityName
 						}
 
 						-- Ultracube irreplaceables detection & handling
@@ -306,7 +319,8 @@ local function effect_triggered(event)
 							position = HitEntity.position,
 							target = target,
 							speed=speed,
-							max_range = storage.ItemCannonRange or 200
+							max_range = storage.ItemCannonRange or 200,
+							quality = QualityName
 						}
 						-- Ultracube irreplaceables detection & handling
 						if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[ItemName] then

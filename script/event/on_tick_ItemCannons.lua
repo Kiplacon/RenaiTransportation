@@ -23,16 +23,17 @@ local function PersonalFitness(event)
                 if (slot1.valid_for_read
                 and slot1.count == slot1.prototype.stack_size) then
                     local cannon = ItemCannonProperties.entity
-                    if (prototypes.entity["RTItemShell"..slot1.name.."-Q-"..slot1.quality.name]) then
+                    if (prototypes.entity["RTItemShell"..slot1.name]) then -- .."-Q-"..slot1.quality.name]) then
                         local target = OffsetPosition(cannon.position, targets[cannon.orientation])
                         local projectile = cannon.surface.create_entity
                         {
-                            name="RTItemShell"..slot1.name.."-Q-"..slot1.quality.name,
-                            source = cannon,
-                            position = cannon.position,
+                            name="RTItemShell"..slot1.name,--.."-Q-"..slot1.quality.name,
+                            source = cannon, -- so it doesnt collide with the cannon
+                            position = cannon.position, -- projectile spawn position
                             target = target,
-                            speed=storage.ItemCannonSpeed,
-                            max_range = storage.ItemCannonRange or 200
+                            speed = storage.ItemCannonSpeed,
+                            max_range = storage.ItemCannonRange or 200,
+                            quality = slot1.quality.name
                         }
                         -- Ultracube irreplaceables detection & handling
                         if storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[slot1.name] then
@@ -97,7 +98,7 @@ local function PersonalFitness(event)
             local cannon = ItemCannonProperties.entity
             cannon.surface.create_entity
             {
-                name="RTItemShellLaserPointer-Q-normal",
+                name="RTItemShellLaserPointer",-- -Q-normal",
                 source = cannon,
                 position = cannon.position,
                 target = OffsetPosition(cannon.position, targets[cannon.orientation]),

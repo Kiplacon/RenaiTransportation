@@ -208,7 +208,7 @@ data:extend({
   },
   {
     type = "projectile",
-    name = "RTItemShell".."LaserPointer".."-Q-".."normal",
+    name = "RTItemShell".."LaserPointer", --.."-Q-".."normal",
     acceleration = 0,
     direction_only = true,
     collision_box = {{-0.1, -0.1}, {0.1, 0.1}},
@@ -239,7 +239,7 @@ data:extend({
         {
           {
             type = "script",
-            effect_id = "RTItemShell".."LaserPointer".."-Q-".."normal"
+            effect_id = "RTItemShell".."LaserPointer" --.."-Q-".."normal"
           },
         }
       }

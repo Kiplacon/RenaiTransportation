@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.7
+Date: 9/20/2025
+  Bugfixes:
+    - Reduced the number of entities generated for Item cannon shells from 1 for every item and quality combination to just 1 for every item. This is to hopefully prevent overloading the entity ID limit. Reported by Maikilo and grant1
+---------------------------------------------------------------------------------------------------
 Version: 2.2.6
 Date: 9/6/2025
   Changes:
