@@ -423,7 +423,7 @@ function CanFitThrownItem(stuff)
 end
 
 
-function ResetThrowerOverflowTracking(thrower)
+function ResetThrowerOverflowTracking(thrower) -- use when a thrower is rotated, range adjusted etc to recalculate its throwing paths
     local ThrowerDestroyNumber = script.register_on_object_destroyed(thrower)
     if (storage.CatapultList[ThrowerDestroyNumber]) then
         storage.CatapultList[ThrowerDestroyNumber].targets = {}

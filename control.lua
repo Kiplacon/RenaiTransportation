@@ -76,7 +76,7 @@ function(event)
 			local stack = container.get_output_inventory()[i]
 			if (stack.valid_for_read == true) then
 				if not (storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[stack.name]) then
-					stack.count = math.ceil(stack.count*0.5) -- half the items lost in the destruction
+					stack.count = math.ceil(stack.count*0.25) -- half the items lost in the destruction
 				end
 				local GroupSize = math.ceil((stack.count/17))
 				while stack.count > 0 do
@@ -433,7 +433,7 @@ function(event)
 				time_to_live = 120,
 				animation_speed = 0.5
 			}
-		player.surface.create_entity
+		player.character.surface.create_entity
 			{
 				name="RTSaysYourCrosshairIsTooLow",
 				target=player.character,

@@ -323,6 +323,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					position = ThingHovering.position,
 					text = {"interact-toggling.SetBounceRange", range}
 				}
+				ResetPathComponentOverflowTracking(ThingHovering)
 			-- directed range
 			elseif (ThingHovering.name == "DirectedBouncePlate") then
 				local BouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(ThingHovering)]
@@ -362,6 +363,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					position = ThingHovering.position,
 					text = {"interact-toggling.SetBounceRange", range}
 				}
+				ResetPathComponentOverflowTracking(ThingHovering)
 			-- director range
 			elseif (ThingHovering.name == "DirectorBouncePlate") then
 				local BouncePadProperties = storage.BouncePadList[script.register_on_object_destroyed(ThingHovering)]
@@ -386,6 +388,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 					position = ThingHovering.position,
 					text = {"interact-toggling.SetBounceRange", range}
 				}
+				ResetPathComponentOverflowTracking(ThingHovering)
 			end
 		end
 

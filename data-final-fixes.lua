@@ -907,10 +907,10 @@ for ThingID, ThingData in pairs(data.raw.inserter) do
 				and ThingData.minable
 				and ThingData.rotation_speed ~= 0
 				and ThingData.extension_speed ~= 0
-				and ThingData.selection_box[1][1] >= -0.5
+				--[[ and ThingData.selection_box[1][1] >= -0.5
 				and ThingData.selection_box[1][2] >= -0.5
 				and ThingData.selection_box[2][1] <= 0.5
-				and ThingData.selection_box[2][2] <= 0.5
+				and ThingData.selection_box[2][2] <= 0.5 ]]
 				and not string.find(ThingData.name, "RTThrower-")
 				--and (not ThingData.name ~= "thrower-inserter")
 			)then

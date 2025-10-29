@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.8
+Date: 10/28/2025
+  Bugfixes:
+    - Allowed generation of thrower variants of inserters that are not 1x1. A change in Factorio 2.0.66 means I dont have to exclude them anymore
+    - Fixed that adjusting Bounce pad ranges weren't accounted for in overflow prevention
+    - Fixed a crash that could happen in editor mode where you dont have a player. Reported by juh9870
+---------------------------------------------------------------------------------------------------
 Version: 2.2.7
 Date: 9/20/2025
   Bugfixes:
