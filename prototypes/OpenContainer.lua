@@ -34,7 +34,7 @@ data:extend({
 		ingredients = {{type="item", name="iron-chest", amount=1}},
 		results = {
 			{type="item", name="OpenContainer", amount=1}
-		}
+		},
 	},
 	
 	{ --------- open to regular chest recipe ----------
@@ -52,3 +52,5 @@ data:extend({
 	datboi
 	
 })
+
+data.raw["recipe"]["iron-chest"].hide_from_signal_gui = false

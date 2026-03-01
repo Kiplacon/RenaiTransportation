@@ -143,112 +143,64 @@ local ClickableStuff = {
    ZiplineCamera = function(event, player)
       local PlayerProperties = storage.AllPlayers[player.index]
       PlayerProperties.preferences.ZiplineTerminalPreview = "camera"
-      event.element.parent.parent.scroller.layout.clear()
-      local layout = event.element.parent.parent.scroller.layout
-      local clicked = storage.ZiplineTerminals[event.element.parent.parent.tags.ID].entity
-      local a = {}
-      for _, terminal in pairs(storage.ZiplineTerminals) do
-         if (terminal.name) then
-            table.insert(a, string.lower(copy(terminal.name)))
+      local selected = storage.ZiplineTerminals[event.element.tags.selected].entity
+      if (player.controller_type == defines.controllers.character) then
+         if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
+         and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineTrolley")
+         and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
+         and (player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTProgrammableZiplineControls"
+            or player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTAIZiplineControls")
+         ) then
+            ShowZiplineTerminalGUI(player, selected)
+         else
+            ShowRemoteViewZiplineGUI(player, selected)
          end
-      end
-      table.sort(a)
-      local sorted = {}
-      for _, name in pairs(a) do
-         for _, terminal in pairs(storage.ZiplineTerminals) do
-            if (terminal.name and string.lower(copy(terminal.name)) == name) then
-               table.insert(sorted, terminal)
-               break
-            end
-         end
-      end
-      for each, terminal in pairs(sorted) do
-         local entity = terminal.entity
-         if (entity.valid == true and entity.electric_network_id == clicked.electric_network_id and entity.unit_number ~= clicked.unit_number) then
-            local TerminalButton = layout.add{type="button", name=each, caption=terminal.name, tags={RTEffect=(event.element.tags.type or "ZiplineAutoPath"), start=script.register_on_object_destroyed(clicked), finish=script.register_on_object_destroyed(entity)}}
-               TerminalButton.style.font = "heading-1"
-               TerminalButton.style.horizontally_stretchable = true
-            local cam = layout.add{type="camera", caption="caption", position=entity.position, zoom=0.4}
-               cam.style.width = 175
-               cam.style.height = 175
-            layout.add{type="line"}
-            layout.add{type="line"}
-         elseif (entity.valid == false) then
-            storage.ZiplineTerminals[each] = nil
-         end
+      elseif (player.controller_type == defines.controllers.god or player.controller_type == defines.controllers.remote) then
+         ShowRemoteViewZiplineGUI(player, selected)
       end
    end,
    ZiplineMinimap = function(event, player)
       local PlayerProperties = storage.AllPlayers[player.index]
       PlayerProperties.preferences.ZiplineTerminalPreview = "minimap"
-      event.element.parent.parent.scroller.layout.clear()
-      local layout = event.element.parent.parent.scroller.layout
-      local clicked = storage.ZiplineTerminals[event.element.parent.parent.tags.ID].entity
-      local a = {}
-      for each, terminal in pairs(storage.ZiplineTerminals) do
-         if (terminal.name) then
-            table.insert(a, string.lower(copy(terminal.name)))
+      local selected = storage.ZiplineTerminals[event.element.tags.selected].entity
+      if (player.controller_type == defines.controllers.character) then
+         if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
+         and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineTrolley")
+         and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
+         and (player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTProgrammableZiplineControls"
+            or player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTAIZiplineControls")
+         ) then
+            ShowZiplineTerminalGUI(player, selected)
+         else
+            ShowRemoteViewZiplineGUI(player, selected)
          end
-      end
-      table.sort(a)
-      local sorted = {}
-      for _, name in pairs(a) do
-         for _, terminal in pairs(storage.ZiplineTerminals) do
-            if (terminal.name and string.lower(copy(terminal.name)) == name) then
-               table.insert(sorted, terminal)
-               break
-            end
-         end
-      end
-      for each, terminal in pairs(sorted) do
-         local entity = terminal.entity
-         if (entity.valid == true and entity.electric_network_id == clicked.electric_network_id and entity.unit_number ~= clicked.unit_number) then
-            local TerminalButton = layout.add{type="button", name=each, caption=terminal.name, tags={RTEffect=(event.element.tags.type or "ZiplineAutoPath"), start=script.register_on_object_destroyed(clicked), finish=script.register_on_object_destroyed(entity)}}
-               TerminalButton.style.font = "heading-1"
-               TerminalButton.style.horizontally_stretchable = true
-            local cam = layout.add{type="minimap", caption="caption", position=entity.position, zoom=1}
-               cam.style.width = 175
-               cam.style.height = 175
-            layout.add{type="line"}
-            layout.add{type="line"}
-         elseif (entity.valid == false) then
-            storage.ZiplineTerminals[each] = nil
-         end
+      elseif (player.controller_type == defines.controllers.god or player.controller_type == defines.controllers.remote) then
+         ShowRemoteViewZiplineGUI(player, selected)
       end
    end,
    ZiplineNone = function(event, player)
       local PlayerProperties = storage.AllPlayers[player.index]
       PlayerProperties.preferences.ZiplineTerminalPreview = "none"
-      event.element.parent.parent.scroller.layout.clear()
-      local layout = event.element.parent.parent.scroller.layout
-      local clicked = storage.ZiplineTerminals[event.element.parent.parent.tags.ID].entity
-      local a = {}
-      for each, terminal in pairs(storage.ZiplineTerminals) do
-         if (terminal.name) then
-            table.insert(a, string.lower(copy(terminal.name)))
+      local selected = storage.ZiplineTerminals[event.element.tags.selected].entity
+      if (player.controller_type == defines.controllers.character) then
+         if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
+         and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineTrolley")
+         and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
+         and (player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTProgrammableZiplineControls"
+            or player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTAIZiplineControls")
+         ) then
+            ShowZiplineTerminalGUI(player, selected)
+         else
+            ShowRemoteViewZiplineGUI(player, selected)
          end
+      elseif (player.controller_type == defines.controllers.god or player.controller_type == defines.controllers.remote) then
+         ShowRemoteViewZiplineGUI(player, selected)
       end
-      table.sort(a)
-      local sorted = {}
-      for each, name in pairs(a) do
-         for each, terminal in pairs(storage.ZiplineTerminals) do
-            if (terminal.name and string.lower(copy(terminal.name)) == name) then
-               table.insert(sorted, terminal)
-               break
-            end
-         end
-      end
-      for each, terminal in pairs(sorted) do
-         local entity = terminal.entity
-         if (entity.valid == true and entity.electric_network_id == clicked.electric_network_id and entity.unit_number ~= clicked.unit_number) then
-            local TerminalButton = layout.add{type="button", name=each, caption=terminal.name, tags={RTEffect=(event.element.tags.type or "ZiplineAutoPath"), start=script.register_on_object_destroyed(clicked), finish=script.register_on_object_destroyed(entity)}}
-               TerminalButton.style.font = "heading-1"
-               TerminalButton.style.horizontally_stretchable = true
-            layout.add{type="label", caption=""}
-         elseif (entity.valid == false) then
-            storage.ZiplineTerminals[each] = nil
-         end
-      end
+   end,
+   ZiplineSwapRemoteView = function(event, player)
+      local selected = storage.ZiplineTerminals[event.element.tags.selected].entity
+      player.centered_on = selected
+      ShowRemoteViewZiplineGUI(player, selected)
    end,
 }
 

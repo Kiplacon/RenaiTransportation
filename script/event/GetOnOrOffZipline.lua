@@ -2,6 +2,10 @@
 function GetOnZipline(player, PlayerProperties, pole)
 	---------- get on zipline -----------------
 	local OG, shadow = SwapToGhost(player)
+	if (settings.get_player_settings(player)["RTZiplineDisablesBotsSetting"].value == true) then
+		PlayerProperties.zipline.BotsEnabled = player.character["allow_dispatching_robots"]
+		player.character["allow_dispatching_robots"] = false
+	end
 	local TheGuy = player
 	local FromXWireOffset = prototypes.recipe["RTGetTheGoods-"..pole.name.."X"].emissions_multiplier
 	local FromYWireOffset = prototypes.recipe["RTGetTheGoods-"..pole.name.."Y"].emissions_multiplier
@@ -119,6 +123,9 @@ end
 function GetOffZipline(player, PlayerProperties)
 	local ZiplineStuff = PlayerProperties.zipline
 	SwapBackFromGhost(player)
+	if (settings.get_player_settings(player)["RTZiplineDisablesBotsSetting"].value == true) then
+		player.character["allow_dispatching_robots"] = PlayerProperties.zipline.BotsEnabled
+	end
 	ZiplineStuff.LetMeGuideYou.surface.play_sound
 		{
 			path = "RTZipDettach",
@@ -137,7 +144,7 @@ function GetOffZipline(player, PlayerProperties)
 	ZiplineStuff.braking = nil
 	if player.character and player.character.valid and (player.character.get_inventory(defines.inventory.character_armor)
 		and player.character.get_inventory(defines.inventory.character_armor).is_full() and player.character.get_inventory(defines.inventory.character_armor)[1].prototype.provides_flight == true) then
-			-- don't drop
+			-- drop in place rather than teleporting down to ground
 	else
 		player.teleport(player.surface.find_non_colliding_position("character", {player.position.x, player.position.y+2}, 0, 0.01))
 	end
@@ -226,7 +233,7 @@ local function GetOnOrOffZipline(event) -- has .name = event ID number, .tick = 
 			and ThingHovering.type == "electric-pole"
 			and ElectricPoleBlackList[ThingHovering.name] == nil
 			and ThingHovering.get_wire_connector(defines.wire_connector_id.pole_copper, true).connection_count > 0) then
-				if (math.sqrt((player.position.x-ThingHovering.position.x)^2+(player.position.y-ThingHovering.position.y)^2) <= 6) then
+				if (math.sqrt((player.character.position.x-ThingHovering.position.x)^2+(player.character.position.y-ThingHovering.position.y)^2) <= 6) then
 					if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
 					and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineTrolley")
 					and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read)

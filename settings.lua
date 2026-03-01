@@ -165,11 +165,18 @@ data:extend({
 	order = "a"
 },
 {
+	type = "bool-setting",
+	name = "RTZiplineDisablesBotsSetting",
+	setting_type = "runtime-per-user",
+	default_value = false,
+	order = "b"
+},
+{
 	type = "double-setting",
 	name = "MiningSpeedDebuffTime",
 	setting_type = "runtime-per-user",
 	default_value = 0.5,
 	minimum_value = 0.0,
-	order = "b"
+	order = "c"
 },
 })

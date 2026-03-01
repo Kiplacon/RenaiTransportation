@@ -492,21 +492,24 @@ function(event)
 			and (not string.find(player.character.name, "-jetpack"))
 			and player.is_cursor_empty() == true) then
 				player.opened = nil
-				if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
-				and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineTrolley")
-				and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
-				and (player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTProgrammableZiplineControls"
-					or player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTAIZiplineControls")
-				) then
-					
-					if (DistanceBetween(player.character.position, selected.position) <= 7) then
-						ShowZiplineTerminalGUI(player, selected)
+				if (player.controller_type == defines.controllers.character) then
+					if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
+					and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineTrolley")
+					and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
+					and (player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTProgrammableZiplineControls"
+						or player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].name == "RTAIZiplineControls")
+					) then
+						if (DistanceBetween(player.character.position, selected.position) <= 7) then
+							ShowZiplineTerminalGUI(player, selected)
+						else
+							player.print({"zipline-stuff.range"})
+						end
 					else
-						player.print({"zipline-stuff.range"})
+						player.print({"zipline-stuff.terminalReqs"})
+						ShowRemoteViewZiplineGUI(player, selected)
 					end
-				else
-					player.print({"zipline-stuff.terminalReqs"})
-					
+				elseif (player.controller_type == defines.controllers.god or player.controller_type == defines.controllers.remote) then
+					ShowRemoteViewZiplineGUI(player, selected)
 				end
 			end
 

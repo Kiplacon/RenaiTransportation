@@ -27,7 +27,9 @@ titlebar.add{
 end
 
 function ShowZiplineTerminalGUI(player, clicked)
+   local LastPosition
    if (player.gui.screen.RTZiplineTerminalGUI) then
+      LastPosition = player.gui.screen.RTZiplineTerminalGUI.location
       player.gui.screen.RTZiplineTerminalGUI.destroy()
    end
    player.play_sound{
@@ -38,7 +40,11 @@ function ShowZiplineTerminalGUI(player, clicked)
    local PlayerProperties = storage.AllPlayers[player.index]
    local TerminalProperties = storage.ZiplineTerminals[script.register_on_object_destroyed(clicked)]
    local frame = player.gui.screen.add{type="frame", name="RTZiplineTerminalGUI", direction="vertical", tags={ID=script.register_on_object_destroyed(clicked)}}
-   frame.force_auto_center()
+   if (LastPosition) then
+      frame.location = LastPosition
+   else
+      frame.force_auto_center()
+   end
    add_titlebar(player.gui.screen.RTZiplineTerminalGUI, {"zipline-stuff.select"}, "stigma")
       if (clicked.name == "RTZiplineTerminal") then
          local TerminalHeader = player.gui.screen.RTZiplineTerminalGUI.add{type="table", name="TerminalHeader", column_count=3}
@@ -57,9 +63,9 @@ function ShowZiplineTerminalGUI(player, clicked)
 
          ------------- preview selection
          local PreviewHeader = player.gui.screen.RTZiplineTerminalGUI.add{type="table", name="PreviewHeader", column_count=3}
-         PreviewHeader.add{type="button", name="cam", caption="Camera", tags={RTEffect="ZiplineCamera"}}
-         PreviewHeader.add{type="button", name="map", caption="Minimap", tags={RTEffect="ZiplineMinimap"}}
-         PreviewHeader.add{type="button", name="none", caption="None", tags={RTEffect="ZiplineNone"}}
+         PreviewHeader.add{type="button", name="cam", caption="Camera", tags={RTEffect="ZiplineCamera", selected=script.register_on_object_destroyed(clicked)}}
+         PreviewHeader.add{type="button", name="map", caption="Minimap", tags={RTEffect="ZiplineMinimap", selected=script.register_on_object_destroyed(clicked)}}
+         PreviewHeader.add{type="button", name="none", caption="None", tags={RTEffect="ZiplineNone", selected=script.register_on_object_destroyed(clicked)}}
       end
 
       local scroller = player.gui.screen.RTZiplineTerminalGUI.add{type="scroll-pane", name="scroller"}
@@ -108,6 +114,103 @@ function ShowZiplineTerminalGUI(player, clicked)
                   layout.add{type="line"}
                elseif (PlayerProperties.preferences.ZiplineTerminalPreview == "none") then
                   local TerminalButton = layout.add{type="button", name=each, caption=terminal.name, tags={RTEffect="ZiplineAutoPath", start=script.register_on_object_destroyed(clicked), finish=script.register_on_object_destroyed(entity)}}
+                     TerminalButton.style.font = "heading-1"
+                     TerminalButton.style.horizontally_stretchable = true
+                  layout.add{type="label", caption=""}
+               end
+            elseif (entity.valid == false) then
+               storage.ZiplineTerminals[each] = nil
+            end
+         end
+   player.opened = frame
+   if (LastPosition) then
+      frame.location = LastPosition
+   end
+end
+
+function ShowRemoteViewZiplineGUI(player, clicked)
+   local LastPosition
+   if (player.gui.screen.RTZiplineTerminalGUI) then
+      LastPosition = player.gui.screen.RTZiplineTerminalGUI.location
+      player.gui.screen.RTZiplineTerminalGUI.destroy()
+   end
+   local PlayerProperties = storage.AllPlayers[player.index]
+   local TerminalProperties = storage.ZiplineTerminals[script.register_on_object_destroyed(clicked)]
+   local frame = player.gui.screen.add{type="frame", name="RTZiplineTerminalGUI", direction="vertical", tags={ID=script.register_on_object_destroyed(clicked)}}
+   if (LastPosition) then
+      frame.location = LastPosition
+   else
+      frame.force_auto_center()
+   end
+   add_titlebar(player.gui.screen.RTZiplineTerminalGUI, {"zipline-stuff.select"}, "stigma")
+      if (clicked.name == "RTZiplineTerminal") then
+         local TerminalHeader = player.gui.screen.RTZiplineTerminalGUI.add{type="table", name="TerminalHeader", column_count=3}
+            local ttt = TerminalHeader.add{type="label", caption={"zipline-stuff.terminal"}}
+               ttt.style.font = "heading-1"
+            TerminalHeader.add{type="label", name="TerminalName", caption=TerminalProperties.name}.style.font = "heading-1"
+            TerminalHeader.add{
+               type = "sprite-button",
+               style = "frame_action_button",
+               sprite = "utility/rename_icon",
+               hovered_sprite = "utility/rename_icon",
+               clicked_sprite = "utility/rename_icon",
+               tooltip = {"zipline-stuff.rename"},
+               tags = {RTEffect="RTStartRenameTerminal"}
+            }
+
+         ------------- preview selection
+         local PreviewHeader = player.gui.screen.RTZiplineTerminalGUI.add{type="table", name="PreviewHeader", column_count=3}
+         PreviewHeader.add{type="button", name="cam", caption="Camera", tags={RTEffect="ZiplineCamera", selected=script.register_on_object_destroyed(clicked)}}
+         PreviewHeader.add{type="button", name="map", caption="Minimap", tags={RTEffect="ZiplineMinimap", selected=script.register_on_object_destroyed(clicked)}}
+         PreviewHeader.add{type="button", name="none", caption="None", tags={RTEffect="ZiplineNone", selected=script.register_on_object_destroyed(clicked)}}
+      end
+
+      local scroller = player.gui.screen.RTZiplineTerminalGUI.add{type="scroll-pane", name="scroller"}
+         scroller.style.height = 700
+         --scroller.style.width = 315
+      local layout = scroller.add{type="table", name="layout", column_count=2}
+         local a = {}
+         for each, terminal in pairs(storage.ZiplineTerminals) do
+            if (terminal.name) then
+               table.insert(a, string.lower(copy(terminal.name)))
+            end
+         end
+         table.sort(a)
+         local sorted = {}
+         for each, name in pairs(a) do
+            for each, terminal in pairs(storage.ZiplineTerminals) do
+               if (terminal.name and string.lower(copy(terminal.name)) == name) then
+                  table.insert(sorted, terminal)
+                  break
+               end
+            end
+         end
+         for each, terminal in pairs(sorted) do
+            local entity = terminal.entity
+            if (entity.valid == true and entity.electric_network_id == clicked.electric_network_id and entity.unit_number ~= clicked.unit_number) then
+               if (PlayerProperties.preferences == nil or PlayerProperties.preferences.ZiplineTerminalPreview == nil or PlayerProperties.preferences.ZiplineTerminalPreview == "camera") then
+                  if (PlayerProperties.preferences == nil) then
+                     PlayerProperties.preferences = {}
+                  end
+                  local TerminalButton = layout.add{type="button", name=each, caption=terminal.name, tags={RTEffect="ZiplineSwapRemoteView", selected=script.register_on_object_destroyed(entity)}}
+                     TerminalButton.style.font = "heading-1"
+                     TerminalButton.style.horizontally_stretchable = true
+                  local cam = layout.add{type="camera", caption="caption", position=entity.position, zoom=0.4}
+                     cam.style.width = 175
+                     cam.style.height = 175
+                  layout.add{type="line"}
+                  layout.add{type="line"}
+               elseif (PlayerProperties.preferences.ZiplineTerminalPreview == "minimap") then
+                  local TerminalButton = layout.add{type="button", name=each, caption=terminal.name, tags={RTEffect="ZiplineSwapRemoteView", selected=script.register_on_object_destroyed(entity)}}
+                     TerminalButton.style.font = "heading-1"
+                     TerminalButton.style.horizontally_stretchable = true
+                  local cam = layout.add{type="minimap", caption="caption", position=entity.position, zoom=1}
+                     cam.style.width = 175
+                     cam.style.height = 175
+                  layout.add{type="line"}
+                  layout.add{type="line"}
+               elseif (PlayerProperties.preferences.ZiplineTerminalPreview == "none") then
+                  local TerminalButton = layout.add{type="button", name=each, caption=terminal.name, tags={RTEffect="ZiplineSwapRemoteView", selected=script.register_on_object_destroyed(entity)}}
                      TerminalButton.style.font = "heading-1"
                      TerminalButton.style.horizontally_stretchable = true
                   layout.add{type="label", caption=""}

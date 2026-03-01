@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.9
+Date: 3/1/2026
+  Additions:
+    - Added a setting to automatically disable personal roboports when getting on a zipline, which prevents bots from building blueprints you fly pass. Request by Callaghan_ 
+  Changes:
+    - Set the normal Iron Chest recipe to be visible in the signal selector GUI so you can use it to set assembling machine recipes. Before, the Re-cover Open Chest recipe overwrote it. Reported by b_jonas
+    - Clicking a Zipline terminal in remote view, or when you don't have the appropriate equipment, opens a GUI where you can still rename it or jump view to other terminals it's connected to. Requested by ptmc
+  Bugfixes:
+    - Fixed a crash when adjusting range of ghost throwers in hand while in remote view. Reported by Xieflow, Gnavianus and Callaghan_
+    - Fixed that you could use the zipline to attach to an electric pole while in remote view. Reported by b_jonas 
+    - Fixed a typo "Driving to selected detination" -> "Driving to selected destination". Reported by b_jonas
+---------------------------------------------------------------------------------------------------
 Version: 2.2.8
 Date: 10/28/2025
   Bugfixes:
