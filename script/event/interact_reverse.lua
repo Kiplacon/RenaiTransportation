@@ -10,7 +10,7 @@ local function ReverseInteract(event)
             player.create_local_flying_text
                 {
                     position = ThingHovering.position,
-                    text = "Range: "..storage.CatapultList[DestroyNumber].range
+                    text = "Range: "..math.floor(storage.CatapultList[DestroyNumber].range + 0.5)
                 }
             player.play_sound{
                 path="utility/gui_click",
@@ -40,7 +40,7 @@ local function ReverseInteract(event)
 			else
 				ThrowerName = string.gsub(player.cursor_ghost.name.name, "-Item", "")
 			end
-			local ThrowerNormalRange = math.sqrt(RealMaxRange(ThrowerName).x^2 + RealMaxRange(ThrowerName).y^2)
+			local ThrowerNormalRange = RealMaxRange(ThrowerName).range
 			local ThrowerUnitX = RealMaxRange(ThrowerName).x/ThrowerNormalRange
 			local ThrowerUnitY = RealMaxRange(ThrowerName).y/ThrowerNormalRange
 			player.clear_cursor()
@@ -67,7 +67,7 @@ local function ReverseInteract(event)
             if (player.is_cursor_blueprint() == true) then
                 local thrower = player.cursor_stack.get_blueprint_entities()[1]
                 local ThrowerName = thrower.name
-                local ThrowerNormalRange = math.sqrt(RealMaxRange(ThrowerName).x^2 + RealMaxRange(ThrowerName).y^2)
+                local ThrowerNormalRange = RealMaxRange(ThrowerName).range
                 local ThrowerUnitX = RealMaxRange(ThrowerName).x/ThrowerNormalRange
                 local ThrowerUnitY = RealMaxRange(ThrowerName).y/ThrowerNormalRange
                 local CurrentRange = PlayerProperties.RangeAdjustingRange

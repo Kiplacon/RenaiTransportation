@@ -152,7 +152,8 @@ picture =
 	data =
 	{
 		x = 0,
-		y = 20
+		y = 20,
+		range = 20
 	}
 },
 

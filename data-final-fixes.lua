@@ -546,12 +546,17 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 		ItsRange = math.sqrt(original_inserter.insert_position[1]^2 + original_inserter.insert_position[2]^2)
 		local unitX = original_inserter.insert_position[1] / ItsRange
 		local unitY = original_inserter.insert_position[2] / ItsRange
-		local rangeX = math.floor(unitX*math.floor(ItsRange)*10) + ((original_inserter.insert_position[1] ~= 0) and (math.floor(unitX*5) + 0.2) or 0)
-		local rangeY = math.floor(unitY*math.floor(ItsRange)*10) + ((original_inserter.insert_position[2] ~= 0) and (math.floor(unitY*5) + 0.2) or 0)
+		local rangeX = math.floor(unitX*math.floor(ItsRange)*10) + ((original_inserter.insert_position[1] ~= 0) and (math.floor(unitX*5)) or 0)
+		local rangeY = math.floor(unitY*math.floor(ItsRange)*10) + ((original_inserter.insert_position[2] ~= 0) and (math.floor(unitY*5)) or 0)
+		local FinalRange = math.sqrt(rangeX^2 + rangeY^2)
+		local UnitFinalX = rangeX / FinalRange
+		local UnitFinalY = rangeY / FinalRange
 		TheThrower.insert_position =
 			{
-				math.min(15.2, rangeX),
-				math.min(15.2, rangeY)
+				--[[ math.min(15.2, rangeX),
+				math.min(15.2, rangeY) ]]
+				UnitFinalX*math.min(15.2, FinalRange + (0.2*unitX)),
+				UnitFinalY*math.min(15.2, FinalRange + (0.2*unitY))
 			}
 		data:extend({
 			{
@@ -560,7 +565,8 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 				data =
 				{
 					x = rangeX,
-					y = rangeY
+					y = rangeY,
+					range = math.sqrt(rangeX^2 + rangeY^2)
 				}
 			}
 		})
@@ -1091,7 +1097,7 @@ for Category, ThingsTable in pairs(data.raw) do
 			end
 		end
 
-		if (Category == "locomotive" or Category == "cargo-wagon" or Category == "fluid-wagon") then
+		if (Category == "locomotive" or Category == "cargo-wagon" or Category == "fluid-wagon") and not (string.match(ThingID, ".*boat.*")) then
 			MakeCarriageSprites(table.deepcopy(ThingData))
 		end
 

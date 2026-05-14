@@ -79,7 +79,8 @@ data:extend({
 		data =
 		{
 			x = 0,
-			y = 15.2
+			y = 15.2,
+			range = 15.2
 		}
 	},
 })

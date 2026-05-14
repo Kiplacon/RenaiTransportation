@@ -45,8 +45,12 @@ magnetRamps.setRange = function (RampProperties, range, player, message, rail, L
 			local centerPosition = math2d.position.add(RampProperties.entity.position, offset)
 
 			local a, b = makeMagRampSection(centerPosition, RampProperties.entity.surface, RampProperties.entity.orientation)
-			table.insert(RampProperties.tiles, a)
-			table.insert(RampProperties.tiles, b)
+			if (a and a.valid) then
+				table.insert(RampProperties.tiles, a)
+			end
+			if (b and b.valid) then
+				table.insert(RampProperties.tiles, b)
+			end
 		end
 		RampProperties.power.electric_buffer_size = 200000 * range
 

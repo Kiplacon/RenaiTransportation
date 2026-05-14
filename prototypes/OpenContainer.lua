@@ -40,17 +40,22 @@ data:extend({
 	{ --------- open to regular chest recipe ----------
 		type = "recipe",
 		name = "OpenContainerRevertRecipe",
+		icon = renaiIcons .. "ReCover.png",
+        icon_size = 64,
+		order = "c",
+		localised_name = {"recipe-name.OpenContainerRevertRecipe"},
 		enabled = true,
 		energy_required = 0.5,
 		ingredients = {{type="item", name="OpenContainer", amount=1}},
 		results = {
 			{type="item", name="iron-chest", amount=1}
 		},
-		allow_as_intermediate = false
+		allow_as_intermediate = false,
+		hide_from_signal_gui = false
 	},
 	
 	datboi
 	
 })
 
-data.raw["recipe"]["iron-chest"].hide_from_signal_gui = false
+--data.raw["recipe"]["iron-chest"].hide_from_signal_gui = false

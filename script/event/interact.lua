@@ -87,7 +87,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			player.create_local_flying_text
 				{
 					position = ThingHovering.position,
-					text = "Range: "..storage.CatapultList[DestroyNumber].range
+					text = "Range: "..math.floor(storage.CatapultList[DestroyNumber].range + 0.5)
 				}
 			player.play_sound{
 				path="utility/gui_click",
@@ -464,7 +464,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 			if (player.is_cursor_blueprint() == true) then
 				local thrower = player.cursor_stack.get_blueprint_entities()[1]
 				local ThrowerName = thrower.name
-				local ThrowerNormalRange = math.sqrt(RealMaxRange(ThrowerName).x^2 + RealMaxRange(ThrowerName).y^2)
+				local ThrowerNormalRange = RealMaxRange(ThrowerName).range
 				local ThrowerUnitX = RealMaxRange(ThrowerName).x/ThrowerNormalRange
 				local ThrowerUnitY = RealMaxRange(ThrowerName).y/ThrowerNormalRange
 				local CurrentRange = PlayerProperties.RangeAdjustingRange
@@ -491,7 +491,7 @@ local function interact(event1) -- has .name = event ID number, .tick = tick num
 				player.create_local_flying_text
 					{
 						position = CursorPosition,
-						text = "Range: "..CurrentRange
+						text = "Range: "..math.floor(CurrentRange + 0.5)
 					}
 			else
 				PlayerProperties.RangeAdjusting = false

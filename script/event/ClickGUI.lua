@@ -144,7 +144,9 @@ local ClickableStuff = {
       local PlayerProperties = storage.AllPlayers[player.index]
       PlayerProperties.preferences.ZiplineTerminalPreview = "camera"
       local selected = storage.ZiplineTerminals[event.element.tags.selected].entity
-      if (player.controller_type == defines.controllers.character) then
+      if (event.element.tags.type and event.element.tags.type == "ZiplineAIGUI") then
+         AIZiplineControllerTerminalList(player, selected)
+      elseif (player.controller_type == defines.controllers.character) then
          if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
          and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineTrolley")
          and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
@@ -163,7 +165,9 @@ local ClickableStuff = {
       local PlayerProperties = storage.AllPlayers[player.index]
       PlayerProperties.preferences.ZiplineTerminalPreview = "minimap"
       local selected = storage.ZiplineTerminals[event.element.tags.selected].entity
-      if (player.controller_type == defines.controllers.character) then
+      if (event.element.tags.type and event.element.tags.type == "ZiplineAIGUI") then
+         AIZiplineControllerTerminalList(player, selected)
+      elseif (player.controller_type == defines.controllers.character) then
          if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
          and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineTrolley")
          and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read
@@ -182,7 +186,9 @@ local ClickableStuff = {
       local PlayerProperties = storage.AllPlayers[player.index]
       PlayerProperties.preferences.ZiplineTerminalPreview = "none"
       local selected = storage.ZiplineTerminals[event.element.tags.selected].entity
-      if (player.controller_type == defines.controllers.character) then
+      if (event.element.tags.type and event.element.tags.type == "ZiplineAIGUI") then
+         AIZiplineControllerTerminalList(player, selected)
+      elseif (player.controller_type == defines.controllers.character) then
          if (player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].valid_for_read
          and string.find(player.character.get_inventory(defines.inventory.character_guns)[player.character.selected_gun_index].name, "RTZiplineTrolley")
          and player.character.get_inventory(defines.inventory.character_ammo)[player.character.selected_gun_index].valid_for_read

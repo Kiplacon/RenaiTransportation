@@ -364,7 +364,8 @@ local function entity_damaged(event)
 			end
 
 			for each, railtile in pairs(MagnetRampProperties.tiles) do
-				rendering.draw_animation
+				if (railtile and railtile.valid) then
+					rendering.draw_animation
 					{
 						animation = polarity,
 						target = {railtile.position.x, railtile.position.y-1.65},
@@ -377,6 +378,7 @@ local function entity_damaged(event)
 						y_scale = 0.8,
 						time_to_live = math.abs(FlyingTrainProperties.AirTime+((5.9*FlyingTrainProperties.length)/(0.8*carriage.speed)))
 					}
+				end
 			end
 
 		elseif (MagneticRamps[ramp.name] and MagnetRampProperties and MagnetRampProperties.range ~= 0 and FlyingTrainProperties.MakeFX == "NoEnergy") then

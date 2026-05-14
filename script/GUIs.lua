@@ -238,9 +238,9 @@ function AIZiplineControllerTerminalList(player, CurrentPole)
 
       ------------- preview selection
       local PreviewHeader = player.gui.screen.RTZiplineTerminalGUI.add{type="table", name="PreviewHeader", column_count=3}
-      PreviewHeader.add{type="button", name="cam", caption="Camera", tags={RTEffect="ZiplineCamera", type="ZiplineAIAutoPath"}}
-      PreviewHeader.add{type="button", name="map", caption="Minimap", tags={RTEffect="ZiplineMinimap", type="ZiplineAIAutoPath"}}
-      PreviewHeader.add{type="button", name="none", caption="None", tags={RTEffect="ZiplineNone", type="ZiplineAIAutoPath"}}
+      PreviewHeader.add{type="button", name="cam", caption="Camera", tags={RTEffect="ZiplineCamera", type="ZiplineAIGUI", selected=script.register_on_object_destroyed(CurrentPole)}}
+      PreviewHeader.add{type="button", name="map", caption="Minimap", tags={RTEffect="ZiplineMinimap", type="ZiplineAIGUI", selected=script.register_on_object_destroyed(CurrentPole)}}
+      PreviewHeader.add{type="button", name="none", caption="None", tags={RTEffect="ZiplineNone", type="ZiplineAIGUI", selected=script.register_on_object_destroyed(CurrentPole)}}
       
       local scroller = player.gui.screen.RTZiplineTerminalGUI.add{type="scroll-pane", name="scroller"}
          scroller.style.height = 700

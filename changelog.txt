@@ -1,4 +1,22 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.11
+Date: 5/13/2026
+  Additions:
+    - Polish translation by S3BA
+  Changes:
+    - Throwers can now throw items into Locomotives and Artillery wagons in addition to Cargo wagons, but only when they're waiting at a station. Requested by Plate_of_Nuggets
+    - Changed the vanilla Iron chest recipe to be the default Iron chest recipe set in assembling machines instead of the Re-cover Open Chest recipe, which is now has its own icon and signal for setting that recipe in an assembler if for some reason you want that.
+    - Players with Belt immunity equipment are no longer launched by belt ramps. Requested by Gnavianus
+  Bugfixes:
+    - Fixed a crash that could happen if all the magnet ramp hover tiles didn't spawn correctly. Reported by lev2022
+    - Fixed a crash when switching destination preview modes in the AI Zipline controller GUI. Reported by madox398
+    - Fixed a load crash with inserters with a particularly long default reach. Reported by Lord_Skarra
+---------------------------------------------------------------------------------------------------
+Version: 2.2.10
+Date: 3/24/2026
+  Bugfixes:
+    - Fixed a loading crash with Cargo Ships. Reported by Lord_Skarra
+---------------------------------------------------------------------------------------------------
 Version: 2.2.9
 Date: 3/1/2026
   Additions:

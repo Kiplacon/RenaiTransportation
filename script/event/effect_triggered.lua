@@ -466,40 +466,51 @@ local function effect_triggered(event)
 				radius = 0.7
 			}
 			for _, kharacter in pairs(characters) do
-				local player = kharacter.player
-				local PlayerProperties = storage.AllPlayers[player.index]
-				PlayerProperties.state = "jumping"
-				local OG, shadow = SwapToGhost(player)
-				local TargetX = math.floor(trigger.position.x + range*storage.OrientationUnitComponents[orientation].x)+0.5
-				local TargetY = math.floor(trigger.position.y + range*storage.OrientationUnitComponents[orientation].y)+0.5
-				local distance = DistanceBetween(trigger.position, {x=TargetX, y=TargetY})
-				local AirTime = math.floor(distance/speed)
-				local arc = 0.3236*distance^-0.404 -- lower number is higher arc
-				local vector = {x=TargetX-player.position.x, y=TargetY-player.position.y}
-				local path = {}
-				for j = 0, AirTime do
-					local progress = j/AirTime
-					path[j] =
-					{
-						x = player.character.position.x+(progress*vector.x),
-						y = player.character.position.y+(progress*vector.y),
-						height = progress * (1-progress) / arc
-					}
+				local BeltImmune = false
+				if (kharacter.valid and kharacter.grid and kharacter.grid.equipment) then
+					for _, equipment in pairs(kharacter.grid.equipment) do
+						if (equipment.type == "belt-immunity-equipment") then
+							BeltImmune = true
+							break
+						end
+					end
 				end
-				local FlyingItem = InvokeThrownItem({
-					type = "PlayerGuide",
-					player = player,
-					shadow = shadow,
-					AirTime = AirTime,
-					SwapBack = OG,
-					IAmSpeed = player.character.character_running_speed_modifier,
-					path = path,
-					start = player.position,
-					target={x=TargetX, y=TargetY},
-					surface=player.surface,
-				})
-				PlayerProperties.PlayerLauncher.tracker = FlyingItem.FlightNumber
-				PlayerProperties.PlayerLauncher.direction = storage.OrientationUnitComponents[orientation].name
+				if (BeltImmune == false) then
+					local player = kharacter.player
+					local PlayerProperties = storage.AllPlayers[player.index]
+					PlayerProperties.state = "jumping"
+					local OG, shadow = SwapToGhost(player)
+					local TargetX = math.floor(trigger.position.x + range*storage.OrientationUnitComponents[orientation].x)+0.5
+					local TargetY = math.floor(trigger.position.y + range*storage.OrientationUnitComponents[orientation].y)+0.5
+					local distance = DistanceBetween(trigger.position, {x=TargetX, y=TargetY})
+					local AirTime = math.floor(distance/speed)
+					local arc = 0.3236*distance^-0.404 -- lower number is higher arc
+					local vector = {x=TargetX-player.position.x, y=TargetY-player.position.y}
+					local path = {}
+					for j = 0, AirTime do
+						local progress = j/AirTime
+						path[j] =
+						{
+							x = player.character.position.x+(progress*vector.x),
+							y = player.character.position.y+(progress*vector.y),
+							height = progress * (1-progress) / arc
+						}
+					end
+					local FlyingItem = InvokeThrownItem({
+						type = "PlayerGuide",
+						player = player,
+						shadow = shadow,
+						AirTime = AirTime,
+						SwapBack = OG,
+						IAmSpeed = player.character.character_running_speed_modifier,
+						path = path,
+						start = player.position,
+						target={x=TargetX, y=TargetY},
+						surface=player.surface,
+					})
+					PlayerProperties.PlayerLauncher.tracker = FlyingItem.FlightNumber
+					PlayerProperties.PlayerLauncher.direction = storage.OrientationUnitComponents[orientation].name
+				end
 			end
 		else
 			trigger.destroy()

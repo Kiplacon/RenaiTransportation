@@ -26,30 +26,34 @@ function AdjustThrowerArrow(thrower, range) -- applies any trajectory adjustment
         local DestroyNumber = script.register_on_object_destroyed(thrower)
         local ThrowerProperties = storage.CatapultList[DestroyNumber]
         if not range then
-            range = ThrowerProperties.range
+            range = RealMaxRange(thrower).range
         end --Not valid or doesnt exist
         -- set arrow to "normal" position
-        if (range > ThrowerProperties.NormalRange) then
-            range = ThrowerProperties.NormalRange
+        
+        local ThrowerUnitX = RealMaxRange(thrower).x/RealMaxRange(thrower).range
+        local ThrowerUnitY = RealMaxRange(thrower).y/RealMaxRange(thrower).range
+
+        if (range > RealMaxRange(thrower).range) then
+            range = RealMaxRange(thrower).range
         elseif (range < 1) then
-            range = 1
+            range = math.sqrt(ThrowerUnitX^2 + ThrowerUnitY^2)
         end
-        local ThrowerUnitX = RealMaxRange(thrower).x/ThrowerProperties.NormalRange
-        local ThrowerUnitY = RealMaxRange(thrower).y/ThrowerProperties.NormalRange
-        local VectorX = ThrowerUnitX * math.floor(range) + ((ThrowerUnitX ~= 0) and (0.2) or 0)
-        local VectorY = ThrowerUnitY * math.floor(range) + ((ThrowerUnitY ~= 0) and (0.2) or 0)
+
+        local VectorX = ThrowerUnitX * range
+        local VectorY = ThrowerUnitY * range
+        local VectorX2, VectorY2 = 0, 0
         if (thrower.orientation == 0) then
-            VectorX2 = VectorX
-            VectorY2 = VectorY
+            VectorX2 = VectorX + ThrowerUnitX*0.2
+            VectorY2 = VectorY + ThrowerUnitY*0.2
         elseif (thrower.orientation == 0.25) then
-            VectorX2 = -VectorY
-            VectorY2 = VectorX
+            VectorX2 = -VectorY - ThrowerUnitY*0.2
+            VectorY2 = VectorX + ThrowerUnitX*0.2
         elseif (thrower.orientation == 0.5) then
-            VectorX2 = -VectorX
-            VectorY2 = -VectorY
+            VectorX2 = -VectorX - ThrowerUnitX*0.2
+            VectorY2 = -VectorY - ThrowerUnitY*0.2
         elseif (thrower.orientation == 0.75) then
-            VectorX2 = VectorY
-            VectorY2 = -VectorX
+            VectorX2 = VectorY + ThrowerUnitY*0.2
+            VectorY2 = -VectorX - ThrowerUnitX*0.2
         end
         thrower.drop_position =
             {
@@ -106,6 +110,7 @@ function AdjustThrowerArrow(thrower, range) -- applies any trajectory adjustment
                 --game.print(serpent.block(ThrowerProperties.TrajectoryAdjust.path[#ThrowerProperties.TrajectoryAdjust.path]))
             end
         end
+        storage.CatapultList[script.register_on_object_destroyed(thrower)].range = DistanceBetween(thrower.position, thrower.drop_position) - 0.2
     end
 end
 function ClearTrajectoryAdjust(ThrowerInserter)

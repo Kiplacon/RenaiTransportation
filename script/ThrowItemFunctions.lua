@@ -605,10 +605,10 @@ function ResolveThrownItem(FlyingItem)
         position = {math.floor(FlyingItem.target.x)+0.5, math.floor(FlyingItem.target.y)+0.5},
         collision_mask = "object"
         }[1]
-    local LandedOnCargoWagon = FlyingItem.surface.find_entities_filtered
+    local LandedOnWagon = FlyingItem.surface.find_entities_filtered
         {
             area = {{FlyingItem.target.x-0.5, FlyingItem.target.y-0.5}, {FlyingItem.target.x+0.5, FlyingItem.target.y+0.5}},
-            type = "cargo-wagon"
+            type = {"cargo-wagon", "locomotive", "artillery-wagon"}
         }[1]
 
     -- dummy ItemShells for Ultracube
@@ -989,14 +989,14 @@ function ResolveThrownItem(FlyingItem)
                     
 
                 ---- If it landed on something but there's also a cargo wagon there
-                elseif (LandedOnCargoWagon ~= nil and LandedOnCargoWagon.draw_data.height==0 and LandedOnCargoWagon.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
+                elseif (LandedOnWagon ~= nil and LandedOnWagon.draw_data.height==0 and LandedOnWagon.can_insert({name=FlyingItem.item, quality=FlyingItem.quality})) then
                     if (FlyingItem.CloudStorage) then
-                        LandedOnCargoWagon.insert(FlyingItem.CloudStorage[1])
+                        LandedOnWagon.insert(FlyingItem.CloudStorage[1])
                         FlyingItem.CloudStorage.destroy()
                     elseif storage.Ultracube and FlyingItem.cube_token_id then -- Ultracube is active, and the flying item has an associated ownership token
-                        CubeFlyingItems.release_and_insert(FlyingItem, LandedOnCargoWagon)
+                        CubeFlyingItems.release_and_insert(FlyingItem, LandedOnWagon)
                     else
-                        LandedOnCargoWagon.insert({name=FlyingItem.item, count=FlyingItem.amount, quality=FlyingItem.quality})
+                        LandedOnWagon.insert({name=FlyingItem.item, count=FlyingItem.amount, quality=FlyingItem.quality})
                     end
 
                 -- If it's an Ultracube FlyingItem, just spill it near whatever it landed on, potentially onto a belt
@@ -1015,9 +1015,9 @@ function ResolveThrownItem(FlyingItem)
         -- tracers falling on something
         else
             if (storage.CatapultList[FlyingItem.tracing]) then -- incase the thrower was removed the split second between starting tracing and now
-                if (LandedOnCargoWagon and LandedOnCargoWagon.speed == 0) then
-                    local OnDestroyNumber = script.register_on_object_destroyed(LandedOnCargoWagon)
-                    storage.CatapultList[FlyingItem.tracing].targets[FlyingItem.item] = LandedOnCargoWagon
+                if (LandedOnWagon and LandedOnWagon.train.state == defines.train_state.wait_station) then
+                    local OnDestroyNumber = script.register_on_object_destroyed(LandedOnWagon)
+                    storage.CatapultList[FlyingItem.tracing].targets[FlyingItem.item] = LandedOnWagon
                     if (storage.ThrowerPaths[OnDestroyNumber] == nil) then
                         storage.ThrowerPaths[OnDestroyNumber] = {}
                         storage.ThrowerPaths[OnDestroyNumber][FlyingItem.tracing] = {}
@@ -1202,19 +1202,18 @@ end
 function SetThrowerRange(ThrowerInserter, Range, override)
     if (ThrowerInserter.valid and (ThrowerInserter.name ~= "RTThrower-EjectorHatchRT" or override)) then
         --local properties = storage.CatapultList[script.register_on_object_destroyed(ThrowerInserter)]
-        storage.CatapultList[script.register_on_object_destroyed(ThrowerInserter)].range = math.floor(Range)
+        -- storage.CatapultList[script.register_on_object_destroyed(ThrowerInserter)].range = Range
         ResetThrowerOverflowTracking(ThrowerInserter)
         AdjustThrowerArrow(ThrowerInserter, Range)
     end
 end
+local rounding = 0.15
 function IncreaseThrowerRange(ThrowerInserter)
     if (ThrowerInserter.valid) then
         local DestroyNumber = script.register_on_object_destroyed(ThrowerInserter)
-        local properties = storage.CatapultList[DestroyNumber]
-        local ThrowerNormalRange = properties.NormalRange
         local CurrentRange = storage.CatapultList[DestroyNumber].range or math.floor(math.sqrt((ThrowerInserter.drop_position.x-ThrowerInserter.position.x)^2 + (ThrowerInserter.drop_position.y-ThrowerInserter.position.y)^2))
-        if (CurrentRange >= math.floor(ThrowerNormalRange)) then
-            SetThrowerRange(ThrowerInserter, 1)
+        if (CurrentRange + rounding >= RealMaxRange(ThrowerInserter).range) then
+            SetThrowerRange(ThrowerInserter, math.sqrt((RealMaxRange(ThrowerInserter).x/RealMaxRange(ThrowerInserter).range)^2 + (RealMaxRange(ThrowerInserter).y/RealMaxRange(ThrowerInserter).range)^2))
         else
             SetThrowerRange(ThrowerInserter, CurrentRange+1)
         end
@@ -1223,11 +1222,9 @@ end
 function DecreaseThrowerRange(ThrowerInserter)
     if (ThrowerInserter.valid) then
         local DestroyNumber = script.register_on_object_destroyed(ThrowerInserter)
-        local properties = storage.CatapultList[DestroyNumber]
-        local ThrowerNormalRange = properties.NormalRange
         local CurrentRange = storage.CatapultList[DestroyNumber].range or math.floor(math.sqrt((ThrowerInserter.drop_position.x-ThrowerInserter.position.x)^2 + (ThrowerInserter.drop_position.y-ThrowerInserter.position.y)^2))
-        if (CurrentRange <= 1) then
-            SetThrowerRange(ThrowerInserter, ThrowerNormalRange)
+        if (CurrentRange < 1 + rounding) then
+            SetThrowerRange(ThrowerInserter, RealMaxRange(ThrowerInserter).range)
         else
             SetThrowerRange(ThrowerInserter, CurrentRange-1)
         end
