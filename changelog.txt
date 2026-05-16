@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.12
+Date: 5/15/2026
+  Changes:
+    - Changed the order ID of the Re-cover Iron Chest recipe to be very high so that it is very unlikely to overwrite the base recipe even after it is modified by other mods. Reported by b_jonas
+    - Added some visual offset variance to items bouncing off bounce pads so they don't all fly in perfect overlapping arcs.
+---------------------------------------------------------------------------------------------------
 Version: 2.2.11
 Date: 5/13/2026
   Additions:

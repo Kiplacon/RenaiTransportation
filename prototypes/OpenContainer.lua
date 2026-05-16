@@ -42,7 +42,7 @@ data:extend({
 		name = "OpenContainerRevertRecipe",
 		icon = renaiIcons .. "ReCover.png",
         icon_size = 64,
-		order = "c",
+		order = "zzzzz-accordingtoallknownlawsofaviationthereisnowayabeeshouldbeabletofly",
 		localised_name = {"recipe-name.OpenContainerRevertRecipe"},
 		enabled = true,
 		energy_required = 0.5,

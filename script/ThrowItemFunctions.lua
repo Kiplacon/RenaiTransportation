@@ -778,6 +778,8 @@ function ResolveThrownItem(FlyingItem)
                 else
                     local TargetX = ThingLandedOn.position.x  +unitx*(range+RangeBonus)  +unity*(SidewaysShift)
                     local TargetY = ThingLandedOn.position.y  +unity*(range+RangeBonus)  +unitx*(SidewaysShift)
+                    TargetX = TargetX + (math.random(-20,20)*0.01) -- add a little bit of random variation to prevent items from flying perfectly on top of each other
+                    TargetY = TargetY + (math.random(-20,20)*0.01)
                     local distance = math.sqrt((TargetX-ThingLandedOn.position.x)^2 + (TargetY-ThingLandedOn.position.y)^2)
                     if (range <= 15) then
                         FlyingItem.speed = 0.18
@@ -787,7 +789,7 @@ function ResolveThrownItem(FlyingItem)
                         FlyingItem.speed = 0.60
                     end
                     local AirTime = math.floor(distance/FlyingItem.speed)
-                    FlyingItem.target={x=TargetX, y=TargetY}
+                    
                     FlyingItem.start=ThingLandedOn.position
                     FlyingItem.ThrowerPosition=ThingLandedOn.position
                     FlyingItem.StartTick=game.tick
@@ -797,7 +799,7 @@ function ResolveThrownItem(FlyingItem)
                         InvokeThrownItem({
                             type = "ReskinnedStream",
                             bouncing = FlyingItem,
-                            start = ThingLandedOn.position,
+                            start = FlyingItem.target,
                             target = {TargetX, TargetY},
                             speed = FlyingItem.speed
                         })
@@ -817,7 +819,7 @@ function ResolveThrownItem(FlyingItem)
                         end
                         FlyingItem.path = path
                     end
-
+                    FlyingItem.target={x=TargetX, y=TargetY}
                 end
                 ThingLandedOn.surface.create_particle
                 ({
