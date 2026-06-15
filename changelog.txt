@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.13
+Date: 6/11/2026
+  Bugfixes:
+    - Fixed that circuit signal range adjustment of throwers didn't work if the thrower's actual range wasn't a whole number. Reported by Spooky.sys
+    - Hopefully fixed a crash on Steam OS systems. I don't have one so I cant test it. Reported by Spooky.sys howardxu23
+---------------------------------------------------------------------------------------------------
 Version: 2.2.12
 Date: 5/15/2026
   Changes:

@@ -373,3 +373,7 @@ function ToggleTrapdoorWagon(WagonEntity, StationToggleBack)
         WagonEntity.surface.play_sound{path="RTTrapdoorOpenSound", position=WagonEntity.position}
     end
 end
+
+function Round(num)
+    return math.floor(num + 0.5)
+end

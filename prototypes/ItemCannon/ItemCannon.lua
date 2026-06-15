@@ -309,7 +309,7 @@ if (data.raw.item["holmium-plate"] and data.raw.tool["electromagnetic-science-pa
       type = "technology",
       name = "RTItemCannonLogisticsTech",
       icon = renaiTechIcons .. "ItemCannonLogisticsTech.png",
-      icon_size = 1256,
+      icon_size = 256,
       effects =
       {
         {

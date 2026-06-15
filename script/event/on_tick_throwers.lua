@@ -34,7 +34,7 @@ local function ThrowersOnTick(event)
                     local ThrowerStack = ThrowerEntity.held_stack
                     if (properties.RangeAdjustable == true) then
                         local range = ThrowerEntity.get_signal({type="virtual", name="ThrowerRangeSignal"}, defines.wire_connector_id.circuit_red, defines.wire_connector_id.circuit_green)
-                        if (properties.range==nil or properties.range~=range) then
+                        if (properties.range==nil or Round(properties.range)~=range) then
                             if (range > 0 and range <= RealMaxRange(ThrowerEntity).range) then
                                 SetThrowerRange(ThrowerEntity, range)
                             elseif (range > RealMaxRange(ThrowerEntity).range) then
