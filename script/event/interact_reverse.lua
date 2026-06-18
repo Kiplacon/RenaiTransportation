@@ -32,7 +32,7 @@ local function ReverseInteract(event)
 				and string.find(player.cursor_ghost.name.name, "RTThrower-")
 				and player.cursor_ghost.name.name ~= "RTThrower-EjectorHatchRT"
 				and player.cursor_ghost.name.name ~= "RTThrower-FilterEjectorHatchRT"
-                and player.cursor_stack.name.name ~= "RTThrower-PrimerThrower"
+                and player.cursor_ghost.name.name ~= "RTThrower-PrimerThrower"
 		) then
             local ThrowerName
 			if (player.cursor_stack.valid_for_read) then

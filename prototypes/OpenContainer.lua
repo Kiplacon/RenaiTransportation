@@ -23,7 +23,8 @@ data:extend({
 		subgroup = "RT",
 		order = "b",
 		place_result = "OpenContainer",
-		stack_size = 50
+		stack_size = 50,
+		auto_recycle = false
 	},
 	
 	{ --------- The container recipe ----------
@@ -35,6 +36,7 @@ data:extend({
 		results = {
 			{type="item", name="OpenContainer", amount=1}
 		},
+		auto_recycle = false
 	},
 	
 	{ --------- open to regular chest recipe ----------
@@ -51,11 +53,29 @@ data:extend({
 			{type="item", name="iron-chest", amount=1}
 		},
 		allow_as_intermediate = false,
-		hide_from_signal_gui = false
+		hide_from_signal_gui = false,
+		auto_recycle = false
 	},
 	
 	datboi
 	
 })
 
+if data.raw["recipe-category"].recycling then
+	data:extend({
+		{
+			type = "recipe",
+			name = "OpenContainer-recycle",
+			icon = renaiIcons .. "OpenContainer_icon.png",
+			icon_size = 64,
+			enabled = true,
+			energy_required = 0.03,
+			ingredients = {{type="item", name="OpenContainer", amount=1}},
+			results = {
+				{type="item", name="iron-plate", amount=2}
+			},
+			category = "recycling",
+		}
+	})
+end
 --data.raw["recipe"]["iron-chest"].hide_from_signal_gui = false

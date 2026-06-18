@@ -1,9 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.14
+Date: 6/17/2026
+  Changes:
+    - Changed the Open chest recycling recipe to output iron plates instead of an Iron chest. Reported by Starchie
+  Bugfixes:
+    - Fixed a crash that could happen if you tried lowering the range of a thrower ghost if you didn't have any of that item in your inventory. Reported by zygogy
+---------------------------------------------------------------------------------------------------
 Version: 2.2.13
 Date: 6/11/2026
   Bugfixes:
     - Fixed that circuit signal range adjustment of throwers didn't work if the thrower's actual range wasn't a whole number. Reported by Spooky.sys
-    - Hopefully fixed a crash on Steam OS systems. I don't have one so I cant test it. Reported by Spooky.sys howardxu23
+    - Hopefully fixed a crash on Steam OS systems. I don't have one so I cant test it. Reported by howardxu23
 ---------------------------------------------------------------------------------------------------
 Version: 2.2.12
 Date: 5/15/2026
