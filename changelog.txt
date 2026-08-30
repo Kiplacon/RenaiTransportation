@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.3.1
+Date: 6/26/2026
+  Changes:
+    - Changed the Recover open chest recipe to not allow quality modules. Reported by Powerscooter
+    - Changed the tooltips of the Belt ramps to match the items per second of the belt tier they are based on. Requested by Ziktofel
+    - Added Belt ramp and Thrower inserter support for Bob's Logistics. Requested by Spooky.sys
+---------------------------------------------------------------------------------------------------
+Version: 2.3.0
+Date: 6/26/2026
+  Changes:
+    - Update for Factorio 2.1. Let me know on the mod page if you find any issues.
+---------------------------------------------------------------------------------------------------
 Version: 2.2.14
 Date: 6/17/2026
   Changes:

@@ -13,9 +13,9 @@ data:extend{
 		weight = 0.000000001,
 		max_speed = 999,
 		max_power = "1J",
-		braking_power = "1J",
+		braking_force = 0.00000000001,
 		reversing_power_modifier = 0,
-		friction = 0.00000000001,
+		friction_force = 0.00000000001,
 		air_resistance = 0.000000000001, -- this is a percentage of current speed that will be subtracted
 		connection_distance = 3,
 		joint_distance = 4,

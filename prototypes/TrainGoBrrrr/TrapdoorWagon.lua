@@ -265,7 +265,7 @@ end
 
 
 
-if (data.raw.item["tungsten-plate"] and data.raw.tool["metallurgic-science-pack"]) then
+if (data.raw.item["tungsten-plate"] and data.raw.item["metallurgic-science-pack"]) then
 	data:extend({
 		{ --------- wagon recipe ----------
 			type = "recipe",

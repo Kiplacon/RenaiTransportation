@@ -444,6 +444,7 @@ local function effect_triggered(event)
 		if (ramp and ramp.valid) then
 			local ranges =
 			{
+				["RTbob-basicBeltRamp"] = 5,
 				RTBeltRamp = 10,
 				RTfastBeltRamp = 20,
 				RTexpressBeltRamp = 30,
@@ -452,6 +453,7 @@ local function effect_triggered(event)
 			local range = ranges[ramp.name]
 			local speeds =
 			{
+				["RTbob-basicBeltRamp"] = 0.10,
 				RTBeltRamp = 0.15,
 				RTfastBeltRamp = 0.25,
 				RTexpressBeltRamp = 0.35,

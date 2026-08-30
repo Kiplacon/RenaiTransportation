@@ -76,7 +76,7 @@ function(event)
 			local stack = container.get_output_inventory()[i]
 			if (stack.valid_for_read == true) then
 				if not (storage.Ultracube and storage.Ultracube.prototypes.irreplaceable[stack.name]) then
-					stack.count = math.ceil(stack.count*0.25) -- half the items lost in the destruction
+					stack.count = math.ceil(stack.count*0.25) -- most of the items lost in the destruction
 				end
 				local GroupSize = math.ceil((stack.count/17))
 				while stack.count > 0 do
@@ -116,7 +116,12 @@ function(event)
 			end
 		end
 	end
-end
+end,
+{
+	{filter = "type", type = "container"},
+	{filter = "type", type = "cargo-wagon"},
+	{filter = "type", type = "car"},
+}
 )
 
 -- On Rotate
@@ -176,7 +181,15 @@ script.on_nth_tick(
 -- On Damaged
 script.on_event(
 	defines.events.on_entity_damaged,
-	require("script.event.entity_damaged")
+	require("script.event.entity_damaged"),
+	{
+		{filter = "name", name = "RTTrainRampCollisionBox"},
+		{filter = "name", name = "RTElevatedTrainRampCollisionBox"},
+		{filter = "name", name = "RTTrainDetector"},
+		{filter = "name", name = "RTTrainDetectorElevated"},
+		{filter = "type", type = "character"},
+		{filter = "damage-type", type = "impact", mode = "and"},
+	}
 )
 
 -- On Interact
@@ -421,24 +434,42 @@ function(event)
 			}
 		SetTrajectoryAdjust(player.selected, adjustment) ]]
 	elseif (player.character) then
-		rendering.draw_animation
-			{
-				animation = "RTHoojinTime",
-				x_scale = 0.5,
-				y_scale = 0.5,
-				target = {
-					entity = player.character,
-				},
-				surface = player.character.surface,
-				time_to_live = 120,
-				animation_speed = 0.5
-			}
-		player.character.surface.create_entity
-			{
-				name="RTSaysYourCrosshairIsTooLow",
-				target=player.character,
-				position={420,69},
-			}.time_to_live=120
+		local testing = false
+		if testing then
+			local direct = storage.OrientationUnitComponents[player.character.orientation]
+			for _ = 1, 100 do
+				local vertical = math.random(0, 10)*0.01
+				local particle = player.surface.create_particle
+				{
+					name="calcite-particle",
+					position=player.position,
+					movement={math.random(10, 30)*0.01, math.random(-2, 2)*0.01},
+					height=0.5,
+					vertical_speed=vertical,
+					frame_speed=1
+				}
+			end
+		else
+			rendering.draw_animation
+				{
+					animation = "RTHoojinTime",
+					x_scale = 0.5,
+					y_scale = 0.5,
+					target = {
+						entity = player.character,
+					},
+					surface = player.character.surface,
+					time_to_live = 120,
+					animation_speed = 0.5
+				}
+			player.character.surface.create_entity
+				{
+					name="RTSaysYourCrosshairIsTooLow",
+					target=player.character,
+					position={420,69},
+				}.time_to_live=120
+		end
+
 	end
 end)
 

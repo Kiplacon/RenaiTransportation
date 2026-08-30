@@ -54,7 +54,8 @@ data:extend({
 		},
 		allow_as_intermediate = false,
 		hide_from_signal_gui = false,
-		auto_recycle = false
+		auto_recycle = false,
+		allow_quality = false
 	},
 	
 	datboi
@@ -74,7 +75,7 @@ if data.raw["recipe-category"].recycling then
 			results = {
 				{type="item", name="iron-plate", amount=2}
 			},
-			category = "recycling",
+			categories = {"recycling"},
 		}
 	})
 end

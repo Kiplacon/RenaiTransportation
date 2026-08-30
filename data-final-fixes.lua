@@ -450,6 +450,27 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 		end
 	end
 
+	local IconOverlay =
+	{
+		icon = renaiIcons .. "ThrowerInserteroverlay.png",
+		icon_size = 64
+	}
+
+	local bobs =
+	{
+		["bob-red-bulk-inserter"] = true,
+		["bulk-inserter"] = true,
+		["bob-turbo-bulk-inserter"] = true,
+		["bob-express-bulk-inserter"] = true,
+	}
+	if (mods["boblogistics"] and bobs[ThingData.name]) then
+		IconOverlay =
+		{
+			icon = renaiIcons .. "ThrowerInserteroverlayBobs.png",
+			icon_size = 32
+		}
+	end
+
 	local TheItem = table.deepcopy(data.raw.item[PlacingItemName])
 	TheItem.name = "RTThrower-"..TheItem.name.."-Item"
 	TheItem.subgroup = "throwers"
@@ -461,14 +482,10 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 				icon = TheItem.icon,
 				icon_size = TheItem.icon_size
 			},
-
-			{
-				icon = renaiIcons .. "ThrowerInserteroverlay.png",
-				icon_size = 64
-			}
+			IconOverlay
 		}
 	else
-		table.insert(TheItem.icons, {icon = renaiIcons .. "ThrowerInserteroverlay.png",	icon_size = 64, icon_mipmaps = 4})
+		table.insert(TheItem.icons, IconOverlay)
 	end
 
 	if (ThingData.name == "inserter" or ThingData.name == "burner-inserter") then
@@ -502,13 +519,10 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 				icon = TheThrower.icon,
 				icon_size = TheThrower.icon_size
 			},
-			{
-				icon = renaiIcons .. "ThrowerInserteroverlay.png",
-				icon_size = 64
-			}
+			IconOverlay
 		}
 	else
-		table.insert(TheThrower.icons, {icon = renaiIcons .. "ThrowerInserteroverlay.png",	icon_size = 64})
+		table.insert(TheThrower.icons, IconOverlay)
 	end
 	TheThrower.name = "RTThrower-"..ThingData.name
 	TheThrower.minable = {mining_time = 0.1, result = TheItem.name}
@@ -611,17 +625,18 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 		if (isitenabled == false) then
 			table.insert(data.raw["technology"]["RTThrowerTime"].effects, {type="unlock-recipe", recipe=TheRecipe.name})
 		end
-		if mods["quality"] then
+		if mods["recycling"] then
+			local default_icon_size = 64
 			local icons =
 			{
 				{
-					icon = "__quality__/graphics/icons/recycling.png"
+					icon = "__recycling__/graphics/icons/recycling.png"
 				}
 			}
 			if TheItem.icons then
 				for i = 1, #TheItem.icons do
 					local icon = table.deepcopy(TheItem.icons[i]) -- we are gonna change the scale, so must copy the table
-					icon.scale = ((icon.scale == nil) and (0.5 * defines.default_icon_size / (icon.icon_size or defines.default_icon_size)) or icon.scale) * 0.8
+					icon.scale = ((icon.scale == nil) and (0.5 * default_icon_size / (icon.icon_size or default_icon_size)) or icon.scale) * 0.8
 					icon.shift = util.mul_shift(icon.shift, 0.8)
 					icons[#icons + 1] = icon
 				end
@@ -630,25 +645,25 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 				{
 					icon = TheItem.icon,
 					icon_size = TheItem.icon_size,
-					scale = (0.5 * defines.default_icon_size / (TheItem.icon_size or defines.default_icon_size)) * 0.8,
+					scale = (0.5 * default_icon_size / (TheItem.icon_size or default_icon_size)) * 0.8,
 				}
 			end
 			icons[#icons + 1] =
 			{
-				icon = "__quality__/graphics/icons/recycling-top.png"
+				icon = "__recycling__/graphics/icons/recycling-top.png"
 			}
 			data:extend({
 				{
 					type = "recipe",
 					name = TheRecipe.name.."-recycling",
 					icons = icons,
-					category = "recycling",
+					categories = {"recycling"},
 					subgroup = TheRecipe.subgroup,
 					enabled = true,
 					hidden = true,
 					unlock_results = false,
 					ingredients = {{type = "item", name = TheItem.name, amount = 1, ignored_by_stats = 1}},
-					results = {{type = "item", name = TheItem.name, amount = 1, probability = 0.25, ignored_by_stats = 1}}, -- Will show as consumed when item is destroyed
+					results = {{type = "item", name = TheItem.name, amount = 1, independent_probability = 0.25, ignored_by_stats = 1}}, -- Will show as consumed when item is destroyed
 					energy_required = (data.raw.recipe[TheItem.name] and data.raw.recipe[TheItem.name].energy_required or 0.5 )/16,
 				}
 			})
@@ -913,6 +928,7 @@ for ThingID, ThingData in pairs(data.raw.inserter) do
 				and ThingData.minable
 				and ThingData.rotation_speed ~= 0
 				and ThingData.extension_speed ~= 0
+				and ThingData.name ~= "long-handed-inserter" -- testing
 				--[[ and ThingData.selection_box[1][1] >= -0.5
 				and ThingData.selection_box[1][2] >= -0.5
 				and ThingData.selection_box[2][1] <= 0.5

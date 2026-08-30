@@ -248,7 +248,7 @@ data:extend({
 })
 
 
-if (data.raw.item["holmium-plate"] and data.raw.tool["electromagnetic-science-pack"]) then
+if (data.raw.item["holmium-plate"] and data.raw.item["electromagnetic-science-pack"]) then
   data:extend({
     { --------- recipe ----------
       type = "recipe",

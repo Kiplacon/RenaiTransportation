@@ -51,7 +51,7 @@ local function entity_built(event)
 			properties.InSpace = true
 		end
 
-		if (entity.burner == nil and #entity.fluidbox == 0 and entity.electric_buffer_size ~= nil and entity.electric_buffer_size > 0) then
+		if (entity.burner == nil and #entity.get_fluid_contents() == 0 and entity.electric_buffer_size ~= nil and entity.electric_buffer_size > 0) then
 			properties.BurnerSelfRefuelCompensation = 0
 			properties.IsElectric = true
 		elseif (entity.name == "RTThrower-PrimerThrower") then
@@ -91,7 +91,7 @@ local function entity_built(event)
 		entity.direction = defines.direction.north
 
 	elseif (entity.name == "PlayerLauncher") then
-		entity.active = false
+		entity.disabled_by_script = true
 
 	elseif (string.find(entity.name, "BouncePlate") and not string.find(entity.name, "Train")) then
 		storage.BouncePadList[script.register_on_object_destroyed(entity)] = {entity=entity, arrow=nil}
@@ -249,7 +249,7 @@ local function entity_built(event)
 				--only_in_alt_mode = true
 			}
 	elseif (string.find(entity.name, '^RT') and string.find(entity.name, "BeltRamp")) then
-		local ranges = {["RTBeltRamp"]=10, ["RTfastBeltRamp"]=20, ["RTexpressBeltRamp"]=30, ["RTturboBeltRamp"]=40}
+		local ranges = {["RTBeltRamp"]=10, ["RTfastBeltRamp"]=20, ["RTexpressBeltRamp"]=30, ["RTturboBeltRamp"]=40, ["RTbob-basicBeltRamp"]=5}
 		local speeds = {["RTBeltRamp"]=0.18, ["RTfastBeltRamp"]=0.18, ["RTexpressBeltRamp"]=0.25, ["RTturboBeltRamp"]=0.25}
 		storage.BeltRamps[script.register_on_object_destroyed(entity)] = {entity=entity, range=(ranges[entity.name] or 10), speed=(speeds[entity.name] or 0.18), InSpace=false, PlayerTrigger=nil}
 		local BeltRampProperties = storage.BeltRamps[script.register_on_object_destroyed(entity)]

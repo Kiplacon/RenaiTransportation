@@ -17,9 +17,9 @@ local function ThrowersOnTick(event)
                 if (properties.timeout == nil) then
                     -- power check. low power makes inserter arms stretch
                     if (properties.IsElectric == true and ThrowerEntity.energy/ThrowerEntity.electric_buffer_size >= 0.9) then
-                        ThrowerEntity.active = true
+                        ThrowerEntity.disabled_by_script = false
                     elseif (properties.IsElectric == true and ThrowerEntity.is_connected_to_electric_network() == true) then
-                        ThrowerEntity.active = false
+                        ThrowerEntity.disabled_by_script = true
                         rendering.draw_animation
                             {
                                 animation = "RTMOREPOWER",
@@ -58,7 +58,7 @@ local function ThrowersOnTick(event)
                             -- pointing at some entity
                             if (OnTheWayToTarget -- receptions are being tracked for the entity
                             and OnTheWayToTarget[HeldItem]) then -- receptions are being tracked for the entity for the particular item
-                                ThrowerEntity.active = CanFitThrownItem
+                                ThrowerEntity.disabled_by_script = not CanFitThrownItem
                                     {
                                         TargetEntity = properties.targets[HeldItem],
                                         ItemStack = ThrowerStack,
@@ -67,7 +67,7 @@ local function ThrowersOnTick(event)
 
                             -- pointing at nothing/the ground
                             elseif (properties.targets[HeldItem] == "nothing") then
-                                ThrowerEntity.active = true
+                                ThrowerEntity.disabled_by_script = false
 
                             -- item needs path validation/is currently tracking path
                             elseif (properties.targets[HeldItem] == nil) then
@@ -87,14 +87,14 @@ local function ThrowersOnTick(event)
                                         space = false,
                                     })
                                 end
-                                ThrowerEntity.active = false
+                                ThrowerEntity.disabled_by_script = true
 
                             -- first time throws for items to this target, tracer not landed yet
                             elseif (properties.targets[HeldItem]
                             and properties.targets[HeldItem].valid
                             and OnTheWayToTarget == nil) then
                                 storage.OnTheWay[DestinationDestroyNumber] = {[HeldItem] = 0}
-                                ThrowerEntity.active = false
+                                ThrowerEntity.disabled_by_script = true
 
                             -- first time throws for this particular item to this target, tracer not landed yet
                             elseif (properties.targets[HeldItem]
@@ -106,14 +106,14 @@ local function ThrowersOnTick(event)
                             end
                         -- overflow prevention is set to off
                         else
-                            ThrowerEntity.active = true
+                            ThrowerEntity.disabled_by_script = false
                         end
 
                         -- if the thrower is still active after the checks then:
-                        if (ThrowerEntity.active == true) then
+                        if (ThrowerEntity.disabled_by_script == false) then
                             if (ThrowerEntity.name == "RTThrower-PrimerThrower" and prototypes.entity["RTPrimerThrowerShooter-"..HeldItem]) then
                                 ThrowerEntity.inserter_stack_size_override = 1
-                                ThrowerEntity.active = false
+                                ThrowerEntity.disabled_by_script = true
                                 storage.PrimerThrowerLinks[script.register_on_object_destroyed(properties.entangled.detector)].ready = true
                             else
                                 -- starting parameters
@@ -200,8 +200,8 @@ local function ThrowersOnTick(event)
                         elseif (OnTheWayToTarget ~= nil) then -- path is traced (untraced path doesn't need to timeout)
                             properties.timeout = settings.global["RTOverflowTimeout"].value*60
                         end
-                    elseif (ThrowerEntity.active == false and ThrowerStack.valid_for_read == false) then
-                        ThrowerEntity.active = true
+                    elseif (ThrowerEntity.disabled_by_script == true and ThrowerStack.valid_for_read == false) then
+                        ThrowerEntity.disabled_by_script = false
                     end
                 else
                     properties.timeout = properties.timeout - storage.ThrowerGroups

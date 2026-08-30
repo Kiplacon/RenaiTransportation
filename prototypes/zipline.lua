@@ -729,7 +729,7 @@ data:extend({
 	},
 })
 
-if (data.raw.item["carbon-fiber"] and data.raw.item["pentapod-egg"] and data.raw.tool["agricultural-science-pack"]) then
+if (data.raw.item["carbon-fiber"] and data.raw.item["pentapod-egg"] and data.raw.item["agricultural-science-pack"]) then
 	data:extend({
       { --------- AI zipline controls recipe ----------
          type = "recipe",

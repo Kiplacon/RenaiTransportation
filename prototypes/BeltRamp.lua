@@ -1,9 +1,16 @@
 local tiers = {
-  {name="", tint={255,208,0}, speed=32, order="a", range=10},
+  {name="", tint={255,208,0}, speed=32, order="aa", range=10},
   {name="fast", tint={1,0,0}, speed=64, order="b", range=20},
   {name="express", tint={0,0.75,1}, speed=96, order="c", range=30},
 }
-
+if (mods["boblogistics"]) then
+  table.insert(tiers, {name="bob-basic", tint={212,212,212}, speed=16, order="a", range=5})
+end
+--[[ local tiers = {
+  {name="", tint={255,208,0}, speed=32, ItemsPerSecond=15/480, order="a", range=10},
+  {name="fast", tint={1,0,0}, speed=32, ItemsPerSecond=30/480, order="b", range=20},
+  {name="express", tint={0,0.75,1}, speed=32, ItemsPerSecond=45/480, order="c", range=30},
+} ]]
 for _, tier in pairs(tiers) do
   local TierName = tier.name
   local BaseBelt = tier.name
@@ -13,6 +20,10 @@ for _, tier in pairs(tiers) do
   local TierTint = tier.tint
   local TierSpeed = tier.speed
   local TierRange = tier.range
+  local corpse = "transport-belt-remnants"
+  if (data.raw["corpse"][BaseBelt.."transport-belt-remnants"]) then
+    corpse = BaseBelt.."transport-belt-remnants"
+  end
   data:extend({
     { --------- Bounce plate entity --------------
       type = "transport-belt",
@@ -34,7 +45,7 @@ for _, tier in pairs(tiers) do
       flags = {"placeable-neutral", "player-creation"},
       minable = {mining_time = 0.5, result = "RT"..TierName.."BeltRamp"},
       max_health = 200,
-      corpse = BaseBelt.."transport-belt".."-remnants",
+      corpse = corpse,
       dying_explosion = "iron-chest-explosion",
       collision_box = {{-0.4, -0.4}, {0.4, 0.4}},
       --collision_mask = {layers={["item"]=true, ["object"]=true, ["water_tile"]=true}},
@@ -164,6 +175,10 @@ data:extend({
 })
 
 if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt tier
+  local TurboTint = {0,1,0}
+  if (mods["boblogistics"]) then
+    TurboTint = {192,27,241}
+  end
   data:extend({
     { --------- Bounce plate entity --------------
       type = "transport-belt",
@@ -179,7 +194,7 @@ if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt t
           {
               icon = renaiIcons.."BeltRampArrows.png",
               icon_size = 64,
-              tint = {0,1,0}
+              tint = TurboTint
           },
       },
       flags = {"placeable-neutral", "player-creation"},
@@ -194,12 +209,26 @@ if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt t
       {
         animation_set =
         {
-          filename = renaiEntity .. "BeltRamp/GreenBeltRamp6.png",
-          priority = "extra-high",
-          size = 128,
-          frame_count = 64,
-          direction_count = 5,
-          scale = 0.78,
+          layers =
+          {
+            {
+              filename = renaiEntity .. "BeltRamp/GreenBeltRamp6.png",
+              priority = "extra-high",
+              size = 128,
+              frame_count = 64,
+              direction_count = 5,
+              scale = 0.78,
+            },
+            {
+              filename = renaiEntity .. "BeltRamp/GreenBeltRamp6Arrows.png",
+              tint = TurboTint,
+              priority = "extra-high",
+              size = 128,
+              frame_count = 64,
+              direction_count = 5,
+              scale = 0.78,
+            },
+          },
         },
         ending_north_index = 5,
         ending_east_index = 5,
@@ -243,7 +272,7 @@ if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt t
           {
               icon = renaiIcons.."BeltRampArrows.png",
               icon_size = 64,
-              tint = {0,1,0}
+              tint = TurboTint
           },
       },
       subgroup = "belt",
@@ -284,6 +313,9 @@ local unlocks =
     recipe = "RTexpressBeltRamp"
   },
 }
+if (mods["boblogistics"]) then
+  table.insert(unlocks, {type = "unlock-recipe", recipe = "RTbob-basicBeltRamp"})
+end
 if (data.raw["transport-belt"]["turbo-transport-belt"]) then -- space age belt tier
   table.insert(unlocks, {type = "unlock-recipe", recipe = "RTturboBeltRamp"})
 end
