@@ -36,7 +36,8 @@ data:extend({
 		results = {
 			{type="item", name="OpenContainer", amount=1}
 		},
-		auto_recycle = false
+		auto_recycle = false,
+		allow_quality = false
 	},
 	
 	{ --------- open to regular chest recipe ----------

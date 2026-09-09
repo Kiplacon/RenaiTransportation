@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.3.2
+Date: 9/9/2026
+  Bugfixes:
+    - Fixed a rare crash that could happen when the player lands after being knocked back by a vehicle a very short distance. Reported by KirroYellow
+---------------------------------------------------------------------------------------------------
 Version: 2.3.1
 Date: 6/26/2026
   Changes:
@@ -10,6 +15,11 @@ Version: 2.3.0
 Date: 6/26/2026
   Changes:
     - Update for Factorio 2.1. Let me know on the mod page if you find any issues.
+---------------------------------------------------------------------------------------------------
+Version: 2.2.15
+Date: 9/9/2026
+  Bugfixes:
+    - Backported bugfixes and adjustments I made on the Factorio v2.1 version of the mod to a 2.0 one. Includes everything from 2.3.2 and below.
 ---------------------------------------------------------------------------------------------------
 Version: 2.2.14
 Date: 6/17/2026

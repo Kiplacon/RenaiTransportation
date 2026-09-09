@@ -182,7 +182,9 @@ function SwapBackFromGhost(player, FlyingItem)
     if (player.character) then
         -- swap the original character back to the ghost position ---
         local ghost = player.character
-        OG.vehicle.destroy()
+        if (OG.vehicle ~= nil) then
+            OG.vehicle.destroy()
+        end
         OG.teleport(ghost.position)
         player.teleport(OG.position, OG.surface)
         player.character = OG
