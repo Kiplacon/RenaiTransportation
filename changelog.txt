@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.3.3
+Date: 9/10/2026
+  Bugfixes:
+    - Fixed a load crash that could happen with other mods that change the order/categories of inserter upgrades. Reported by DUMBHA
+---------------------------------------------------------------------------------------------------
 Version: 2.3.2
 Date: 9/9/2026
   Bugfixes:

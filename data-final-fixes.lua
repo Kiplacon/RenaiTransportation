@@ -531,15 +531,6 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 	TheThrower.insert_position = {0, 15.2}
 	TheThrower.allow_custom_vectors = true
 	local ItsRange = 15
-	if (TheThrower.fast_replaceable_group ~= nil) then
-		TheThrower.fast_replaceable_group = "thrower-"..TheThrower.fast_replaceable_group
-	else
-		TheThrower.fast_replaceable_group = "ThrowerInserters"
-	end
-	if (TheThrower.next_upgrade and TheThrower.next_upgrade ~= "") then
-		TheThrower.next_upgrade = "RTThrower-"..TheThrower.next_upgrade
-	end
-
 	if (TheThrower.energy_per_rotation) then
 		local MovementEnergy = util.parse_energy(TheThrower.energy_per_movement) * 3  -- for some reason x2.5 makes the total energy even out
 		local RotationEnergy = util.parse_energy(TheThrower.energy_per_rotation)
@@ -668,6 +659,23 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 				}
 			})
 		end
+	end
+end
+function UpdateNextUpgrade(ThingData)
+	log("--------Updating next_upgrade for "..ThingData.type..": "..ThingData.name.."-----------")
+	local TheThrower = table.deepcopy(data.raw.inserter[ThingData.name])
+	if (TheThrower.next_upgrade and TheThrower.next_upgrade ~= "") then
+		log("Updating next_upgrade for "..TheThrower.name.." to RTThrower-"..TheThrower.next_upgrade)
+		TheThrower.next_upgrade = "RTThrower-"..TheThrower.next_upgrade
+	else
+		log("No next_upgrade for "..TheThrower.name)
+	end
+	if (TheThrower.fast_replaceable_group ~= nil) then
+		log("Updating fast_replaceable_group for "..TheThrower.name.." to thrower-"..TheThrower.fast_replaceable_group)
+		TheThrower.fast_replaceable_group = "thrower-"..TheThrower.fast_replaceable_group
+	else
+		log("No fast_replaceable_group for "..TheThrower.name..", setting to ThrowerInserters")
+		TheThrower.fast_replaceable_group = "ThrowerInserters"
 	end
 end
 
@@ -915,7 +923,6 @@ end
 
 --- loop through data.raw ---------------------------------
 ---- Make thrower variants first so that the projectile generating will work
-
 for ThingID, ThingData in pairs(data.raw.inserter) do
 	-- lots of requirements to make sure not pick up any "function only" inserters from other mods --
 	if (settings.startup["RTThrowersSetting"].value == true and settings.startup["RTModdedThrowers"].value == true) then
@@ -928,13 +935,7 @@ for ThingID, ThingData in pairs(data.raw.inserter) do
 				and ThingData.minable
 				and ThingData.rotation_speed ~= 0
 				and ThingData.extension_speed ~= 0
-				and ThingData.name ~= "long-handed-inserter" -- testing
-				--[[ and ThingData.selection_box[1][1] >= -0.5
-				and ThingData.selection_box[1][2] >= -0.5
-				and ThingData.selection_box[2][1] <= 0.5
-				and ThingData.selection_box[2][2] <= 0.5 ]]
 				and not string.find(ThingData.name, "RTThrower-")
-				--and (not ThingData.name ~= "thrower-inserter")
 			)then
 				local PlacingItem
 				if (ThingData.minable.result) then
@@ -994,6 +995,11 @@ for ThingID, ThingData in pairs(data.raw.inserter) do
 		then
 			MakeThrowerVariant(ThingData)
 		end
+	end
+end
+for ThingID, ThingData in pairs(data.raw.inserter) do
+	if (string.find(ThingData.name, "RTThrower-")) then
+		UpdateNextUpgrade(ThingData)
 	end
 end
 
