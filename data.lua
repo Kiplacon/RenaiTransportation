@@ -328,7 +328,7 @@ if (data.raw.tree.lickmaw and data.raw["item-subgroup"]["agriculture-processes"]
 			icon_size = 64,
 			subgroup = "agriculture-processes",
 			default_import_location = "gleba",
-			fuel_category = "chemical",
+			fuel_categories = {"chemical"},
 			fuel_value = "1MJ",
 			weight = 2380,
 			order = "bbc",

@@ -473,6 +473,10 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 
 	local TheItem = table.deepcopy(data.raw.item[PlacingItemName])
 	TheItem.name = "RTThrower-"..TheItem.name.."-Item"
+	TheItem.localised_name = {"?",
+									{"", {"thrower-gen.name", {"entity-name."..ThingData.name}}},
+									{"", {"thrower-gen.name", tostring(ThingData.name:gsub("-i"," i"))}}
+							}
 	TheItem.subgroup = "throwers"
 	TheItem.place_result = "RTThrower-"..ThingData.name
 	if (TheItem.icon) then
@@ -497,9 +501,12 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 	{
 		type = "recipe",
 		name = "RTThrower-"..ThingData.name.."-Recipe",
+		localised_name = {"?",
+							{"", {"thrower-gen.name", {"entity-name."..ThingData.name}}},
+							{"", {"thrower-gen.name", tostring(ThingData.name:gsub("-i"," i"))}}
+						},
 		enabled = isitenabled,
 		energy_required = 1,
-		localised_name =  "Thrower "..ThingData.name:gsub("-i"," i"),
 		ingredients =
 		{
 			{type="item", name=PlacingItemName, amount=1},
@@ -526,8 +533,10 @@ function MakeThrowerVariant(ThingData, PlacingItemName)
 	end
 	TheThrower.name = "RTThrower-"..ThingData.name
 	TheThrower.minable = {mining_time = 0.1, result = TheItem.name}
-	TheThrower.localised_name ="Thrower "..ThingData.name:gsub("-i"," i")
-	--TheThrower.localised_name = {"thrower-gen.name", {"entity-name."..ThingData.name}}
+	TheThrower.localised_name = {"?",
+									{"", {"thrower-gen.name", {"entity-name."..ThingData.name}}},
+									{"", {"thrower-gen.name", tostring(ThingData.name:gsub("-i"," i"))}}
+								}
 	TheThrower.insert_position = {0, 15.2}
 	TheThrower.allow_custom_vectors = true
 	local ItsRange = 15

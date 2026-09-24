@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.3.4
+Date: 9/23/2026
+  Bugfixes:
+    - Fixed locale formatting for thrower inserter variants. Reported by Schlumpf8
+    - Fixed loading crash from API changes made in Factorio 2.1.20. Reported by toynbeeidea
+---------------------------------------------------------------------------------------------------
 Version: 2.3.3
 Date: 9/10/2026
   Bugfixes:
@@ -20,6 +26,16 @@ Version: 2.3.0
 Date: 6/26/2026
   Changes:
     - Update for Factorio 2.1. Let me know on the mod page if you find any issues.
+---------------------------------------------------------------------------------------------------
+Version: 2.2.17
+Date: 9/23/2026
+  Bugfixes:
+    - Fixed locale formatting for thrower inserter variants. Reported by Schlumpf8
+---------------------------------------------------------------------------------------------------
+Version: 2.2.16
+Date: 9/10/2026
+  Bugfixes:
+    - Fixed a load crash that could happen with other mods that change the order/categories of inserter upgrades. Reported by DUMBHA
 ---------------------------------------------------------------------------------------------------
 Version: 2.2.15
 Date: 9/9/2026
