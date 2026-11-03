@@ -15,7 +15,7 @@ MLG.working_sound =
       },
       match_volume_to_activity = true
     }
-MLG.friction = 1e-99
+MLG.friction_force = 1e-99
 MLG.light.intensity = 0
 MLG.light.size = 0
 MLG.turret_animation = nil
