@@ -71,6 +71,7 @@ if data.raw["recipe-category"].recycling then
 			icon = renaiIcons .. "OpenContainer_icon.png",
 			icon_size = 64,
 			enabled = true,
+			hidden = true,
 			energy_required = 0.03,
 			ingredients = {{type="item", name="OpenContainer", amount=1}},
 			results = {
