@@ -285,7 +285,8 @@ local function on_tick(event)
 						position = GuideCar.position,
 						direction = storage.OrientationNumberToDefinition[properties.orientation], -- i think this does nothing
 						force = GuideCar.force,
-						raise_built = true
+						raise_built = true,
+						quality = properties.quality or "normal"
 					}
 				storage.FlyingTrains[PropUnitNumber].LandedTrain = NewTrain
 				--|||| Success

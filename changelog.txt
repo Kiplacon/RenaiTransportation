@@ -1,6 +1,18 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.3.5
+Date: 11/5/2026
+  Bugfixes:
+    - Fixed that the Open Container recipe was visible in the crafting menu. Fix by GreenTech-Solutions
+    - Fixed that the friction property for entities was renamed to friction_force which made jumping trains slow down while in the air. Fix by GreenTech-Solutions
+    - Fixed a crash that could happen when a helper entity for Belt ramps is cloned by script and not properly detected. Fix by GreenTech-Solutions
+    - Fixed some logic with setting the speed of landing trains that could cause a crash. Fix by GreenTech-Solutions
+    - Fixed that trains and wagons lost their quality after a jump. Reported by Drattz
+    - Fixed that Magnet Train Ramps couldn't target modded rails. Reported by Drattz
+---------------------------------------------------------------------------------------------------
 Version: 2.3.4
 Date: 9/23/2026
+  Changes:
+    - Updated German translation by Schlumpf8.
   Bugfixes:
     - Fixed locale formatting for thrower inserter variants. Reported by Schlumpf8
     - Fixed loading crash from API changes made in Factorio 2.1.20. Reported by toynbeeidea
@@ -29,6 +41,8 @@ Date: 6/26/2026
 ---------------------------------------------------------------------------------------------------
 Version: 2.2.17
 Date: 9/23/2026
+  Changes:
+    - Updated German translation by Schlumpf8.
   Bugfixes:
     - Fixed locale formatting for thrower inserter variants. Reported by Schlumpf8
 ---------------------------------------------------------------------------------------------------

@@ -96,7 +96,7 @@ magRampEntities = {
 		energy_source = {
 			type = "electric",
 			usage_priority = "secondary-input",
-			input_flow_limit = "40MW"
+			--input_flow_limit = "40MW"
 		},
 		picture = emptypic, --removeShift(scaleSprite(accumulator.chargable_graphics.picture, 0.4)),
 		animation = emptypic, --removeShift(scaleSprite(accumulator.chargable_graphics.charge_animation, 0.4)),

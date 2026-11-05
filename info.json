@@ -1,11 +1,11 @@
 {
     "name": "RenaiTransportation",
-    "version": "2.3.4",
+    "version": "2.3.5",
     "title": "Renai Transportation",
     "author": "Kiplacon",
     "factorio_version": "2.1",
     "dependencies": [
-        "base >= 2.0.0",
+        "base >= 2.1.20",
         "? space-age >= 1.0.0",
         "(?) aai-vehicles-ironclad >= 0.7.1",
         "(?) aai-programmable-vehicles"],

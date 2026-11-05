@@ -54,12 +54,12 @@ local function click(event)
 					local TheRail = clicked
 					local RampDestroyNumber = script.register_on_object_destroyed(TheRamp)
 					local RampProperties = storage.TrainRamps[RampDestroyNumber]
-					if (TheRail.name == "straight-rail"
+					if (TheRail.type == "straight-rail"
 					or TheRail.name == "RTTrainBouncePlate"
 					or TheRail.name == "RTTrainDirectedBouncePlate"
 					or TheRail.name == "elevated-straight-rail") then
 						local NotRail = 0
-						if (TheRail.name ~= "straight-rail") then
+						if (TheRail.type ~= "straight-rail") then
 							NotRail = 2
 						end
 						--|| Vertical ramps

@@ -209,6 +209,7 @@ local function entity_damaged(event)
 		FlyingTrainProperties.ShadowID = OwTheEdge
 		FlyingTrainProperties.ManualMode = carriage.train.manual_mode
 		FlyingTrainProperties.length = #carriage.train.carriages
+		FlyingTrainProperties.quality = carriage.quality or "normal"
 
 		for number, properties in pairs(storage.FlyingTrains) do -- carriages jumping before the ends land
 			if (properties.LandedTrain ~= nil and properties.LandedTrain.valid and carriage.unit_number == properties.LandedTrain.unit_number) then
