@@ -1,6 +1,6 @@
 local function BeltRamps(event)
     for _, BeltRampProperties in pairs(storage.BeltRamps) do
-		if (BeltRampProperties.entity.valid) then
+		if (BeltRampProperties.entity.valid and BeltRampProperties.entity.type == "transport-belt") then
             local BeltRamp = BeltRampProperties.entity
             local range = BeltRampProperties.range
 			local line = BeltRamp.get_transport_line(game.tick%2 + 1)

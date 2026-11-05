@@ -248,7 +248,7 @@ local function entity_built(event)
 				surface = entity.surface,
 				--only_in_alt_mode = true
 			}
-	elseif (string.find(entity.name, '^RT') and string.find(entity.name, "BeltRamp")) then
+	elseif (entity.type == "transport-belt" and string.find(entity.name, '^RT') and string.find(entity.name, "BeltRamp")) then
 		local ranges = {["RTBeltRamp"]=10, ["RTfastBeltRamp"]=20, ["RTexpressBeltRamp"]=30, ["RTturboBeltRamp"]=40, ["RTbob-basicBeltRamp"]=5}
 		local speeds = {["RTBeltRamp"]=0.18, ["RTfastBeltRamp"]=0.18, ["RTexpressBeltRamp"]=0.25, ["RTturboBeltRamp"]=0.25}
 		storage.BeltRamps[script.register_on_object_destroyed(entity)] = {entity=entity, range=(ranges[entity.name] or 10), speed=(speeds[entity.name] or 0.18), InSpace=false, PlayerTrigger=nil}

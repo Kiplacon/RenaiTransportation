@@ -2,6 +2,19 @@ if script.active_mods["Ultracube"] then CubeFlyingTrains = require("script.ultra
 
 local Animation = require("animation")
 
+-- Setting the speed of an automatic train that already has a path against its direction fails with "Trying to change
+-- direction of automatic train moving on a path" (the error of the landing crash reports). Such a train is switched to
+-- manual for the assignment and back.
+local function SetLandingSpeed(train, speed)
+	if (pcall(function() train.speed = speed end)) then
+		return
+	end
+	local wasManual = train.manual_mode
+	train.manual_mode = true
+	train.speed = speed
+	train.manual_mode = wasManual
+end
+
 local temporaryPathingCondition = {
 	type = "item_count",
 	compare_type = "and",
@@ -89,9 +102,9 @@ local function finalizeLandedTrain(PropUnitNumber, properties) -- happens when t
 			end
 		end
 		--[[ if (properties.LandedTrain.train.speed>0) then
-			properties.LandedTrain.train.speed = math.abs(properties.speed)
+			SetLandingSpeed(properties.LandedTrain.train, math.abs(properties.speed))
 		elseif (properties.LandedTrain.train.speed<0) then
-			properties.LandedTrain.train.speed = -math.abs(properties.speed)
+			SetLandingSpeed(properties.LandedTrain.train, -math.abs(properties.speed))
 		else
 		end ]]
 	end
@@ -112,9 +125,9 @@ local function on_tick(event)
 		--|| Follower speed comp
 		if (properties.follower and properties.follower.valid) then
 			if (properties.follower.train.speed>0) then
-				properties.follower.train.speed = math.abs(properties.speed)
+				SetLandingSpeed(properties.follower.train, math.abs(properties.speed))
 			elseif (properties.follower.train.speed<0) then
-				properties.follower.train.speed = -math.abs(properties.speed)
+				SetLandingSpeed(properties.follower.train, -math.abs(properties.speed))
 			elseif (properties.follower.train.speed==0) then --This could happen if a jumping train gets hit by another train before the rest of it jumps
 				storage.FlyingTrains[PropUnitNumber].follower = nil
 			end
@@ -384,13 +397,13 @@ local function on_tick(event)
 						if (properties.leader == nil) then
 							if ((properties.ghostLoco ~= nil and properties.ghostLoco.valid == true and properties.RampOrientation == properties.ghostLoco.orientation)
 							or (properties.RampOrientation == properties.orientation))then
-								NewTrain.train.speed = -math.abs(properties.speed)
+								SetLandingSpeed(NewTrain.train, -math.abs(properties.speed))
 							else
-								NewTrain.train.speed = math.abs(properties.speed)
+								SetLandingSpeed(NewTrain.train, math.abs(properties.speed))
 							end
 						else
 							--if (SpeedPolarity>=0) then
-								NewTrain.train.speed = SpeedPolarity*math.abs(properties.speed)
+								SetLandingSpeed(NewTrain.train, SpeedPolarity*math.abs(properties.speed))
 							--else
 								--NewTrain.train.speed = -math.abs(properties.speed)
 							--end
@@ -792,9 +805,9 @@ local function on_tick(event)
 			if (properties.follower and properties.followerID and storage.FlyingTrains[properties.followerID] and storage.FlyingTrains[properties.followerID].LandedTrain == nil) then
 				--game.print(game.tick.." not all here")
 				if (properties.LandedTrain.train.speed>0) then
-					properties.LandedTrain.train.speed = math.abs(properties.speed)
+					SetLandingSpeed(properties.LandedTrain.train, math.abs(properties.speed))
 				elseif (properties.LandedTrain.train.speed<0) then
-					properties.LandedTrain.train.speed = -math.abs(properties.speed)
+					SetLandingSpeed(properties.LandedTrain.train, -math.abs(properties.speed))
 				else
 				end
 
